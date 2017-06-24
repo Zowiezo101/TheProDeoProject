@@ -20,8 +20,14 @@
 			<hr>
 		</div>
 		
-		<div>
-			<h1>Contents</h1>
+		<div class="clearfix">
+			<div class="contents list">
+				<h1>Menu side</h1>
+			</div>
+			
+			<div class="contents data">
+				<h1>Contents</h1>
+			</div>
 		</div>
 		
 		<div class="footer">

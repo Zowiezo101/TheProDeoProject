@@ -1,0 +1,33 @@
+
+.header {
+	background-color: GoldenRod;
+	text-align: center;
+}
+
+.contents {
+	float: left;
+}
+
+.list {	
+	width: 25%;
+	background-color: Red;
+}
+
+.data {	
+	width: 75%;
+	background-color: Yellow;
+}
+
+.clearfix::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background-color: Green;
+	text-align: center;
+}
