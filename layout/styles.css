@@ -1,0 +1,197 @@
+
+body {
+	padding: 0;
+	margin: 0;
+	
+	font-family: Arial;
+}
+
+.header {
+	/* Remove this part eventually and replace with background-clip: scale*/
+	background-color: goldenrod;
+	
+	display: block;
+	height: 75px;
+}
+
+.header a{	
+	height: 100%;
+	width: 75px;
+	
+	/* This is needed to get the other elements on the 
+	same line on the right side */
+	float: left;
+	
+	/* Making sure that the image fits in the little corner */
+	background-color: Orange;
+}
+
+.header_options {
+	/**/
+	background-color: red;
+	
+	height: 40px;
+	width: 25%;
+	
+	/* This is needed to get the other elements on the 
+	same line on the left side */
+	float: right;
+}
+
+.header_options_lang {
+	height: 100%;
+	width: 12.5%;
+	
+	float: left;
+
+	background-image: url("img/lang.bmp");
+	background-clip: scale;
+}
+
+.header_options_settings {
+	height: 100%;
+	width: 12.5%;
+	
+	float: left;
+
+	background-image: url("img/settings.bmp");
+	background-clip: scale;
+}
+
+.header_options_search {
+	height: 100%;
+	width: 75%;
+	float: left;
+}
+
+.header_options_search form {
+	height: 100%;
+}
+
+.header_options_search_text {
+	height: 100%;
+	width: 80%;
+	float: left;
+}
+
+.header_options_search_button {
+	height: 100%;
+	width: 16%;
+	float: right;
+}
+
+
+.navigation {
+	height: 50px;
+	display: block;
+	
+	background-color: Green;
+}
+
+.navigation ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	
+	/* Hiding the padding when hovering */
+	overflow: hidden;
+	
+	height: 100%;
+	width: 100%;
+}
+
+.navigation li {
+	float: left;
+	text-align: center;
+	
+	height: 100%;
+	width: 12.5%;
+}
+
+.navigation li a {
+	display: block;
+	height: 100%;
+	text-decoration: none;
+	color: black;
+	padding: 15px;
+}
+
+.navigation a:hover {
+	background-color: blue;
+}
+
+.nav_menu {
+	display: none;
+}
+
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	
+	height: 50px;
+	width: 100%;
+	
+	background-color: Yellow;
+	text-align: center;
+}
+
+
+
+/* /* The dropdown menu itself */ */
+/* .dropdown { */
+	/* display: inline-block; */
+/* } */
+
+/* /* Image to create dropdown menu */ */
+/* .dropimg { */
+	/* cursor: pointer; */
+	/* border: none; */
+	/* outline: none; */
+	/* background-color: inherit; */
+/* } */
+
+/* /* The contents of the dropdown menu */ */
+/* .dropdown_content { */
+	/* display: none; /* Invisible */ */
+	/* position: absolute; */
+/* } */
+
+/* .dropdown_content a{ */
+	/* float: none; */
+	/* display: block; */
+/* } */
+
+/* /* Show block, this class is toggled by a Javascript function */ */
+/* .show { */
+	/* display: block; /* Visible */ */
+/* } */
+
+
+/* /* Settings for all the images in the menu */ */
+/* img.header { */
+	/* width: 100px; */
+	/* height: 50px; */
+/* } */
+
+
+/* .contents { */
+	/* float: left; */
+/* } */
+
+/* .list {	 */
+	/* width: 25%; */
+	/* background-color: Red; */
+	/* overflow: auto; */
+/* } */
+
+/* .data {	 */
+	/* width: 75%; */
+	/* background-color: Yellow; */
+/* } */
+
+/* .clearfix::after { */
+	/* content: ""; */
+	/* clear: both; */
+	/* display: table; */
+/* } */
