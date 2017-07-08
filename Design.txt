@@ -1,2 +1,0 @@
-Design thingies:
-All clickable links are 100x50 px
