@@ -13,13 +13,13 @@
 		</a>
 		
 		<div class="header_options">
-			<button class="header_options_lang" type="button"></button>
-			<button class="header_options_settings" type="button"></button>
+			<button class="header_options_lang" type="button" onclick="Language()"></button>
+			<button class="header_options_settings" type="button" onclick="LogIn()"></button>
 			
 			<div class="header_options_search">
-				<form method="get">
+				<form method="get" action="search.php">
 					<input class="header_options_search_text" type="text" required>
-					<input class="header_options_search_button" type="button">
+					<input class="header_options_search_button" type="submit" value="">
 				</form>
 			</div>
 		</div>
@@ -29,11 +29,11 @@
 		<ul>
 			<li><a href="index.php">Home</a></li>
 			<li><div class="nav_dropdown">
-				<a href="" onclick="CreateDropDown()">
+				<a class="nav_button" href="#" onclick="DropDown('nav_menu')">
 					Database
 				</a>
 				
-				<div class="nav_menu">
+				<div id="nav_menu">
 					<a href="peoples.php">Peoples</a>
 					<a href="books.php">Books</a>
 					<a href="locations.php">Locations</a>
@@ -51,19 +51,27 @@
 	
 		
 <script>
+	function Language() {
+		alert("Language");
+	}
+	
+	function LogIn() {
+		// alert("LogIn");
+		window.location.href = "settings.php";
+	}
+
 	/* When the user clicks on the button, 
 	toggle between hiding and showing the dropdown content */
-	function CreateDropDown() {
-		document.getElementById("dropdown_menu").classList.toggle("show");
+	function DropDown(name) {
+		var menu = document.getElementById(name);
+		menu.style.display = "inline-block";
 	}
 
 	// Close the dropdown if the user clicks outside of it
 	window.onclick = function(e) {
-	  if (!e.target.matches('.dropimg')) {
-		var myDropdown = document.getElementById("dropdown_menu");
-		  if (myDropdown.classList.contains('show')) {
-			myDropdown.classList.remove('show');
-		  }
-	  }
+	    if (!e.target.matches(".nav_button")) {
+			var menu = document.getElementById("nav_menu");
+			menu.style.display = "none";
+	    }
 	}
 </script>

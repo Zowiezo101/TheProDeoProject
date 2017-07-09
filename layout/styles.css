@@ -30,7 +30,7 @@ body {
 	/**/
 	background-color: red;
 	
-	height: 40px;
+	height: 50%;
 	width: 25%;
 	
 	/* This is needed to get the other elements on the 
@@ -44,8 +44,13 @@ body {
 	
 	float: left;
 
-	background-image: url("img/lang.bmp");
-	background-clip: scale;
+	/*background-image: url("../img/lang.bmp");
+	background-clip: scale;*/
+	background-color: Purple;
+	
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
 
 .header_options_settings {
@@ -54,8 +59,13 @@ body {
 	
 	float: left;
 
-	background-image: url("img/settings.bmp");
-	background-clip: scale;
+	/*background-image: url("../img/settings.bmp");
+	background-clip: scale;*/
+	background-color: Grey;
+	
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
 
 .header_options_search {
@@ -72,12 +82,22 @@ body {
 	height: 100%;
 	width: 80%;
 	float: left;
+	
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
 
 .header_options_search_button {
 	height: 100%;
-	width: 16%;
+	width: 19%;
 	float: right;
+	
+	margin: 0;
+	padding: 0;
+	border: 0;
+	
+	background-color: Pink;
 }
 
 
@@ -120,8 +140,11 @@ body {
 	background-color: blue;
 }
 
-.nav_menu {
+#nav_menu {
 	display: none;
+	position: absolute;
+	background-color: green;
+	z-index: 1;
 }
 
 
@@ -137,6 +160,23 @@ body {
 }
 
 
+.contents_left {
+	background-color: Grey;
+	float: left;
+	width: 20%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.contents_right {
+	background-color: Red;
+	float: left;
+	width: 80%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
 
 /* /* The dropdown menu itself */ */
 /* .dropdown { */
@@ -190,8 +230,8 @@ body {
 	/* background-color: Yellow; */
 /* } */
 
-/* .clearfix::after { */
-	/* content: ""; */
-	/* clear: both; */
-	/* display: table; */
-/* } */
+.clearfix::after {
+	content: "";
+	clear: both;
+	display: table;
+}
