@@ -198,66 +198,32 @@ body {
 	background-color: Red;
 	float: right;
 	width: 80%;
-	height: 500px%;
+	height: 500px;
 	margin: 0;
 	padding: 0;
 	overflow: auto;
 }
 
-#people_bar ul {
-	list-style-type: none;
+#people_bar form, #people_bar input,
+#location_bar form, #location_bar input,
+#event_bar form, #event_bar input,
+#book_bar form, #book_bar input,
+#special_bar form, #special_bar input
+ {
+	width: 100%;
 	margin: 0;
 	padding: 0;
 }
 
-/* /* The dropdown menu itself */ */
-/* .dropdown { */
-	/* display: inline-block; */
-/* } */
-
-/* /* Image to create dropdown menu */ */
-/* .dropimg { */
-	/* cursor: pointer; */
-	/* border: none; */
-	/* outline: none; */
-	/* background-color: inherit; */
-/* } */
-
-/* /* The contents of the dropdown menu */ */
-/* .dropdown_content { */
-	/* display: none; /* Invisible */ */
-	/* position: absolute; */
-/* } */
-
-/* .dropdown_content a{ */
-	/* float: none; */
-	/* display: block; */
-/* } */
-
-/* /* Show block, this class is toggled by a Javascript function */ */
-/* .show { */
-	/* display: block; /* Visible */ */
-/* } */
-
-
-/* /* Settings for all the images in the menu */ */
-/* img.header { */
-	/* width: 100px; */
-	/* height: 50px; */
-/* } */
-
-
-/* .contents { */
-	/* float: left; */
-/* } */
-
-/* .list {	 */
-	/* width: 25%; */
-	/* background-color: Red; */
-	/* overflow: auto; */
-/* } */
-
-/* .data {	 */
-	/* width: 75%; */
-	/* background-color: Yellow; */
-/* } */
+#people_info td,
+#location_info td,
+#event_info td,
+#book_info td,
+#special_info td
+ {
+	border: 1px;
+	border-style: solid;
+	border-collapse: 1;
+	padding: 0;
+	margin: 0;
+}

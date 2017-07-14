@@ -12,10 +12,10 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-function GetListOfPeoples() {
+function GetListOfItems($table) {
 	global $conn;
 	
-	$sql = "SELECT ID,Name FROM peoples LIMIT 100";
+	$sql = "SELECT ID,Name FROM ".$table." LIMIT 100";
 	$result = $conn->query($sql);
 	
 	if (!$result) {
@@ -23,28 +23,28 @@ function GetListOfPeoples() {
 	}
 	else {
 		while ($name = $result->fetch_array()) {
-			echo "<form method='post' action='peoples.php'>";
-			echo "<input type='hidden' name='id' value='".$name['ID']."'</button>";
-			echo "<input type='submit' name='submit' value='".$name['Name']."'</button>";
+			echo "<form method='post' action='".$table.".php'>";
+			echo "<input type='hidden' name='id' value='".$name['ID']."'/>";
+			echo "<input type='submit' name='submit' value='".$name['Name']."'/>";
 			echo "</form>\n";
 		}
 	}
 }
 
-function GetPeopleInfo($ID) {
+function GetItemInfo($table, $ID) {
 	global $conn;
 	
-	$sql = "SELECT * FROM peoples WHERE ID=".$ID;
+	$sql = "SELECT * FROM ".$table." WHERE ID=".$ID;
 	$result = $conn->query($sql);
-	$people = NULL;
+	$item = NULL;
 	
 	if (!$result) {
 		echo "<h1>Could not get results..</h1>\n";
 	}
 	else {
-		$people = $result->fetch_array();
+		$item = $result->fetch_assoc();
 	}
 	
-	return $people;
+	return $item;
 }
 ?>

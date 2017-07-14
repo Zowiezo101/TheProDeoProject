@@ -5,7 +5,7 @@
 	
 	<div class="clearfix">
 		<div class="contents_left" id="people_bar">
-			<?php GetListOfPeoples(); ?>
+			<?php GetListOfItems("peoples"); ?>
 		</div>
 		
 		<div class="contents_right" id="people_info">
@@ -25,7 +25,7 @@ if (isset($_POST['submit'])) {
 		var contentEl = document.getElementById("people_info");
 		
 		<?php 
-			$information = GetPeopleInfo($_POST['id']); 
+			$information = GetItemInfo("peoples", $_POST['id']); 
 		?>
 		
 		// var ID = <?php echo "'".$_POST['id']."'"; ?>;
@@ -34,9 +34,30 @@ if (isset($_POST['submit'])) {
 		?>;
 		
 		// Create a Table
-		// Left is key names
-		// right is value names
-		contentEl.innerHTML = ID;
+		var table = document.createElement("table");
+		
+		<?php
+			foreach ($information as $key => $value)
+			{
+				?>
+				var TableKey = document.createElement("td");
+				TableKey.innerHTML = "<?php echo $key; ?>";
+				
+				var TableData = document.createElement("td");
+				TableData.innerHTML = "<?php echo $value; ?>";
+				
+				// Left is key names
+				// right is value names
+				var TableRow = document.createElement("tr");
+				TableRow.appendChild(TableKey);
+				TableRow.appendChild(TableData);
+				
+				table.appendChild(TableRow);
+				<?php
+			}
+		?>
+		
+		contentEl.appendChild(table);
 	</script>
 <?php
 }
