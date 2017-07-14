@@ -29,9 +29,9 @@
 		<ul>
 			<li><a href="index.php">Home</a></li>
 			<li><div class="nav_dropdown">
-				<a class="nav_button" href="#" onclick="DropDown('nav_menu')">
+				<button class="nav_button" onclick="DropDown('nav_menu')">
 					Database
-				</a>
+				</button>
 				
 				<div id="nav_menu">
 					<a href="peoples.php">Peoples</a>
