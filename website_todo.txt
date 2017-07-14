@@ -1,0 +1,16 @@
+* Use generated PHP translation-file to have website in 2 languages
+* Fill up contact page
+* Get data from table "blog" and show this on home page
+* Work on settings page to be able to fill up blog
+* work on settings page to be able to remove blogs
+* work on settings page to be able to edit blogs
+* work on settings page to be able to log in and log out
+* Work on code-sketch for worldmap
+* work on code-sketch for timeline
+* work on code-sketch for familytree
+* Work on setting to change language of website
+* Work on search bar
+* Fill up footer
+* get static global IP address
+* put website on serverFree.com for feedback
+* Create links from ID's to other Items
