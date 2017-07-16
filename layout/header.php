@@ -1,3 +1,5 @@
+<?php require "database/translation_nl.php"; ?>
+
 <head>
 	<title>ProDeo Productions Database</title>
 	<meta charset="UTF-8">
@@ -27,25 +29,25 @@
 	
 	<div class="navigation">
 		<ul>
-			<li><a href="index.php">Home</a></li>
+			<li><a href="index.php"><?php echo $NavParams["Home"]; ?></a></li>
 			<li><div class="nav_dropdown">
 				<button class="nav_button" onclick="DropDown('nav_menu')">
-					Database
+					<?php echo $NavParams["Database"]; ?>
 				</button>
 				
 				<div id="nav_menu">
-					<a href="peoples.php">Peoples</a>
-					<a href="books.php">Books</a>
-					<a href="locations.php">Locations</a>
-					<a href="events.php">Events</a>
-					<a href="specials.php">Specials</a>
+					<a href="peoples.php"><?php echo $NavParams["Peoples"]; ?></a>
+					<a href="books.php"><?php echo $NavParams["Books"]; ?></a>
+					<a href="locations.php"><?php echo $NavParams["Locations"]; ?></a>
+					<a href="events.php"><?php echo $NavParams["Events"]; ?></a>
+					<a href="specials.php"><?php echo $NavParams["Specials"]; ?></a>
 				</div>
 			</div></li>
 			
-			<li><a href="timeline.php">Time Line</a></li>
-			<li><a href="familytree.php">Family Tree</a></li>
-			<li><a href="worldmap.php">World Map</a></li>
-			<li><a href="contact.php">Contact</a></li>
+			<li><a href="timeline.php"><?php echo $NavParams["Timeline"]; ?></a></li>
+			<li><a href="familytree.php"><?php echo $NavParams["Familytree"]; ?></a></li>
+			<li><a href="worldmap.php"><?php echo $NavParams["Worldmap"]; ?></a></li>
+			<li><a href="contact.php"><?php echo $NavParams["Contact"]; ?></a></li>
 		</ul>
 	</div>
 	

@@ -9,7 +9,7 @@
 		</div>
 		
 		<div class="contents_right" id="people_info">
-			<h1>Right</h1>
+			<h1 id="default">Klik op een naam in de lijst om meer informatie te zien</h1>
 		</div>
 	</div>
 	
@@ -24,6 +24,10 @@ if (isset($_POST['submit'])) {
 	<script>
 		var contentEl = document.getElementById("people_info");
 		
+		// Remove the default text
+		var defaultText = document.getElementById("default");
+		contentEl.removeChild(defaultText);
+		
 		<?php 
 			$information = GetItemInfo("peoples", $_POST['id']); 
 		?>
@@ -37,11 +41,13 @@ if (isset($_POST['submit'])) {
 		var table = document.createElement("table");
 		
 		<?php
+			global $PeoplesParams;
+		
 			foreach ($information as $key => $value)
 			{
 				?>
 				var TableKey = document.createElement("td");
-				TableKey.innerHTML = "<?php echo $key; ?>";
+				TableKey.innerHTML = "<?php echo $PeoplesParams[$key]; ?>";
 				
 				var TableData = document.createElement("td");
 				TableData.innerHTML = "<?php echo $value; ?>";
