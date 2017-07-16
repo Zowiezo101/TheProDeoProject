@@ -1,4 +1,4 @@
-* Use generated PHP translation-file to have website in 2 languages
+* Use PHP translation file for all strings (and Locations, Events, Specials and Books too.. Don't forget!!)
 * Fill up contact page
 * Get data from table "blog" and show this on home page
 * Work on settings page to be able to fill up blog
@@ -14,3 +14,6 @@
 * get static global IP address
 * put website on serverFree.com for feedback
 * Create links from ID's to other Items
+* Get next and prev buttons to see more names and more information of database
+* Update website with feedback etc
+* Create API for website & related app to view information on phone
