@@ -9,7 +9,7 @@
 		</div>
 		
 		<div class="contents_right" id="location_info">
-			<h1>Right</h1>
+			<h1 id="default">Klik op een naam in de lijst om meer informatie te zien</h1>
 		</div>
 	</div>
 	
@@ -23,6 +23,10 @@ if (isset($_POST['submit'])) {
 ?>
 	<script>
 		var contentEl = document.getElementById("location_info");
+		
+		// Remove the default text
+		var defaultText = document.getElementById("default");
+		contentEl.removeChild(defaultText);
 		
 		<?php 
 			$information = GetItemInfo("locations", $_POST['id']); 
