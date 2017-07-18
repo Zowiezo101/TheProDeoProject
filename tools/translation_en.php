@@ -88,7 +88,9 @@ $NavBar = array(
 $Content = array(
 	"default"=>"Click on a name in the list for more information",
 	"tbd"=>"To be done!",
-	"NoResults"=>"Can't find any results..",);
+	"NoResults"=>"Can't find any results..",
+	"prev"=>"Previous",
+	"next"=>"Next",);
 
 $Footer = array(
 	"PP_Name"=>"ProDeo Productions",);

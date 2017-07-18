@@ -88,7 +88,9 @@ $NavBar = array(
 $Content = array(
 	"default"=>"Klik op een naam in de lijst om meer informatie te zien",
 	"tbd"=>"Word aan gewerkt!",
-	"NoResults"=>"Kon geen resultaten vinden",);
+	"NoResults"=>"Kon geen resultaten vinden",
+	"prev"=>"Vorige",
+	"next"=>"Volgende",);
 
 $Footer = array(
 	"PP_Name"=>"ProDeo Productions",);
