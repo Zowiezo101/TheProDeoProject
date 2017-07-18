@@ -24,17 +24,17 @@ $PeoplesParams = array(
 	"Others"=>"Overige",);
 
 $LocationsParams = array(
-	"ID"=>"#",
+	"ID"=>"ID nummer",
 	"Name"=>"Naam",
 	"MeaningName"=>"Betekenis naam",
 	"NameChanges"=>"Naam veranderingen",
-	"NameChangesID"=>"# Naam veranderingen",
+	"NameChangesID"=>"ID nummers van Naam veranderingen",
 	"TypeOfLocation"=>"Type",
 	"Founder"=>"Oprichter",
-	"FounderID"=>"# Oprichter",
+	"FounderID"=>"ID nummer Oprichter",
 	"StartEvent"=>"Start Event",
 	"Destroyer"=>"Vernietiger",
-	"DestroyerID"=>"# Vernietiger",
+	"DestroyerID"=>"ID nummer Vernietiger",
 	"EndEvent"=>"Eind Event",
 	"Population"=>"Bevolking",
 	"Coordinates"=>"Coordinaten",
@@ -43,7 +43,7 @@ $LocationsParams = array(
 	"Others"=>"Overige",);
 
 $SpecialsParams = array(
-	"ID"=>"#",
+	"ID"=>"ID nummer",
 	"Name"=>"Naam",
 	"MeaningName"=>"Betekenis naam",
 	"Type"=>"Type",
@@ -52,14 +52,14 @@ $SpecialsParams = array(
 	"Others"=>"Overige",);
 
 $BooksParams = array(
-	"ID"=>"#",
+	"ID"=>"ID nummer",
 	"Name"=>"Naam",
 	"NumOfChapters"=>"Aantal hoofdstukken",
 	"Summary"=>"Samenvatting",
 	"Others"=>"Overige",);
 
 $EventsParams = array(
-	"ID"=>"#",
+	"ID"=>"ID nummer",
 	"Name"=>"Naam",
 	"Length"=>"Lengte",
 	"Locations"=>"Locaties",
@@ -69,7 +69,10 @@ $EventsParams = array(
 	"BibleVerses"=>"Bijbelverzen",
 	"Others"=>"Overige",);
 
-$NavParams = array(
+$Header = array(
+	"Search"=>"Zoeken..",);
+
+$NavBar = array(
 	"Home"=>"Home",
 	"Database"=>"Database",
 	"Peoples"=>"Personen",
@@ -81,5 +84,13 @@ $NavParams = array(
 	"Worldmap"=>"Wereldkaart",
 	"Familytree"=>"Stamboom",
 	"Contact"=>"Contact",);
+
+$Content = array(
+	"default"=>"Klik op een naam in de lijst om meer informatie te zien",
+	"tbd"=>"Word aan gewerkt!",
+	"NoResults"=>"Kon geen resultaten vinden",);
+
+$Footer = array(
+	"PP_Name"=>"ProDeo Productions",);
 
 ?>
