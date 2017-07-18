@@ -24,7 +24,13 @@ function GetListOfItems($table) {
 	global $Content;
 	global $conn;
 	
-	$sql = "SELECT ID,Name FROM ".$table." LIMIT 100";
+	if (!isset($_GET["page"])) {
+		$page_nr = 0;
+	} else {
+		$page_nr = $_GET["page"];
+	}
+	
+	$sql = "SELECT ID,Name FROM ".$table." WHERE ID>=".($page_nr*100)." LIMIT 100";
 	$result = $conn->query($sql);
 	
 	if (!$result) {
@@ -32,12 +38,28 @@ function GetListOfItems($table) {
 	}
 	else {
 		while ($name = $result->fetch_array()) {
-			echo "<form method='post' action=".AddLangParam($table.".php", 0).">";
+			echo "<form method='post' action='".AddLangParam($table.".php", 0).AddPageParam($page_nr)."'>";
 			echo "<input type='hidden' name='id' value='".$name['ID']."'/>";
 			echo "<input type='submit' name='submit' value='".$name['Name']."'/>";
 			echo "</form>\n";
 		}
 	}
+}
+
+function GetNumberOfItems($table) {
+	global $Content;
+	global $conn;
+	
+	if (!isset($_GET["page"])) {
+		$page_nr = 0;
+	} else {
+		$page_nr = $_GET["page"];
+	}
+	
+	$sql = "SELECT ID,Name FROM ".$table." WHERE ID>=".($page_nr*100)." LIMIT 100";
+	$result = $conn->query($sql);
+	
+	return $result->num_rows;
 }
 
 
@@ -61,20 +83,31 @@ function GetItemInfo($table, $ID) {
 }
 
 
-function AddLangParam($href, $echo=1) {
+function AddLangParam($href) {
 	global $page_lang;
 	$return_val = "";
 	
 	if ($page_lang == "nl") {
-		$href = "'".$href."'";
+		$return_val = $href;
 	} else {
-		$href = "'".$href."?lang=".$page_lang."'";
+		$return_val = $href."?lang=".$page_lang;
 	}
 	
-	if ($echo == 1) {
-		echo $href;
-	} else {
-		$return_val = $href;
+	return $return_val;
+}
+
+
+function AddPageParam($page_nr) {
+	global $page_lang;
+	$return_val = "";
+	
+	if (($page_lang == "nl") && ($page_nr > 0)) {
+		# When the page language is dutch, there is no parameter in the URL
+		$return_val = "?page=".$page_nr;
+	} else if ($page_nr > 0) {
+		# When the page language is not dutch, there is already a parameter in the URL
+		# Now use & to add this parameter as well.
+		$return_val = "&page=".$page_nr;
 	}
 	
 	return $return_val;

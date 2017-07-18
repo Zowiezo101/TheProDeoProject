@@ -1,9 +1,9 @@
 * Create links from ID's to other Items
-* Get next and prev buttons to see more names and more information of database
 * Get data from table "blog" and show this on home page
 * Work on settings page to be able to fill up blog
 * work on settings page to be able to remove blogs
 * work on settings page to be able to edit blogs
+
 * work on settings page to be able to log in and log out
 * Work on setting to change language of website
 * Work on search bar

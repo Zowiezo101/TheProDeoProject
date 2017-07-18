@@ -11,7 +11,7 @@
 	
 <body>
 	<div class="header">
-		<a href=<?php AddLangParam("index.php"); ?> >
+		<a href="<?php echo AddLangParam("index.php"); ?>" >
 			Logo
 			<!-- <img src="img/logo.bmp" alt="Logo"/> -->
 		</a>
@@ -21,7 +21,7 @@
 			<button class="header_options_settings" type="button" onclick="LogIn()"></button>
 			
 			<div class="header_options_search">
-				<form method="post" action=<?php AddLangParam("search.php"); ?> >
+				<form method="post" action="<?php echo AddLangParam("search.php"); ?>" >
 					<input class="header_options_search_text" type="text" required>
 					<input class="header_options_search_button" type="submit" value="">
 				</form>
@@ -31,25 +31,25 @@
 	
 	<div class="navigation">
 		<ul>
-			<li><a href=<?php AddLangParam("index.php"); ?> ><?php echo $NavBar["Home"]; ?></a></li>
+			<li><a href="<?php echo AddLangParam("index.php"); ?>" ><?php echo $NavBar["Home"]; ?></a></li>
 			<li><div class="nav_dropdown">
 				<button class="nav_button" onclick="DropDown('nav_menu')">
 					<?php echo $NavBar["Database"]; ?>
 				</button>
 				
 				<div id="nav_menu">
-					<a href=<?php AddLangParam("peoples.php"); ?> ><?php echo $NavBar["Peoples"]; ?></a>
-					<a href=<?php AddLangParam("books.php"); ?> ><?php echo $NavBar["Books"]; ?></a>
-					<a href=<?php AddLangParam("locations.php"); ?> ><?php echo $NavBar["Locations"]; ?></a>
-					<a href=<?php AddLangParam("events.php"); ?> ><?php echo $NavBar["Events"]; ?></a>
-					<a href=<?php AddLangParam("specials.php"); ?> ><?php echo $NavBar["Specials"]; ?></a>
+					<a href="<?php echo AddLangParam("peoples.php"); ?>" ><?php echo $NavBar["Peoples"]; ?></a>
+					<a href="<?php echo AddLangParam("books.php"); ?>" ><?php echo $NavBar["Books"]; ?></a>
+					<a href="<?php echo AddLangParam("locations.php"); ?>" ><?php echo $NavBar["Locations"]; ?></a>
+					<a href="<?php echo AddLangParam("events.php"); ?>" ><?php echo $NavBar["Events"]; ?></a>
+					<a href="<?php echo AddLangParam("specials.php"); ?>" ><?php echo $NavBar["Specials"]; ?></a>
 				</div>
 			</div></li>
 			
-			<li><a href=<?php AddLangParam("timeline.php"); ?> ><?php echo $NavBar["Timeline"]; ?></a></li>
-			<li><a href=<?php AddLangParam("familytree.php"); ?> ><?php echo $NavBar["Familytree"]; ?></a></li>
-			<li><a href=<?php AddLangParam("worldmap.php"); ?> ><?php echo $NavBar["Worldmap"]; ?></a></li>
-			<li><a href=<?php AddLangParam("contact.php"); ?> ><?php echo $NavBar["Contact"]; ?></a></li>
+			<li><a href="<?php echo AddLangParam("timeline.php"); ?>" ><?php echo $NavBar["Timeline"]; ?></a></li>
+			<li><a href="<?php echo AddLangParam("familytree.php"); ?>" ><?php echo $NavBar["Familytree"]; ?></a></li>
+			<li><a href="<?php echo AddLangParam("worldmap.php"); ?>" ><?php echo $NavBar["Worldmap"]; ?></a></li>
+			<li><a href="<?php echo AddLangParam("contact.php"); ?>" ><?php echo $NavBar["Contact"]; ?></a></li>
 		</ul>
 	</div>
 	
@@ -62,15 +62,15 @@
 		}
 		
 		if (newLang == "nl") {
-			window.location = "index.php";
+			window.location.href = "index.php";
 		} else {
-			window.location = "index.php?lang=" + newLang;
+			window.location.href = "index.php?lang=" + newLang;
 		}
 	}
 	
 	function LogIn() {
 		// alert("LogIn");
-		window.location.href = <?php AddLangParam("settings.php"); ?>;
+		window.location.href = "<?php echo AddLangParam("settings.php"); ?>";
 	}
 
 	/* When the user clicks on the button, 

@@ -204,6 +204,21 @@ body {
 	overflow: auto;
 }
 
+#button_bar
+{
+	width: 100%;
+}
+
+#button_left
+{
+	float: left;
+}
+
+#button_right
+{
+	float: right;
+}
+
 #people_bar form, #people_bar input,
 #location_bar form, #location_bar input,
 #event_bar form, #event_bar input,

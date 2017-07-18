@@ -3,8 +3,15 @@
 	<?php require "layout/header.php"; ?>
 	
 	<div class="clearfix">
-		<div class="contents_left" id="people_bar">
-			<?php GetListOfItems("peoples"); ?>
+		<div class="contents_left">
+			<div id="button_bar" onload="CheckButtons()">
+				<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
+				<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
+			</div>
+			
+			<div id="people_bar">
+				<?php GetListOfItems("peoples"); ?>
+			</div>
 		</div>
 		
 		<div class="contents_right" id="people_info">
@@ -15,8 +22,6 @@
 	<?php require "layout/footer.php"; ?>
 </html>
 
-<!-- TODO: Make sure to add some buttons to reach the other xxx names as well..
-	It is now limited to 100 names only.. -->
 <?php
 if (isset($_POST['submit'])) {
 ?>
@@ -60,3 +65,118 @@ if (isset($_POST['submit'])) {
 <?php
 }
 ?>
+
+<script>
+	window.onload = function CheckButtons() {
+		var ButtonPrev = document.getElementById("button_left");
+		var ButtonNext = document.getElementById("button_right");
+		
+		// Check if this is page 0. If so, disable to prev button..	
+		<?php
+			if (!isset($_GET["page"])) {
+				$page_nr = 0;
+			} else {
+				$page_nr = $_GET["page"];
+			}
+			
+			echo "var PageNr = ".$page_nr.";";
+			echo "var NrOfItems = ".GetNumberOfItems("peoples").";";
+		?>
+		
+		if (PageNr == 0) {
+			ButtonPrev.disabled = true;
+		} else {
+			ButtonPrev.disable = false;
+		}
+		if (NrOfItems < 100) {
+			ButtonNext.disabled = true;
+		} else {
+			ButtonNext.disable = false;
+		}
+	}
+	
+	function PrevPage() {		
+		<?php
+			if (!isset($_GET["page"])) {
+				$page_nr = 0;
+			} else {
+				$page_nr = $_GET["page"];
+			}
+			
+			echo "var PageNr = ".$page_nr.";";
+		?>
+		
+		if (PageNr == 1) {
+			// The page parameter should now be removed
+			oldHref = window.location.href;
+			newHref = removeURLParameter(oldHref, "page");
+			window.location.href = newHref;
+		} else if (PageNr > 1) {
+			// The page parameter only has to be updated
+			oldHref = window.location.href;
+			newHref = updateURLParameter(oldHref, "page", PageNr - 1);
+			window.location.href = newHref;
+		}
+	}
+	
+	function NextPage() {
+		<?php
+			if (!isset($_GET["page"])) {
+				$page_nr = 0;
+			} else {
+				$page_nr = $_GET["page"];
+			}
+			
+			echo "var PageNr = ".$page_nr." + 1;";
+		?>
+		
+		oldHref = window.location.href;
+		newHref = updateURLParameter(oldHref, "page", PageNr);
+		window.location.href = newHref;
+	}
+	
+	/**
+	* http://stackoverflow.com/a/10997390/11236
+	*/
+	function updateURLParameter(url, param, paramVal){
+		var newAdditionalURL = "";
+		var tempArray = url.split("?");
+		var baseURL = tempArray[0];
+		var additionalURL = tempArray[1];
+		var temp = "";
+		
+		if (additionalURL) {
+			tempArray = additionalURL.split("&");
+			
+			for (var i=0; i<tempArray.length; i++){
+				if(tempArray[i].split('=')[0] != param){
+					newAdditionalURL += temp + tempArray[i];
+					temp = "&";
+				}
+			}
+		}
+
+		var rows_txt = temp + "" + param + "=" + paramVal;
+		return baseURL + "?" + newAdditionalURL + rows_txt;
+	}
+	
+	function removeURLParameter(url, param){
+		var newAdditionalURL = "";
+		var tempArray = url.split("?");
+		var baseURL = tempArray[0];
+		var additionalURL = tempArray[1];
+		var temp = "?";
+		
+		if (additionalURL) {
+			tempArray = additionalURL.split("&");
+			
+			for (var i=0; i<tempArray.length; i++){
+				if(tempArray[i].split('=')[0] != param){
+					newAdditionalURL += temp + tempArray[i];
+					temp = "&";
+				}
+			}
+		}
+		return baseURL + newAdditionalURL;
+	}
+</script>
