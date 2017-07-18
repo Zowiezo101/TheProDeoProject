@@ -1,4 +1,4 @@
 	<div class="footer">
-		Footer
+		<?php echo $Footer["PP_Name"]; ?>
 	</div>
 </body>
