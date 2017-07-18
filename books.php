@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<?php require "layout/header.php"; ?>
-	<?php require "database/database.php"; ?>
 	
 	<div class="clearfix">
 		<div class="contents_left" id="book_bar">
@@ -9,7 +8,7 @@
 		</div>
 		
 		<div class="contents_right" id="book_info">
-			<h1 id="default">Klik op een naam in de lijst om meer informatie te zien</h1>
+			<h1 id="default"><?php echo $Content["default"]; ?></h1>
 		</div>
 	</div>
 	
@@ -45,7 +44,7 @@ if (isset($_POST['submit'])) {
 			{
 				?>
 				var TableKey = document.createElement("td");
-				TableKey.innerHTML = "<?php echo $key; ?>";
+				TableKey.innerHTML = "<?php echo $BooksParams[$key]; ?>";
 				
 				var TableData = document.createElement("td");
 				TableData.innerHTML = "<?php echo $value; ?>";

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<?php require "layout/header.php"; ?>
-	<?php require "database/database.php"; ?>
 	
 	<div class="clearfix">
 		<div class="contents_left" id="people_bar">
@@ -9,7 +8,7 @@
 		</div>
 		
 		<div class="contents_right" id="people_info">
-			<h1 id="default">Klik op een naam in de lijst om meer informatie te zien</h1>
+			<h1 id="default"><?php echo $Content["default"]; ?></h1>
 		</div>
 	</div>
 	
@@ -32,17 +31,10 @@ if (isset($_POST['submit'])) {
 			$information = GetItemInfo("peoples", $_POST['id']); 
 		?>
 		
-		// var ID = <?php echo "'".$_POST['id']."'"; ?>;
-		var ID = <?php 
-			echo "'".$information['ID']."'"; 
-		?>;
-		
 		// Create a Table
 		var table = document.createElement("table");
 		
-		<?php
-			global $PeoplesParams;
-		
+		<?php		
 			foreach ($information as $key => $value)
 			{
 				?>
