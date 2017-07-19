@@ -6,11 +6,7 @@ if (!isset($_GET["lang"])) {
 }
 
 require "tools/translation_".$page_lang.".php"; 
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "bible";
+require "../login_data.php";
 
 $conn = new mysqli($servername, $username, $password, $database);
 

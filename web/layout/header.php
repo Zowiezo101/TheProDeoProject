@@ -11,7 +11,7 @@
 	
 <body>
 	<div class="header">
-		<a href="<?php echo AddLangParam("index.php"); ?>" >
+		<a href="<?php echo AddLangParam("home.php"); ?>" >
 			Logo
 			<!-- <img src="img/logo.bmp" alt="Logo"/> -->
 		</a>
@@ -31,7 +31,7 @@
 	
 	<div class="navigation">
 		<ul>
-			<li><a href="<?php echo AddLangParam("index.php"); ?>" ><?php echo $NavBar["Home"]; ?></a></li>
+			<li><a href="<?php echo AddLangParam("home.php"); ?>" ><?php echo $NavBar["Home"]; ?></a></li>
 			<li><div class="nav_dropdown">
 				<button class="nav_button" onclick="DropDown('nav_menu')">
 					<?php echo $NavBar["Database"]; ?>
@@ -62,9 +62,9 @@
 		}
 		
 		if (newLang == "nl") {
-			window.location.href = "index.php";
+			window.location.href = "home.php";
 		} else {
-			window.location.href = "index.php?lang=" + newLang;
+			window.location.href = "home.php?lang=" + newLang;
 		}
 	}
 	
