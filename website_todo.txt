@@ -17,3 +17,16 @@
 * put website on serverFree.com for feedback
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+
+Website:
+https://nl.000webhost.com/members/website/list
+prodeo.000webhostapp.com
+
+FTP:
+host: files.000webhost.com
+login: prodeo
+
+databases.000webhost.com
+sql2.000webhost.com
+Database: id2294956_bible
+login: id2294956_prodeo
