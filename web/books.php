@@ -22,58 +22,61 @@
 	<?php require "layout/footer.php"; ?>
 </html>
 
-<!-- TODO: Make sure to add some buttons to reach the other xxx names as well..
-	It is now limited to 100 names only.. -->
+<script>
 <?php
-if (isset($_POST['submit'])) {
+if (isset($_GET['id'])) {
 ?>
-	<script>
-		var contentEl = document.getElementById("book_info");
-		
-		// Remove the default text
-		var defaultText = document.getElementById("default");
-		contentEl.removeChild(defaultText);
-		
-		<?php 
-			$information = GetItemInfo("books", $_POST['id']); 
-		?>
-		
-		// var ID = <?php echo "'".$_POST['id']."'"; ?>;
-		var ID = <?php 
-			echo "'".$information['ID']."'"; 
-		?>;
-		
-		// Create a Table
-		var table = document.createElement("table");
-		
-		<?php
-			foreach ($information as $key => $value)
-			{
-				?>
-				var TableKey = document.createElement("td");
-				TableKey.innerHTML = "<?php echo $BooksParams[$key]; ?>";
+	var contentEl = document.getElementById("book_info");
+	
+	// Remove the default text
+	var defaultText = document.getElementById("default");
+	contentEl.removeChild(defaultText);
+	
+	<?php 
+		$information = GetItemInfo("books", $_GET['id']); 
+	?>
+	
+	// Create a Table
+	var table = document.createElement("table");
+	
+	<?php		
+		foreach ($information as $key => $value)
+		{
+			?>
+			
+			var TableKey = document.createElement("td");
+			TableKey.innerHTML = "<?php echo $BooksParams[$key]; ?>";
+			
+			<?php if (strpos($key, "ID") !== false) { ?>
+				var TableLink = document.createElement("a");
+				TableLink.innerHTML = "<?php echo $value; ?>";
+				
+				currentHref = window.location.href;
+				TableLink.href = updateURLParameter(currentHref, "id", <?php echo $value; ?>);
 				
 				var TableData = document.createElement("td");
+				TableData.appendChild(TableLink);
+			<?php } else { ?>
+				var TableData = document.createElement("td");
 				TableData.innerHTML = "<?php echo $value; ?>";
-				
-				// Left is key names
-				// right is value names
-				var TableRow = document.createElement("tr");
-				TableRow.appendChild(TableKey);
-				TableRow.appendChild(TableData);
-				
-				table.appendChild(TableRow);
-				<?php
-			}
-		?>
-		
-		contentEl.appendChild(table);
-	</script>
+			<?php } ?>
+			
+			// Left is key names
+			// right is value names
+			var TableRow = document.createElement("tr");
+			TableRow.appendChild(TableKey);
+			TableRow.appendChild(TableData);
+			
+			table.appendChild(TableRow);
+			<?php
+		}
+	?>
+	
+	contentEl.appendChild(table);
 <?php
 }
 ?>
 
-<script>
 	window.onload = function CheckButtons() {
 		var ButtonPrev = document.getElementById("button_left");
 		var ButtonNext = document.getElementById("button_right");

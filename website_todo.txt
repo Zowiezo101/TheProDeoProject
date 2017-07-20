@@ -1,13 +1,14 @@
-* Create links from ID's to other Items
+* work on settings page to be able to log in and log out
 * Get data from table "blog" and show this on home page
 * Work on settings page to be able to fill up blog
 * work on settings page to be able to remove blogs
 * work on settings page to be able to edit blogs
-
-* work on settings page to be able to log in and log out
+* Create links from ID's to other Items (inter-item)
+	Also, do not show ID number, make link to it using the name 
+	that corresponds with that ID number
 * Work on setting to change language of website
 * Work on search bar
-
+* Get footer at end of page
 * Fill up contact page
 * Work on code-sketch for worldmap
 * work on code-sketch for timeline
@@ -17,6 +18,7 @@
 * put website on serverFree.com for feedback
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+
 
 Website:
 https://nl.000webhost.com/members/website/list

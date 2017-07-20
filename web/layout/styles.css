@@ -207,6 +207,7 @@ body {
 #button_bar
 {
 	width: 100%;
+	display: inline-block;
 }
 
 #button_left
@@ -219,15 +220,43 @@ body {
 	float: right;
 }
 
-#people_bar form, #people_bar input,
-#location_bar form, #location_bar input,
-#event_bar form, #event_bar input,
-#book_bar form, #book_bar input,
-#special_bar form, #special_bar input
- {
+#people_bar table, #people_bar tr, 
+#location_bar table, #location_bar tr, 
+#event_bar table, #event_bar tr,
+#book_bar table, #book_bar tr,
+#special_bar table, #special_bar tr
+{
 	width: 100%;
+}
+
+#people_bar td, 
+#location_bar td, 
+#event_bar td,
+#book_bar td,
+#special_bar td
+{
+	width: 100%;
+	border-width: 1px;
+	border-style: solid;
+	border-collapse: 1;
+	text-align: center;
+	background-color: white;
+}
+
+#people_bar a, #people_info a,
+#location_bar a, #location_info a,
+#event_bar a, #event_info a,
+#book_bar a, #book_info a,
+#special_bar a, #special_info a
+ {
+	display: block;
+	text-align: center;
 	margin: 0;
 	padding: 0;
+	border: 0;
+	color: black;
+	text-decoration: none;
+	background-color: orange;
 }
 
 #people_info td,
@@ -241,4 +270,5 @@ body {
 	border-collapse: 1;
 	padding: 0;
 	margin: 0;
+	width: 200px;
 }

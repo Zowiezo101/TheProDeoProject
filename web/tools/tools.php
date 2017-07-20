@@ -33,12 +33,19 @@ function GetListOfItems($table) {
 		echo($Content["NoResults"]);
 	}
 	else {
+		echo "<table>";
 		while ($name = $result->fetch_array()) {
-			echo "<form method='post' action='".AddLangParam($table.".php", 0).AddPageParam($page_nr)."'>";
-			echo "<input type='hidden' name='id' value='".$name['ID']."'/>";
-			echo "<input type='submit' name='submit' value='".$name['Name']."'/>";
-			echo "</form>\n";
+			echo "<tr>";
+			echo "<td>";
+			// echo "<form method='post' action='".AddLangParam($table.".php", 0).AddPageParam($page_nr)."'>";
+			// echo "<input type='hidden' name='id' value='".$name['ID']."'/>";
+			// echo "<input type='submit' name='submit' value='".$name['Name']."'/>";
+			// echo "</form>\n";
+			echo "<a href='".AddLangParam($table.".php", 0).AddPageParam($page_nr).AddIdParam($name['ID'])."'>".$name['Name']."</a>";
+			echo "</td>";
+			echo "</tr>";
 		}
+		echo "</table>";
 	}
 }
 
@@ -104,6 +111,29 @@ function AddPageParam($page_nr) {
 		# When the page language is not dutch, there is already a parameter in the URL
 		# Now use & to add this parameter as well.
 		$return_val = "&page=".$page_nr;
+	}
+	
+	return $return_val;
+}
+
+
+function AddIdParam($id_nr) {
+	global $page_lang;
+	$return_val = "";
+	
+	if (!isset($_GET["page"])) {
+		$page_nr = 0;
+	} else {
+		$page_nr = $_GET["page"];
+	}
+	
+	if ((!($page_lang == "nl")) || ($page_nr > 0)) {
+		# When the page language is dutch, there is no parameter in the URL
+		$return_val = "&id=".$id_nr;
+	} else  {
+		# When the page language is not dutch, there is already a parameter in the URL
+		# Now use & to add this parameter as well.
+		$return_val = "?id=".$id_nr;
 	}
 	
 	return $return_val;
