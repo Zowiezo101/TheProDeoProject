@@ -272,3 +272,15 @@ body {
 	margin: 0;
 	width: 200px;
 }
+
+#settings_bar a {
+	height: 10%;
+	display: block;
+	background-color: yellow;
+	margin: 10px 0 10px 0;
+	text-align: center;
+}
+
+#settings_bar a:hover {
+	background-color: orange;
+}

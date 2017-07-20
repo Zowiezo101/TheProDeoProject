@@ -86,6 +86,27 @@ function GetItemInfo($table, $ID) {
 }
 
 
+function AddBlog($title, $text, $user) {
+	global $conn;
+	
+	// $sql = "CREATE TABLE IF NOT EXISTS blog (title VARCHAR(255), text TEXT, user VARCHAR(255), date DATETIME())";
+	$sql = "CREATE TABLE IF NOT EXISTS blog (title VARCHAR(255), text TEXT, user VARCHAR(255))";
+	$result = $conn->query($sql);
+	
+	if (!$result) {
+		echo($Content["NoResults"]);
+	}
+	else {
+		// $date = date('Y-m-d h:i:s a');
+		// $sql = "INSERT INTO blog (title, text, user, date) VALUES (".$title.",".$text.",".$user.",".$date.")";
+		$sql = "INSERT INTO blog (title, text, user) VALUES ('".$title."','".$text."','".$user."')";
+		$result = $conn->query($sql);
+	}
+	
+	return;
+}
+
+
 function AddLangParam($href) {
 	global $page_lang;
 	$return_val = "";
