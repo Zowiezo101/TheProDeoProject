@@ -85,6 +85,11 @@ $NavBar = array(
 	"Familytree"=>"Family tree",
 	"Contact"=>"Contact",);
 
+$Settings = array(
+	"new_blog"=>"New blog",
+	"delete_blog"=>"Delete blog",
+	"edit_blog"=>"Edit blog",);
+
 $Content = array(
 	"default"=>"Click on a name in the list for more information",
 	"tbd"=>"To be done!",

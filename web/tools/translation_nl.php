@@ -85,6 +85,11 @@ $NavBar = array(
 	"Familytree"=>"Stamboom",
 	"Contact"=>"Contact",);
 
+$Settings = array(
+	"new_blog"=>"Blog toevoegen",
+	"delete_blog"=>"Blog verwijderen",
+	"edit_blog"=>"Blog wijzigen",);
+
 $Content = array(
 	"default"=>"Klik op een naam in de lijst om meer informatie te zien",
 	"tbd"=>"Word aan gewerkt!",
