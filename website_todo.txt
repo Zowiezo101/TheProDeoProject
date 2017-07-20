@@ -1,6 +1,6 @@
 * work on settings page to be able to log in and log out
 * Get data from table "blog" and show this on home page
-* Work on settings page to be able to fill up blog
+* Work on settings page to be able to fill up blog WITH DATE
 * work on settings page to be able to remove blogs
 * work on settings page to be able to edit blogs
 * Create links from ID's to other Items (inter-item)
