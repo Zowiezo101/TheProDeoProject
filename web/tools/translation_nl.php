@@ -88,7 +88,13 @@ $NavBar = array(
 $Settings = array(
 	"new_blog"=>"Blog toevoegen",
 	"delete_blog"=>"Blog verwijderen",
-	"edit_blog"=>"Blog wijzigen",);
+	"edit_blog"=>"Blog wijzigen",
+	"blog_added"=>"Blog toegevoegd",
+	"blog_removed"=>"Blog verwijderd",
+	"blog_edited"=>"Blog gewijzigd",
+	"title"=>"Titel",
+	"text"=>"Tekst",
+	"default"=>"Kies een optie",);
 
 $Content = array(
 	"default"=>"Klik op een naam in de lijst om meer informatie te zien",
