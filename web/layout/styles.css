@@ -284,3 +284,25 @@ body {
 #settings_bar a:hover {
 	background-color: orange;
 }
+
+#settings_content textarea, 
+#settings_content select {
+	display: block;
+	width: 50%;
+}
+
+#home table {
+	background-color: Blue;
+	width: 80%;
+	margin: auto;
+}
+
+#home td {
+	border-width: 1px;
+	border-style: solid;
+}
+
+#home {
+	display: block;
+	text-align: center;
+}
