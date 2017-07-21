@@ -1,11 +1,9 @@
 * work on settings page to be able to log in and log out
-* Get data from table "blog" and show this on home page
-* Work on settings page to be able to fill up blog WITH DATE
-* work on settings page to be able to remove blogs
 * work on settings page to be able to edit blogs
 * Create links from ID's to other Items (inter-item)
 	Also, do not show ID number, make link to it using the name 
 	that corresponds with that ID number
+* Check on all error messages, do they display?
 * Work on setting to change language of website
 * Work on search bar
 * Get footer at end of page
@@ -14,8 +12,6 @@
 * work on code-sketch for timeline
 * work on code-sketch for familytree
 * Fill up footer
-* get static global IP address
-* put website on serverFree.com for feedback
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
 
