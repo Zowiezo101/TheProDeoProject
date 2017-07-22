@@ -86,6 +86,7 @@ $NavBar = array(
 	"Contact"=>"Contact",);
 
 $Settings = array(
+	"welcome"=>"<h1>Welkom op de login pagina!</h1><p>Hier kan je de volgende acties uitvoeren:<p>",
 	"new_blog"=>"Blog toevoegen",
 	"delete_blog"=>"Blog verwijderen",
 	"edit_blog"=>"Blog wijzigen",
@@ -94,7 +95,12 @@ $Settings = array(
 	"blog_edited"=>"Blog gewijzigd",
 	"title"=>"Titel",
 	"text"=>"Tekst",
-	"default"=>"Kies een optie",);
+	"default"=>"Kies een optie",
+	"login"=>"Inloggen",
+	"logout"=>"Uitloggen",
+	"user"=>"Gebruikersnaam",
+	"password"=>"Wachtwoord",
+	"incorrect"=>"Gebruikersnaam of wachtwoord is incorrect",);
 
 $Content = array(
 	"default"=>"Klik op een naam in de lijst om meer informatie te zien",
@@ -104,6 +110,8 @@ $Content = array(
 	"next"=>"Volgende",);
 
 $Footer = array(
-	"PP_Name"=>"ProDeo Productions",);
+	"PP_Name"=>"ProDeo Productions",
+	"PP_Version"=>"Huidige versie",
+	"PP_date"=>"Pagina was voor het laatst bijgewerkt op",);
 
 ?>

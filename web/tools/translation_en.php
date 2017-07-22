@@ -86,6 +86,7 @@ $NavBar = array(
 	"Contact"=>"Contact",);
 
 $Settings = array(
+	"welcome"=>"<h1>Welcome to the login page!</h1><p>Here you can perform the following actions:<p>",
 	"new_blog"=>"New blog",
 	"delete_blog"=>"Delete blog",
 	"edit_blog"=>"Edit blog",
@@ -94,7 +95,12 @@ $Settings = array(
 	"blog_edited"=>"Blog edited",
 	"title"=>"Title",
 	"text"=>"Text",
-	"default"=>"Choose an option",);
+	"default"=>"Choose an option",
+	"login"=>"Login",
+	"logout"=>"Logout",
+	"user"=>"Username",
+	"password"=>"Password",
+	"incorrect"=>"Username or password is incorrect",);
 
 $Content = array(
 	"default"=>"Click on a name in the list for more information",
@@ -104,6 +110,8 @@ $Content = array(
 	"next"=>"Next",);
 
 $Footer = array(
-	"PP_Name"=>"ProDeo Productions",);
+	"PP_Name"=>"ProDeo Productions",
+	"PP_Version"=>"Current version",
+	"PP_date"=>"Page was last modified on",);
 
 ?>
