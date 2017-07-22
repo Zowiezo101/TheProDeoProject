@@ -69,8 +69,8 @@
 	}
 	
 	function LogIn() {
-		alert("LogIn");
-		// window.location.href = "<?php echo AddLangParam("settings.php"); ?>";
+		// alert("LogIn");
+		window.location.href = "<?php echo AddLangParam("settings.php"); ?>";
 	}
 
 	/* When the user clicks on the button, 

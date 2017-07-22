@@ -9,4 +9,7 @@ $password = "";
 // $database = "id2294956_bible";
 $database = "bible";
 
+$login_username = "Zowiezo101";
+$login_password = "ProDeoUnlimited#";
+
 ?>

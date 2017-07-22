@@ -107,18 +107,45 @@ function AddBlog($title, $text, $user) {
 	}	
 }
 
-
 function DeleteBlog($id) {
 	global $Settings;
 	global $conn;
 	
-	$sql = "DELETE FROM blog WHERE id=".$id;
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
 	$result = $conn->query($sql);
 
 	if (!$result) {
 		echo "<h1>SQL: ".$conn->error."</h1>";
 	} else {		
-		echo "<h1>".$Settings["blog_removed"]."</h1>";
+		$sql = "DELETE FROM blog WHERE id=".$id;
+		$result = $conn->query($sql);
+		
+		if (!$result) {
+			echo "<h1>SQL: ".$conn->error."</h1>";
+		} else {		
+			echo "<h1>".$Settings["blog_removed"]."</h1>";
+		}
+	}	
+}
+
+function EditBlog($id, $title, $text) {
+	global $Settings;
+	global $conn;
+	
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
+	$result = $conn->query($sql);
+
+	if (!$result) {
+		echo "<h1>SQL: ".$conn->error."</h1>";
+	} else {		
+		$sql = "UPDATE blog SET title='".$title."', text='".$text."' WHERE id=".$id;
+		$result = $conn->query($sql);
+	
+		if (!$result) {
+			echo "<h1>SQL: ".$conn->error."</h1>";
+		} else {		
+			echo "<h1>".$Settings["blog_edited"]."</h1>";
+		}
 	}	
 }
 
@@ -126,54 +153,69 @@ function GetListOfBlogs() {
 	global $Settings;
 	global $conn;
 	
-	$sql = "SELECT * FROM blog";
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
 	$result = $conn->query($sql);
 
 	if (!$result) {
 		echo "<h1>SQL: ".$conn->error."</h1>";
-	} else {
-		$newOption = "optionForm = document.createElement('option');";
-		$addOption = "selectForm.appendChild(optionForm);";
-		
-		// Default value
-		echo $newOption;
-		echo "optionForm.value = '';";
-		echo "optionForm.disabled = true;";
-		echo "optionForm.selected = true;";
-		echo "optionForm.innerHTML = '".$Settings['default']."';";
-		echo $addOption;
-		
-		while ($blog = $result->fetch_array()) {
+	} else {	
+		$sql = "SELECT * FROM blog";
+		$result = $conn->query($sql);
+	
+		if (!$result) {
+			echo "<h1>SQL: ".$conn->error."</h1>";
+		} else {
+			$newOption = "optionForm = document.createElement('option');";
+			$addOption = "selectForm.appendChild(optionForm);";
+			
+			// Default value
 			echo $newOption;
-			echo "optionForm.value = '".$blog['id']."';";
-			echo "optionForm.innerHTML = '".$blog['title']." @".$blog['date']."';";
-			echo "optionForm.extra_data = '".$blog['text']."';";
+			echo "optionForm.value = '';";
+			echo "optionForm.disabled = true;";
+			echo "optionForm.selected = true;";
+			echo "optionForm.innerHTML = '".$Settings['default']."';";
 			echo $addOption;
-		}
-	}	
+			
+			while ($blog = $result->fetch_array()) {
+				echo $newOption;
+				echo "optionForm.value = '".$blog['id']."';";
+				echo "optionForm.innerHTML = '".$blog['title']." @".$blog['date']."';";
+				echo "optionForm.extra_text = '".$blog['text']."';";
+				echo "optionForm.extra_title = '".$blog['title']."';";
+				echo $addOption;
+			}
+		}	
+	}
 }
 
 function ShowBlogs() {
 	global $Content;
 	global $conn;
-
-	$sql = "SELECT * FROM blog ORDER BY id DESC";
+	
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
 	$result = $conn->query($sql);
 	
 	if (!$result) {
 		echo($Content["NoResults"]);
 	} else {
-		echo "<table>";
-		while ($blog = $result->fetch_array()) {
-			echo "<tr>";
-			echo "<td>";
-			echo "<h1>".$blog['title']."</h1>";
-			echo "<p>".$blog['text']."</p>";
-			echo "<p>".$blog['date']." by ".$blog["user"]."</p>";
-			echo "</td>";
-			echo "</tr>";
+		$sql = "SELECT * FROM blog ORDER BY id DESC";
+		$result = $conn->query($sql);
+		
+		if (!$result) {
+			echo($Content["NoResults"]);
+		} else {
+			echo "<table>";
+			while ($blog = $result->fetch_array()) {
+				echo "<tr>";
+				echo "<td>";
+				echo "<h1>".$blog['title']."</h1>";
+				echo "<p>".$blog['text']."</p>";
+				echo "<p>".$blog['date']." by ".$blog["user"]."</p>";
+				echo "</td>";
+				echo "</tr>";
+			}
+			echo "</table>";
 		}
-		echo "</table>";
 	}
 }
 

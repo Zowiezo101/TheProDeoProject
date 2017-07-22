@@ -291,6 +291,26 @@ body {
 	width: 50%;
 }
 
+#settings_login
+{
+	background-color: purple;
+}
+
+#settings_login form 
+{
+	width: 100%;
+}
+
+#settings_login input {
+	width: 200px;
+	display: block;
+	margin: auto;
+}
+
+#settings_login p {
+	text-align: center;
+}
+
 #home table {
 	background-color: Blue;
 	width: 80%;
