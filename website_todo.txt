@@ -1,5 +1,3 @@
-* work on settings page to be able to log in and log out
-* work on settings page to be able to edit blogs
 * Create links from ID's to other Items (inter-item)
 	Also, do not show ID number, make link to it using the name 
 	that corresponds with that ID number
@@ -11,9 +9,12 @@
 * Work on code-sketch for worldmap
 * work on code-sketch for timeline
 * work on code-sketch for familytree
-* Fill up footer
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+
+Bugs:
+* Website freezes when on settings page..
+* Weird warning on settings page..
 
 
 Website:
