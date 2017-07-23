@@ -1,6 +1,6 @@
 <?php
-	require "../../login_data.php";
 	session_start();
+	require "../../login_data.php";
 	
 	if (isset($_POST['submitLogin'])) {
 		// Check if username and password are correct

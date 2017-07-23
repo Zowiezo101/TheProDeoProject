@@ -1,7 +1,7 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 	<?php require "layout/header.php"; ?>
-	<?php session_start(); ?>
 	
 	<!-- Important, do something with sessions here!! -->
 	<?php if (isset($_SESSION['login'])) { ?>
