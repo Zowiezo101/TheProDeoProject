@@ -209,7 +209,7 @@ function ShowBlogs() {
 				echo "<tr>";
 				echo "<td>";
 				echo "<h1>".$blog['title']."</h1>";
-				echo "<p>".$blog['text']."</p>";
+				echo "<pre>".$blog['text']."</pre>";
 				echo "<p>".$blog['date']." by ".$blog["user"]."</p>";
 				echo "</td>";
 				echo "</tr>";
