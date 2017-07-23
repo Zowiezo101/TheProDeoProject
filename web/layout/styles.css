@@ -317,6 +317,10 @@ body {
 	margin: auto;
 }
 
+#contact {
+	text-align: center;
+}
+
 #home td {
 	border-width: 1px;
 	border-style: solid;
