@@ -12,7 +12,7 @@
 * Create API for website & related app to view information on phone
 
 Bugs:
-* 
+* Settings page freezes..
 
 
 Website:
