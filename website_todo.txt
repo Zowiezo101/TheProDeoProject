@@ -5,7 +5,6 @@
 * Work on setting to change language of website
 * Work on search bar
 * Get footer at end of page
-* Fill up contact page
 * Work on code-sketch for worldmap
 * work on code-sketch for timeline
 * work on code-sketch for familytree
@@ -13,8 +12,7 @@
 * Create API for website & related app to view information on phone
 
 Bugs:
-* Website freezes when on settings page..
-* Weird warning on settings page..
+* 
 
 
 Website:
