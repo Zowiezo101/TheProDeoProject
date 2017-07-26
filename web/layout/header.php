@@ -22,8 +22,8 @@
 			
 			<div class="header_options_search">
 				<form method="post" action="<?php echo AddLangParam("search.php"); ?>" >
-					<input class="header_options_search_text" type="text" required>
-					<input class="header_options_search_button" type="submit" value="">
+					<input class="header_options_search_text" name="search" type="text" value="<?php echo $Search["Search"]; ?>" required>
+					<input class="header_options_search_button" name="submitSearch" type="submit" value="">
 				</form>
 			</div>
 		</div>

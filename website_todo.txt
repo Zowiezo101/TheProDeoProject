@@ -1,9 +1,10 @@
 * Create links from ID's to other Items (inter-item)
 	Also, do not show ID number, make link to it using the name 
-	that corresponds with that ID number
+	that corresponds with that ID number? Could be confusing..
 * Check on all error messages, do they display?
-* Work on setting to change language of website
-* Work on search bar
+* Work on setting to change language of website using a dropdown
+* Use links to items for searchbar
+* Create divs and #'s to jumps to search results for peoples, locations etc..
 * Get footer at end of page
 * Work on code-sketch for worldmap
 * work on code-sketch for timeline
@@ -12,7 +13,6 @@
 * Create API for website & related app to view information on phone
 
 Bugs:
-* Settings page freezes..
 
 
 Website:

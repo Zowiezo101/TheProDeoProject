@@ -330,3 +330,14 @@ body {
 	display: block;
 	text-align: center;
 }
+
+.search table {
+	background-color: yellow;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.search td, .search tr {
+	border-width: 1px;
+	border-style: solid;
+}

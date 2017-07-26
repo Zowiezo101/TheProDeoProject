@@ -69,8 +69,10 @@ $EventsParams = array(
 	"BibleVerses"=>"Bijbelverzen",
 	"Others"=>"Overige",);
 
-$Header = array(
-	"Search"=>"Zoeken..",);
+$Search = array(
+	"Search"=>"Zoeken..",
+	"NoResults"=>"Kon geen resultaten vinden..",
+	"Results"=>" resultaten gevonden voor ",);
 
 $NavBar = array(
 	"Home"=>"Home",
@@ -105,7 +107,6 @@ $Settings = array(
 $Content = array(
 	"default"=>"Klik op een naam in de lijst om meer informatie te zien",
 	"tbd"=>"Word aan gewerkt!",
-	"NoResults"=>"Kon geen resultaten vinden",
 	"prev"=>"Vorige",
 	"next"=>"Volgende",);
 

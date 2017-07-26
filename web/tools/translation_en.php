@@ -69,8 +69,10 @@ $EventsParams = array(
 	"BibleVerses"=>"Bible verses",
 	"Others"=>"Other",);
 
-$Header = array(
-	"Search"=>"Search..",);
+$Search = array(
+	"Search"=>"Search..",
+	"NoResults"=>"Can't find any results..",
+	"Results"=>" results found for ",);
 
 $NavBar = array(
 	"Home"=>"Home",
@@ -105,7 +107,6 @@ $Settings = array(
 $Content = array(
 	"default"=>"Click on a name in the list for more information",
 	"tbd"=>"To be done!",
-	"NoResults"=>"Can't find any results..",
 	"prev"=>"Previous",
 	"next"=>"Next",);
 

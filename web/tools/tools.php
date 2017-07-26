@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 
 
 function GetListOfItems($table) {
-	global $Content;
+	global $Search;
 	global $conn;
 	
 	if (!isset($_GET["page"])) {
@@ -30,7 +30,7 @@ function GetListOfItems($table) {
 	$result = $conn->query($sql);
 	
 	if (!$result) {
-		echo($Content["NoResults"]);
+		echo($Search["NoResults"]);
 	}
 	else {
 		echo "<table>";
@@ -46,7 +46,7 @@ function GetListOfItems($table) {
 }
 
 function GetNumberOfItems($table) {
-	global $Content;
+	global $Search;
 	global $conn;
 	
 	if (!isset($_GET["page"])) {
@@ -63,7 +63,7 @@ function GetNumberOfItems($table) {
 
 
 function GetItemInfo($table, $ID) {
-	global $Content;
+	global $Search;
 	global $conn;
 	
 	$sql = "SELECT * FROM ".$table." WHERE ID=".$ID;
@@ -71,7 +71,7 @@ function GetItemInfo($table, $ID) {
 	$item = NULL;
 	
 	if (!$result) {
-		$Error = array("Name" => $Content["NoResults"]);
+		$Error = array("Name" => $Search["NoResults"]);
 		return $Error;
 	}
 	else {
@@ -192,20 +192,20 @@ function GetListOfBlogs() {
 }
 
 function ShowBlogs() {
-	global $Content;
+	global $Search;
 	global $conn;
 	
 	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
 	$result = $conn->query($sql);
 	
 	if (!$result) {
-		echo($Content["NoResults"]);
+		echo($Search["NoResults"]);
 	} else {
 		$sql = "SELECT * FROM blog ORDER BY id DESC";
 		$result = $conn->query($sql);
 		
 		if (!$result) {
-			echo($Content["NoResults"]);
+			echo($Search["NoResults"]);
 		} else {
 			echo "<table>";
 			while ($blog = $result->fetch_array()) {
@@ -273,5 +273,95 @@ function AddIdParam($id_nr) {
 	}
 	
 	return $return_val;
+}
+
+
+function SearchItems($text, $table) {
+	global $Search;
+	global $NavBar;
+	global $conn;
+	
+	$dictName = ucfirst($table)."Params";
+	global $$dictName;
+	$dict = $$dictName;
+	
+	$text = $conn->real_escape_string($text);
+	
+	$sql = "SELECT * FROM ".$table." WHERE name LIKE '%".$text."%'";
+	$result = $conn->query($sql);
+	
+	if (!$result) {
+		echo($Search["NoResults"]."<br />");
+	}
+	else {
+		$num_res = $result->num_rows;
+		
+		echo "<h1>".$NavBar[ucfirst($table)].":</h1><br />";
+		echo $num_res.$Search['Results']."\"".$text."\":<br />";
+		
+		if ($num_res > 0) {
+			echo "<table>";
+			if (in_array($table, Array("peoples", "locations", "specials"))) {
+				echo "<tr>";
+				echo "<td>";
+					echo $dict['Name'];
+				echo "</td>";
+				echo "<td>";
+					echo $dict['FirstAppearance'];
+				echo "</td>";
+				echo "<td>";
+					echo $dict['LastAppearance'];
+				echo "</td>";
+				echo "</tr>";
+			} else if ($table == "events") {
+				echo "<tr>";
+				echo "<td>";
+					echo $dict['Name'];
+				echo "</td>";
+				echo "<td>";
+					echo $dict['BibleVerses'];		
+				echo "</td>";
+				echo "</tr>";
+			} else {
+				echo "<tr>";
+				echo "<td>";
+					echo $dict['Name'];
+				echo "</td>";
+				echo "</tr>";
+			}
+			
+			while ($item = $result->fetch_array()) {
+				if (in_array($table, Array("peoples", "locations", "specials"))) {
+				echo "<tr>";
+					echo "<td>";
+						echo $item['Name'];
+					echo "</td>";
+					echo "<td>";
+						echo $item['FirstAppearance'];
+					echo "</td>";
+					echo "<td>";
+						echo $item['LastAppearance'];
+					echo "</td>";
+				echo "</tr>";
+				} else if ($table == "events") {
+				echo "<tr>";
+					echo "<td>";
+						echo $item['Name'];
+					echo "</td>";
+					echo "<td>";
+						echo $item['BibleVerses'];		
+					echo "</td>";
+				echo "</tr>";
+				} else {
+				echo "<tr>";
+					echo "<td>";
+						echo $item['Name'];
+					echo "</td>";
+				echo "</tr>";
+				}
+			}
+			echo "</table>";
+		}
+	}
 }
 ?>
