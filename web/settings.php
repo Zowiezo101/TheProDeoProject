@@ -214,7 +214,7 @@ if (isset($_POST['submitEdit'])) {
 	
 	// Reload without resending the action
 	oldHref = window.location.href;
-	// window.location.href = oldHref;
+	window.location.href = oldHref;
 <?php
 }
 ?>

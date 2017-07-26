@@ -177,10 +177,13 @@ function GetListOfBlogs() {
 			echo $addOption;
 			
 			while ($blog = $result->fetch_array()) {
+				// The newlines in the string cause problems..
+				$cleanText = str_replace(array("\r\n","\r","\n","\\r","\\n","\\r\\n"), "<br/>", $blog['text']);
+				
 				echo $newOption;
 				echo "optionForm.value = '".$blog['id']."';";
 				echo "optionForm.innerHTML = '".$blog['title']." @".$blog['date']."';";
-				echo "optionForm.extra_text = '".$blog['text']."';";
+				echo "optionForm.extra_text = '".$cleanText."';";
 				echo "optionForm.extra_title = '".$blog['title']."';";
 				echo $addOption;
 			}
