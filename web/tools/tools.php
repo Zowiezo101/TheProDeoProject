@@ -296,7 +296,7 @@ function SearchItems($text, $table) {
 	else {
 		$num_res = $result->num_rows;
 		
-		echo "<h1>".$NavBar[ucfirst($table)].":</h1><br />";
+		echo "<a name='".$table."'><h1>".$NavBar[ucfirst($table)].":</h1><br /></a>";
 		echo $num_res.$Search['Results']."\"".$text."\":<br />";
 		
 		if ($num_res > 0) {
@@ -331,11 +331,12 @@ function SearchItems($text, $table) {
 			}
 			
 			while ($item = $result->fetch_array()) {
-				if (in_array($table, Array("peoples", "locations", "specials"))) {
 				echo "<tr>";
 					echo "<td>";
-						echo $item['Name'];
+						echo "<a href='".AddLangParam($table.".php", 0).AddIdParam($item['ID'])."'>".$item['Name']."</a>";
 					echo "</td>";
+				
+				if (in_array($table, Array("peoples", "locations", "specials"))) {
 					echo "<td>";
 						echo $item['FirstAppearance'];
 					echo "</td>";
@@ -344,21 +345,12 @@ function SearchItems($text, $table) {
 					echo "</td>";
 				echo "</tr>";
 				} else if ($table == "events") {
-				echo "<tr>";
-					echo "<td>";
-						echo $item['Name'];
-					echo "</td>";
 					echo "<td>";
 						echo $item['BibleVerses'];		
 					echo "</td>";
-				echo "</tr>";
-				} else {
-				echo "<tr>";
-					echo "<td>";
-						echo $item['Name'];
-					echo "</td>";
-				echo "</tr>";
 				}
+				
+				echo "</tr>";
 			}
 			echo "</table>";
 		}

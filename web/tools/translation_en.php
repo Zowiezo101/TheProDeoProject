@@ -72,7 +72,8 @@ $EventsParams = array(
 $Search = array(
 	"Search"=>"Search..",
 	"NoResults"=>"Can't find any results..",
-	"Results"=>" results found for ",);
+	"Results"=>" results found for ",
+	"Show"=>"Show results for ",);
 
 $NavBar = array(
 	"Home"=>"Home",
