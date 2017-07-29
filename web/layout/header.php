@@ -17,7 +17,16 @@
 		</a>
 		
 		<div class="header_options">
-			<button class="header_options_lang" type="button" onclick="Language(<?php echo "'".$page_lang."'"; ?>)"></button>
+			<div class="header_lang_dropdown">
+				<button class="lang_button" onclick="DropDown('lang_menu')">
+					<?php echo strtoupper($page_lang);?>
+				</button>
+				
+				<div id="lang_menu">
+					<a onclick="Language('nl')">NL</a>
+					<a onclick="Language('en')">EN</a>
+				</div>
+			</div>
 			<button class="header_options_settings" type="button" onclick="LogIn()"></button>
 			
 			<div class="header_options_search">
@@ -55,12 +64,7 @@
 	
 		
 <script>
-	function Language(lang) {
-		var newLang = "nl";
-		if (lang == "nl") {
-			newLang = "en";
-		}
-		
+	function Language(newLang) {		
 		if (newLang == "nl") {
 			window.location.href = "home.php";
 		} else {
@@ -84,6 +88,11 @@
 	window.onclick = function(e) {
 	    if (!e.target.matches(".nav_button")) {
 			var menu = document.getElementById("nav_menu");
+			menu.style.display = "none";
+	    }
+		
+	    if (!e.target.matches(".lang_button")) {
+			var menu = document.getElementById("lang_menu");
 			menu.style.display = "none";
 	    }
 	}

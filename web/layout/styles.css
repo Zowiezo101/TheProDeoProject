@@ -38,7 +38,7 @@ body {
 	float: right;
 }
 
-.header_options_lang {
+.header_lang_dropdown {
 	height: 100%;
 	width: 12.5%;
 	
@@ -51,6 +51,36 @@ body {
 	margin: 0;
 	padding: 0;
 	border: 0;
+}
+
+.header_lang_dropdown button {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	
+	height: 100%;
+	width: 100%;
+	display: block;
+	
+	color: black;
+	background-color: inherit;
+}
+
+#lang_menu {
+	display: none;
+	position: absolute;
+	background-color: grey;
+	z-index: 1;
+}
+
+.header_lang_dropdown a {
+	height: 100%;
+	width: 100%;
+	color: black;
+}
+
+.header_lang_dropdown a:hover {
+	background-color: yellow;
 }
 
 .header_options_settings {
