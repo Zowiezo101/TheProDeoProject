@@ -356,4 +356,31 @@ function SearchItems($text, $table) {
 		}
 	}
 }
+
+function FindPeoples() {
+	global $Search;
+	global $conn;
+	$people_set = "";
+	
+	$sql = "SELECT * FROM peoples LIMIT 3";
+	$result = $conn->query($sql);
+	
+	if (!$result) {
+		echo($Search["NoResults"]);
+	}
+	else {
+		while ($person = $result->fetch_array()) {
+			$name = $person['Name'];
+			$ID = $person['ID'];
+			$IDMother = $person['MotherID'];
+			$IDFather = $person['FatherID'];
+			$Gender = $person['Gender'];
+			
+			$people = "new CreatePeople('".$name."', '".$ID."', '".$IDMother."', '".$IDFather."', '".$Gender."'),";
+			$people_set = $people_set.$people;
+		}
+	}
+	
+	return $people_set;
+}
 ?>
