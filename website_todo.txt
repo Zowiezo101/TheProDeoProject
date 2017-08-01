@@ -1,6 +1,3 @@
-* Create links from ID's to other Items (inter-item)
-	Also, do not show ID number, make link to it using the name 
-	that corresponds with that ID number? Could be confusing..
 * Check on all error messages, do they display?
 * Work on code-sketch for worldmap
 * work on code-sketch for timeline
@@ -11,6 +8,10 @@
 Bugs:
 * Do not reload entire page when clicking in an item, just replace contents
 * Get footer at end of page
+* Create links from ID's to other Items (inter-item)
+	Also, do not show ID number, make link to it using the name 
+	that corresponds with that ID number? Could be confusing..
+* No not display the -1 in the database
 
 
 Website:
