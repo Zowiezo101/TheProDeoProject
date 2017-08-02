@@ -362,7 +362,7 @@ function FindPeoples() {
 	global $conn;
 	$people_set = "";
 	
-	$sql = "SELECT * FROM peoples LIMIT 3";
+	$sql = "SELECT * FROM peoples LIMIT 100";
 	$result = $conn->query($sql);
 	
 	if (!$result) {

@@ -13,26 +13,65 @@
 </html>
 
 <script>
+// List of peoples
+var Peoples = [<?php echo FindPeoples(); ?>];
+
 window.onload = function CreateFamilyTree() {
-	var Peoples = [<?php echo FindPeoples(); ?>];
+	setPeoples();
+	
 	var SVG = document.getElementById("svg");
 	
-	for (i = 0; i < Peoples.length; i++) {
-		var People = Peoples[i];
-		People.Location = [0, 100*i];
+	for (k = 0; k < Peoples.length; k++) {
+		var People = Peoples[k];
+		People.CalcLocation();
+		
 		var Group = People.DrawPerson();
 		SVG.appendChild(Group);
 	}
 }
 
-function CreatePeople(name, ID, FatherID, MotherID, Gender) {
+function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	this.name = name;
 	this.ID = ID;
 	this.FatherID = FatherID;
 	this.MotherID = MotherID;
+	this.ChildIDs = [];
 	this.Gender = Gender;
+	this.level = 0;
 	
 	this.Location = [0, 0];
+	this.counter = 0;
+	
+	this.setLevel = function (level) {
+		if (level > this.level) {
+			// Take the highest level possible
+			this.level = level;
+		}
+		// alert("Setting level of " + this.name + " to: " + this.level);
+		
+		if (this.ChildIDs.length != 0)
+		{
+			for (this.counter = 0; this.counter < this.ChildIDs.length; this.counter++) {
+				// Update all children as well
+				Idx = this.ChildIDs[this.counter];
+				Child = Peoples[Idx];
+				
+				// alert("Setting level for " + this.name + " and child: " + Child.name + " to: " + (this.level + 1) + "\n");
+				Child.setLevel(this.level + 1);
+			}
+		}
+		
+		return;
+	}
+	
+	this.CalcLocation = function () {
+		// alert("Name: " + this.name + "\nID: " + this.ID + "\nDaddy: " + this.FatherID + "\nMommy: " + this.MotherID + "\nNum of children: " + this.ChildIDs.length + "\nLevel: " + this.level + "\n");
+		
+		// Calculate the Y coordinate
+		this.Location[1] = this.level*75;
+		
+		return;
+	}
 	
 	this.getGenderColor = function () {
 		color = '';
@@ -78,5 +117,36 @@ function CreatePeople(name, ID, FatherID, MotherID, Gender) {
 		
 		return Group;
 	}
+}
+
+function setPeoples() {
+	// Create all connections
+	for (i = 0; i < Peoples.length; i++) {
+		var People = Peoples[i];
+	
+		if (People.MotherID != -1) {
+			Mother = Peoples[People.MotherID];
+			Mother.ChildIDs.push(People.ID);
+		}
+		
+		if (People.FatherID != -1) {
+			Father = Peoples[People.FatherID];
+			Father.ChildIDs.push(People.ID);
+		}
+	}
+		
+	// Now set the generation levels
+	for (i = 0; i < Peoples.length; i++) {
+		var People = Peoples[i];
+		
+		// Start with zero, if the person has kids, they will be updated accordingly
+		// alert(People.name + " setlevel with ID " + People.ID + " (" + i +") (" + People.level + ")\n");
+		People.setLevel(0);
+	}
+		
+	// for (i = 0; i < Peoples.length; i++) {
+		// var People = Peoples[i];
+		// alert(People.name + " setlevel done! (" + People.level + ")\n");
+	// }
 }
 </script>
