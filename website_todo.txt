@@ -12,6 +12,8 @@ Bugs:
 	Also, do not show ID number, make link to it using the name 
 	that corresponds with that ID number? Could be confusing..
 * No not display the -1 in the database
+* Give ID as primary key, makes stuff easier
+* Familytree fails when a person has ParentID higher than own ID
 
 
 Website:
