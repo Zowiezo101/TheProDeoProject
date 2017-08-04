@@ -113,13 +113,13 @@ $Content = array(
 
 $Contact = array(
 	"welcome"=>"Welkom!",
-	"aboutus"=>"Wat leuk dat je even kijkt op de contact pagina! Ik zal mij even voorstellen.. Ik ben een onderdeel van het team \"ProDeo Productions\". ProDeo betekent \"Voor God\", maar het betekent ook \"gratis\". Dat is ook de wijze waarop ik mijn creaties wil overbrengen naar anderen: gratis en voor God.</p><p>Op dit moment werk ik nog alleen, maar ik zoek mensen die bereid zijn mij te helpen om deze website uit te breiden tot een handig hulpmiddel bij de Bijbel. Verder heb ik ook nog andere plannen om op interessante wijze andere kennis te laten maken met de Bijbel, om makkelijker bekend te worden met de waardevolle inhoud ervan.",
+	"aboutus"=>"Wat leuk dat je even kijkt op de contact pagina! Ik zal mij even voorstellen.. Ik ben een onderdeel van het team \"ProDeo Projects\". ProDeo betekent \"Voor God\", maar het betekent ook \"gratis\". Dat is ook de wijze waarop ik mijn creaties wil overbrengen naar anderen: gratis en voor God.</p><p>Op dit moment werk ik nog alleen, maar ik zoek mensen die bereid zijn mij te helpen om deze website uit te breiden tot een handig hulpmiddel bij de Bijbel. Verder heb ik ook nog andere plannen om op interessante wijze andere kennis te laten maken met de Bijbel, om makkelijker bekend te worden met de waardevolle inhoud ervan.",
 	"info"=>"Deze website kan gebruikt worden als handig hulpmiddel bij de Bijbel. Er is een database beschikbaar met personen, locaties, bijbelboeken, gebeurtenissen en wat overige dingen uit de Bijbel. Er is ook een tijdslijn met de gebeurtenissen, een wereldkaart met de locaties en een stamboom met de personen uit de database. Hierbij is zo veel mogelijk informatie opgezocht als mogelijk (zoals ouders, woonplaatsen, oprichters van steden, leeftijden etc.). Let wel op! De hele database is op dit moment gebaseerd op de Nederlandse bijbelvertaling afgekort met \"NBV\".",
 	"contact"=>"Heb je vragen, tips, opmerkingen (zoals typfouten..) over de website of de inhoud ervan, of wil je ergens mee kunnen helpen? Stuur dan een email naar ProDeoProductions2u@gmail.com.",
-	"other"=>"Voor God, aan jou!<br>ProDeo Productions&copy",);
+	"other"=>"Voor God, aan jou!<br>ProDeo Projects&copy",);
 
 $Footer = array(
-	"PP_Name"=>"ProDeo Productions",
+	"PP_Name"=>"ProDeo Projects",
 	"PP_Version"=>"Huidige versie",
 	"PP_date"=>"Pagina was voor het laatst bijgewerkt op",);
 
