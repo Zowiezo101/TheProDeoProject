@@ -2,11 +2,13 @@
 <html>
 	<?php require "layout/header.php"; ?>
 	
-	<div id="familytree">
+	<div>
 		<h1><?php echo $NavBar["Familytree"]; ?> (<?php echo $Content["tbd"]; ?>)</h1>
-		<svg width="100%" height="1500px" id='svg'>
-		
-		</svg>
+		<div id="familytree">
+			<svg width="100%" height="1500px" id='svg'>
+			
+			</svg>
+		</div>
 	</div>
 	
 	<?php require "layout/footer.php" ?>
@@ -15,25 +17,36 @@
 <script>
 // List of peoples
 var Peoples = [<?php echo FindPeoples(); ?>];
-	
-// Create all the connections between parents and children
-var highestLevel = setPeoples();
 
 // This is a global variable, used calculate the level index
-var levelCounter = [0];
-for (var i = 0; i < highestLevel; i++) {
-	levelCounter.push(0);
-}
+var levelCounter = [];
+var levelIDs = [];
 
-window.onload = function createFamilyTree() {
-	var SVG = document.getElementById("svg");
+// Global offset, used to get everything on the SVG within the borders
+var globalOffset = 0;
+
+window.onload = function createFamilyTree() {	
+	// Create all the connections between parents and children
+	setPeoples();
 	
 	// List with all peoples who have generation level 0
 	var PeopleId = 0;
 	
-	var People = Peoples[PeopleId];
+	// Set all the generation levels of all people
+	var highestLevel = setLevels(PeopleId);
+	var SVG = document.getElementById("svg");
+	SVG.setAttribute('height', (highestLevel + 1)*75);
+	
+	// Make the calculations to see where everyone should be placed
+	calcLocations(PeopleId);
+	
 	// Draw the current family tree
+	var People = Peoples[PeopleId];
 	People.drawFamilyTree(SVG);
+	
+	// To get the horizontal scrollbars:
+	// var Div = document.getElementById("familytree");
+	// SVG.setAttribute('width', Div.width);
 }
 
 function CreatePeople(name, ID, MotherID, FatherID, Gender) {
@@ -51,17 +64,23 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	
 	// Children of this person
 	this.ChildIDs = [];
-	// Generations from the first ancestor
-	this.level = 0;
 	// Which child is this
 	this.ChildIndexM = 0;
 	this.ChildIndexF = 0;
+	
+	// Generations from the first ancestor
+	this.level = 0;
 	// Which Person on this level is this
 	this.levelIndex = 0;
+	
+	// Location of this person
 	this.Location = [0, 0];
 	
 	/** setLevel function */
 	this.setLevel = function (level) {
+		var IDset = [];
+		
+		// alert("setLevel! Level " + level + " for child " + this.name);
 		if (level > this.level) {
 			// Take the highest level possible
 			this.level = level;
@@ -69,50 +88,51 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		
 		if (this.ChildIDs.length != 0)
 		{
-			for (this.counter1 = 0; this.counter1 < this.ChildIDs.length; this.counter1++) {
-				// Update all children as well
-				var Idx = this.ChildIDs[this.counter1];
-				var Child = Peoples[Idx];
-				
-				Child.setLevel(this.level + 1);
-			}
+			IDset = this.ChildIDs;
 		}
 		
-		return this.level;
-	}
-	
-	this.setLevelIndex = function() {
-		var levelIndex = levelCounter[this.level];
-		this.levelIndex = levelIndex;
-		levelCounter[this.level]++;
-		
-		if (this.ChildIDs.length != 0)
-		{
-			for (this.counter2 = 0; this.counter2 < this.ChildIDs.length; this.counter2++) {
-				// Update all children as well
-				var Idx = this.ChildIDs[this.counter2];
-				var Child = Peoples[Idx];
-				
-				Child.setLevelIndex();
-			}
-		}
+		// This would have been much easier using recursive functions
+		// But there is too much recursion for the browser to handle..
+		return IDset;
 	}
 	
 	/** CalcLocation function */
-	this.calcLocations = function (id) {		
+	this.calcLocation = function () {
+		var offsetToParent = 0;
+		var IDset = [];
+		
 		// Calculate the Y coordinate
 		var Y = this.level*75;
-		this.Location[1] = Y;
 		
 		// Calculate the X coordinate
-		var X = 300;
-		
-		// Check ID to be childs ID
-		// If so, check location of child and resume normal operations
+		var X = 0;
 				
 		// Is this the first person of the family tree?
-		if (id != -1) {
-			// If not, now many children does parent have?
+		if ((this.MotherID != -1) || (this.FatherID != -1)) {
+			
+			// ID number of the parent that will be used
+			var id = -1;
+			
+			// Who are we gonna use?
+			if (this.MotherID == -1) {
+				// Use daddy if mommy isn't known
+				id = this.FatherID;
+			} else if (this.FatherID == -1) {
+				// Use mommy if daddy isn't known
+				id = this.MotherID;
+			} else {
+				// Both parents are known
+				// Use the parent with the highest generation level.
+				// So the parent that is placed the lowest
+				var Mother = Peoples[this.MotherID];
+				var Father = Peoples[this.FatherID];
+				if (Father.level > Mother.level) {
+					id = this.FatherID;
+				} else {
+					id = this.MotherID;
+				}
+			}
+			
 			var Parent = Peoples[id];
 			var numChildren = Parent.ChildIDs.length;
 			
@@ -131,7 +151,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 			
 			// Now calculate where our position should be
 			if (odd) {
-				var middle = (numChildren + 1) / 2;
+				var middle = ((numChildren + 1) / 2) - 1;
 				
 				if (Index == middle) {
 					// Are we in the middle? 
@@ -165,22 +185,14 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		}
 		
 		this.Location[0] = X;
+		this.Location[1] = Y;
 		
-		// Do some addictional location checks
-		// If something fails, use calcLocation on parent 
-		// after new location for child has been established
-		
-		if (this.ChildIDs.length > 0) {
-			for (this.counter3 = 0; this.counter3 < this.ChildIDs.length; this.counter3++) {
-				// Update all children as well
-				var Idx = this.ChildIDs[this.counter3];
-				var Child = Peoples[Idx];
-				
-				Child.calcLocations(this.ID);
-			}
+		if (this.ChildIDs.length != 0) 
+		{		
+			IDset = this.ChildIDs;
 		}
 		
-		return;
+		return IDset;
 	}
 	
 	/** */
@@ -206,8 +218,51 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		var svgns = "http://www.w3.org/2000/svg";
 		var Group = document.createElementNS(svgns, "g");
 		
-		var x = this.Location[0];
+		// Move everything away from the left border
+		var x = this.Location[0] + globalOffset;
 		var y = this.Location[1];
+		
+		if (this.MotherID != -1) {
+			// Draw the lines to the mother, to the middle of the bottom
+			var Parent = Peoples[this.MotherID];
+			
+			// And only if the parents are drawn as well
+			if ((Parent.Location[0] != 0) || (Parent.Location[1] != 0)) {
+				var x_parent = Parent.Location[0] + 50 + globalOffset;
+				var y_parent = Parent.Location[1] + 50;
+				
+				var LineMother = document.createElementNS(svgns, "line");
+				LineMother.setAttributeNS(null, 'x1', x_parent);
+				LineMother.setAttributeNS(null, 'y1', y_parent);
+				LineMother.setAttributeNS(null, 'x2', x + 50);
+				LineMother.setAttributeNS(null, 'y2', y);
+				
+				LineMother.setAttributeNS(null, 'stroke', 'pink');
+				
+				Group.appendChild(LineMother);
+			}
+		}
+		
+		if (this.FatherID != -1) {
+			// Draw the lines to the father, to the middle of the bottom
+			var Parent = Peoples[this.FatherID];
+			
+			// And only if the parents are drawn as well
+			if ((Parent.Location[0] != 0) || (Parent.Location[1] != 0)) {
+				var x_parent = Parent.Location[0] + 50 + globalOffset;
+				var y_parent = Parent.Location[1] + 50;
+				
+				var LineFather = document.createElementNS(svgns, "line");
+				LineFather.setAttributeNS(null, 'x1', x_parent);
+				LineFather.setAttributeNS(null, 'y1', y_parent);
+				LineFather.setAttributeNS(null, 'x2', x + 50);
+				LineFather.setAttributeNS(null, 'y2', y);
+				
+				LineFather.setAttributeNS(null, 'stroke', 'blue');
+				
+				Group.appendChild(LineFather);
+			}
+		}
 		
 		var Rect = document.createElementNS(svgns, "rect");
 		Rect.setAttributeNS(null, 'width', 100);
@@ -232,11 +287,12 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	
 	/** */
 	this.drawFamilyTree = function(SVG) {
-		if (this.level == 0) {
-			// Calculate some more stuff for the current family tree
-			this.setLevelIndex();
-			this.calcLocations(-1);
-		}
+		// if (this.level == 0) {
+			// // Calculate the locations of the objects to be drawn
+			// var offset = this.calcLocations(-1);
+			// alert("Could we finish? (" + offset + ")");
+		// }
+		
 		
 		var Group = this.drawPeople();
 		SVG.appendChild(Group);
@@ -255,6 +311,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 }
 
 function setPeoples() {
+	
 	// Create all connections
 	for (i = 0; i < Peoples.length; i++) {
 		var People = Peoples[i];
@@ -274,19 +331,95 @@ function setPeoples() {
 			}
 		}
 	}
+}
+	
+/** setLevels function */
+function setLevels(ID) {
+	// The set of people that will be updated 
+	// in the iteration of the while loop
+	var IDset = [ID];
+	
+	// This breaks the while loop
+	var lastSet = 0;
+	
+	// The current generation level we are in
+	var levelCount = 0;
+	
+	while (lastSet == 0)
+	{
+		var newIDset = [];
+		for (i = 0; i < IDset.length; i++) {
+			var Person = Peoples[IDset[i]];
+			var childSet = Person.setLevel(levelCount);
+			
+			// Create the ID set of the next generation
+			newIDset = newIDset.concat(childSet);
+		}
 		
-	// Now set the generation levels
-	var highestLevel = 0, returnedLevel = 0;
-	for (i = 0; i < Peoples.length; i++) {
-		var People = Peoples[i];
+		levelCounter.push(IDset.length);
+		levelIDs.push(newIDset);
+		levelCount++;
 		
-		// Start with zero, if the person has kids, they will be updated accordingly
-		var returnedLevel = People.setLevel(0);
-		if (returnedLevel > highestLevel) {
-			highestLevel = returnedLevel;
+		// There are no more children to update
+		IDset = newIDset;
+		if (IDset.length == 0) {
+			lastSet = 1;
 		}
 	}
 	
-	return highestLevel;
+	// Use minus one, since the levelcount was incremented on the last iteration
+	return levelCount - 1;
+}
+	
+/** setLevels function */
+function calcLocations(ID) {
+	// The set of people that will be updated 
+	// in the iteration of the while loop
+	var IDset = [ID];
+	
+	// This breaks the while loop
+	var lastSet = 0;
+	
+	while (lastSet == 0)
+	{
+		var newIDset = [];
+		for (i = 0; i < IDset.length; i++) {
+			var Person = Peoples[IDset[i]];
+			var childSet = Person.calcLocation();
+			
+			// Do a check on the location of the person
+			if (Person.Location[0] < 50) {
+				// Person seems to fall out of boundary
+				// What offset do we need?
+				var offset = 50 - Person.Location[0];
+				
+				if (offset > globalOffset) {
+					// Take the highest offset found
+					globalOffset = offset;
+				}
+			}
+			
+			// Create the ID set of the next generation
+			newIDset = newIDset.concat(childSet);
+			
+			// Here some code to detect collisions between people
+			// Update IDset to [ID] (start all over again)
+			// newIDset = [ID];
+			// break;
+		}
+		
+		// There are no more children to update
+		IDset = newIDset;
+		if (IDset.length == 0) {
+			lastSet = 1;
+		}
+	}
+	
+	return;
+}
+
+window.onerror = function(msg, url, linenumber) {
+    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+    return true;
 }
 </script>
