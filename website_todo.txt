@@ -13,8 +13,6 @@ Bugs:
 	that corresponds with that ID number? Could be confusing..
 * No not display the -1 in the database
 * Give ID as primary key, makes stuff easier
-* Familytree fails when a person has ParentID higher than own ID
-* Familytree not showing for online version of website, items are not created
 
 
 Website:
@@ -29,3 +27,10 @@ databases.000webhost.com
 sql2.000webhost.com
 Database: id2294956_bible
 login: id2294956_prodeo
+
+To update database:
+click database bible
+export
+click database host
+drop all tables
+import
