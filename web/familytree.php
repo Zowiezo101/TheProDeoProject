@@ -25,7 +25,11 @@ var levelIDs = [];
 // Global offset, used to get everything on the SVG within the borders
 var globalOffset = 0;
 
+// This is the width of the SVG
+var globalWidth = 0;
+
 window.onload = function createFamilyTree() {	
+			
 	// Create all the connections between parents and children
 	setPeoples();
 	
@@ -34,19 +38,19 @@ window.onload = function createFamilyTree() {
 	
 	// Set all the generation levels of all people
 	var highestLevel = setLevels(PeopleId);
-	var SVG = document.getElementById("svg");
-	SVG.setAttribute('height', (highestLevel + 1)*75);
+	setIndexes(PeopleId, highestLevel);
 	
 	// Make the calculations to see where everyone should be placed
-	calcLocations(PeopleId);
+	calcLocations();
+	
+	// Set the height and the width
+	var SVG = document.getElementById("svg");
+	SVG.setAttribute('height', (highestLevel + 1)*75);	
+	SVG.setAttribute('width', globalWidth + globalOffset + 150);
 	
 	// Draw the current family tree
 	var People = Peoples[PeopleId];
 	People.drawFamilyTree(SVG);
-	
-	// To get the horizontal scrollbars:
-	// var Div = document.getElementById("familytree");
-	// SVG.setAttribute('width', Div.width);
 }
 
 function CreatePeople(name, ID, MotherID, FatherID, Gender) {
@@ -56,11 +60,8 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	this.MotherID = MotherID;
 	this.Gender = Gender;
 	
-	// Own loop counters to prevent the counters messing each other up
-	this.counter1 = 0;
-	this.counter2 = 0;
-	this.counter3 = 0;
-	this.counter4 = 0;
+	// Own loop counter to prevent the counters messing each other up
+	this.counter = 0;
 	
 	// Children of this person
 	this.ChildIDs = [];
@@ -71,10 +72,11 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	// Generations from the first ancestor
 	this.level = 0;
 	// Which Person on this level is this
-	this.levelIndex = 0;
+	this.levelIndex = -1;
 	
 	// Location of this person
-	this.Location = [0, 0];
+	this.Location = [-1, -1];
+	this.offset = 0;
 	
 	/** setLevel function */
 	this.setLevel = function (level) {
@@ -98,8 +100,6 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	
 	/** CalcLocation function */
 	this.calcLocation = function () {
-		var offsetToParent = 0;
-		var IDset = [];
 		
 		// Calculate the Y coordinate
 		var Y = this.level*75;
@@ -184,15 +184,11 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 			}
 		}
 		
-		this.Location[0] = X;
+		// This value is used, in case someone is overlapping with someone else
+		this.Location[0] = X + this.offset;
 		this.Location[1] = Y;
 		
-		if (this.ChildIDs.length != 0) 
-		{		
-			IDset = this.ChildIDs;
-		}
-		
-		return IDset;
+		return;
 	}
 	
 	/** */
@@ -227,7 +223,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 			var Parent = Peoples[this.MotherID];
 			
 			// And only if the parents are drawn as well
-			if ((Parent.Location[0] != 0) || (Parent.Location[1] != 0)) {
+			if ((Parent.Location[0] != -1) && (Parent.Location[1] != -1)) {
 				var x_parent = Parent.Location[0] + 50 + globalOffset;
 				var y_parent = Parent.Location[1] + 50;
 				
@@ -248,7 +244,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 			var Parent = Peoples[this.FatherID];
 			
 			// And only if the parents are drawn as well
-			if ((Parent.Location[0] != 0) || (Parent.Location[1] != 0)) {
+			if ((Parent.Location[0] != -1) && (Parent.Location[1] != -1)) {
 				var x_parent = Parent.Location[0] + 50 + globalOffset;
 				var y_parent = Parent.Location[1] + 50;
 				
@@ -286,22 +282,16 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	}
 	
 	/** */
-	this.drawFamilyTree = function(SVG) {
-		// if (this.level == 0) {
-			// // Calculate the locations of the objects to be drawn
-			// var offset = this.calcLocations(-1);
-			// alert("Could we finish? (" + offset + ")");
-		// }
-		
+	this.drawFamilyTree = function(SVG) {	
 		
 		var Group = this.drawPeople();
 		SVG.appendChild(Group);
 		
 		if (this.ChildIDs.length != 0)
 		{
-			for (this.counter4 = 0; this.counter4 < this.ChildIDs.length; this.counter4++) {
+			for (this.counter = 0; this.counter < this.ChildIDs.length; this.counter++) {
 				// Update all children as well
-				var Idx = this.ChildIDs[this.counter4];
+				var Idx = this.ChildIDs[this.counter];
 				var Child = Peoples[Idx];
 				
 				Child.drawFamilyTree(SVG);
@@ -310,8 +300,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	}
 }
 
-function setPeoples() {
-	
+function setPeoples() {	
 	// Create all connections
 	for (i = 0; i < Peoples.length; i++) {
 		var People = Peoples[i];
@@ -334,7 +323,7 @@ function setPeoples() {
 }
 	
 /** setLevels function */
-function setLevels(ID) {
+function setLevels(ID) {			
 	// The set of people that will be updated 
 	// in the iteration of the while loop
 	var IDset = [ID];
@@ -347,6 +336,8 @@ function setLevels(ID) {
 	
 	while (lastSet == 0)
 	{
+		// alert("People with level " + levelCount + " : " + IDset);
+		
 		var newIDset = [];
 		for (i = 0; i < IDset.length; i++) {
 			var Person = Peoples[IDset[i]];
@@ -355,24 +346,22 @@ function setLevels(ID) {
 			// Create the ID set of the next generation
 			newIDset = newIDset.concat(childSet);
 		}
-		
-		levelCounter.push(IDset.length);
-		levelIDs.push(newIDset);
 		levelCount++;
 		
 		// There are no more children to update
-		IDset = newIDset;
+		IDset = uniq(newIDset);
 		if (IDset.length == 0) {
 			lastSet = 1;
 		}
 	}
+	
 	
 	// Use minus one, since the levelcount was incremented on the last iteration
 	return levelCount - 1;
 }
 	
 /** setLevels function */
-function calcLocations(ID) {
+function setIndexes(ID, highestLevel) {
 	// The set of people that will be updated 
 	// in the iteration of the while loop
 	var IDset = [ID];
@@ -380,42 +369,246 @@ function calcLocations(ID) {
 	// This breaks the while loop
 	var lastSet = 0;
 	
+	for (i = 0; i < highestLevel + 1; i++) {
+		// Initialization
+		levelIDs.push([]);
+		levelCounter.push(0);
+	}
+	
 	while (lastSet == 0)
-	{
+	{		
 		var newIDset = [];
 		for (i = 0; i < IDset.length; i++) {
 			var Person = Peoples[IDset[i]];
-			var childSet = Person.calcLocation();
+			var level = Person.level;
+			var childSet = Person.ChildIDs;
+		
+			// Store all the unique IDs and keep track on the level they are on
+			// alert("Adding " + Person.name + " with ID " + Person.ID + " to array of level " + level + "\nArray: " + levelIDs[level]);
 			
-			// Do a check on the location of the person
-			if (Person.Location[0] < 50) {
-				// Person seems to fall out of boundary
-				// What offset do we need?
-				var offset = 50 - Person.Location[0];
-				
-				if (offset > globalOffset) {
-					// Take the highest offset found
-					globalOffset = offset;
-				}
+			// Keep track of the amount of people on a certain level
+			// Only if the levelIndex is not already set
+			if (Person.levelIndex == -1) {
+				var currentLevelIDs = levelIDs[level];
+				currentLevelIDs.push(Person.ID);
+				levelIDs[level] = currentLevelIDs;
+			
+				Person.levelIndex = levelCounter[level];
 			}
+			
+			levelCounter[level] = levelIDs[level].length;
 			
 			// Create the ID set of the next generation
 			newIDset = newIDset.concat(childSet);
-			
-			// Here some code to detect collisions between people
-			// Update IDset to [ID] (start all over again)
-			// newIDset = [ID];
-			// break;
 		}
 		
 		// There are no more children to update
-		IDset = newIDset;
+		IDset = uniq(newIDset);
 		if (IDset.length == 0) {
 			lastSet = 1;
 		}
 	}
 	
 	return;
+}
+	
+/** calcLocations function */
+function calcLocations() {
+	
+	// This breaks the while loop
+	var done = 0;
+	
+	while (done == 0)
+	{
+		var collision = 0;
+		// alert("Start while loop");
+		
+		// Draw the tree per level
+		for (level = 0; level < levelCounter.length; level++) {
+			
+			// The IDs of the people of the current level
+			var IDset = levelIDs[level];
+			
+			for (i = 0; i < IDset.length; i++) {
+				var Person = Peoples[IDset[i]];
+				Person.calcLocation();
+				
+				// To get the width, keep the highest X coordinate we can find
+				if (Person.Location[0] > globalWidth) {
+					globalWidth = Person.Location[0];
+				}
+				
+				// Do a check on the location of the person
+				if (Person.Location[0] < 50) {
+					// Person seems to fall out of boundary
+					// What offset do we need?
+					var offset = 50 - Person.Location[0];
+					
+					if (offset > globalOffset) {
+						// Take the highest offset found
+						globalOffset = offset;
+					}
+				}
+				
+				if ((Person.level > 0) && (Person.levelIndex > 0)) {
+					// alert("Name: " + Person.name + "\nIndex: " + Person.ID + "\nLevel: " + Person.level + "\nLevelIndex: " + Person.levelIndex);
+					// alert("set of IDs of level " + Person.level + " :" + IDset);
+					
+					// Find the neighbour.
+					// This is the person who has the same level, but levelIndex - 1
+					var idNeighbour = IDset[Person.levelIndex - 1];
+					// alert("ID of Neighbour: " + idNeighbour);
+					var Neighbour = Peoples[idNeighbour];
+					
+					// alert("Neighbour Name: " + Neighbour.name + "\nLevel: " + Neighbour.level + "\nLevelIndex: " + Neighbour.levelIndex);
+					
+					// If we get in the if function, these two people are overlapping.
+					// Or the right person is too far left and needs to move right
+					if (Person.Location[0] < (Neighbour.Location[0] + 150)) {
+						// alert("set of IDs of level " + Person.level + " :" + IDset);
+						// alert("Idx of " + Person.name + " :" + Person.levelIndex);
+						// alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
+						// alert("Is people " + Person.name + " on location (" + Person.Location[0] + ", " + Person.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
+						
+						// Now find the parent that connects these two peoples
+						// Actually, find the two children (ancestors) of that parent.
+						if ((Person.MotherID != -1) && (Person.MotherID == Neighbour.MotherID)) {
+							// alert("The mother is the connecting source");
+							Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
+							// alert("Setting offset to: " + Person.offset);
+							collision = 1;
+						} else if ((Person.FatherID != -1) && (Person.FatherID == Neighbour.FatherID)) {
+							// alert("The father is the connecting source");
+							Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
+							// alert("Setting offset to: " + Person.offset);
+							collision = 1;
+						} else {
+						
+							var found = 0;
+							var FoundID = -1;
+							
+							// Us
+							var currentAncestorsR = [Person.ID];
+							
+							// The neighbour
+							var currentAncestorsL = [Neighbour.ID];
+							
+							// Our starting level
+							var currentLevel = Person.level;
+							
+							// found = 1;
+							while (found == 0) {
+								// Get a list with people that are a generation level lower (placed higher)
+								// alert("Trying level: " + currentLevel);
+								var currentIDset = levelIDs[currentLevel - 1];
+								var newAncestorsR = [];
+								var newAncestorsL = [];
+								
+								// Find all the possible ancestors for the right person
+								for (var j = 0; j < currentAncestorsR.length; j++) {
+									var PersonR = Peoples[currentAncestorsR[j]];
+									// alert("Working with " + PersonR.name);
+									
+									for (var k = 0; k < currentIDset.length; k++) {
+										var ID = currentIDset[k];
+										
+										// Remember the list of ancestors that we find for this person
+										if ((ID == PersonR.MotherID) || (ID == PersonR.FatherID)) {
+											newAncestorsR.push(ID);
+											// alert("Found parentR with ID: " + ID);
+										}
+									}
+								}
+								
+								// Find all the possible ancestors for the left person
+								for (var j = 0; j < currentAncestorsL.length; j++) {
+									var PersonL = Peoples[currentAncestorsL[j]];
+									// alert("Working with " + PersonL.name);
+									
+									for (var k = 0; k < currentIDset.length; k++) {
+										var ID = currentIDset[k];
+										
+										// Remember the list of ancestors that we find for this person
+										if ((ID == PersonL.MotherID) || (ID == PersonL.FatherID)) {
+											newAncestorsL.push(ID);
+											// alert("Found parentL with ID: " + ID);
+										}
+									}
+								}
+								
+								// Now check if we have a match on this level!
+								for (var j = 0; j < newAncestorsR.length; j++) {
+									var RightID = newAncestorsR[j];
+									for (var k = 0; k < newAncestorsL.length; k++) {
+										var LeftID = newAncestorsL[k];
+										
+										// We have found a match!
+										// This is the ancestor that connects to two colliding people
+										if (RightID == LeftID) {
+											FoundID = RightID;
+											found = 1;
+										}
+									}
+								}
+								
+								// collision = 1;
+								if (found == 0) {
+									// Keep the current data if we have a match
+									currentAncestorsR = newAncestorsR;
+									currentAncestorsL = newAncestorsL;
+									currentLevel--;
+								}
+								
+								if (currentLevel < 0) {
+									// Couldn't find the parent?
+									// alert("Could not find the connecting parent?");
+									break;
+								}
+							}
+							
+							Parent = Peoples[FoundID];
+							// alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
+						}
+						
+						if (collision == 1) {
+							// alert("Breaking first for-loop");
+							break;
+						}
+					}
+					
+					// Update IDset to [ID] (start all over again)
+					// newIDset = [ID];
+					// break;
+				}
+			}
+			
+			if (collision == 1) {
+				// Break out of the loop and start again
+				// alert("Breaking second for-loop");
+				break;
+			}
+		}
+		
+		// There are no more children to update
+		if (level == levelCounter.length) {
+			done = 1;
+		}
+	}
+	
+	return;
+}
+
+//https://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
+function uniq(a) {
+    var prims = {"boolean":{}, "number":{}, "string":{}}, objs = [];
+
+    return a.filter(function(item) {
+        var type = typeof item;
+        if(type in prims)
+            return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
+        else
+            return objs.indexOf(item) >= 0 ? false : objs.push(item);
+    });
 }
 
 window.onerror = function(msg, url, linenumber) {
