@@ -1,7 +1,6 @@
 * Check on all error messages, do they display?
 * Work on code-sketch for worldmap
 * work on code-sketch for timeline
-* work on code-sketch for familytree
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
 
@@ -13,6 +12,8 @@ Bugs:
 	that corresponds with that ID number? Could be confusing..
 * No not display the -1 in the database
 * Give ID as primary key, makes stuff easier
+* Fix the parents-not-same-level issue
+* Place the FT back to the left side after all calculations
 
 
 Website:

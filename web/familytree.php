@@ -218,6 +218,11 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		var x = this.Location[0] + globalOffset;
 		var y = this.Location[1];
 		
+		// TODO: Debug
+		if (this.level > 20) {
+			return null;
+		}
+		
 		if (this.MotherID != -1) {
 			// Draw the lines to the mother, to the middle of the bottom
 			var Parent = Peoples[this.MotherID];
@@ -227,15 +232,40 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 				var x_parent = Parent.Location[0] + 50 + globalOffset;
 				var y_parent = Parent.Location[1] + 50;
 				
-				var LineMother = document.createElementNS(svgns, "line");
-				LineMother.setAttributeNS(null, 'x1', x_parent);
-				LineMother.setAttributeNS(null, 'y1', y_parent);
-				LineMother.setAttributeNS(null, 'x2', x + 50);
-				LineMother.setAttributeNS(null, 'y2', y);
+				// Make three lines, to get nice 90 degree angles
+				var LineMother1 = document.createElementNS(svgns, "line");
+				var LineMother2 = document.createElementNS(svgns, "line");
+				var LineMother3 = document.createElementNS(svgns, "line");
 				
-				LineMother.setAttributeNS(null, 'stroke', 'pink');
+				// The first line goes only vertical, and halfway
+				var y_halfway = (y + y_parent) / 2;
+				LineMother1.setAttributeNS(null, 'x1', x_parent);
+				LineMother1.setAttributeNS(null, 'y1', y_parent);
+				LineMother1.setAttributeNS(null, 'x2', x_parent);
+				LineMother1.setAttributeNS(null, 'y2', y_halfway);
 				
-				Group.appendChild(LineMother);
+				// The second line goes only horizontal
+				LineMother2.setAttributeNS(null, 'x1', x_parent);
+				LineMother2.setAttributeNS(null, 'y1', y_halfway);
+				LineMother2.setAttributeNS(null, 'x2', x + 50);
+				LineMother2.setAttributeNS(null, 'y2', y_halfway);
+				
+				// The last line goes only vertical, the second half
+				LineMother3.setAttributeNS(null, 'x1', x + 50);
+				LineMother3.setAttributeNS(null, 'y1', y_halfway);
+				LineMother3.setAttributeNS(null, 'x2', x + 50);
+				LineMother3.setAttributeNS(null, 'y2', y);
+				
+				LineMother1.setAttributeNS(null, 'stroke', 'pink');
+				LineMother1.setAttributeNS(null, 'stroke-width', '5');
+				LineMother2.setAttributeNS(null, 'stroke', 'pink');
+				LineMother2.setAttributeNS(null, 'stroke-width', '5');
+				LineMother3.setAttributeNS(null, 'stroke', 'pink');
+				LineMother3.setAttributeNS(null, 'stroke-width', '5');
+				
+				Group.appendChild(LineMother1);
+				Group.appendChild(LineMother2);
+				Group.appendChild(LineMother3);
 			}
 		}
 		
@@ -248,15 +278,40 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 				var x_parent = Parent.Location[0] + 50 + globalOffset;
 				var y_parent = Parent.Location[1] + 50;
 				
-				var LineFather = document.createElementNS(svgns, "line");
-				LineFather.setAttributeNS(null, 'x1', x_parent);
-				LineFather.setAttributeNS(null, 'y1', y_parent);
-				LineFather.setAttributeNS(null, 'x2', x + 50);
-				LineFather.setAttributeNS(null, 'y2', y);
+				// Make three lines, to get nice 90 degree angles
+				var LineFather1 = document.createElementNS(svgns, "line");
+				var LineFather2 = document.createElementNS(svgns, "line");
+				var LineFather3 = document.createElementNS(svgns, "line");
 				
-				LineFather.setAttributeNS(null, 'stroke', 'blue');
+				// The first line goes only vertical, and halfway
+				var y_halfway = (y + y_parent) / 2;
+				LineFather1.setAttributeNS(null, 'x1', x_parent);
+				LineFather1.setAttributeNS(null, 'y1', y_parent);
+				LineFather1.setAttributeNS(null, 'x2', x_parent);
+				LineFather1.setAttributeNS(null, 'y2', y_halfway);
 				
-				Group.appendChild(LineFather);
+				// The second line goes only horizontal
+				LineFather2.setAttributeNS(null, 'x1', x_parent);
+				LineFather2.setAttributeNS(null, 'y1', y_halfway);
+				LineFather2.setAttributeNS(null, 'x2', x + 50);
+				LineFather2.setAttributeNS(null, 'y2', y_halfway);
+				
+				// The last line goes only vertical, the second half
+				LineFather3.setAttributeNS(null, 'x1', x + 50);
+				LineFather3.setAttributeNS(null, 'y1', y_halfway);
+				LineFather3.setAttributeNS(null, 'x2', x + 50);
+				LineFather3.setAttributeNS(null, 'y2', y);
+				
+				LineFather1.setAttributeNS(null, 'stroke', 'blue');
+				LineFather1.setAttributeNS(null, 'stroke-width', '5');
+				LineFather2.setAttributeNS(null, 'stroke', 'blue');
+				LineFather2.setAttributeNS(null, 'stroke-width', '5');
+				LineFather3.setAttributeNS(null, 'stroke', 'blue');
+				LineFather3.setAttributeNS(null, 'stroke-width', '5');
+				
+				Group.appendChild(LineFather1);
+				Group.appendChild(LineFather2);
+				Group.appendChild(LineFather3);
 			}
 		}
 		
@@ -284,8 +339,11 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	/** */
 	this.drawFamilyTree = function(SVG) {	
 		
+		// TODO: Debug
 		var Group = this.drawPeople();
-		SVG.appendChild(Group);
+		if (Group != null) {
+			SVG.appendChild(Group);
+		}
 		
 		if (this.ChildIDs.length != 0)
 		{
@@ -417,6 +475,8 @@ function calcLocations() {
 	
 	// This breaks the while loop
 	var done = 0;
+	// var MaxLevel = levelCounter.length;
+	var MaxLevel = 21;
 	
 	while (done == 0)
 	{
@@ -424,7 +484,7 @@ function calcLocations() {
 		// alert("Start while loop");
 		
 		// Draw the tree per level
-		for (level = 0; level < levelCounter.length; level++) {
+		for (level = 0; level < MaxLevel; level++) {
 			
 			// The IDs of the people of the current level
 			var IDset = levelIDs[level];
@@ -472,17 +532,17 @@ function calcLocations() {
 						
 						// Now find the parent that connects these two peoples
 						// Actually, find the two children (ancestors) of that parent.
-						if ((Person.MotherID != -1) && (Person.MotherID == Neighbour.MotherID)) {
-							// alert("The mother is the connecting source");
-							Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
-							// alert("Setting offset to: " + Person.offset);
-							collision = 1;
-						} else if ((Person.FatherID != -1) && (Person.FatherID == Neighbour.FatherID)) {
-							// alert("The father is the connecting source");
-							Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
-							// alert("Setting offset to: " + Person.offset);
-							collision = 1;
-						} else {
+						// if ((Person.MotherID != -1) && (Person.MotherID == Neighbour.MotherID)) {
+							// // alert("The mother is the connecting source");
+							// Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
+							// // alert("Setting offset to: " + Person.offset);
+							// collision = 1;
+						// } else if ((Person.FatherID != -1) && (Person.FatherID == Neighbour.FatherID)) {
+							// // alert("The father is the connecting source");
+							// Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
+							// // alert("Setting offset to: " + Person.offset);
+							// collision = 1;
+						// } else {
 						
 							var found = 0;
 							var FoundID = -1;
@@ -566,9 +626,27 @@ function calcLocations() {
 								}
 							}
 							
-							Parent = Peoples[FoundID];
+							var Parent = Peoples[FoundID];
+							var Child = null;
 							// alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
-						}
+							
+							for (var k = 0; k < currentAncestorsR.length; k++) {
+								var ID = currentAncestorsR[k];
+								
+								for (var j = 0; j < Parent.ChildIDs.length; j++) {
+									var ChildID = Parent.ChildIDs[j];
+
+									if (ID == ChildID) {
+										// Find the child that needs to be moved
+										Child = Peoples[ID];
+									}
+								}
+							}
+							
+							Child.offset += (Neighbour.Location[0] + 150) - Person.Location[0];
+							// alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
+							collision = 1;
+						// }
 						
 						if (collision == 1) {
 							// alert("Breaking first for-loop");
@@ -590,7 +668,7 @@ function calcLocations() {
 		}
 		
 		// There are no more children to update
-		if (level == levelCounter.length) {
+		if (level == MaxLevel) {
 			done = 1;
 		}
 	}
