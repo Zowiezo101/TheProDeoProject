@@ -219,7 +219,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		var y = this.Location[1];
 		
 		// TODO: Debug
-		if (this.level > 20) {
+		if (this.level > 36) {
 			return null;
 		}
 		
@@ -328,7 +328,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		var Text = document.createElementNS(svgns, "text");
 		Text.setAttributeNS(null, 'x', x);
 		Text.setAttributeNS(null, 'y', y + 25);
-		Text.innerHTML = this.name;
+		Text.textContent = this.name;
 		
 		Group.appendChild(Rect);
 		Group.appendChild(Text);
@@ -439,7 +439,17 @@ function setIndexes(ID, highestLevel) {
 		for (i = 0; i < IDset.length; i++) {
 			var Person = Peoples[IDset[i]];
 			var level = Person.level;
-			var childSet = Person.ChildIDs;
+			
+			var childSet = [];
+			
+			// Only use the children of the direct next generation to get the correct numbers
+			for (var j = 0; j < Person.ChildIDs.length; j++) {
+				Child = Peoples[Person.ChildIDs[j]];
+				
+				if (Child.level == (Person.level + 1)) {
+					childSet.push(Child.ID);
+				}
+			}
 		
 			// Store all the unique IDs and keep track on the level they are on
 			// alert("Adding " + Person.name + " with ID " + Person.ID + " to array of level " + level + "\nArray: " + levelIDs[level]);
@@ -452,6 +462,10 @@ function setIndexes(ID, highestLevel) {
 				levelIDs[level] = currentLevelIDs;
 			
 				Person.levelIndex = levelCounter[level];
+			} else {
+				// alert("We have a double!!");
+				// alert("Person " + Person.name + " already has it's levelIndex set to " + Person.levelIndex);
+				// alert("It is requested to set it from " + Person.levelIndex + " to " + levelCounter[level]);
 			}
 			
 			levelCounter[level] = levelIDs[level].length;
@@ -476,7 +490,7 @@ function calcLocations() {
 	// This breaks the while loop
 	var done = 0;
 	// var MaxLevel = levelCounter.length;
-	var MaxLevel = 21;
+	var MaxLevel = 37;
 	
 	while (done == 0)
 	{
@@ -526,9 +540,9 @@ function calcLocations() {
 					// Or the right person is too far left and needs to move right
 					if (Person.Location[0] < (Neighbour.Location[0] + 150)) {
 						// alert("set of IDs of level " + Person.level + " :" + IDset);
+						// alert("Is people " + Person.name + " on location (" + Person.Location[0] + ", " + Person.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
 						// alert("Idx of " + Person.name + " :" + Person.levelIndex);
 						// alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
-						// alert("Is people " + Person.name + " on location (" + Person.Location[0] + ", " + Person.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
 						
 						// Now find the parent that connects these two peoples
 						// Actually, find the two children (ancestors) of that parent.
