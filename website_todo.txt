@@ -12,7 +12,6 @@ Bugs:
 	that corresponds with that ID number? Could be confusing..
 * No not display the -1 in the database
 * Give ID as primary key, makes stuff easier
-* Fix the parents-not-same-level issue
 * Place the FT back to the left side after all calculations
 
 

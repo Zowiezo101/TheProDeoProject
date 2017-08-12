@@ -85,13 +85,24 @@
 	}
 
 	// Close the dropdown if the user clicks outside of it
-	window.onclick = function(e) {
-	    if (!e.target.matches(".nav_button")) {
+	window.onclick = function(event) {
+		if (event.target.matches) {
+			var matchesDropDown = event.target.matches('.nav_button');
+			var matchesLang = event.target.matches('.lang_button');
+		} else if (event.target.msMatchesSelector) {
+			var matchesDropDown = event.target.msMatchesSelector('.nav_button');
+			var matchesLang = event.target.msMatchesSelector('.lang_button');
+		} else {
+			var matchesDropDown = event.target.webkitMatchesSelector('.nav_button');
+			var matchesLang = event.target.webkitMatchesSelector('.lang_button');
+		}
+		
+	    if (!matchesDropDown) {
 			var menu = document.getElementById("nav_menu");
 			menu.style.display = "none";
 	    }
 		
-	    if (!e.target.matches(".lang_button")) {
+	    if (!matchesLang) {
 			var menu = document.getElementById("lang_menu");
 			menu.style.display = "none";
 	    }
