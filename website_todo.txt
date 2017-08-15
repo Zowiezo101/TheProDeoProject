@@ -4,10 +4,12 @@
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
 * Viewbox voor FamilyTree met vergroten en verkleinen
-
-Bugs:
 * Do not reload entire page when clicking in an item, just replace contents
 * Create links from ID's to other Items (inter-item)
+* Make FamilyTree easier to read..
+
+Bugs:
+- None
 
 
 Website:
