@@ -41,7 +41,7 @@ window.onload = function createFamilyTree() {
 	setIndexes(PeopleId, highestLevel);
 	
 	// Make the calculations to see where everyone should be placed
-	calcLocations();
+	calcLocations(PeopleId, highestLevel);
 	
 	// Set the height and the width
 	var SVG = document.getElementById("svg");
@@ -219,7 +219,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		var y = this.Location[1];
 		
 		// TODO: Debug
-		if (this.level > 36) {
+		if (this.level > 90) {
 			return null;
 		}
 		
@@ -237,31 +237,44 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 				var LineMother2 = document.createElementNS(svgns, "line");
 				var LineMother3 = document.createElementNS(svgns, "line");
 				
+				var y_halfway1 = y_parent + (25 / 2);
+				var y_halfway2 = y - (25 / 2);
+				
 				// The first line goes only vertical, and halfway
-				var y_halfway = (y + y_parent) / 2;
 				LineMother1.setAttributeNS(null, 'x1', x_parent);
 				LineMother1.setAttributeNS(null, 'y1', y_parent);
 				LineMother1.setAttributeNS(null, 'x2', x_parent);
-				LineMother1.setAttributeNS(null, 'y2', y_halfway);
+				LineMother1.setAttributeNS(null, 'y2', y_halfway1);
 				
-				// The second line goes only horizontal
+				// The second line goes only horizontal, or diagonal
 				LineMother2.setAttributeNS(null, 'x1', x_parent);
-				LineMother2.setAttributeNS(null, 'y1', y_halfway);
+				LineMother2.setAttributeNS(null, 'y1', y_halfway1);
 				LineMother2.setAttributeNS(null, 'x2', x + 50);
-				LineMother2.setAttributeNS(null, 'y2', y_halfway);
+				LineMother2.setAttributeNS(null, 'y2', y_halfway2);
 				
 				// The last line goes only vertical, the second half
 				LineMother3.setAttributeNS(null, 'x1', x + 50);
-				LineMother3.setAttributeNS(null, 'y1', y_halfway);
+				LineMother3.setAttributeNS(null, 'y1', y_halfway2);
 				LineMother3.setAttributeNS(null, 'x2', x + 50);
 				LineMother3.setAttributeNS(null, 'y2', y);
 				
-				LineMother1.setAttributeNS(null, 'stroke', 'pink');
-				LineMother1.setAttributeNS(null, 'stroke-width', '5');
-				LineMother2.setAttributeNS(null, 'stroke', 'pink');
-				LineMother2.setAttributeNS(null, 'stroke-width', '5');
-				LineMother3.setAttributeNS(null, 'stroke', 'pink');
-				LineMother3.setAttributeNS(null, 'stroke-width', '5');
+				if (this.level == (Parent.level + 1)) {
+					LineMother1.setAttributeNS(null, 'stroke', 'pink');
+					LineMother2.setAttributeNS(null, 'stroke', 'pink');
+					LineMother3.setAttributeNS(null, 'stroke', 'pink');
+				
+					LineMother1.setAttributeNS(null, 'stroke-width', '5');
+					LineMother2.setAttributeNS(null, 'stroke-width', '5');
+					LineMother3.setAttributeNS(null, 'stroke-width', '5');
+				} else {
+					LineMother1.setAttributeNS(null, 'stroke', 'deeppink');
+					LineMother2.setAttributeNS(null, 'stroke', 'deeppink');
+					LineMother3.setAttributeNS(null, 'stroke', 'deeppink');
+				
+					LineMother1.setAttributeNS(null, 'stroke-width', '2');
+					LineMother2.setAttributeNS(null, 'stroke-width', '2');
+					LineMother3.setAttributeNS(null, 'stroke-width', '2');
+				}
 				
 				Group.appendChild(LineMother1);
 				Group.appendChild(LineMother2);
@@ -283,31 +296,45 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 				var LineFather2 = document.createElementNS(svgns, "line");
 				var LineFather3 = document.createElementNS(svgns, "line");
 				
+				var y_halfway1 = y_parent + (25 / 2);
+				var y_halfway2 = y - (25 / 2);
+				
 				// The first line goes only vertical, and halfway
-				var y_halfway = (y + y_parent) / 2;
 				LineFather1.setAttributeNS(null, 'x1', x_parent);
 				LineFather1.setAttributeNS(null, 'y1', y_parent);
 				LineFather1.setAttributeNS(null, 'x2', x_parent);
-				LineFather1.setAttributeNS(null, 'y2', y_halfway);
+				LineFather1.setAttributeNS(null, 'y2', y_halfway1);
 				
-				// The second line goes only horizontal
+				// The second line goes only horizontal, or diagonal
 				LineFather2.setAttributeNS(null, 'x1', x_parent);
-				LineFather2.setAttributeNS(null, 'y1', y_halfway);
+				LineFather2.setAttributeNS(null, 'y1', y_halfway1);
 				LineFather2.setAttributeNS(null, 'x2', x + 50);
-				LineFather2.setAttributeNS(null, 'y2', y_halfway);
+				LineFather2.setAttributeNS(null, 'y2', y_halfway2);
 				
 				// The last line goes only vertical, the second half
 				LineFather3.setAttributeNS(null, 'x1', x + 50);
-				LineFather3.setAttributeNS(null, 'y1', y_halfway);
+				LineFather3.setAttributeNS(null, 'y1', y_halfway2);
 				LineFather3.setAttributeNS(null, 'x2', x + 50);
 				LineFather3.setAttributeNS(null, 'y2', y);
 				
-				LineFather1.setAttributeNS(null, 'stroke', 'blue');
-				LineFather1.setAttributeNS(null, 'stroke-width', '5');
-				LineFather2.setAttributeNS(null, 'stroke', 'blue');
-				LineFather2.setAttributeNS(null, 'stroke-width', '5');
-				LineFather3.setAttributeNS(null, 'stroke', 'blue');
-				LineFather3.setAttributeNS(null, 'stroke-width', '5');
+				
+				if (this.level == (Parent.level + 1)) {
+					LineFather1.setAttributeNS(null, 'stroke', 'blue');
+					LineFather2.setAttributeNS(null, 'stroke', 'blue');
+					LineFather3.setAttributeNS(null, 'stroke', 'blue');
+				
+					LineFather1.setAttributeNS(null, 'stroke-width', '5');
+					LineFather2.setAttributeNS(null, 'stroke-width', '5');
+					LineFather3.setAttributeNS(null, 'stroke-width', '5');
+				} else {
+					LineFather1.setAttributeNS(null, 'stroke', 'darkblue');
+					LineFather2.setAttributeNS(null, 'stroke', 'darkblue');
+					LineFather3.setAttributeNS(null, 'stroke', 'darkblue');
+				
+					LineFather1.setAttributeNS(null, 'stroke-width', '2');
+					LineFather2.setAttributeNS(null, 'stroke-width', '2');
+					LineFather3.setAttributeNS(null, 'stroke-width', '2');
+				}
 				
 				Group.appendChild(LineFather1);
 				Group.appendChild(LineFather2);
@@ -417,6 +444,24 @@ function setLevels(ID) {
 	// Use minus one, since the levelcount was incremented on the last iteration
 	return levelCount - 1;
 }
+
+function resetIndexes() {
+	
+	// Reset all numbers and levelIndexes to recalculate
+	levelIDs = [];
+	levelCounter = [];
+	
+	for (var m = 0; m < Peoples.length; m++)
+	{		
+		var Person = Peoples[m];
+			
+		// Reset levelIndex
+		Person.levelIndex = -1;
+		Person.offset = 0;
+	}
+	
+	return;
+}
 	
 /** setLevels function */
 function setIndexes(ID, highestLevel) {
@@ -485,12 +530,13 @@ function setIndexes(ID, highestLevel) {
 }
 	
 /** calcLocations function */
-function calcLocations() {
+function calcLocations(firstID, highestLevel) {
 	
 	// This breaks the while loop
 	var done = 0;
-	// var MaxLevel = levelCounter.length;
-	var MaxLevel = 37;
+	var MaxLevel = levelCounter.length;
+	// var MaxLevel = 38;
+	var debugFrom = 90;
 	
 	while (done == 0)
 	{
@@ -540,9 +586,11 @@ function calcLocations() {
 					// Or the right person is too far left and needs to move right
 					if (Person.Location[0] < (Neighbour.Location[0] + 150)) {
 						// alert("set of IDs of level " + Person.level + " :" + IDset);
-						// alert("Is people " + Person.name + " on location (" + Person.Location[0] + ", " + Person.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
-						// alert("Idx of " + Person.name + " :" + Person.levelIndex);
-						// alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
+						if (Person.level >= debugFrom) {
+						alert("Is people " + Person.name + " on location (" + Person.Location[0] + ", " + Person.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
+						alert("Idx of " + Person.name + " :" + Person.levelIndex);
+						alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
+						}
 						
 						// Now find the parent that connects these two peoples
 						// Actually, find the two children (ancestors) of that parent.
@@ -573,15 +621,26 @@ function calcLocations() {
 							// found = 1;
 							while (found == 0) {
 								// Get a list with people that are a generation level lower (placed higher)
-								// alert("Trying level: " + currentLevel);
+								if (Person.level >= debugFrom) {
+								alert("Trying level: " + currentLevel);
+								}
+								var currentIDset = levelIDs[currentLevel];
+								if (Person.level >= debugFrom) {
+								alert("Set of people: " + currentIDset);
+								}
 								var currentIDset = levelIDs[currentLevel - 1];
+								if (Person.level >= debugFrom) {
+								alert("Set of people: " + currentIDset);
+								}
 								var newAncestorsR = [];
 								var newAncestorsL = [];
 								
 								// Find all the possible ancestors for the right person
 								for (var j = 0; j < currentAncestorsR.length; j++) {
 									var PersonR = Peoples[currentAncestorsR[j]];
-									// alert("Working with " + PersonR.name);
+									if (Person.level >= debugFrom) {
+									alert("Working with " + PersonR.name);
+									}
 									
 									for (var k = 0; k < currentIDset.length; k++) {
 										var ID = currentIDset[k];
@@ -589,7 +648,9 @@ function calcLocations() {
 										// Remember the list of ancestors that we find for this person
 										if ((ID == PersonR.MotherID) || (ID == PersonR.FatherID)) {
 											newAncestorsR.push(ID);
-											// alert("Found parentR with ID: " + ID);
+											if (Person.level >= debugFrom) {
+											alert("Found parentR with ID: " + ID);
+											}
 										}
 									}
 								}
@@ -597,7 +658,9 @@ function calcLocations() {
 								// Find all the possible ancestors for the left person
 								for (var j = 0; j < currentAncestorsL.length; j++) {
 									var PersonL = Peoples[currentAncestorsL[j]];
-									// alert("Working with " + PersonL.name);
+									if (Person.level >= debugFrom) {
+									alert("Working with " + PersonL.name);
+									}
 									
 									for (var k = 0; k < currentIDset.length; k++) {
 										var ID = currentIDset[k];
@@ -605,12 +668,15 @@ function calcLocations() {
 										// Remember the list of ancestors that we find for this person
 										if ((ID == PersonL.MotherID) || (ID == PersonL.FatherID)) {
 											newAncestorsL.push(ID);
-											// alert("Found parentL with ID: " + ID);
+											if (Person.level >= debugFrom) {
+											alert("Found parentL with ID: " + ID);
+											}
 										}
 									}
 								}
 								
 								// Now check if we have a match on this level!
+								var count = 0;
 								for (var j = 0; j < newAncestorsR.length; j++) {
 									var RightID = newAncestorsR[j];
 									for (var k = 0; k < newAncestorsL.length; k++) {
@@ -621,8 +687,13 @@ function calcLocations() {
 										if (RightID == LeftID) {
 											FoundID = RightID;
 											found = 1;
+											count++;
 										}
 									}
+								}
+								
+								if (Person.level >= debugFrom) {
+								alert("Count is equal to: " + count);
 								}
 								
 								// collision = 1;
@@ -642,23 +713,137 @@ function calcLocations() {
 							
 							var Parent = Peoples[FoundID];
 							var Child = null;
-							// alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
-							
-							for (var k = 0; k < currentAncestorsR.length; k++) {
-								var ID = currentAncestorsR[k];
-								
-								for (var j = 0; j < Parent.ChildIDs.length; j++) {
-									var ChildID = Parent.ChildIDs[j];
-
-									if (ID == ChildID) {
-										// Find the child that needs to be moved
-										Child = Peoples[ID];
-									}
-								}
+							if (Person.level >= debugFrom) {
+							alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
 							}
 							
-							Child.offset += (Neighbour.Location[0] + 150) - Person.Location[0];
-							// alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
+							var specialCase = 0;
+							// It seems that the two parents of a kid are actually related..
+							if (count > 1) {
+								var Children = [];
+								
+								// Does left or right have related parents?
+								if (newAncestorsR.length > 1) {
+									
+									for (var k = 0; k < currentAncestorsR.length; k++) {
+										var ID = currentAncestorsR[k];
+										
+										for (var j = 0; j < Parent.ChildIDs.length; j++) {
+											var ChildID = Parent.ChildIDs[j];
+
+											if (ID == ChildID) {
+												// Find all the matching children
+												Children.push(ID);
+												// alert("Right parent " + Children.length + " has ID " + ID);
+											}
+										}
+									}
+									// alert("Right ancesters are related: " + count + ", " + newAncestorsR.length);
+									
+								} else if (newAncestorsL.length > 1) {
+									
+									for (var k = 0; k < currentAncestorsL.length; k++) {
+										var ID = currentAncestorsL[k];
+										
+										for (var j = 0; j < Parent.ChildIDs.length; j++) {
+											var ChildID = Parent.ChildIDs[j];
+
+											if (ID == ChildID) {
+												// Find all the matching children
+												Children.push(ID);
+												// alert("Left parent " + Children.length + " has ID " + ID);
+											}
+										}
+									}
+									// alert("Left ancesters are related: " + count + ", " + newAncestorsL.length);
+									
+								}
+								
+								if (Children.length == 2) {
+									if (Person.level >= debugFrom) {
+									alert("Amount of related parents: " + Children.length);
+									alert("Related parents: " + Children);
+									}
+									
+									var Child1 = Peoples[Children[0]];
+									var Child2 = Peoples[Children[1]];
+									var difLevelIndex = Child2.levelIndex - Child1.levelIndex;
+									
+									if (Person.level >= debugFrom) {
+									alert("The levelIndex has a difference of " + difLevelIndex);
+									}
+									
+									// Are they next to each other?
+									if (difLevelIndex != 1) {
+										// There are not next to each other..
+										// Change the order of the children to put them next to each other
+										
+										// Are we using mommy or daddy?
+										if (Child1.MotherID == Parent.ID) {
+											// Use the one from mommy
+											var Index1 = Child1.ChildIndexM + 1;
+											var Index2 = Child2.ChildIndexM + 1;
+										} else {
+											// Use the one from daddy
+											var Index1 = Child1.ChildIndexF + 1;
+											var Index2 = Child2.ChildIndexF + 1;
+										}
+										
+										// The first slice is from the beginning of the list to Child1.
+										var firstSlice = Parent.ChildIDs.slice(0, Index1);
+										
+										// The second slice is from Child1 to Child2 (but not including Child2)
+										var secondSlice = Parent.ChildIDs.slice(Index1, Index2 - 1);
+										
+										// The last slice is from Child2 to the end of the list (but not including Child2)
+										var thirdSlice = Parent.ChildIDs.slice(Index2, Parent.ChildIDs.length);
+										
+										// Add Child2 right after Child1
+										firstSlice.push(Child2.ID);
+										
+										// Add it all together as a new list and make that the new ChildIDs list of the parent
+										newChildIDs = firstSlice.concat(secondSlice, thirdSlice);
+										if (Person.level >= debugFrom) {
+										alert("Updating parents ChildIDs from: " + Parent.ChildIDs + "\nto: " + newChildIDs);
+										}
+										Parent.ChildIDs = newChildIDs;
+										
+										specialCase = 1;
+										
+									}
+									// set specialCase to one and fix it in the specialCase part
+									// do this by changing the levelIndex and the levelIDs to set
+									// these two parents next to each other.
+									// this should fix the problem..
+									// re-try without setting any offset, let the code decide for itself
+								}
+							}							
+							
+							// This is just a normal clash, fix in the normal way
+							if (specialCase == 0) {
+								for (var k = currentAncestorsR.length; k > 0; k--) {
+									var ID = currentAncestorsR[k - 1];
+									
+									for (var j = 0; j < Parent.ChildIDs.length; j++) {
+										var ChildID = Parent.ChildIDs[j];
+
+										if (ID == ChildID) {
+											// Find the child that needs to be moved
+											Child = Peoples[ID];
+										}
+									}
+								}
+								
+								Child.offset += (Neighbour.Location[0] + 150) - Person.Location[0];
+								if (Person.level >= debugFrom) {
+								alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
+								}
+							} else if (specialCase == 1) {
+								// Special case! It seems that the two parents of a kid are actually related..
+								// Some changes were made, now recalculate!
+								resetIndexes();
+								setIndexes(firstID, highestLevel);
+							}
 							collision = 1;
 						// }
 						
