@@ -47,14 +47,18 @@ if (isset($_GET['id'])) {
 			var TableKey = document.createElement("td");
 			TableKey.innerHTML = "<?php echo $SpecialsParams[$key]; ?>";
 			
-			<?php if (strpos($key, "ID") !== false) { ?>
+			<?php if ($value == -1) {
+				$value = "";
+			}?>
+			
+			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) { ?>
 				var TableLink = document.createElement("a");
 				TableLink.innerHTML = "<?php echo $value; ?>";
 				
 				currentHref = window.location.href;
 				TableLink.href = updateURLParameter(currentHref, "id", <?php echo $value; ?>);
 				
-				var TableData = document.createElement("td");
+				// var TableData = document.createElement("td");
 				TableData.appendChild(TableLink);
 			<?php } else { ?>
 				var TableData = document.createElement("td");

@@ -44,30 +44,37 @@ if (isset($_GET['id'])) {
 		{
 			?>
 			
-			var TableKey = document.createElement("td");
-			TableKey.innerHTML = "<?php echo $LocationsParams[$key]; ?>";
+			<?php if ($value == -1) {
+				$value = "";
+			}?>
 			
-			<?php if (strpos($key, "ID") !== false) { ?>
+			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) { ?>
+				// Update the previous table cell with a link to the ID
 				var TableLink = document.createElement("a");
-				TableLink.innerHTML = "<?php echo $value; ?>";
+				TableLink.innerHTML = TableData.innerHTML;
+				TableData.innerHTML = "";
 				
 				currentHref = window.location.href;
 				TableLink.href = updateURLParameter(currentHref, "id", <?php echo $value; ?>);
 				
-				var TableData = document.createElement("td");
 				TableData.appendChild(TableLink);
 			<?php } else { ?>
+				// Add a new table row
+				var TableKey = document.createElement("td");
+				TableKey.innerHTML = "<?php echo $LocationsParams[$key]; ?>";
+			
 				var TableData = document.createElement("td");
 				TableData.innerHTML = "<?php echo $value; ?>";
+			
+				// Left is key names
+				// right is value names
+				var TableRow = document.createElement("tr");
+				TableRow.appendChild(TableKey);
+				TableRow.appendChild(TableData);
+				
+				table.appendChild(TableRow);
 			<?php } ?>
 			
-			// Left is key names
-			// right is value names
-			var TableRow = document.createElement("tr");
-			TableRow.appendChild(TableKey);
-			TableRow.appendChild(TableData);
-			
-			table.appendChild(TableRow);
 			<?php
 		}
 	?>
