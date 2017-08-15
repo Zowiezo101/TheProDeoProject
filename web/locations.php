@@ -55,7 +55,7 @@ if (isset($_GET['id'])) {
 				TableData.innerHTML = "";
 				
 				currentHref = window.location.href;
-				TableLink.href = updateURLParameter(currentHref, "id", <?php echo $value; ?>);
+				TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
 				
 				TableData.appendChild(TableLink);
 			<?php } else { ?>
@@ -156,6 +156,7 @@ if (isset($_GET['id'])) {
 	* http://stackoverflow.com/a/10997390/11236
 	*/
 	function updateURLParameter(url, param, paramVal){
+	// function updateURLParameter(url, param){
 		var newAdditionalURL = "";
 		var tempArray = url.split("?");
 		var baseURL = tempArray[0];
@@ -175,6 +176,7 @@ if (isset($_GET['id'])) {
 
 		var rows_txt = temp + "" + param + "=" + paramVal;
 		return baseURL + "?" + newAdditionalURL + rows_txt;
+		// return "";
 	}
 	
 	function removeURLParameter(url, param){

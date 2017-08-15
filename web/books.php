@@ -55,7 +55,7 @@ if (isset($_GET['id'])) {
 				TableData.innerHTML = "";
 				
 				currentHref = window.location.href;
-				TableLink.href = updateURLParameter(currentHref, "id", <?php echo $value; ?>);
+				TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
 				
 				TableData.appendChild(TableLink);
 			<?php } else { ?>
