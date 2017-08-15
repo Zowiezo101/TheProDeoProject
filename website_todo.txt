@@ -3,16 +3,11 @@
 * work on code-sketch for timeline
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+* Viewbox voor FamilyTree met vergroten en verkleinen
 
 Bugs:
 * Do not reload entire page when clicking in an item, just replace contents
-* Get footer at end of page
 * Create links from ID's to other Items (inter-item)
-	Also, do not show ID number, make link to it using the name 
-	that corresponds with that ID number? Could be confusing..
-* No not display the -1 in the database
-* Give ID as primary key, makes stuff easier
-* Place the FT back to the left side after all calculations
 
 
 Website:
