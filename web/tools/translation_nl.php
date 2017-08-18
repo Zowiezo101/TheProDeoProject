@@ -106,7 +106,15 @@ $Settings = array(
 	"incorrect"=>"Gebruikersnaam of wachtwoord is incorrect",);
 
 $Content = array(
-	"default"=>"Klik op een naam in de lijst om meer informatie te zien",
+	"default_book"=>"<h1>Boeken</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_event"=>"<h1>Gebeurtenissen</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_people"=>"<h1>Personen</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_loc"=>"<h1>Locaties</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_special"=>"<h1>Speciaal</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_ft"=>"<h1>Stamboom</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_tl"=>"<h1>Tijdslijn</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_wm"=>"<h1>Wereldkaart</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"link_title"=>"Bekijk informatie over deze persoon",
 	"tbd"=>"Word aan gewerkt!",
 	"prev"=>"Vorige",
 	"next"=>"Volgende",);

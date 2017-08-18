@@ -15,7 +15,9 @@
 		</div>
 		
 		<div class="contents_right" id="people_info">
-			<h1 id="default"><?php echo $Content["default"]; ?></h1>
+			<div id="default">
+				<?php echo $Content["default_people"]; ?>
+			</div>
 		</div>
 	</div>
 	

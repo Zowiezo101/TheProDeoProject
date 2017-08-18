@@ -106,7 +106,15 @@ $Settings = array(
 	"incorrect"=>"Username or password is incorrect",);
 
 $Content = array(
-	"default"=>"Click on a name in the list for more information",
+	"default_book"=>"<h1>Books</h1>Click on a name in the list for more information",
+	"default_event"=>"<h1>Events</h1>Click on a name in the list for more information",
+	"default_people"=>"<h1>Peoples</h1>Click on a name in the list for more information",
+	"default_loc"=>"<h1>Locations</h1>Click on a name in the list for more information",
+	"default_special"=>"<h1>Specials</h1>Click on a name in the list for more information",
+	"default_ft"=>"<h1>Familytree</h1>Click on a name in the list for more information",
+	"default_tl"=>"<h1>Timeline</h1>Click on a name in the list for more information",
+	"default_wm"=>"<h1>Worldmap</h1>Click on a name in the list for more information",
+	"link_title"=>"See more information about this person",
 	"tbd"=>"To be done!",
 	"prev"=>"Previous",
 	"next"=>"Next",);

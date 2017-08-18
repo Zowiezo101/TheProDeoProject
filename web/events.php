@@ -15,7 +15,9 @@
 		</div>
 		
 		<div class="contents_right" id="event_info">
-			<h1 id="default"><?php echo $Content["default"]; ?></h1>
+			<div id="default">
+				<?php echo $Content["default_event"]; ?>
+			</div>
 		</div>
 	</div>
 	

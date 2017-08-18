@@ -15,7 +15,9 @@
 		</div>
 		
 		<div class="contents_right" id="location_info">
-			<h1 id="default"><?php echo $Content["default"]; ?></h1>
+			<div id="default">
+				<?php echo $Content["default_loc"]; ?>
+			</div>
 		</div>
 	</div>
 	
