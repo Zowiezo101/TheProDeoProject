@@ -3,10 +3,14 @@
 * work on code-sketch for timeline
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+
 * Viewbox voor FamilyTree met vergroten en verkleinen
 * Do not reload entire page when clicking in an item, just replace contents
+	Keep information for current 100 items in objects
 * Create links from ID's to other Items (inter-item)
-* Make FamilyTree easier to read..
+* Make FamilyTree easier to read (different level parents)
+* Separate explanations per "default text"
+* Change border of rect when hovering over it
 
 Bugs:
 - None
