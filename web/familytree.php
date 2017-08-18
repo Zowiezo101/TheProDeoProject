@@ -2,12 +2,17 @@
 <html>
 	<?php require "layout/header.php"; ?>
 	
-	<div>
-		<h1><?php echo $NavBar["Familytree"]; ?> (<?php echo $Content["tbd"]; ?>)</h1>
-		<div id="familytree">
-			<svg width="100%" height="1500px" id='svg'>
-			
-			</svg>
+	<div class="clearfix">
+		<div class="contents_left">			
+			<div id="family_bar">
+				<!-- We fill this up in the FamilyTree javascript code -->
+			</div>
+		</div>
+		
+		<div class="contents_right" id="familytree">
+			<div id="default">
+				<?php echo $Content["default_ft"]; ?>
+			</div>
 		</div>
 	</div>
 	
@@ -18,39 +23,44 @@
 // List of peoples
 var Peoples = [<?php echo FindPeoples(); ?>];
 
+// This is the list of peoples who can be chosen to create a family tree with
+var PeoplesList = [];
+
 // This is a global variable, used calculate the level index
 var levelCounter = [];
 var levelIDs = [];
 
-// Global offset, used to get everything on the SVG within the borders
+// Global sizes, used to get everything on the SVG within the borders
 var globalOffset = 0;
-
-// This is the width of the SVG
 var globalWidth = 0;
+			
+// Create all the connections between parents and children
+setPeoples();
 
 window.onload = function createFamilyTree() {	
-			
-	// Create all the connections between parents and children
-	setPeoples();
+	// Make a nice list here to choose from the set of PeopleList people
+	// When chosen, update PeopleId and redraw page
+	var familyBar = document.getElementById("family_bar");
 	
-	// List with all peoples who have generation level 0
-	var PeopleId = 0;
+	var table = document.createElement("table");
+	for (var i = 0; i < PeoplesList.length; i++) {
+		var PeopleId = PeoplesList[i];
+		var People = Peoples[PeopleId];
+		
+		var TableButton = document.createElement("button");
+		TableButton.innerHTML = People.name;
+		TableButton.value = People.ID;
+		TableButton.onclick = SetSVG;
+		
+		var TableData = document.createElement("td");
+		TableData.appendChild(TableButton);
 	
-	// Set all the generation levels of all people
-	var highestLevel = setLevels(PeopleId);
-	setIndexes(PeopleId, highestLevel);
-	
-	// Make the calculations to see where everyone should be placed
-	calcLocations(PeopleId, highestLevel);
-	
-	// Set the height and the width
-	var SVG = document.getElementById("svg");
-	SVG.setAttribute('height', (highestLevel + 1)*75);	
-	SVG.setAttribute('width', globalWidth + globalOffset + 150);
-	
-	// Draw the current family tree
-	var People = Peoples[PeopleId];
-	People.drawFamilyTree(SVG);
+		var TableRow = document.createElement("tr");
+		TableRow.appendChild(TableData);
+		
+		table.appendChild(TableRow);
+	}
+	familyBar.appendChild(table);
 }
 
 function CreatePeople(name, ID, MotherID, FatherID, Gender) {
@@ -70,7 +80,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	this.ChildIndexF = 0;
 	
 	// Generations from the first ancestor
-	this.level = 0;
+	this.level = -1;
 	// Which Person on this level is this
 	this.levelIndex = -1;
 	
@@ -212,6 +222,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	/** */
 	this.drawPeople = function() {
 		var svgns = "http://www.w3.org/2000/svg";
+		var hrefns = "http://www.w3.org/1999/xlink";
 		var Group = document.createElementNS(svgns, "g");
 		
 		// Move everything away from the left border
@@ -342,7 +353,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 			}
 		}
 		
-		var Rect = document.createElementNS(svgns, "rect");
+		var Rect = document.createElementNS(svgns, "rect");		
 		Rect.setAttributeNS(null, 'width', 100);
 		Rect.setAttributeNS(null, 'height', 50);
 		
@@ -357,9 +368,15 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		Text.setAttributeNS(null, 'y', y + 25);
 		Text.textContent = this.name;
 		
-		Group.appendChild(Rect);
-		Group.appendChild(Text);
+		var newHref = updateURLParameter('<?php echo AddLangParam("peoples.php")?>', "id", this.ID);
+		var Link = document.createElementNS(svgns, "a");
+		Link.setAttributeNS(hrefns, 'xlink:href', newHref);
+		Link.setAttributeNS(hrefns, 'xlink:title', '<?php echo $Content["link_title"]; ?>');
+		Link.setAttributeNS(hrefns, 'target', "_top");
+		Link.appendChild(Rect);
+		Link.appendChild(Text);
 		
+		Group.appendChild(Link);		
 		return Group;
 	}
 	
@@ -381,6 +398,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 				
 				Child.drawFamilyTree(SVG);
 			}
+
 		}
 	}
 }
@@ -405,6 +423,29 @@ function setPeoples() {
 			}
 		}
 	}
+	
+	for (i = 0; i < Peoples.length; i++) {
+		var People = Peoples[i];
+		if ((People.MotherID == -1) && (People.FatherID == -1) && (People.ChildIDs.length > 0)) {
+			// This person is on top of a family tree
+			PeoplesList.push(People.ID);
+		}
+	}
+}
+	
+/** setLevels function */
+function resetLevels(ID) {
+	
+	for (var m = 0; m < Peoples.length; m++)
+	{		
+		var Person = Peoples[m];
+			
+		// Reset levelIndex
+		Person.level = -1;
+		Person.Location = [-1, -1];
+	}
+	
+	return;
 }
 	
 /** setLevels function */
@@ -875,6 +916,52 @@ function calcLocations(firstID, highestLevel) {
 	return;
 }
 
+function SetSVG(Event) {
+	var PeopleId = Event.target.value;
+	
+	// The FamilyTree div
+	var FamilyTree = document.getElementById("familytree");
+	
+	// Remove the default text
+	var defaultText = document.getElementById("default");
+	if (defaultText != null) {
+		FamilyTree.removeChild(defaultText);
+	}
+	
+	// Set all the generation levels of all people
+	// Start out clean
+	resetLevels();
+	var highestLevel = setLevels(PeopleId);
+	
+	resetIndexes();
+	setIndexes(PeopleId, highestLevel);
+	
+	// Make the calculations to see where everyone should be placed
+	globalOffset = 0;
+	globalWidth = 0;
+	calcLocations(PeopleId, highestLevel);
+	
+	// Start out clean, remove the current SVG
+	var SVG = document.getElementById("svg");
+	if (SVG != null) {
+		FamilyTree.removeChild(SVG);
+	}
+	
+	// Create this element
+	var svgns = "http://www.w3.org/2000/svg";
+	SVG = document.createElementNS(svgns, "svg");
+	SVG.id = "svg";
+	FamilyTree.appendChild(SVG);
+	
+	// Set the height and the width
+	SVG.setAttribute('height', (highestLevel + 1)*75);	
+	SVG.setAttribute('width', globalWidth + globalOffset + 150);
+	
+	// Draw the current family tree
+	var People = Peoples[PeopleId];
+	People.drawFamilyTree(SVG);
+}
+
 //https://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
 function uniq(a) {
     var prims = {"boolean":{}, "number":{}, "string":{}}, objs = [];
@@ -886,6 +973,31 @@ function uniq(a) {
         else
             return objs.indexOf(item) >= 0 ? false : objs.push(item);
     });
+}
+	
+/**
+* http://stackoverflow.com/a/10997390/11236
+*/
+function updateURLParameter(url, param, paramVal){
+	var newAdditionalURL = "";
+	var tempArray = url.split("?");
+	var baseURL = tempArray[0];
+	var additionalURL = tempArray[1];
+	var temp = "";
+	
+	if (additionalURL) {
+		tempArray = additionalURL.split("&");
+		
+		for (var i=0; i<tempArray.length; i++){
+			if(tempArray[i].split('=')[0] != param){
+				newAdditionalURL += temp + tempArray[i];
+				temp = "&";
+			}
+		}
+	}
+
+	var rows_txt = temp + "" + param + "=" + paramVal;
+	return baseURL + "?" + newAdditionalURL + rows_txt;
 }
 
 window.onerror = function(msg, url, linenumber) {

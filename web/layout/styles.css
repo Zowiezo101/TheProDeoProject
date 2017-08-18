@@ -254,7 +254,8 @@ body {
 #location_bar table, #location_bar tr, 
 #event_bar table, #event_bar tr,
 #book_bar table, #book_bar tr,
-#special_bar table, #special_bar tr
+#special_bar table, #special_bar tr,
+#family_bar table, #family_bar tr
 {
 	width: 100%;
 }
@@ -263,7 +264,8 @@ body {
 #location_bar td, 
 #event_bar td,
 #book_bar td,
-#special_bar td
+#special_bar td,
+#family_bar td
 {
 	width: 100%;
 	border-width: 1px;
@@ -277,7 +279,8 @@ body {
 #location_bar a, #location_info a,
 #event_bar a, #event_info a,
 #book_bar a, #book_info a,
-#special_bar a, #special_info a
+#special_bar a, #special_info a,
+#family_bar button
  {
 	display: block;
 	text-align: center;
@@ -287,6 +290,7 @@ body {
 	color: black;
 	text-decoration: none;
 	background-color: orange;
+	width: 100%;
 }
 
 #people_info td,
@@ -372,7 +376,7 @@ body {
 	border-style: solid;
 }
 
-#familytree {
+.familytree {
 	width: 100%;
 	height: 500px;
 	overflow-x: scroll;
