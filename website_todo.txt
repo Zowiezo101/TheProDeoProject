@@ -35,3 +35,8 @@ export
 click database host
 drop all tables
 import
+
+Google Maps API:
+id: prodeo-177715
+AIzaSyAyFq1pKyxT7asd87wAgr83_yWIrT-sz7E
+API-sleutel 1
