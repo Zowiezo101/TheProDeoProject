@@ -1,5 +1,4 @@
 * Check on all error messages, do they display?
-* Work on code-sketch for worldmap
 * work on code-sketch for timeline
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
@@ -10,11 +9,14 @@
 * Create links from ID's to other Items (inter-item)
 * Make FamilyTree easier to read (different level parents)
 * Separate explanations per "default text"
-* Change border of rect when hovering over it
+* Change border of rect when hovering over it (FamilyTree)
+* Make Map items clickable and to go location information using a InfoWindow
+* Give some basic info in a InfoWindow in map (Name, Coordinates, Link to item)
 
 Bugs:
 - None
 
+https://www.gps-coordinaten.nl/
 
 Website:
 https://nl.000webhost.com/members/website/list
