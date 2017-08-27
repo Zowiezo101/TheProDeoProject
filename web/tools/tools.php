@@ -383,4 +383,31 @@ function FindPeoples() {
 	
 	return $people_set;
 }
+
+function FindLocations() {
+	global $Search;
+	global $conn;
+	$location_set = "";
+	
+	$sql = "SELECT * FROM locations WHERE Coordinates IS NOT NULL";
+	$result = $conn->query($sql);
+	
+	if (!$result) {
+		echo($Search["NoResults"]);
+	}
+	else {
+		$counter = 0;
+		while ($location = $result->fetch_array()) {
+			$name = $location['Name'];
+			$ID = $location['ID'];
+			$Coordinates = $location['Coordinates'];
+			
+			$location = "new CreateLocation('".$name."', '".$counter."', '".$ID."', '".$Coordinates."'),";
+			$location_set = $location_set.$location;
+			$counter++;
+		}
+	}
+	
+	return $location_set;
+}
 ?>

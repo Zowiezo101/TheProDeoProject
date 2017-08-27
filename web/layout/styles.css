@@ -255,7 +255,8 @@ body {
 #event_bar table, #event_bar tr,
 #book_bar table, #book_bar tr,
 #special_bar table, #special_bar tr,
-#family_bar table, #family_bar tr
+#family_bar table, #family_bar tr,
+#world_bar table, #world_bar tr
 {
 	width: 100%;
 }
@@ -265,7 +266,8 @@ body {
 #event_bar td,
 #book_bar td,
 #special_bar td,
-#family_bar td
+#family_bar td,
+#world_bar td
 {
 	width: 100%;
 	border-width: 1px;
@@ -280,7 +282,8 @@ body {
 #event_bar a, #event_info a,
 #book_bar a, #book_info a,
 #special_bar a, #special_info a,
-#family_bar button
+#family_bar button,
+#world_bar button
  {
 	display: block;
 	text-align: center;
@@ -389,27 +392,8 @@ body {
 	border: 0;
 }
 
-/* .person { */
-	/* background-color: red; */
-	/* width: 100px; */
-	/* height: 50px; */
-	/* position: relative; */
-/* } */
-
-/* .has_sibling { */
-	/* float: left; */
-/* } */
-
-/* .no_sibling { */
-	/* clear: both; */
-/* } */
-
-/* .person a { */
-	/* display: block; */
-	/* height: 100%; */
-	/* text-align: center; */
-/* } */
-
-/* .person a:hover { */
-	/* background-color: pink; */
-/* } */
+#google_maps {
+	width: 100%;
+	height: 100%;
+	display: none;
+}

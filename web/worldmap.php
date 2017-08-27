@@ -13,12 +13,12 @@
 			</div>
 		</div>
 		
-		<div class="contents_right" id="worldmap">
+		<div class="contents_right" id="worldmap">			
 			<div id="default">
-				<?php //echo $Content["default_wm"]; ?>
+				<?php echo $Content["default_wm"]; ?>
 			</div>
 			
-			<div id="googleMap" style="width:100%;height:100%;"></div>
+			<div id="google_maps"></div>
 		</div>
 	</div>
 	
@@ -26,16 +26,127 @@
 </html>
 
 <script>
-function myMap() {
+// List of locations of which the coordinates are known
+var Locations = [<?php echo FindLocations(); ?>];
+			
+// Create all the connections between parents and children
+setLocations();
+
+var MapObject = null;
+
+window.onload = function createWorldMap() {
+	// Make a nice list here to choose from the set of locations that are known
+	// When chosen, update location in the map
+	var worldBar = document.getElementById("world_bar");
+	
+	var table = document.createElement("table");
+	for (var i = 0; i < Locations.length; i++) {
+		var Location = Locations[i];
+		
+		var TableButton = document.createElement("button");
+		TableButton.innerHTML = Location.name;
+		TableButton.value = Location.index;
+		TableButton.onclick = focusOnLocation;
+		
+		var TableData = document.createElement("td");
+		TableData.appendChild(TableButton);
+	
+		var TableRow = document.createElement("tr");
+		TableRow.appendChild(TableData);
+		
+		table.appendChild(TableRow);
+	}
+	worldBar.appendChild(table);
+}
+
+function CreateLocation(name, index, ID, coordinates) {
+	this.name = name;
+	this.index = index;
+	this.ID = ID;
+	this.coordinatesFlat = coordinates;
+	
+	this.coordinates = [-1, -1];
+	this.marker = null;
+	
+	/** setCoordinates function */
+	this.setCoordinates = function (level) {
+		// Split the string coordinates into two separate coordinates
+		var coordinatesTemp = this.coordinatesFlat.split(',');
+		
+		// Now turn them into floats
+		this.coordinates[0] = parseFloat(coordinatesTemp[0]);
+		this.coordinates[1] = parseFloat(coordinatesTemp[1]);
+	}
+	
+	this.drawMarker = function () {
+		this.marker = new google.maps.Marker({
+          position: {lat: this.coordinates[0],
+					 lng: this.coordinates[1]},
+          map: MapObject,
+          title: this.name
+        });
+	}
+	
+	this.focusOnMe = function () {
+		MapObject.panTo({
+			lat : this.coordinates[0],
+			lng : this.coordinates[1]
+		});
+	}
+}
+
+function setLocations() {	
+	// Set up all the coordinates nicely for Google Maps
+	for (i = 0; i < Locations.length; i++) {
+		var Location = Locations[i];
+	
+		Location.setCoordinates();
+	}
+}
+
+function focusOnLocation(Event) {
+	var LocationId = Event.target.value;
+	Location = Locations[LocationId];
+	
+	// The GoogleMaps div
+	var GoogleMaps = document.getElementById("google_maps");
+	
+	// Remove the default text
+	var WorldMap = document.getElementById("worldmap");
+	var defaultText = document.getElementById("default");
+	if (defaultText != null) {
+		WorldMap.removeChild(defaultText);
+	
+		// This means that we now are looking at the Map for the first time
+		GoogleMaps.style.display = "block";
+		google.maps.event.trigger(GoogleMaps, 'resize');
+		
+		// Add all of our Locations
+		for (var i = 0; i < Locations.length; i++) {
+			Loc = Locations[i];
+			Loc.drawMarker();
+		}
+	}
+	
+	// Now focus on the marker that is placed
+	Location.focusOnMe();
+}
+
+function displayGoogleMaps() {
 	var mapProp = {
 		center: new google.maps.LatLng(51.508742, -0.120850),
 		zoom: 5,
 	};
 	
-	var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+	MapObject = new google.maps.Map(document.getElementById("google_maps"), mapProp);
+}
+
+window.onerror = function(msg, url, linenumber) {
+    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+    return true;
 }
 </script>
 
 <script async defer 
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFq1pKyxT7asd87wAgr83_yWIrT-sz7E&callback=myMap">
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFq1pKyxT7asd87wAgr83_yWIrT-sz7E&callback=displayGoogleMaps">
 </script>
