@@ -50,7 +50,7 @@ if (isset($_GET['id'])) {
 				$value = "";
 			}?>
 			
-			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) { ?>
+			<?php if ((strpos($key, "ID") !== false) and ($key != "ID") and ($value != "")) { ?>
 				// Update the previous table cell with a link to the ID
 				var TableLink = document.createElement("a");
 				TableLink.innerHTML = TableData.innerHTML;

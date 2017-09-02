@@ -53,7 +53,7 @@ if (isset($_GET['id'])) {
 				$value = "";
 			}?>
 			
-			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) { ?>
+			<?php if ((strpos($key, "ID") !== false) and ($key != "ID") and ($value != "")) { ?>
 				var TableLink = document.createElement("a");
 				TableLink.innerHTML = "<?php echo $value; ?>";
 				
