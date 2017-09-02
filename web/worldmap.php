@@ -80,11 +80,21 @@ function CreateLocation(name, index, ID, coordinates) {
 	
 	this.drawMarker = function () {
 		this.marker = new google.maps.Marker({
-          position: {lat: this.coordinates[0],
-					 lng: this.coordinates[1]},
-          map: MapObject,
-          title: this.name
-        });
+			position: {
+						lat: this.coordinates[0],
+						lng: this.coordinates[1]
+					},
+			map: MapObject,
+			title: this.name
+		});
+		
+		this.marker.infoWindow = new google.maps.InfoWindow({
+			content: "<a href=" + updateURLParameter("locations.php", "id", this.ID) + ">" + this.name + "</a><br>" + this.coordinates[0].toFixed(2) + ", " + this.coordinates[1].toFixed(2)
+		});
+		
+		this.marker.addListener('click', function() {
+			this.infoWindow.open(MapObject, this);
+		});
 	}
 	
 	this.focusOnMe = function () {
@@ -142,8 +152,34 @@ function displayGoogleMaps() {
 }
 
 window.onerror = function(msg, url, linenumber) {
-    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
-    return true;
+	alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+	return true;
+}
+	
+/**
+* http://stackoverflow.com/a/10997390/11236
+*/
+function updateURLParameter(url, param, paramVal){
+// function updateURLParameter(url, param){
+	var newAdditionalURL = "";
+	var tempArray = url.split("?");
+	var baseURL = tempArray[0];
+	var additionalURL = tempArray[1];
+	var temp = "";
+	
+	if (additionalURL) {
+		tempArray = additionalURL.split("&");
+		
+		for (var i=0; i<tempArray.length; i++){
+			if(tempArray[i].split('=')[0] != param){
+				newAdditionalURL += temp + tempArray[i];
+				temp = "&";
+			}
+		}
+	}
+
+	var rows_txt = temp + "" + param + "=" + paramVal;
+	return baseURL + "?" + newAdditionalURL + rows_txt;
 }
 </script>
 

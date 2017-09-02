@@ -10,8 +10,8 @@
 * Make FamilyTree easier to read (different level parents)
 * Separate explanations per "default text"
 * Change border of rect when hovering over it (FamilyTree)
-* Make Map items clickable and to go location information using a InfoWindow
-* Give some basic info in a InfoWindow in map (Name, Coordinates, Link to item)
+* When click location in menu left (Worldmap), show infoWindow
+* toFixed for coordinates database locations
 
 Bugs:
 - None
