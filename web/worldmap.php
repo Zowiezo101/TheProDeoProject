@@ -2,10 +2,6 @@
 <html>
 	<?php require "layout/header.php"; ?>
 	
-	<div>
-		<h1><?php echo $Content["tbd"]; ?></h1>
-	</div>
-	
 	<div class="clearfix">
 		<div class="contents_left">			
 			<div id="world_bar">
@@ -33,6 +29,7 @@ var Locations = [<?php echo FindLocations(); ?>];
 setLocations();
 
 var MapObject = null;
+var openWindow = null;
 
 window.onload = function createWorldMap() {
 	// Make a nice list here to choose from the set of locations that are known
@@ -89,11 +86,17 @@ function CreateLocation(name, index, ID, coordinates) {
 		});
 		
 		this.marker.infoWindow = new google.maps.InfoWindow({
-			content: "<a href=" + updateURLParameter("locations.php", "id", this.ID) + ">" + this.name + "</a><br>" + this.coordinates[0].toFixed(2) + ", " + this.coordinates[1].toFixed(2)
+			content: this.name + "<br><?php echo $LocationsParams["Coordinates"]; ?>: " + this.coordinates[0].toFixed(2) + ", " + this.coordinates[1].toFixed(2) + "<br><a href=" + updateURLParameter('<?php echo AddLangParam("locations.php")?>', "id", this.ID) + "><?php echo $Content["link_location"]; ?></a>"
 		});
 		
 		this.marker.addListener('click', function() {
+			// Close the current open window
+			if (openWindow != null) {
+				openWindow.close();
+			}
+			
 			this.infoWindow.open(MapObject, this);
+			openWindow = this.infoWindow;
 		});
 	}
 	
@@ -102,6 +105,24 @@ function CreateLocation(name, index, ID, coordinates) {
 			lat : this.coordinates[0],
 			lng : this.coordinates[1]
 		});
+		
+		// Close the current open window
+		if (openWindow != null) {
+			openWindow.close();
+		}
+		
+		this.marker.infoWindow.open(MapObject, this.marker);
+		openWindow = this.marker.infoWindow;
+	}
+	
+	this.openInfoWindow = function() {
+		// Close the current open window
+		if (openWindow != null) {
+			openWindow.close();
+		}
+		
+		this.marker.infoWindow.open(MapObject, this.marker);
+		openWindow = this.marker.infoWindow;
 	}
 }
 
