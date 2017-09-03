@@ -9,8 +9,7 @@
 * Create links from ID's to other Items (inter-item)
 * Make FamilyTree easier to read (different level parents)
 * Separate explanations per "default text"
-* Change border of rect when hovering over it (FamilyTree)
-* When click location in menu left (Worldmap), show infoWindow
+* Change border of rect when hovering over it (FamilyTree) 
 * toFixed for coordinates database locations
 
 Bugs:
