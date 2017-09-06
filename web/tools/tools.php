@@ -384,6 +384,33 @@ function FindPeoples() {
 	return $people_set;
 }
 
+function FindEvents() {
+	global $Search;
+	global $conn;
+	$event_set = "";
+	
+	$sql = "SELECT * FROM events";
+	$result = $conn->query($sql);
+	
+	if (!$result) {
+		echo($Search["NoResults"]);
+	}
+	else {
+		while ($event = $result->fetch_array()) {
+			$name = $event['Name'];
+			$ID = $event['ID'];
+			$previousID = $event['PreviousID'];
+			$length = $event['Length'];
+			$verses = $event['BibleVerses'];
+			
+			$event = 'new CreateEvent("'.$name.'", "'.$ID.'", "'.$previousID.'", "'.$length.'", "'.$verses.'"),';
+			$event_set = $event_set.$event;
+		}
+	}
+	
+	return $event_set;
+}
+
 function FindLocations() {
 	global $Search;
 	global $conn;

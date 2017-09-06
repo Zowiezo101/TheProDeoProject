@@ -256,7 +256,8 @@ body {
 #book_bar table, #book_bar tr,
 #special_bar table, #special_bar tr,
 #family_bar table, #family_bar tr,
-#world_bar table, #world_bar tr
+#world_bar table, #world_bar tr,
+#timeline_bar table, #timeline_bar tr
 {
 	width: 100%;
 }
@@ -267,7 +268,8 @@ body {
 #book_bar td,
 #special_bar td,
 #family_bar td,
-#world_bar td
+#world_bar td,
+#timeline_bar td
 {
 	width: 100%;
 	border-width: 1px;
@@ -283,7 +285,8 @@ body {
 #book_bar a, #book_info a,
 #special_bar a, #special_info a,
 #family_bar button,
-#world_bar button
+#world_bar button,
+#timeline_bar button
  {
 	display: block;
 	text-align: center;
@@ -386,6 +389,13 @@ body {
 }
 
 #familytree svg {
+	background-color: lightblue;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+#timeline svg {
 	background-color: lightblue;
 	margin: 0;
 	padding: 0;

@@ -1,7 +1,8 @@
 * Check on all error messages, do they display?
-* work on code-sketch for timeline
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+* Gebruik lengtes om tijdsduur aan te geven voor Tijdslijn
+* Gebruik kleuren om type tijdsduur aan te geven voor Tijdslijn (Jaren, Maanden, Weken, Dagen, Uren, Minuten, Seconden, Onbekend)
 
 * Viewbox voor FamilyTree met vergroten en verkleinen
 * Do not reload entire page when clicking in an item, just replace contents
