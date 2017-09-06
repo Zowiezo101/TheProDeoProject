@@ -50,17 +50,19 @@ if (isset($_GET['id'])) {
 				$value = "";
 			}?>
 			
-			<?php if ((strpos($key, "ID") !== false) and ($key != "ID") and ($value != "")) { ?>
-				// Update the previous table cell with a link to the ID
-				var TableLink = document.createElement("a");
-				TableLink.innerHTML = TableData.innerHTML;
-				TableData.innerHTML = "";
-				
-				currentHref = window.location.href;
-				TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
-				
-				TableData.appendChild(TableLink);
-			<?php } else { ?>
+			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) {
+				if ($value != "") { ?>
+					// Update the previous table cell with a link to the ID
+					var TableLink = document.createElement("a");
+					TableLink.innerHTML = TableData.innerHTML;
+					TableData.innerHTML = "";
+					
+					currentHref = window.location.href;
+					TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
+					
+					TableData.appendChild(TableLink);
+			<?php } 
+			} else { ?>
 				// Add a new table row
 				var TableKey = document.createElement("td");
 				TableKey.innerHTML = "<?php echo $BooksParams[$key]; ?>";

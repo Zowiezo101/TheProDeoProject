@@ -53,15 +53,17 @@ if (isset($_GET['id'])) {
 				$value = "";
 			}?>
 			
-			<?php if ((strpos($key, "ID") !== false) and ($key != "ID") and ($value != "")) { ?>
-				var TableLink = document.createElement("a");
-				TableLink.innerHTML = "<?php echo $value; ?>";
-				
-				currentHref = window.location.href;
-				TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
-				
-				TableData.appendChild(TableLink);
-			<?php } else { ?>
+			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) {
+				if ($value != "") { ?>
+					var TableLink = document.createElement("a");
+					TableLink.innerHTML = "<?php echo $value; ?>";
+					
+					currentHref = window.location.href;
+					TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
+					
+					TableData.appendChild(TableLink);
+			<?php } 
+			} else { ?>
 				var TableData = document.createElement("td");
 				TableData.innerHTML = "<?php echo $value; ?>";
 			<?php } ?>
