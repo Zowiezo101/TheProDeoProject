@@ -14,6 +14,9 @@
 		</div>
 		
 		<div class="contents_right" id="timeline">
+			<div id="legenda">
+				<!-- Here comes the legenda -->
+			</div>
 			<div id="default">
 				<?php echo $Content["default_tl"]; ?>
 			</div>
@@ -62,6 +65,7 @@ var levelIDs = [];
 // Global sizes, used to get everything on the SVG within the borders
 var globalOffset = 0;
 var globalHeight = 0;
+var globalWidth = 0;
 			
 // Create all the connections between parents and children
 setEvents();
@@ -112,7 +116,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 	this.levelIndex = -1;
 	
 	// The length variables and types
-	this.lengthIndex = 2;
+	this.lengthIndex = -1;
 	this.lengthType = -1;
 	
 	// Location of this event
@@ -145,10 +149,10 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		this.calcTime();
 		
 		// Calculate the Y coordinate
-		var X = 0;
+		var X = 25;
 		
 		// Calculate the X coordinate
-		var Y = 0;
+		var Y = 50;
 				
 		// Is this the first person of the family tree?
 		if (this.previousID != -1) {
@@ -177,12 +181,12 @@ function CreateEvent(name, ID, previousID, length, verses) {
 					// Are we on the right side of the middle?
 					// Place the block on the right side of parents X coordinate
 					var offset = Index - middle;
-					Y = Parent.Location[1] + offset*75;
+					Y = Parent.Location[1] + offset*100;
 				} else {
 					// Are we on the left side of the middle?
 					// Place the block on the left side of parents X coordinate
 					var offset = middle - Index;
-					Y = Parent.Location[1] - offset*75;
+					Y = Parent.Location[1] - offset*100;
 				}
 			} else {
 				var middle = numChildren / 2;
@@ -190,16 +194,16 @@ function CreateEvent(name, ID, previousID, length, verses) {
 					// Are we on the right side of the middle?
 					// Place the block on the right side of parents X coordinate
 					var offset = Index - middle;
-					Y = (Parent.Location[1] + (75 / 2)) + offset*75;
+					Y = (Parent.Location[1] + (100 / 2)) + offset*100;
 				} else {
 					// Are we on the left side of the middle?
 					// Place the block on the left side of parents X coordinate
 					var offset = middle - Index;
-					Y = (Parent.Location[1] + (75 / 2)) - offset*75;
+					Y = (Parent.Location[1] + (100 / 2)) - offset*100;
 				}
 			}
 			
-			X = Parent.Location[0] + (Parent.lengthIndex + 1)*50;
+			X = Parent.Location[0] + Parent.lengthIndex*100 + 50;
 		}
 		
 		// This value is used, in case someone is overlapping with someone else
@@ -311,30 +315,172 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		return lengthType;
 	}
 	
+	this.convertType = function (value, fromType, toType) {
+		// This function assumes that the value input, 
+		// do not cause a value that is smaller than 1
+		var typeLoop = 0;
+		var newValue = value;
+		if (fromType > toType) {
+			typeLoop = fromType - toType;
+			
+			// Convert from bigger type to a smaller type
+			for (var loop = 0; loop < typeLoop; loop++) {
+				newValue = value*MULTS[toType + loop];
+			}
+		} else if (fromType < toType) {
+			typeLoop = toType - fromType;
+			
+			// Convert from smaller type to a bigger type
+			for (var loop = 0; loop < typeLoop; loop++) {
+				newValue = (value / MULTS[fromType + loop]);
+			}
+		}
+		
+		return newValue;
+	}
+	
+	this.convertLength = function (value, Type) {
+		// This function calculates what the length of a block should be
+		// This is from 0+ to 10, 0+ for the shortest length and 10 for the longest
+		var newValue = 2;
+		if ((Type < ENUM_MIL) && (Type > ENUM_UNDEFINED)) {
+			newValue = (value / MULTS[Type])*10;
+		} else if (Type == ENUM_MIL) {
+			newValue = value;
+		}
+		
+		return newValue;
+	}
+	
+	this.convertString = function (value) {
+		// This function converts the cryptic values to a readable string
+		var newValue = value;
+		if (value == "") {
+			newValue = "Undefined";
+		}
+				
+		return newValue;
+	}
+	
+	this.convertText = function (Text, value) {
+		var svgns = "http://www.w3.org/2000/svg";
+		// The second tSpan gets an additional offset
+		var firstTSPAN = 0;
+		
+		if (this.Length != "") {
+			// The tspan containing the time length
+			var tSpan = document.createElementNS(svgns, "tspan");	
+			
+			// Update the contents of the current tspan object
+			tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
+			tSpan.setAttributeNS(null, "dy", -10);
+			tSpan.textContent = this.convertString(this.Length);
+			
+			Text.appendChild(tSpan);
+			firstTSPAN = 1;
+		}
+		
+		var subLength = Math.round(11 * this.lengthIndex);
+		var subStart = 0;
+		var subString = "";
+		
+		do {
+			var tSpan = document.createElementNS(svgns, "tspan");	
+			
+			// Get the string that we put into the tspan object
+			subString = value.substr(subStart, subLength);
+			
+			// Increment our string offset
+			subStart += subLength;
+			
+			// Update the contents of the current tspan object
+			tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
+			tSpan.setAttributeNS(null, "dy", 15 + 10*firstTSPAN);
+			first = 0;
+			
+			if ((subString.length == subLength) && (value[subStart] != " ") && (value[subStart - 1] != " ") && (value.length != subStart) ){
+				tSpan.textContent = (subString + "-");
+			} else {
+				tSpan.textContent = (subString);
+			}
+			
+			Text.appendChild(tSpan);
+		} while (subString.length == subLength);
+		
+		return;
+	}
+	
 	this.calcTime = function () {
 		var timeParts = this.Length.split(" ");
 		
+		// Default defines
 		var lengthTypeStr = "";
-		// Only a single time type given
-		if ((timeParts.length == 1) && (timeParts[0] != ""))
-		{
-			lengthTypeStr = timeParts[0][timeParts[0].length - 1];
+		var lengthType = ENUM_UNDEFINED;
+		var Length = this.Length;
+		
+		if ((timeParts.length > 0) && (timeParts[0] != "")) {
+			// Clear before we start calculating
+			Length = 0;
 			
-		} else if (timeParts > 1) {
 			// Find the smallest timepart and convert the bigger timeparts to the same level
 			// The code down here will try to find the biggest possible level of the sum 
+			var minType = ENUM_MIL;
+			for (var types = 0; types < timeParts.length; types++) {
+				// Get the time type (last char of the string)
+				var currentTypeStr = timeParts[types];
+				var currentTypeStrLen = currentTypeStr.length;
+				
+				var TypeStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
+				var Type = this.StringToValue(TypeStr);
+				
+				// Looping for the smallest type
+				if (Type < minType) {
+					minType = Type;
+					// alert("Minimum type: " + minType);
+				}
+			}
 			
+				
+			// Now that we have the smallest type, we can start converting!
+			for (var types = 0; types < timeParts.length; types++) {
+				var currentTypeStr = timeParts[types];
+				var currentTypeStrLen = currentTypeStr.length;
+				
+				var currentStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
+				var currentType = this.StringToValue(currentStr);
+				
+				var currentLen = parseInt(currentTypeStr.slice(0, currentTypeStrLen - 1));
+				// alert("Type: " + currentType + "\nMin type: " + minType);
+				var addLength = this.convertType(currentLen, currentType, minType);
+				Length += addLength;
+				// alert("Length: " + Length + " and added Length: " + addLength);
+			}
+			
+			lengthType = minType;
+		
+			// Can we get a higher level length type?
+			if (lengthType != ENUM_UNDEFINED) {
+				// While loop here, getting a higher level untill a value is smaller than zero
+				var newLength = 0;
+				while (true) {
+					newLength = this.convertType(Length, lengthType, lengthType + 1);
+					// alert("Old length: " + Length + "\nNew length: " + newLength + "\nType: " + lengthType);
+					
+					if ((newLength < 1) || (lengthType == ENUM_MIL)){
+						break;
+					}
+					
+					lengthType++;
+					Length = newLength;
+				}
+			}
 		}
 		
-		var lengthType = this.StringToValue(lengthTypeStr);
-		
-		// Can we get a higher level length type?
-		if (lengthType != -1) {
-			// While loop here, getting a higher level untill a value is smaller than zero
-		}
-		
-		this.lengthIndex = 2;
+		this.lengthIndex = this.convertLength(Length, lengthType);
 		this.lengthType = lengthType;
+		
+		// Update the global width value
+		globalWidth += (this.lengthIndex*100);
 	}
 	
 	/** */
@@ -358,7 +504,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 			
 			// And only if the parents are drawn as well
 			if ((Parent.Location[0] != -1) && (Parent.Location[1] != -1)) {
-				var x_parent = Parent.Location[0] + Parent.lengthIndex*50;
+				var x_parent = Parent.Location[0] + Parent.lengthIndex*100;
 				var y_parent = Parent.Location[1] + 25 + globalOffset;
 				
 				// Make three lines, to get nice 90 degree angles
@@ -412,22 +558,19 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		}
 		
 		var Rect = document.createElementNS(svgns, "rect");		
-		Rect.setAttributeNS(null, 'width', this.lengthIndex*50);
+		Rect.setAttributeNS(null, 'width', this.lengthIndex*100);
 		Rect.setAttributeNS(null, 'height', 50);
-		
 		Rect.setAttributeNS(null, 'x', x);
 		Rect.setAttributeNS(null, 'y', y);
-		
 		Rect.setAttributeNS(null, 'stroke', 'black');
 		Rect.setAttributeNS(null, 'fill', this.getTimeColor());
 		
 		var Text = document.createElementNS(svgns, "text");		
-		Text.setAttributeNS(null, 'width', this.lengthIndex*50);
+		Text.setAttributeNS(null, 'width', this.lengthIndex*100);
 		Text.setAttributeNS(null, 'height', 50);
-		
 		Text.setAttributeNS(null, 'x', x);
-		Text.setAttributeNS(null, 'y', y + 25);
-		Text.textContent = this.name;
+		Text.setAttributeNS(null, 'y', y);
+		this.convertText(Text, this.name);
 		
 		var newHref = updateURLParameter('<?php echo AddLangParam("events.php")?>', "id", this.ID);
 		var Link = document.createElementNS(svgns, "a");
@@ -623,6 +766,7 @@ function calcLocations() {
 	while (done == 0)
 	{
 		var collision = 0;
+		globalWidth = 0;
 		// alert("Start while loop");
 		
 		// Draw the tree per level
@@ -641,10 +785,10 @@ function calcLocations() {
 				}
 				
 				// Do a check on the location of the person
-				if (Event.Location[1] < 25) {
+				if (Event.Location[1] < 50) {
 					// Person seems to fall out of boundary
 					// What offset do we need?
-					var offset = 25 - Event.Location[1];
+					var offset = 50 - Event.Location[1];
 					
 					if (offset > globalOffset) {
 						// Take the highest offset found
@@ -666,7 +810,7 @@ function calcLocations() {
 					
 					// If we get in the if function, these two people are overlapping.
 					// Or the lower person is too far up and needs to move down
-					if (Event.Location[1] < (Neighbour.Location[1] + 75)) {
+					if (Event.Location[1] < (Neighbour.Location[1] + 100)) {
 						// alert("set of IDs of level " + Person.level + " :" + IDset);
 						if (Event.level >= debugFrom) {
 						alert("Is people " + Event.name + " on location (" + Event.Location[0] + ", " + Event.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
@@ -799,7 +943,7 @@ function calcLocations() {
 							}
 						}
 							
-						Child.offset += (Neighbour.Location[1] + 75) - Event.Location[1];
+						Child.offset += (Neighbour.Location[1] + 100) - Event.Location[1];
 						if (Event.level >= debugFrom) {
 						alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
 						}
@@ -901,7 +1045,7 @@ function SetSVG(ClickEvent) {
 	
 	// Set the height and the width
 	SVG.setAttribute('height', globalHeight + globalOffset + 75);	
-	SVG.setAttribute('width', (highestLevel + 1)*150);
+	SVG.setAttribute('width', globalWidth + (highestLevel + 1)*50);
 	
 	// Draw the current family tree
 	var Event = Events[EventId];

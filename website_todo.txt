@@ -1,10 +1,10 @@
 * Check on all error messages, do they display?
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
-* Gebruik lengtes om tijdsduur aan te geven voor Tijdslijn
-* Gebruik kleuren om type tijdsduur aan te geven voor Tijdslijn (Jaren, Maanden, Weken, Dagen, Uren, Minuten, Seconden, Onbekend)
 * In database, laat voor events netjes woorden zien in plaats van cryptische tijdsduur
 * Legenda met wat de kleuren betekenen
+* Add time length to events timeline
+* Check alle conversies nog een keer, 365 dagen = 1 jaar etc
 
 * Viewbox voor FamilyTree met vergroten en verkleinen
 * Do not reload entire page when clicking in an item, just replace contents
