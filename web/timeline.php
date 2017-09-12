@@ -2,10 +2,6 @@
 <html>
 	<?php require "layout/header.php"; ?>
 	
-	<div>
-		<h1><?php echo $Content["tbd"]; ?></h1>
-	</div>
-	
 	<div class="clearfix">
 		<div class="contents_left">			
 			<div id="timeline_bar">
@@ -45,7 +41,7 @@ var MULTS = [60, 	// Seconds
 	60,		// Minutes
 	24,		// Hours
 	7,		// Days
-	4,		// Weeks
+	(52 / 12),		// Weeks
 	12,		// Months
 	10,		// Years
 	10,		// Decades
@@ -152,7 +148,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		var X = 25;
 		
 		// Calculate the X coordinate
-		var Y = 50;
+		var Y = 50 + 75;
 				
 		// Is this the first person of the family tree?
 		if (this.previousID != -1) {
@@ -214,9 +210,9 @@ function CreateEvent(name, ID, previousID, length, verses) {
 	}
 	
 	/** */
-	this.getTimeColor = function () {
+	this.getTimeColor = function (lengthType) {
 		var color = '';
-		switch(this.lengthType) {
+		switch(lengthType) {
 			case ENUM_SEC:
 			color = "Green";
 			break;
@@ -250,7 +246,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 			break;
 			
 			case ENUM_CEN:
-			color = "Brown";
+			color = "Orange";
 			break;
 			
 			case ENUM_MIL:
@@ -315,6 +311,87 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		return lengthType;
 	}
 	
+	this.StringToType = function (lengthTypeStr, Length) {
+		
+		switch(lengthTypeStr) {
+			case 's':
+			lengthType = "<?php echo $Timeline["second"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["seconds"] ?>";
+			}
+			break;
+			
+			case 'i':
+			lengthType = "<?php echo $Timeline["minute"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["minutes"] ?>";
+			}
+			break;
+			
+			case 'h':
+			lengthType = "<?php echo $Timeline["hour"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["hours"] ?>";
+			}
+			break;
+			
+			case 'd':
+			lengthType = "<?php echo $Timeline["day"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["days"] ?>";
+			}
+			break;
+			
+			case 'w':
+			lengthType = "<?php echo $Timeline["week"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["weeks"] ?>";
+			}
+			break;
+			
+			case 'm':
+			lengthType = "<?php echo $Timeline["month"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["months"] ?>";
+			}
+			break;
+			
+			case 'y':
+			lengthType = "<?php echo $Timeline["year"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["years"] ?>";
+			}
+			break;
+			
+			case 'D':
+			lengthType = "<?php echo $Timeline["decade"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["decades"] ?>";
+			}
+			break;
+			
+			case 'C':
+			lengthType = "<?php echo $Timeline["century"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["centuries"] ?>";
+			}
+			break;
+			
+			case 'M':
+			lengthType = "<?php echo $Timeline["millennium"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["millennia"] ?>";
+			}
+			break;
+			
+			default:
+			lengthType = "<?php echo $Timeline["unknown"] ?>";
+			break;
+		}
+		
+		return lengthType;
+	}
+	
 	this.convertType = function (value, fromType, toType) {
 		// This function assumes that the value input, 
 		// do not cause a value that is smaller than 1
@@ -354,9 +431,27 @@ function CreateEvent(name, ID, previousID, length, verses) {
 	
 	this.convertString = function (value) {
 		// This function converts the cryptic values to a readable string
-		var newValue = value;
+		var newValue = "";
 		if (value == "") {
-			newValue = "Undefined";
+			newValue = "<?php echo $Timeline["unknown"] ?>";
+		} else {
+			// Convert every time type
+			var timeParts = this.Length.split(" ");
+			
+			for (var types = 0; types < timeParts.length; types++) {
+				var currentTypeStr = timeParts[types];
+				var currentTypeStrLen = currentTypeStr.length;
+				
+				var currentStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
+				var currentLen = parseInt(currentTypeStr.slice(0, currentTypeStrLen - 1));
+				
+				var currentType = this.StringToType(currentStr, currentLen);
+				
+				newValue += currentLen + " " + currentType;
+				if (types < (timeParts.length - 1)) {
+					newValue += ", ";
+				}
+			}
 		}
 				
 		return newValue;
@@ -364,8 +459,9 @@ function CreateEvent(name, ID, previousID, length, verses) {
 	
 	this.convertText = function (Text, value) {
 		var svgns = "http://www.w3.org/2000/svg";
+		
 		// The second tSpan gets an additional offset
-		var firstTSPAN = 0;
+		firstTSPAN = 0;
 		
 		if (this.Length != "") {
 			// The tspan containing the time length
@@ -377,6 +473,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 			tSpan.textContent = this.convertString(this.Length);
 			
 			Text.appendChild(tSpan);
+			// The second tSpan gets an additional offset
 			firstTSPAN = 1;
 		}
 		
@@ -396,7 +493,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 			// Update the contents of the current tspan object
 			tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
 			tSpan.setAttributeNS(null, "dy", 15 + 10*firstTSPAN);
-			first = 0;
+			firstTSPAN = 0;
 			
 			if ((subString.length == subLength) && (value[subStart] != " ") && (value[subStart - 1] != " ") && (value.length != subStart) ){
 				tSpan.textContent = (subString + "-");
@@ -563,7 +660,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		Rect.setAttributeNS(null, 'x', x);
 		Rect.setAttributeNS(null, 'y', y);
 		Rect.setAttributeNS(null, 'stroke', 'black');
-		Rect.setAttributeNS(null, 'fill', this.getTimeColor());
+		Rect.setAttributeNS(null, 'fill', this.getTimeColor(this.lengthType));
 		
 		var Text = document.createElementNS(svgns, "text");		
 		Text.setAttributeNS(null, 'width', this.lengthIndex*100);
@@ -785,10 +882,10 @@ function calcLocations() {
 				}
 				
 				// Do a check on the location of the person
-				if (Event.Location[1] < 50) {
+				if (Event.Location[1] < (50 + 75)) {
 					// Person seems to fall out of boundary
 					// What offset do we need?
-					var offset = 50 - Event.Location[1];
+					var offset = (50 + 75) - Event.Location[1];
 					
 					if (offset > globalOffset) {
 						// Take the highest offset found
@@ -1049,6 +1146,27 @@ function SetSVG(ClickEvent) {
 	
 	// Draw the current family tree
 	var Event = Events[EventId];
+	
+	//Legenda
+	LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
+	for (var i = 0; i < (MULTS.length + 2); i++) {
+		var Rect = document.createElementNS(svgns, "rect");		
+		Rect.setAttributeNS(null, 'width', 10);
+		Rect.setAttributeNS(null, 'height', 10);
+		Rect.setAttributeNS(null, 'x', 15 + (100*Math.floor(i / 5)));
+		Rect.setAttributeNS(null, 'y', 15*((i % 5) + 1));
+		Rect.setAttributeNS(null, 'stroke', 'black');
+		Rect.setAttributeNS(null, 'fill', Event.getTimeColor(i));
+		
+		var Text = document.createElementNS(svgns, "text");		
+		Text.setAttributeNS(null, 'x', 30 + (100*Math.floor(i / 5)));
+		Text.setAttributeNS(null, 'y', 15*((i % 5) + 1) + 10);
+		Text.textContent = Event.StringToType(LegendaStr[i], 0);
+		
+		SVG.appendChild(Rect);
+		SVG.appendChild(Text);
+	}
+	
 	drawTimeLine(SVG);
 }
 
