@@ -137,4 +137,27 @@ $Footer = array(
 	"PP_Version"=>"Current version",
 	"PP_date"=>"Page was last modified on",);
 
+$Timeline = array(
+	"unknown"=>"Unknown",
+	"second"=>"Second",
+	"seconds"=>"Seconds",
+	"minute"=>"Minute",
+	"minutes"=>"Minutes",
+	"hour"=>"Hour",
+	"hours"=>"Hours",
+	"day"=>"Day",
+	"days"=>"Days",
+	"week"=>"Week",
+	"weeks"=>"Weeks",
+	"month"=>"Month",
+	"months"=>"Months",
+	"year"=>"Year",
+	"years"=>"Years",
+	"decade"=>"Decade",
+	"decades"=>"Decades",
+	"century"=>"Century",
+	"centuries"=>"Centuries",
+	"millennium"=>"Millennium",
+	"millennia"=>"Millennia",);
+
 ?>

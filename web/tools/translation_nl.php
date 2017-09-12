@@ -137,4 +137,27 @@ $Footer = array(
 	"PP_Version"=>"Huidige versie",
 	"PP_date"=>"Pagina was voor het laatst bijgewerkt op",);
 
+$Timeline = array(
+	"unknown"=>"Onbekend",
+	"second"=>"Seconde",
+	"seconds"=>"Secondes",
+	"minute"=>"Minuut",
+	"minutes"=>"Minuten",
+	"hour"=>"Uur",
+	"hours"=>"Uren",
+	"day"=>"Dag",
+	"days"=>"Dagen",
+	"week"=>"Week",
+	"weeks"=>"Weken",
+	"month"=>"Maand",
+	"months"=>"Maanden",
+	"year"=>"Jaar",
+	"years"=>"Jaren",
+	"decade"=>"Decennium",
+	"decades"=>"Decennia",
+	"century"=>"Eeuw",
+	"centuries"=>"Eeuwen",
+	"millennium"=>"Millennium",
+	"millennia"=>"Millennia",);
+
 ?>
