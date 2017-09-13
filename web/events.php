@@ -63,12 +63,43 @@ if (isset($_GET['id'])) {
 					TableData.appendChild(TableLink);
 			<?php } 
 			} else { ?>
+				var value = "<?php echo $value ?>";
+				
+				<?php if ($key == "Length") { ?>		
+					// Convert the cryptic values to a readable string
+					var newValue = "";
+					
+					if (value == "") {
+						newValue = "<?php echo $Timeline["unknown"] ?>";
+					} else {
+						// Convert every time type
+						var timeParts = value.split(" ");
+						
+						for (var types = 0; types < timeParts.length; types++) {
+							var currentTypeStr = timeParts[types];
+							var currentTypeStrLen = currentTypeStr.length;
+							
+							var currentStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
+							var currentLen = parseInt(currentTypeStr.slice(0, currentTypeStrLen - 1));
+							
+							var currentType = StringToType(currentStr, currentLen);
+							
+							newValue += currentLen + " " + currentType;
+							if (types < (timeParts.length - 1)) {
+								newValue += ", ";
+							}
+						}
+					}
+					
+					value = newValue;
+				<?php } ?>
+				
 				// Add a new table row
 				var TableKey = document.createElement("td");
 				TableKey.innerHTML = "<?php echo $EventsParams[$key]; ?>";
 			
 				var TableData = document.createElement("td");
-				TableData.innerHTML = "<?php echo $value; ?>";
+				TableData.innerHTML = value;
 			
 				// Left is key names
 				// right is value names
@@ -77,8 +108,7 @@ if (isset($_GET['id'])) {
 				TableRow.appendChild(TableData);
 				
 				table.appendChild(TableRow);
-			<?php } ?>
-			<?php
+			<?php }
 		}
 	?>
 	
@@ -198,5 +228,86 @@ if (isset($_GET['id'])) {
 			}
 		}
 		return baseURL + newAdditionalURL;
+	}
+	
+	function StringToType(lengthTypeStr, Length) {
+				
+		switch(lengthTypeStr) {
+			case 's':
+			lengthType = "<?php echo $Timeline["second"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["seconds"] ?>";
+			}
+			break;
+			
+			case 'i':
+			lengthType = "<?php echo $Timeline["minute"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["minutes"] ?>";
+			}
+			break;
+			
+			case 'h':
+			lengthType = "<?php echo $Timeline["hour"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["hours"] ?>";
+			}
+			break;
+			
+			case 'd':
+			lengthType = "<?php echo $Timeline["day"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["days"] ?>";
+			}
+			break;
+			
+			case 'w':
+			lengthType = "<?php echo $Timeline["week"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["weeks"] ?>";
+			}
+			break;
+			
+			case 'm':
+			lengthType = "<?php echo $Timeline["month"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["months"] ?>";
+			}
+			break;
+			
+			case 'y':
+			lengthType = "<?php echo $Timeline["year"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["years"] ?>";
+			}
+			break;
+			
+			case 'D':
+			lengthType = "<?php echo $Timeline["decade"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["decades"] ?>";
+			}
+			break;
+			
+			case 'C':
+			lengthType = "<?php echo $Timeline["century"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["centuries"] ?>";
+			}
+			break;
+			
+			case 'M':
+			lengthType = "<?php echo $Timeline["millennium"] ?>";
+			if (Length != 1) {
+				lengthType = "<?php echo $Timeline["millennia"] ?>";
+			}
+			break;
+			
+			default:
+			lengthType = "<?php echo $Timeline["unknown"] ?>";
+			break;
+		}
+		
+		return lengthType;
 	}
 </script>

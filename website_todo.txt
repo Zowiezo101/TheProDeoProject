@@ -1,7 +1,6 @@
 * Check on all error messages, do they display?
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
-* In database, laat voor events netjes woorden zien in plaats van cryptische tijdsduur
 * Viewbox voor FamilyTree met vergroten en verkleinen
 * Do not reload entire page when clicking in an item, just replace contents
 	Keep information for current 100 items in objects
