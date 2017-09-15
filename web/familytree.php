@@ -285,6 +285,14 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 					LineMother1.setAttributeNS(null, 'stroke-width', '2');
 					LineMother2.setAttributeNS(null, 'stroke-width', '2');
 					LineMother3.setAttributeNS(null, 'stroke-width', '2');
+				
+					LineMother1.setAttributeNS(null, 'stroke-opacity', '0.7');
+					LineMother2.setAttributeNS(null, 'stroke-opacity', '0.7');
+					LineMother3.setAttributeNS(null, 'stroke-opacity', '0.7');
+				
+					LineMother1.setAttributeNS(null, 'stroke-dasharray', '5, 10');
+					LineMother2.setAttributeNS(null, 'stroke-dasharray', '5, 10');
+					LineMother3.setAttributeNS(null, 'stroke-dasharray', '5, 10');
 				}
 				
 				Group.appendChild(LineMother1);
@@ -345,6 +353,14 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 					LineFather1.setAttributeNS(null, 'stroke-width', '2');
 					LineFather2.setAttributeNS(null, 'stroke-width', '2');
 					LineFather3.setAttributeNS(null, 'stroke-width', '2');
+				
+					LineFather1.setAttributeNS(null, 'stroke-opacity', '0.7');
+					LineFather2.setAttributeNS(null, 'stroke-opacity', '0.7');
+					LineFather3.setAttributeNS(null, 'stroke-opacity', '0.7');
+				
+					LineFather1.setAttributeNS(null, 'stroke-dasharray', '5, 10');
+					LineFather2.setAttributeNS(null, 'stroke-dasharray', '5, 10');
+					LineFather3.setAttributeNS(null, 'stroke-dasharray', '5, 10');
 				}
 				
 				Group.appendChild(LineFather1);
