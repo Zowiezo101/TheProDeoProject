@@ -622,6 +622,7 @@ function calcLocations(firstID, highestLevel) {
 	while (done == 0)
 	{
 		var collision = 0;
+		globalOffset = 0;
 		// alert("Start while loop");
 		
 		// Draw the tree per level
@@ -994,12 +995,22 @@ function SetSVG(Event) {
 	FamilyTree.appendChild(SVG);
 	
 	// Set the height and the width
-	SVG.setAttribute('height', (highestLevel + 1)*75);	
-	SVG.setAttribute('width', globalWidth + globalOffset + 150);
+	var SVGHeight = (highestLevel + 1)*75;
+	var SVGWidth = globalWidth + globalOffset + 150;
+	SVG.setAttribute('height', SVGHeight);	
+	SVG.setAttribute('width',  SVGWidth);
 	
 	// Draw the current family tree
 	var People = Peoples[PeopleId];
 	People.drawFamilyTree(SVG);
+	
+	panTo(globalOffset + 50 - (FamilyTree.offsetWidth / 2), 0);
+}
+
+function panTo(x, y) {
+	FamilyTree = document.getElementById("familytree");
+	FamilyTree.scrollLeft = x;
+	FamilyTree.scrollTop = y;
 }
 
 //https://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
