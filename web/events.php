@@ -49,21 +49,79 @@ if (isset($_GET['id'])) {
 			<?php if ($value == -1) {
 				$value = "";
 			}?>
+			var value = "<?php echo $value ?>";
 			
-			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) {
-				if ($value != "") { ?>
-					// Update the previous table cell with a link to the ID
-					var TableLink = document.createElement("a");
-					TableLink.innerHTML = TableData.innerHTML;
-					TableData.innerHTML = "";
+			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) { ?>
+				if (value != "") {
+					<?php if (($key == "LocationIDs") || ($key == "PeopleIDs") || ($key == "SpecialIDs")) {
+						switch($key) {
+							case "LocationIDs":
+							$itemType = "locations";
+							break;
+							
+							case "PeopleIDs":
+							$itemType = "peoples";
+							break;
+							
+							default:
+							$itemType = "specials";	
+						}?>
 					
-					currentHref = window.location.href;
-					TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
+						// Get all the strings to get all the links
+						var linkParts = value.split(",");
+						
+						names = TableData.innerHTML;
+						var nameParts = names.split(",");
+						
+						if (linkParts.length > 1) {
+							Table2 = document.createElement("table");
+							for (var types = 0; types < linkParts.length; types++) {
+								// Table links
+								TableLink2 = document.createElement("a");
+								TableLink2.innerHTML = nameParts[types];
+							
+								currentHref = "<?php echo AddLangParam($itemType.'.php') ?>";
+								TableLink2.href = updateURLParameter(currentHref, "id", linkParts[types]);
+								
+								// Table data
+								TableData2 = document.createElement("td");
+								TableData2.appendChild(TableLink2);
+								
+								// Table row
+								TableRow2 = document.createElement("tr");
+								TableRow2.appendChild(TableData2);
+								
+								// Little table inside of table
+								Table2.appendChild(TableRow2);								
+							}
+							// Update the previous table cell with links to the IDs
+							TableData.innerHTML = "";
+							TableData.appendChild(Table2);
+						} else {
+							// Update the previous table cell with a link to the ID
+							var TableLink = document.createElement("a");
+							TableLink.innerHTML = TableData.innerHTML;
+							TableData.innerHTML = "";
+							
+							currentHref = "<?php echo AddLangParam($itemType.'.php') ?>";
+							TableLink.href = updateURLParameter(currentHref, "id", value);
+							
+							TableData.appendChild(TableLink);
+						}
 					
-					TableData.appendChild(TableLink);
-			<?php } 
-			} else { ?>
-				var value = "<?php echo $value ?>";
+					<?php } else { ?>
+						// Update the previous table cell with a link to the ID
+						var TableLink = document.createElement("a");
+						TableLink.innerHTML = TableData.innerHTML;
+						TableData.innerHTML = "";
+						
+						currentHref = window.location.href;
+						TableLink.href = updateURLParameter(currentHref, "id", value);
+						
+						TableData.appendChild(TableLink);
+					<?php }	?>
+				}
+			<?php } else { ?>
 				
 				<?php if ($key == "Length") { ?>		
 					// Convert the cryptic values to a readable string
