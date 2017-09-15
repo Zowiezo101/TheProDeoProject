@@ -466,6 +466,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		if (this.Length != "") {
 			// The tspan containing the time length
 			var tSpan = document.createElementNS(svgns, "tspan");	
+			tSpan.RectID = this.ID;
 			
 			// Update the contents of the current tspan object
 			tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
@@ -483,6 +484,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		
 		do {
 			var tSpan = document.createElementNS(svgns, "tspan");	
+			tSpan.RectID = this.ID;
 			
 			// Get the string that we put into the tspan object
 			subString = value.substr(subStart, subLength);
@@ -657,25 +659,38 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		var Rect = document.createElementNS(svgns, "rect");		
 		Rect.setAttributeNS(null, 'width', this.lengthIndex*100);
 		Rect.setAttributeNS(null, 'height', 50);
+		
 		Rect.setAttributeNS(null, 'x', x);
 		Rect.setAttributeNS(null, 'y', y);
+		
 		Rect.setAttributeNS(null, 'stroke', 'black');
 		Rect.setAttributeNS(null, 'fill', this.getTimeColor(this.lengthType));
+		
+		Rect.id = "Rect" + this.ID;		
+		Rect.RectID = this.ID;
 		
 		var Text = document.createElementNS(svgns, "text");		
 		Text.setAttributeNS(null, 'width', this.lengthIndex*100);
 		Text.setAttributeNS(null, 'height', 50);
+		
 		Text.setAttributeNS(null, 'x', x);
 		Text.setAttributeNS(null, 'y', y);
+		
 		this.convertText(Text, this.name);
+		Text.RectID = this.ID;
 		
 		var newHref = updateURLParameter('<?php echo AddLangParam("events.php")?>', "id", this.ID);
 		var Link = document.createElementNS(svgns, "a");
 		Link.setAttributeNS(hrefns, 'xlink:href', newHref);
 		Link.setAttributeNS(hrefns, 'xlink:title', '<?php echo $Content["link_event"]; ?>');
 		Link.setAttributeNS(hrefns, 'target', "_top");
+		
 		Link.appendChild(Rect);
 		Link.appendChild(Text);
+		
+		Link.RectID = this.ID;
+		Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
+		Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
 				
 		Group.appendChild(Link);		
 		return Group;
@@ -700,6 +715,20 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		// But there is too much recursion for the browser to handle..
 		return IDset;
 	}
+}
+	
+setBorder = function (event) {
+	var IDnum = event.target.RectID;
+	var Rect = document.getElementById("Rect" + IDnum);
+	Rect.setAttributeNS(null, "stroke", "red");
+	Rect.setAttributeNS(null, "stroke-width", 5);
+}
+
+clearBorder = function (event) {
+	var IDnum = event.target.RectID;
+	var Rect = document.getElementById("Rect" + IDnum);
+	Rect.setAttributeNS(null, "stroke", "black");
+	Rect.setAttributeNS(null, "stroke-width", 1);
 }
 
 function setEvents() {	
