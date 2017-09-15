@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-	<?php require "layout/header.php";?>
+	<?php 
+		require "layout/header.php";
+		require "tools/databaseHelper.php";
+	?>
 	
 	<div class="search">
 		<?php if (isset($_POST['submitSearch'])) { ?>

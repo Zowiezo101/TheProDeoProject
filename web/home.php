@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-	<?php require "layout/header.php"; ?>
+	<?php 
+		require "layout/header.php"; 
+		require "tools/blogHelper.php"; 
+	?>
 	
 	<div id="home">
 		<?php ShowBlogs(); ?>

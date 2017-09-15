@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
-	<?php require "layout/header.php"; ?>
+	<?php 
+		require "layout/header.php"; 
+		
+		$item_type = "locations";
+		require "tools/databaseHelper.php"; 
+	?>
 	
 	<div class="clearfix">
 		<div class="contents_left">
@@ -26,6 +31,7 @@
 
 <script>
 <?php
+
 if (isset($_GET['id'])) {
 ?>
 	var contentEl = document.getElementById("location_info");
@@ -161,118 +167,5 @@ if (isset($_GET['id'])) {
 }
 ?>
 
-	window.onload = function CheckButtons() {
-		var ButtonPrev = document.getElementById("button_left");
-		var ButtonNext = document.getElementById("button_right");
-		
-		// Check if this is page 0. If so, disable to prev button..	
-		<?php
-			if (!isset($_GET["page"])) {
-				$page_nr = 0;
-			} else {
-				$page_nr = $_GET["page"];
-			}
-			
-			echo "var PageNr = ".$page_nr.";";
-			echo "var NrOfItems = ".GetNumberOfItems("locations").";";
-		?>
-		
-		if (PageNr == 0) {
-			ButtonPrev.disabled = true;
-		} else {
-			ButtonPrev.disable = false;
-		}
-		if (NrOfItems < 100) {
-			ButtonNext.disabled = true;
-		} else {
-			ButtonNext.disable = false;
-		}
-	}
-	
-	function PrevPage() {		
-		<?php
-			if (!isset($_GET["page"])) {
-				$page_nr = 0;
-			} else {
-				$page_nr = $_GET["page"];
-			}
-			
-			echo "var PageNr = ".$page_nr.";";
-		?>
-		
-		if (PageNr == 1) {
-			// The page parameter should now be removed
-			oldHref = window.location.href;
-			newHref = removeURLParameter(oldHref, "page");
-			window.location.href = newHref;
-		} else if (PageNr > 1) {
-			// The page parameter only has to be updated
-			oldHref = window.location.href;
-			newHref = updateURLParameter(oldHref, "page", PageNr - 1);
-			window.location.href = newHref;
-		}
-	}
-	
-	function NextPage() {
-		<?php
-			if (!isset($_GET["page"])) {
-				$page_nr = 0;
-			} else {
-				$page_nr = $_GET["page"];
-			}
-			
-			echo "var PageNr = ".$page_nr." + 1;";
-		?>
-		
-		oldHref = window.location.href;
-		newHref = updateURLParameter(oldHref, "page", PageNr);
-		window.location.href = newHref;
-	}
-	
-	/**
-	* http://stackoverflow.com/a/10997390/11236
-	*/
-	function updateURLParameter(url, param, paramVal){
-	// function updateURLParameter(url, param){
-		var newAdditionalURL = "";
-		var tempArray = url.split("?");
-		var baseURL = tempArray[0];
-		var additionalURL = tempArray[1];
-		var temp = "";
-		
-		if (additionalURL) {
-			tempArray = additionalURL.split("&");
-			
-			for (var i=0; i<tempArray.length; i++){
-				if(tempArray[i].split('=')[0] != param){
-					newAdditionalURL += temp + tempArray[i];
-					temp = "&";
-				}
-			}
-		}
-
-		var rows_txt = temp + "" + param + "=" + paramVal;
-		return baseURL + "?" + newAdditionalURL + rows_txt;
-		// return "";
-	}
-	
-	function removeURLParameter(url, param){
-		var newAdditionalURL = "";
-		var tempArray = url.split("?");
-		var baseURL = tempArray[0];
-		var additionalURL = tempArray[1];
-		var temp = "?";
-		
-		if (additionalURL) {
-			tempArray = additionalURL.split("&");
-			
-			for (var i=0; i<tempArray.length; i++){
-				if(tempArray[i].split('=')[0] != param){
-					newAdditionalURL += temp + tempArray[i];
-					temp = "&";
-				}
-			}
-		}
-		return baseURL + newAdditionalURL;
-	}
+	window.onload = CheckButtons;
 </script>

@@ -1,7 +1,10 @@
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html>
-	<?php require "layout/header.php"; ?>
+	<?php 
+		require "layout/header.php"; 
+		require "tools/blogHelper.php"; 
+	?>
 	
 	<!-- Important, do something with sessions here!! -->
 	<?php if (isset($_SESSION['login'])) { ?>
