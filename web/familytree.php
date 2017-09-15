@@ -379,25 +379,35 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		Rect.setAttributeNS(null, 'stroke', 'black');
 		Rect.setAttributeNS(null, 'fill', this.getGenderColor());
 		
+		Rect.id = "Rect" + this.ID;		
+		Rect.RectID = this.ID;
+		
 		var Text = document.createElementNS(svgns, "text");
 		Text.setAttributeNS(null, 'x', x);
 		Text.setAttributeNS(null, 'y', y + 25);
+		
 		Text.textContent = this.name;
+		Text.RectID = this.ID;
 		
 		var newHref = updateURLParameter('<?php echo AddLangParam("peoples.php")?>', "id", this.ID);
 		var Link = document.createElementNS(svgns, "a");
 		Link.setAttributeNS(hrefns, 'xlink:href', newHref);
 		Link.setAttributeNS(hrefns, 'xlink:title', '<?php echo $Content["link_people"]; ?>');
 		Link.setAttributeNS(hrefns, 'target', "_top");
+		
 		Link.appendChild(Rect);
 		Link.appendChild(Text);
+		
+		Link.RectID = this.ID;
+		Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
+		Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
 		
 		Group.appendChild(Link);		
 		return Group;
 	}
 	
 	/** */
-	this.drawFamilyTree = function(SVG) {	
+	this.drawFamilyTree = function(SVG) {
 		
 		// TODO: Debug
 		var Group = this.drawPeople();
@@ -417,6 +427,20 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 
 		}
 	}
+}
+	
+setBorder = function (event) {
+	var IDnum = event.target.RectID;
+	var Rect = document.getElementById("Rect" + IDnum);
+	Rect.setAttributeNS(null, "stroke", "red");
+	Rect.setAttributeNS(null, "stroke-width", 5);
+}
+
+clearBorder = function (event) {
+	var IDnum = event.target.RectID;
+	var Rect = document.getElementById("Rect" + IDnum);
+	Rect.setAttributeNS(null, "stroke", "black");
+	Rect.setAttributeNS(null, "stroke-width", 1);
 }
 
 function setPeoples() {	
