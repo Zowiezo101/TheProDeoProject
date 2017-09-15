@@ -1,14 +1,12 @@
 * Check on all error messages, do they display?
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+
 * Viewbox voor FamilyTree met vergroten en verkleinen
 * Do not reload entire page when clicking in an item, just replace contents
 	Keep information for current 100 items in objects
-* Create links from ID's to other Items (inter-item)
-* Make FamilyTree easier to read (different level parents)
+* Links to locations, events and peoples in worldmap, specific timeline, specific family tree
 * Separate explanations per "default text"
-* Change border of rect when hovering over it (FamilyTree) 
-* toFixed for coordinates database locations
 
 Bugs:
 - Length calculation for Timeline
