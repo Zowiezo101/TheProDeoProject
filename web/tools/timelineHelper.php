@@ -83,6 +83,7 @@ function createTimeLine() {
 		TableButton.innerHTML = Event.name;
 		TableButton.value = Event.ID;
 		TableButton.onclick = SetSVG;
+		TableButton.className = "TimeLine";
 		
 		var TableData = document.createElement("td");
 		TableData.appendChild(TableButton);
@@ -93,6 +94,38 @@ function createTimeLine() {
 		table.appendChild(TableRow);
 	}
 	timeLine.appendChild(table);
+	
+<?php if (isset($_GET['id'])) { ?>
+	var IDStr = "<?php echo $_GET['id']; ?>".split(",");
+	
+	// Get the Timeline and the ID numbers
+	var IDTimeline = IDStr[0];
+	var IDnum = IDStr[1];
+	
+	// Now "click" the button in the table to draw it's family tree
+	var Buttons = document.getElementsByClassName("TimeLine");
+	var Button = Buttons[parseInt(IDTimeline)];
+	Button.click();
+	
+	// And pan to it's location
+	Event = Events[IDnum];
+	panTo(Event.Location[0], Event.Location[1]);
+<?php } ?>
+}
+
+function getTimelines(ID) {
+	
+	// List of peoples
+	Events = [<?php echo FindEvents(); ?>];
+				
+	// Create all the connections between parents and children
+	setEvents();
+	
+	// Get all the ancesters of this person
+	Event = Events[ID];
+	ListOfIDs = Event.getAncestors();
+
+	return ListOfIDs;
 }
 
 function CreateEvent(name, ID, previousID, length, verses) {
@@ -210,6 +243,51 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		this.Location[1] = Y + this.offset;
 		
 		return;
+	}
+	
+	this.getAncestors = function () {
+		var ListOfIDs = [];
+		
+		if (this.previousID == -1) {
+			if (this.ChildIDs.length == 0) {
+				// We do not have a family tree for this person..
+			} else {
+				// We are ancestors
+				ListOfIDs = [EventsList.indexOf(this.ID)];
+			}
+		} else {
+			// We must have ancestors
+			// The set of people to work with
+			var IDset = [this.ID];
+			
+			// This breaks the while loop
+			var done = 0;
+			
+			while (done == 0)
+			{				
+				var newIDset = [];
+				for (i = 0; i < IDset.length; i++) {
+					var Event = Events[IDset[i]];
+					
+					// Create the ID set of the next generation
+					if (Event.previousID != -1) {
+						newIDset.push(Event.previousID);
+					} else {
+						// This is an ancestor
+						var AncestorID = EventsList.indexOf(Event.ID);
+						ListOfIDs.push(AncestorID);
+					}
+				}
+				
+				// There are no more children to update
+				IDset = uniq(newIDset);
+				if (IDset.length == 0) {
+					done = 1;
+				}
+			}
+		}
+		
+		return uniq(ListOfIDs);
 	}
 	
 	/** */
@@ -1200,5 +1278,11 @@ function SetSVG(ClickEvent) {
 	}
 	
 	drawTimeLine(SVG);
+}
+
+function panTo(x, y) {
+	TimeLine = document.getElementById("timeline");
+	TimeLine.scrollLeft = (x + 100) - (TimeLine.offsetWidth / 2);
+	TimeLine.scrollTop = (y + globalOffset + 50) - (TimeLine.offsetHeight / 2);
 }
 </script>

@@ -5,6 +5,7 @@
 		
 		$item_type = "events";
 		require "tools/databaseHelper.php"; 
+		require "tools/timelineHelper.php"; 
 	?>
 	
 	<div class="clearfix">
@@ -177,6 +178,32 @@ if (isset($_GET['id'])) {
 	?>
 	
 	contentEl.appendChild(table);
+	
+	// Show a list of time lines where this person is included in
+	var TLText = document.createElement("p");
+	TLText.innerHTML = "<?php echo $Content["map_event"]; ?>";
+	contentEl.appendChild(TLText);
+	
+	var TLList = document.createElement("ul");
+	
+	var TLListIDs = getTimelines(<?php echo $information["ID"]; ?>);
+	if (TLListIDs.length > 0) {
+		for (var i = 0; i < TLListIDs.length; i++) {
+			var TLListLink = document.createElement("a");
+			TLListLink.innerHTML = "<?php echo $NavBar["Timeline"]; ?> " + (Number(TLListIDs[i]) + 1);
+			TLListLink.href = updateURLParameter("<?php echo AddLangParam('timeline.php') ?>", "id", "" + TLListIDs[i] + "," + <?php echo $information["ID"]; ?>);
+			
+			var TLListItem = document.createElement("li");
+			TLListItem.appendChild(TLListLink);
+			
+			TLList.appendChild(TLListItem);
+		}
+	} else {
+		var TLListItem = document.createElement("li");
+		TLListItem.innerHTML = "<?php echo $Search["NoResults"]; ?>";
+		TLList.appendChild(TLListItem);
+	}
+	contentEl.appendChild(TLList);
 <?php
 }
 ?>
