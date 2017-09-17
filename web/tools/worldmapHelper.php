@@ -48,6 +48,7 @@ function createWorldMap() {
 		TableButton.innerHTML = Location.name;
 		TableButton.value = Location.index;
 		TableButton.onclick = focusOnLocation;
+		TableButton.id = "WorldMap" + Location.ID;
 		
 		var TableData = document.createElement("td");
 		TableData.appendChild(TableButton);
@@ -58,6 +59,14 @@ function createWorldMap() {
 		table.appendChild(TableRow);
 	}
 	worldBar.appendChild(table);
+	
+<?php if (isset($_GET['id'])) { ?>
+	var IDnum = <?php echo $_GET['id']; ?>;
+	
+	// Now "click" the button in the table to draw it's family tree
+	var Button = document.getElementById("WorldMap" + IDnum);
+	Button.click();
+<?php } ?>
 }
 
 function CreateLocation(name, index, ID, coordinates) {
@@ -134,7 +143,7 @@ function setLocations() {
 	// Set up all the coordinates nicely for Google Maps
 	for (i = 0; i < Locations.length; i++) {
 		var Location = Locations[i];
-	
+		
 		Location.setCoordinates();
 	}
 }

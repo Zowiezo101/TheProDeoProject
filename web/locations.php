@@ -147,7 +147,11 @@ if (isset($_GET['id'])) {
 					coordinatesFl[1] = parseFloat(coordinatesStr[1]);
 					
 					// Only show two decimals after the comma
-					TableData.innerHTML = coordinatesFl[0].toFixed(2) + ", " + coordinatesFl[1].toFixed(2);
+					var TableLink = document.createElement("a");
+					TableLink.innerHTML = coordinatesFl[0].toFixed(2) + ", " + coordinatesFl[1].toFixed(2);
+					TableLink.href = updateURLParameter("<?php echo AddLangParam('worldmap.php') ?>", "id", <?php echo $information["ID"]; ?>);
+					
+					TableData.appendChild(TableLink);
 				<?php } else { ?>
 					TableData.innerHTML = value;
 				<?php } ?>
