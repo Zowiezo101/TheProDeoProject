@@ -5,11 +5,12 @@
 * Viewbox voor FamilyTree met vergroten en verkleinen
 * Do not reload entire page when clicking in an item, just replace contents
 	Keep information for current 100 items in objects
-* Links to locations, events and peoples in worldmap, specific timeline, specific family tree
 * Separate explanations per "default text"
+* Get rid of double scroll-bars
+* Remove ID=x,y when clicking other family tree, time line & location
 
 Bugs:
-- Length calculation for Timeline
+- Weird border for first family tree
 
 https://www.gps-coordinaten.nl/
 
