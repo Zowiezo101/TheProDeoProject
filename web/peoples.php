@@ -5,6 +5,7 @@
 		
 		$item_type = "peoples";
 		require "tools/databaseHelper.php"; 
+		require "tools/familytreeHelper.php"; 
 	?>
 	
 	<div class="clearfix">
@@ -149,6 +150,32 @@ if (isset($_GET['id'])) {
 	?>
 	
 	contentEl.appendChild(table);
+	
+	// Show a list of family trees where this person is included in
+	var FTText = document.createElement("p");
+	FTText.innerHTML = "<?php echo $Content["map_people"]; ?>";
+	contentEl.appendChild(FTText);
+	
+	var FTList = document.createElement("ul");
+	
+	var FTListIDs = getFamilyTrees(<?php echo $information["ID"]; ?>);
+	if (FTListIDs.length > 0) {
+		for (var i = 0; i < FTListIDs.length; i++) {
+			var FTListLink = document.createElement("a");
+			FTListLink.innerHTML = "<?php echo $NavBar["Familytree"]; ?> " + (Number(FTListIDs[i]) + 1);
+			FTListLink.href = updateURLParameter("<?php echo AddLangParam('familytree.php') ?>", "id", "" + FTListIDs[i] + "," + <?php echo $information["ID"]; ?>);
+			
+			var FTListItem = document.createElement("li");
+			FTListItem.appendChild(FTListLink);
+			
+			FTList.appendChild(FTListItem);
+		}
+	} else {
+		var FTListItem = document.createElement("li");
+		FTListItem.innerHTML = "<?php echo $Search["NoResults"]; ?>";
+		FTList.appendChild(FTListItem);
+	}
+	contentEl.appendChild(FTList);
 <?php
 }
 ?>

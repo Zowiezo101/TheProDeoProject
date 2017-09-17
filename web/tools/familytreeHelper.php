@@ -57,6 +57,7 @@ function createFamilyTree() {
 		TableButton.innerHTML = People.name;
 		TableButton.value = People.ID;
 		TableButton.onclick = SetSVG;
+		TableButton.className = "FamilyTree";
 		
 		var TableData = document.createElement("td");
 		TableData.appendChild(TableButton);
@@ -67,6 +68,38 @@ function createFamilyTree() {
 		table.appendChild(TableRow);
 	}
 	familyBar.appendChild(table);
+	
+<?php if (isset($_GET['id'])) { ?>
+	var IDStr = "<?php echo $_GET['id']; ?>".split(",");
+	
+	// Get the Tree and the ID numbers
+	var IDTree = IDStr[0];
+	var IDnum = IDStr[1];
+	
+	// Now "click" the button in the table to draw it's family tree
+	var Buttons = document.getElementsByClassName("FamilyTree");
+	var Button = Buttons[parseInt(IDTree)];
+	Button.click();
+	
+	// And pan to it's location
+	People = Peoples[IDnum];
+	panTo(People.Location[0], People.Location[1]);
+<?php } ?>
+}
+
+function getFamilyTrees(ID) {
+	
+	// List of peoples
+	Peoples = [<?php echo FindPeoples(); ?>];
+				
+	// Create all the connections between parents and children
+	setPeoples();
+	
+	// Get all the ancesters of this person
+	People = Peoples[ID];
+	ListOfIDs = People.getAncestors();
+
+	return ListOfIDs;
 }
 
 function CreatePeople(name, ID, MotherID, FatherID, Gender) {
@@ -78,6 +111,9 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 	
 	// Own loop counter to prevent the counters messing each other up
 	this.counter = 0;
+	
+	// Ancestors of this person
+	this.AncestorIDs = [];
 	
 	// Children of this person
 	this.ChildIDs = [];
@@ -205,6 +241,55 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		this.Location[1] = Y;
 		
 		return;
+	}
+	
+	this.getAncestors = function () {
+		var ListOfIDs = [];
+		
+		if ((this.MotherID == -1) && (this.FatherID == -1)) {
+			if (this.ChildIDs.length == 0) {
+				// We do not have a family tree for this person..
+			} else {
+				// We are ancestors
+				ListOfIDs = [PeoplesList.indexOf(this.ID)];
+			}
+		} else {
+			// We must have ancestors
+			// The set of people to work with
+			var IDset = [this.ID];
+			
+			// This breaks the while loop
+			var done = 0;
+			
+			while (done == 0)
+			{				
+				var newIDset = [];
+				for (i = 0; i < IDset.length; i++) {
+					var Person = Peoples[IDset[i]];
+					
+					// Create the ID set of the next generation
+					if (Person.MotherID != -1) {
+						newIDset.push(Person.MotherID);
+					} else if (Person.FatherID == -1) {
+						// This is an ancestor
+						var AncestorID = PeoplesList.indexOf(Person.ID);
+						ListOfIDs.push(AncestorID);
+					}
+					
+					if (Person.FatherID != -1) {
+						newIDset.push(Person.FatherID);
+					}
+				}
+				
+				// There are no more children to update
+				IDset = uniq(newIDset);
+				if (IDset.length == 0) {
+					done = 1;
+				}
+			}
+		}
+		
+		return uniq(ListOfIDs);
 	}
 	
 	/** */
@@ -386,14 +471,15 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		Rect.setAttributeNS(null, 'fill', this.getGenderColor());
 		
 		Rect.id = "Rect" + this.ID;		
-		Rect.RectID = this.ID;
+		Rect.ID = this.ID;
 		
 		var Text = document.createElementNS(svgns, "text");
 		Text.setAttributeNS(null, 'x', x);
 		Text.setAttributeNS(null, 'y', y + 25);
 		
 		Text.textContent = this.name;
-		Text.RectID = this.ID;
+		Text.id = "Text" + this.ID;
+		Text.ID = this.ID;
 		
 		var newHref = updateURLParameter('<?php echo AddLangParam("peoples.php")?>', "id", this.ID);
 		var Link = document.createElementNS(svgns, "a");
@@ -404,9 +490,10 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		Link.appendChild(Rect);
 		Link.appendChild(Text);
 		
-		Link.RectID = this.ID;
 		Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
 		Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
+		Link.id = "Link" + this.ID;
+		Link.ID = this.ID;
 		
 		Group.appendChild(Link);		
 		return Group;
@@ -436,14 +523,16 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 }
 	
 setBorder = function (event) {
-	var IDnum = event.target.RectID;
+	var IDnum = event.target.ID;
+	
 	var Rect = document.getElementById("Rect" + IDnum);
 	Rect.setAttributeNS(null, "stroke", "red");
 	Rect.setAttributeNS(null, "stroke-width", 5);
 }
 
 clearBorder = function (event) {
-	var IDnum = event.target.RectID;
+	var IDnum = event.target.ID;
+	
 	var Rect = document.getElementById("Rect" + IDnum);
 	Rect.setAttributeNS(null, "stroke", "black");
 	Rect.setAttributeNS(null, "stroke-width", 1);
@@ -680,260 +769,245 @@ function calcLocations(firstID, highestLevel) {
 						alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
 						}
 						
-						// Now find the parent that connects these two peoples
-						// Actually, find the two children (ancestors) of that parent.
-						// if ((Person.MotherID != -1) && (Person.MotherID == Neighbour.MotherID)) {
-							// // alert("The mother is the connecting source");
-							// Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
-							// // alert("Setting offset to: " + Person.offset);
-							// collision = 1;
-						// } else if ((Person.FatherID != -1) && (Person.FatherID == Neighbour.FatherID)) {
-							// // alert("The father is the connecting source");
-							// Person.offset = (Neighbour.Location[0] + 150) - Person.Location[0];
-							// // alert("Setting offset to: " + Person.offset);
-							// collision = 1;
-						// } else {
+						var found = 0;
+						var FoundID = -1;
 						
-							var found = 0;
-							var FoundID = -1;
-							
-							// Us
-							var currentAncestorsR = [Person.ID];
-							
-							// The neighbour
-							var currentAncestorsL = [Neighbour.ID];
-							
-							// Our starting level
-							var currentLevel = Person.level;
-							
-							// found = 1;
-							while (found == 0) {
-								// Get a list with people that are a generation level lower (placed higher)
-								if (Person.level >= debugFrom) {
-								alert("Trying level: " + currentLevel);
-								}
-								var currentIDset = levelIDs[currentLevel];
-								if (Person.level >= debugFrom) {
-								alert("Set of people: " + currentIDset);
-								}
-								var currentIDset = levelIDs[currentLevel - 1];
-								if (Person.level >= debugFrom) {
-								alert("Set of people: " + currentIDset);
-								}
-								var newAncestorsR = [];
-								var newAncestorsL = [];
-								
-								// Find all the possible ancestors for the right person
-								for (var j = 0; j < currentAncestorsR.length; j++) {
-									var PersonR = Peoples[currentAncestorsR[j]];
-									if (Person.level >= debugFrom) {
-									alert("Working with " + PersonR.name);
-									}
-									
-									for (var k = 0; k < currentIDset.length; k++) {
-										var ID = currentIDset[k];
-										
-										// Remember the list of ancestors that we find for this person
-										if ((ID == PersonR.MotherID) || (ID == PersonR.FatherID)) {
-											newAncestorsR.push(ID);
-											if (Person.level >= debugFrom) {
-											alert("Found parentR with ID: " + ID);
-											}
-										}
-									}
-								}
-								
-								// Find all the possible ancestors for the left person
-								for (var j = 0; j < currentAncestorsL.length; j++) {
-									var PersonL = Peoples[currentAncestorsL[j]];
-									if (Person.level >= debugFrom) {
-									alert("Working with " + PersonL.name);
-									}
-									
-									for (var k = 0; k < currentIDset.length; k++) {
-										var ID = currentIDset[k];
-										
-										// Remember the list of ancestors that we find for this person
-										if ((ID == PersonL.MotherID) || (ID == PersonL.FatherID)) {
-											newAncestorsL.push(ID);
-											if (Person.level >= debugFrom) {
-											alert("Found parentL with ID: " + ID);
-											}
-										}
-									}
-								}
-								
-								// Now check if we have a match on this level!
-								var count = 0;
-								for (var j = 0; j < newAncestorsR.length; j++) {
-									var RightID = newAncestorsR[j];
-									for (var k = 0; k < newAncestorsL.length; k++) {
-										var LeftID = newAncestorsL[k];
-										
-										// We have found a match!
-										// This is the ancestor that connects to two colliding people
-										if (RightID == LeftID) {
-											FoundID = RightID;
-											found = 1;
-											count++;
-										}
-									}
-								}
-								
-								if (Person.level >= debugFrom) {
-								alert("Count is equal to: " + count);
-								}
-								
-								// collision = 1;
-								if (found == 0) {
-									// Keep the current data if we have a match
-									currentAncestorsR = newAncestorsR;
-									currentAncestorsL = newAncestorsL;
-									currentLevel--;
-								}
-								
-								if (currentLevel < 0) {
-									// Couldn't find the parent?
-									// alert("Could not find the connecting parent?");
-									break;
-								}
-							}
-							
-							var Parent = Peoples[FoundID];
-							var Child = null;
+						// Us
+						var currentAncestorsR = [Person.ID];
+						
+						// The neighbour
+						var currentAncestorsL = [Neighbour.ID];
+						
+						// Our starting level
+						var currentLevel = Person.level;
+						
+						// found = 1;
+						while (found == 0) {
+							// Get a list with people that are a generation level lower (placed higher)
 							if (Person.level >= debugFrom) {
-							alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
+							alert("Trying level: " + currentLevel);
+							}
+							var currentIDset = levelIDs[currentLevel];
+							if (Person.level >= debugFrom) {
+							alert("Set of people: " + currentIDset);
+							}
+							var currentIDset = levelIDs[currentLevel - 1];
+							if (Person.level >= debugFrom) {
+							alert("Set of people: " + currentIDset);
+							}
+							var newAncestorsR = [];
+							var newAncestorsL = [];
+							
+							// Find all the possible ancestors for the right person
+							for (var j = 0; j < currentAncestorsR.length; j++) {
+								var PersonR = Peoples[currentAncestorsR[j]];
+								if (Person.level >= debugFrom) {
+								alert("Working with " + PersonR.name);
+								}
+								
+								for (var k = 0; k < currentIDset.length; k++) {
+									var ID = currentIDset[k];
+									
+									// Remember the list of ancestors that we find for this person
+									if ((ID == PersonR.MotherID) || (ID == PersonR.FatherID)) {
+										newAncestorsR.push(ID);
+										if (Person.level >= debugFrom) {
+										alert("Found parentR with ID: " + ID);
+										}
+									}
+								}
 							}
 							
-							var specialCase = 0;
-							// It seems that the two parents of a kid are actually related..
-							if (count > 1) {
-								var Children = [];
-								
-								// Does left or right have related parents?
-								if (newAncestorsR.length > 1) {
-									
-									for (var k = 0; k < currentAncestorsR.length; k++) {
-										var ID = currentAncestorsR[k];
-										
-										for (var j = 0; j < Parent.ChildIDs.length; j++) {
-											var ChildID = Parent.ChildIDs[j];
-
-											if (ID == ChildID) {
-												// Find all the matching children
-												Children.push(ID);
-												// alert("Right parent " + Children.length + " has ID " + ID);
-											}
-										}
-									}
-									// alert("Right ancesters are related: " + count + ", " + newAncestorsR.length);
-									
-								} else if (newAncestorsL.length > 1) {
-									
-									for (var k = 0; k < currentAncestorsL.length; k++) {
-										var ID = currentAncestorsL[k];
-										
-										for (var j = 0; j < Parent.ChildIDs.length; j++) {
-											var ChildID = Parent.ChildIDs[j];
-
-											if (ID == ChildID) {
-												// Find all the matching children
-												Children.push(ID);
-												// alert("Left parent " + Children.length + " has ID " + ID);
-											}
-										}
-									}
-									// alert("Left ancesters are related: " + count + ", " + newAncestorsL.length);
-									
+							// Find all the possible ancestors for the left person
+							for (var j = 0; j < currentAncestorsL.length; j++) {
+								var PersonL = Peoples[currentAncestorsL[j]];
+								if (Person.level >= debugFrom) {
+								alert("Working with " + PersonL.name);
 								}
 								
-								if (Children.length == 2) {
-									if (Person.level >= debugFrom) {
-									alert("Amount of related parents: " + Children.length);
-									alert("Related parents: " + Children);
-									}
+								for (var k = 0; k < currentIDset.length; k++) {
+									var ID = currentIDset[k];
 									
-									var Child1 = Peoples[Children[0]];
-									var Child2 = Peoples[Children[1]];
-									var difLevelIndex = Child2.levelIndex - Child1.levelIndex;
-									
-									if (Person.level >= debugFrom) {
-									alert("The levelIndex has a difference of " + difLevelIndex);
-									}
-									
-									// Are they next to each other?
-									if (difLevelIndex != 1) {
-										// There are not next to each other..
-										// Change the order of the children to put them next to each other
-										
-										// Are we using mommy or daddy?
-										if (Child1.MotherID == Parent.ID) {
-											// Use the one from mommy
-											var Index1 = Child1.ChildIndexM + 1;
-											var Index2 = Child2.ChildIndexM + 1;
-										} else {
-											// Use the one from daddy
-											var Index1 = Child1.ChildIndexF + 1;
-											var Index2 = Child2.ChildIndexF + 1;
-										}
-										
-										// The first slice is from the beginning of the list to Child1.
-										var firstSlice = Parent.ChildIDs.slice(0, Index1);
-										
-										// The second slice is from Child1 to Child2 (but not including Child2)
-										var secondSlice = Parent.ChildIDs.slice(Index1, Index2 - 1);
-										
-										// The last slice is from Child2 to the end of the list (but not including Child2)
-										var thirdSlice = Parent.ChildIDs.slice(Index2, Parent.ChildIDs.length);
-										
-										// Add Child2 right after Child1
-										firstSlice.push(Child2.ID);
-										
-										// Add it all together as a new list and make that the new ChildIDs list of the parent
-										newChildIDs = firstSlice.concat(secondSlice, thirdSlice);
+									// Remember the list of ancestors that we find for this person
+									if ((ID == PersonL.MotherID) || (ID == PersonL.FatherID)) {
+										newAncestorsL.push(ID);
 										if (Person.level >= debugFrom) {
-										alert("Updating parents ChildIDs from: " + Parent.ChildIDs + "\nto: " + newChildIDs);
+										alert("Found parentL with ID: " + ID);
 										}
-										Parent.ChildIDs = newChildIDs;
-										
-										specialCase = 1;
-										
 									}
-									// set specialCase to one and fix it in the specialCase part
-									// do this by changing the levelIndex and the levelIDs to set
-									// these two parents next to each other.
-									// this should fix the problem..
-									// re-try without setting any offset, let the code decide for itself
 								}
-							}							
+							}
 							
-							// This is just a normal clash, fix in the normal way
-							if (specialCase == 0) {
-								for (var k = currentAncestorsR.length; k > 0; k--) {
-									var ID = currentAncestorsR[k - 1];
+							// Now check if we have a match on this level!
+							var count = 0;
+							for (var j = 0; j < newAncestorsR.length; j++) {
+								var RightID = newAncestorsR[j];
+								for (var k = 0; k < newAncestorsL.length; k++) {
+									var LeftID = newAncestorsL[k];
+									
+									// We have found a match!
+									// This is the ancestor that connects to two colliding people
+									if (RightID == LeftID) {
+										FoundID = RightID;
+										found = 1;
+										count++;
+									}
+								}
+							}
+							
+							if (Person.level >= debugFrom) {
+							alert("Count is equal to: " + count);
+							}
+							
+							// collision = 1;
+							if (found == 0) {
+								// Keep the current data if we have a match
+								currentAncestorsR = newAncestorsR;
+								currentAncestorsL = newAncestorsL;
+								currentLevel--;
+							}
+							
+							if (currentLevel < 0) {
+								// Couldn't find the parent?
+								// alert("Could not find the connecting parent?");
+								break;
+							}
+						}
+						
+						var Parent = Peoples[FoundID];
+						var Child = null;
+						if (Person.level >= debugFrom) {
+						alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
+						}
+						
+						var specialCase = 0;
+						// It seems that the two parents of a kid are actually related..
+						if (count > 1) {
+							var Children = [];
+							
+							// Does left or right have related parents?
+							if (newAncestorsR.length > 1) {
+								
+								for (var k = 0; k < currentAncestorsR.length; k++) {
+									var ID = currentAncestorsR[k];
 									
 									for (var j = 0; j < Parent.ChildIDs.length; j++) {
 										var ChildID = Parent.ChildIDs[j];
 
 										if (ID == ChildID) {
-											// Find the child that needs to be moved
-											Child = Peoples[ID];
+											// Find all the matching children
+											Children.push(ID);
+											// alert("Right parent " + Children.length + " has ID " + ID);
 										}
 									}
 								}
+								// alert("Right ancesters are related: " + count + ", " + newAncestorsR.length);
 								
-								Child.offset += (Neighbour.Location[0] + 150) - Person.Location[0];
-								if (Person.level >= debugFrom) {
-								alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
+							} else if (newAncestorsL.length > 1) {
+								
+								for (var k = 0; k < currentAncestorsL.length; k++) {
+									var ID = currentAncestorsL[k];
+									
+									for (var j = 0; j < Parent.ChildIDs.length; j++) {
+										var ChildID = Parent.ChildIDs[j];
+
+										if (ID == ChildID) {
+											// Find all the matching children
+											Children.push(ID);
+											// alert("Left parent " + Children.length + " has ID " + ID);
+										}
+									}
 								}
-							} else if (specialCase == 1) {
-								// Special case! It seems that the two parents of a kid are actually related..
-								// Some changes were made, now recalculate!
-								resetIndexes();
-								setIndexes(firstID, highestLevel);
+								// alert("Left ancesters are related: " + count + ", " + newAncestorsL.length);
+								
 							}
-							collision = 1;
-						// }
+							
+							if (Children.length == 2) {
+								if (Person.level >= debugFrom) {
+								alert("Amount of related parents: " + Children.length);
+								alert("Related parents: " + Children);
+								}
+								
+								var Child1 = Peoples[Children[0]];
+								var Child2 = Peoples[Children[1]];
+								var difLevelIndex = Child2.levelIndex - Child1.levelIndex;
+								
+								if (Person.level >= debugFrom) {
+								alert("The levelIndex has a difference of " + difLevelIndex);
+								}
+								
+								// Are they next to each other?
+								if (difLevelIndex != 1) {
+									// There are not next to each other..
+									// Change the order of the children to put them next to each other
+									
+									// Are we using mommy or daddy?
+									if (Child1.MotherID == Parent.ID) {
+										// Use the one from mommy
+										var Index1 = Child1.ChildIndexM + 1;
+										var Index2 = Child2.ChildIndexM + 1;
+									} else {
+										// Use the one from daddy
+										var Index1 = Child1.ChildIndexF + 1;
+										var Index2 = Child2.ChildIndexF + 1;
+									}
+									
+									// The first slice is from the beginning of the list to Child1.
+									var firstSlice = Parent.ChildIDs.slice(0, Index1);
+									
+									// The second slice is from Child1 to Child2 (but not including Child2)
+									var secondSlice = Parent.ChildIDs.slice(Index1, Index2 - 1);
+									
+									// The last slice is from Child2 to the end of the list (but not including Child2)
+									var thirdSlice = Parent.ChildIDs.slice(Index2, Parent.ChildIDs.length);
+									
+									// Add Child2 right after Child1
+									firstSlice.push(Child2.ID);
+									
+									// Add it all together as a new list and make that the new ChildIDs list of the parent
+									newChildIDs = firstSlice.concat(secondSlice, thirdSlice);
+									if (Person.level >= debugFrom) {
+									alert("Updating parents ChildIDs from: " + Parent.ChildIDs + "\nto: " + newChildIDs);
+									}
+									Parent.ChildIDs = newChildIDs;
+									
+									specialCase = 1;
+									
+								}
+								// set specialCase to one and fix it in the specialCase part
+								// do this by changing the levelIndex and the levelIDs to set
+								// these two parents next to each other.
+								// this should fix the problem..
+								// re-try without setting any offset, let the code decide for itself
+							}
+						}							
+						
+						// This is just a normal clash, fix in the normal way
+						if (specialCase == 0) {
+							for (var k = currentAncestorsR.length; k > 0; k--) {
+								var ID = currentAncestorsR[k - 1];
+								
+								for (var j = 0; j < Parent.ChildIDs.length; j++) {
+									var ChildID = Parent.ChildIDs[j];
+
+									if (ID == ChildID) {
+										// Find the child that needs to be moved
+										Child = Peoples[ID];
+									}
+								}
+							}
+							
+							Child.offset += (Neighbour.Location[0] + 150) - Person.Location[0];
+							if (Person.level >= debugFrom) {
+							alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
+							}
+						} else if (specialCase == 1) {
+							// Special case! It seems that the two parents of a kid are actually related..
+							// Some changes were made, now recalculate!
+							resetIndexes();
+							setIndexes(firstID, highestLevel);
+						}
+						collision = 1;
 						
 						if (collision == 1) {
 							// alert("Breaking first for-loop");
@@ -1010,12 +1084,12 @@ function SetSVG(Event) {
 	var People = Peoples[PeopleId];
 	People.drawFamilyTree(SVG);
 	
-	panTo(globalOffset + 50 - (FamilyTree.offsetWidth / 2), 0);
+	panTo(0, 0);
 }
 
 function panTo(x, y) {
 	FamilyTree = document.getElementById("familytree");
-	FamilyTree.scrollLeft = x;
-	FamilyTree.scrollTop = y;
+	FamilyTree.scrollLeft = (x + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
+	FamilyTree.scrollTop = y - 50;
 }
 </script>
