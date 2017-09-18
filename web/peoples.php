@@ -1,34 +1,31 @@
-<!DOCTYPE html>
-<html>
-	<?php 
-		require "layout/header.php"; 
-		
-		$item_type = "peoples";
-		require "tools/databaseHelper.php"; 
-		require "tools/familytreeHelper.php"; 
-	?>
+<?php 
+	require "layout/header.php"; 
 	
-	<div class="clearfix">
-		<div class="contents_left">
-			<div id="button_bar" onload="CheckButtons()">
-				<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
-				<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
-			</div>
-			
-			<div id="people_bar">
-				<?php GetListOfItems("peoples"); ?>
-			</div>
+	$item_type = "peoples";
+	require "tools/databaseHelper.php"; 
+	require "tools/familytreeHelper.php"; 
+?>
+
+<div class="clearfix">
+	<div class="contents_left">
+		<div id="button_bar" onload="CheckButtons()">
+			<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
+			<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
 		</div>
 		
-		<div class="contents_right" id="people_info">
-			<div id="default">
-				<?php echo $Content["default_people"]; ?>
-			</div>
+		<div id="people_bar">
+			<?php GetListOfItems("peoples"); ?>
 		</div>
 	</div>
 	
-	<?php require "layout/footer.php"; ?>
-</html>
+	<div class="contents_right" id="people_info">
+		<div id="default">
+			<?php echo $Content["default_people"]; ?>
+		</div>
+	</div>
+</div>
+
+<?php require "layout/footer.php"; ?>
 
 <script>
 <?php
@@ -118,11 +115,9 @@ if (isset($_GET['id'])) {
 						TableData.innerHTML = "";
 						
 						<?php if (($key == "PlaceOfBirthID") || ($key == "PlaceOfEndID") || ($key == "PlaceOfLivingID")) { ?>
-							currentHref = "<?php echo AddLangParam('locations.php') ?>";
-							TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
+							TableLink.href = updateURLParameter("locations.php", "id", <?php echo "'".$value."'"; ?>);
 						<?php } else { ?>
-							currentHref = window.location.href;
-							TableLink.href = updateURLParameter(currentHref, "id", <?php echo "'".$value."'"; ?>);
+							TableLink.href = updateURLParameter(window.location.href, "id", <?php echo "'".$value."'"; ?>);
 						<?php } ?>
 						
 						TableData.appendChild(TableLink);
@@ -163,7 +158,7 @@ if (isset($_GET['id'])) {
 		for (var i = 0; i < FTListIDs.length; i++) {
 			var FTListLink = document.createElement("a");
 			FTListLink.innerHTML = "<?php echo $NavBar["Familytree"]; ?> " + (Number(FTListIDs[i]) + 1);
-			FTListLink.href = updateURLParameter("<?php echo AddLangParam('familytree.php') ?>", "id", "" + FTListIDs[i] + "," + <?php echo $information["ID"]; ?>);
+			FTListLink.href = updateURLParameter("familytree.php", "id", "" + FTListIDs[i] + "," + <?php echo $information["ID"]; ?>);
 			
 			var FTListItem = document.createElement("li");
 			FTListItem.appendChild(FTListLink);

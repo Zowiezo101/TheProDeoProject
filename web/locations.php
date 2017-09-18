@@ -1,33 +1,30 @@
-<!DOCTYPE html>
-<html>
-	<?php 
-		require "layout/header.php"; 
-		
-		$item_type = "locations";
-		require "tools/databaseHelper.php"; 
-	?>
+<?php 
+	require "layout/header.php"; 
 	
-	<div class="clearfix">
-		<div class="contents_left">
-			<div id="button_bar">
-				<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
-				<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
-			</div>
-			
-			<div id="location_bar">
-				<?php GetListOfItems("locations"); ?>
-			</div>
+	$item_type = "locations";
+	require "tools/databaseHelper.php"; 
+?>
+
+<div class="clearfix">
+	<div class="contents_left">
+		<div id="button_bar">
+			<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
+			<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
 		</div>
 		
-		<div class="contents_right" id="location_info">
-			<div id="default">
-				<?php echo $Content["default_loc"]; ?>
-			</div>
+		<div id="location_bar">
+			<?php GetListOfItems("locations"); ?>
 		</div>
 	</div>
 	
-	<?php require "layout/footer.php"; ?>
-</html>
+	<div class="contents_right" id="location_info">
+		<div id="default">
+			<?php echo $Content["default_loc"]; ?>
+		</div>
+	</div>
+</div>
+
+<?php require "layout/footer.php"; ?>
 
 <script>
 <?php
@@ -118,14 +115,11 @@ if (isset($_GET['id'])) {
 						TableData.innerHTML = "";
 						
 						<?php if (($key == "FounderID") || ($key == "DestroyerID")) { ?>
-							currentHref = "<?php echo AddLangParam('peoples.php') ?>";
-							TableLink.href = updateURLParameter(currentHref, "id", value);
+							TableLink.href = updateURLParameter("peoples.php", "id", value);
 						<?php } else if (($key == "StartEventID") || ($key == "EndEventID")) { ?>
-							currentHref = "<?php echo AddLangParam('events.php') ?>";
-							TableLink.href = updateURLParameter(currentHref, "id", value);
+							TableLink.href = updateURLParameter("events.php", "id", value);
 						<?php } else { ?>
-							currentHref = window.location.href;
-							TableLink.href = updateURLParameter(currentHref, "id", value);
+							TableLink.href = updateURLParameter(window.location.href, "id", value);
 						<?php } ?>
 						
 						TableData.appendChild(TableLink);
@@ -149,7 +143,7 @@ if (isset($_GET['id'])) {
 					// Only show two decimals after the comma
 					var TableLink = document.createElement("a");
 					TableLink.innerHTML = coordinatesFl[0].toFixed(2) + ", " + coordinatesFl[1].toFixed(2);
-					TableLink.href = updateURLParameter("<?php echo AddLangParam('worldmap.php') ?>", "id", <?php echo $information["ID"]; ?>);
+					TableLink.href = updateURLParameter("worldmap.php", "id", <?php echo $information["ID"]; ?>);
 					
 					TableData.appendChild(TableLink);
 				<?php } else { ?>

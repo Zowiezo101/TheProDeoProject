@@ -1,9 +1,10 @@
-<?php 
-if (!isset($_GET["lang"])) {
-	$page_lang = "nl";
-} else {
-	$page_lang = $_GET["lang"];
-}
+<?php
+
+// Set the language to a default
+if (!isset($_SESSION["lang"])) {
+	$_SESSION["lang"] = "nl";
+} 
+$page_lang = $_SESSION["lang"];
 
 require "translations/translation_".$page_lang.".php"; 
 require "../login_data.php";
@@ -15,37 +16,18 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-function AddLangParam($href) {
-	global $page_lang;
-	$return_val = "";
-	
-	if ($page_lang == "nl") {
-		$return_val = $href;
-	} else {
-		$return_val = $href."?lang=".$page_lang;
-	}
-	
-	return $return_val;
-}
-
 function AddPageParam($page_nr) {
-	global $page_lang;
 	$return_val = "";
 	
-	if (($page_lang == "nl") && ($page_nr > 0)) {
+	if ($page_nr > 0) {
 		# When the page language is dutch, there is no parameter in the URL
 		$return_val = "?page=".$page_nr;
-	} else if ($page_nr > 0) {
-		# When the page language is not dutch, there is already a parameter in the URL
-		# Now use & to add this parameter as well.
-		$return_val = "&page=".$page_nr;
-	}
+	} 
 	
 	return $return_val;
 }
 
 function AddIdParam($id_nr) {
-	global $page_lang;
 	$return_val = "";
 	
 	if (!isset($_GET["page"])) {
@@ -54,7 +36,7 @@ function AddIdParam($id_nr) {
 		$page_nr = $_GET["page"];
 	}
 	
-	if ((!($page_lang == "nl")) || ($page_nr > 0)) {
+	if ($page_nr > 0) {
 		# When the page language is dutch, there is no parameter in the URL
 		$return_val = "&id=".$id_nr;
 	} else  {

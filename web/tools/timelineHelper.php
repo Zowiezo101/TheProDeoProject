@@ -760,7 +760,7 @@ function CreateEvent(name, ID, previousID, length, verses) {
 		this.convertText(Text, this.name);
 		Text.RectID = this.ID;
 		
-		var newHref = updateURLParameter('<?php echo AddLangParam("events.php")?>', "id", this.ID);
+		var newHref = updateURLParameter("events.php", "id", this.ID);
 		var Link = document.createElementNS(svgns, "a");
 		Link.setAttributeNS(hrefns, 'xlink:href', newHref);
 		Link.setAttributeNS(hrefns, 'xlink:title', '<?php echo $Content["link_event"]; ?>');

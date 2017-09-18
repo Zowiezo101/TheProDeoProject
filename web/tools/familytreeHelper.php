@@ -481,7 +481,7 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		Text.id = "Text" + this.ID;
 		Text.ID = this.ID;
 		
-		var newHref = updateURLParameter('<?php echo AddLangParam("peoples.php")?>', "id", this.ID);
+		var newHref = updateURLParameter("peoples.php", "id", this.ID);
 		var Link = document.createElementNS(svgns, "a");
 		Link.setAttributeNS(hrefns, 'xlink:href', newHref);
 		Link.setAttributeNS(hrefns, 'xlink:title', '<?php echo $Content["link_people"]; ?>');

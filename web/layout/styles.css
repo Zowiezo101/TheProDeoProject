@@ -14,7 +14,7 @@ body {
 	height: 75px;
 }
 
-.header a{	
+.header a, .header .lang{	
 	height: 100%;
 	width: 75px;
 	
@@ -73,13 +73,13 @@ body {
 	z-index: 1;
 }
 
-.header_lang_dropdown a {
+.header_lang_dropdown .lang {
 	height: 100%;
 	width: 100%;
 	color: black;
 }
 
-.header_lang_dropdown a:hover {
+.header_lang_dropdown .lang:hover {
 	background-color: yellow;
 }
 
@@ -228,7 +228,7 @@ body {
 	background-color: Red;
 	float: right;
 	width: 80%;
-	height: 500px;
+	min-height: 500px;
 	margin: 0;
 	padding: 0;
 	overflow: auto;
@@ -260,6 +260,7 @@ body {
 #timeline_bar table, #timeline_bar tr
 {
 	width: 100%;
+	height: 100%;
 }
 
 #people_bar td, 

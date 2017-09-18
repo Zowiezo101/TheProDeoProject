@@ -99,7 +99,7 @@ function CreateLocation(name, index, ID, coordinates) {
 		});
 		
 		this.marker.infoWindow = new google.maps.InfoWindow({
-			content: this.name + "<br><?php echo $LocationsParams["Coordinates"]; ?>: " + this.coordinates[0].toFixed(2) + ", " + this.coordinates[1].toFixed(2) + "<br><a href=" + updateURLParameter('<?php echo AddLangParam("locations.php")?>', "id", this.ID) + "><?php echo $Content["link_location"]; ?></a>"
+			content: this.name + "<br><?php echo $LocationsParams["Coordinates"]; ?>: " + this.coordinates[0].toFixed(2) + ", " + this.coordinates[1].toFixed(2) + "<br><a href=" + updateURLParameter("locations.php", "id", this.ID) + "><?php echo $Content["link_location"]; ?></a>"
 		});
 		
 		this.marker.addListener('click', function() {

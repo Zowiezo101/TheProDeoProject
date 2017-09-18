@@ -21,7 +21,7 @@ function GetListOfItems($table) {
 		while ($name = $result->fetch_array()) {
 			echo "<tr>";
 			echo "<td>";
-			echo "<a href='".AddLangParam($table.".php", 0).AddPageParam($page_nr).AddIdParam($name['ID'])."'>".$name['Name']."</a>";
+			echo "<a href='".$table.".php".AddPageParam($page_nr).AddIdParam($name['ID'])."'>".$name['Name']."</a>";
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -121,7 +121,7 @@ function SearchItems($text, $table) {
 			while ($item = $result->fetch_array()) {
 				echo "<tr>";
 					echo "<td>";
-						echo "<a href='".AddLangParam($table.".php", 0).AddIdParam($item['ID'])."'>".$item['Name']."</a>";
+						echo "<a href='".$table.".php".AddIdParam($item['ID'])."'>".$item['Name']."</a>";
 					echo "</td>";
 				
 				if (in_array($table, Array("peoples", "locations", "specials"))) {
@@ -175,6 +175,12 @@ if (isset($item_type)) { ?>
 		} else {
 			ButtonNext.disable = false;
 		}
+
+		// Set the height of the left div, to the height of the right div
+		var ContentsR = document.getElementsByClassName("contents_right")[0];
+		var ContentsL = document.getElementsByClassName("contents_left")[0];
+		
+		ContentsL.setAttribute("style", "height: " + ContentsR.offsetHeight + "px");
 	}
 	
 	function PrevPage() {		

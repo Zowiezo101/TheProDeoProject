@@ -1,34 +1,31 @@
-<!DOCTYPE html>
-<html>
-	<?php 
-		require "layout/header.php"; 
-		
-		$item_type = "events";
-		require "tools/databaseHelper.php"; 
-		require "tools/timelineHelper.php"; 
-	?>
+<?php 
+	require "layout/header.php"; 
 	
-	<div class="clearfix">
-		<div class="contents_left">
-			<div id="button_bar">
-				<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
-				<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
-			</div>
-			
-			<div id="event_bar">
-				<?php GetListOfItems("events"); ?>
-			</div>
+	$item_type = "events";
+	require "tools/databaseHelper.php"; 
+	require "tools/timelineHelper.php"; 
+?>
+
+<div class="clearfix">
+	<div class="contents_left">
+		<div id="button_bar">
+			<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
+			<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
 		</div>
 		
-		<div class="contents_right" id="event_info">
-			<div id="default">
-				<?php echo $Content["default_event"]; ?>
-			</div>
+		<div id="event_bar">
+			<?php GetListOfItems("events"); ?>
 		</div>
 	</div>
 	
-	<?php require "layout/footer.php"; ?>
-</html>
+	<div class="contents_right" id="event_info">
+		<div id="default">
+			<?php echo $Content["default_event"]; ?>
+		</div>
+	</div>
+</div>
+
+<?php require "layout/footer.php"; ?>
 
 <script>
 <?php
@@ -87,7 +84,7 @@ if (isset($_GET['id'])) {
 								TableLink2 = document.createElement("a");
 								TableLink2.innerHTML = nameParts[types];
 							
-								currentHref = "<?php echo AddLangParam($itemType.'.php') ?>";
+								currentHref = "<?php echo $itemType.'.php' ?>";
 								TableLink2.href = updateURLParameter(currentHref, "id", linkParts[types]);
 								
 								// Table data
@@ -110,7 +107,7 @@ if (isset($_GET['id'])) {
 							TableLink.innerHTML = TableData.innerHTML;
 							TableData.innerHTML = "";
 							
-							currentHref = "<?php echo AddLangParam($itemType.'.php') ?>";
+							currentHref = "<?php echo $itemType.'.php' ?>";
 							TableLink.href = updateURLParameter(currentHref, "id", value);
 							
 							TableData.appendChild(TableLink);
@@ -191,7 +188,7 @@ if (isset($_GET['id'])) {
 		for (var i = 0; i < TLListIDs.length; i++) {
 			var TLListLink = document.createElement("a");
 			TLListLink.innerHTML = "<?php echo $NavBar["Timeline"]; ?> " + (Number(TLListIDs[i]) + 1);
-			TLListLink.href = updateURLParameter("<?php echo AddLangParam('timeline.php') ?>", "id", "" + TLListIDs[i] + "," + <?php echo $information["ID"]; ?>);
+			TLListLink.href = updateURLParameter("timeline.php", "id", "" + TLListIDs[i] + "," + <?php echo $information["ID"]; ?>);
 			
 			var TLListItem = document.createElement("li");
 			TLListItem.appendChild(TLListLink);
