@@ -1,28 +1,25 @@
-<!DOCTYPE html>
-<html>
-	<?php 
-		require "layout/header.php"; 
-		require "tools/worldmapHelper.php";
-	?>
+<?php 
+	require "layout/header.php"; 
+	require "tools/worldmapHelper.php";
+?>
 	
-	<div class="clearfix">
-		<div class="contents_left">			
-			<div id="world_bar">
-				<!-- We fill this up in the Worldmap javascript code -->
-			</div>
-		</div>
-		
-		<div class="contents_right" id="worldmap">			
-			<div id="default">
-				<?php echo $Content["default_wm"]; ?>
-			</div>
-			
-			<div id="google_maps"></div>
+<div class="clearfix">
+	<div class="contents_left">			
+		<div id="world_bar">
+			<!-- We fill this up in the Worldmap javascript code -->
 		</div>
 	</div>
 	
-	<?php require "layout/footer.php" ?>
-</html>
+	<div class="contents_right" id="worldmap">			
+		<div id="default">
+			<?php echo $Content["default_wm"]; ?>
+		</div>
+		
+		<div id="google_maps"></div>
+	</div>
+</div>
+
+<?php require "layout/footer.php" ?>
 
 <script>
 // List of locations of which the coordinates are known

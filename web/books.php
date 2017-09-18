@@ -1,33 +1,30 @@
-<!DOCTYPE html>
-<html>
-	<?php 
-		require "layout/header.php"; 
-		
-		$item_type = "books";
-		require "tools/databaseHelper.php"; 
-	?>
+<?php 
+	require "layout/header.php"; 
 	
-	<div class="clearfix">
-		<div class="contents_left">
-			<div id="button_bar">
-				<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
-				<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
-			</div>
-			
-			<div id="book_bar">
-				<?php GetListOfItems("books"); ?>
-			</div>
+	$item_type = "books";
+	require "tools/databaseHelper.php"; 
+?>
+
+<div class="clearfix">
+	<div class="contents_left">
+		<div id="button_bar">
+			<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
+			<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
 		</div>
 		
-		<div class="contents_right" id="book_info">
-			<div id="default">
-				<?php echo $Content["default_book"]; ?>
-			</div>
+		<div id="book_bar">
+			<?php GetListOfItems("books"); ?>
 		</div>
 	</div>
 	
-	<?php require "layout/footer.php"; ?>
-</html>
+	<div class="contents_right" id="book_info">
+		<div id="default">
+			<?php echo $Content["default_book"]; ?>
+		</div>
+	</div>
+</div>
+
+<?php require "layout/footer.php"; ?>
 
 <script>
 <?php
