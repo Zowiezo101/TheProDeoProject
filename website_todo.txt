@@ -2,24 +2,23 @@
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
 
-* Viewbox voor FamilyTree met vergroten en verkleinen
 * Do not reload entire page when clicking in an item, just replace contents
 	Keep information for current 100 items in objects
 * Separate explanations per "default text"
-* Get rid of double scroll-bars
 * Remove ID=x,y when clicking other family tree, time line & location
-* Use sessions for language?
+* Find language of user? 
+* Find language based on location?
 * Filter on alphabet in lists
 * Filter on appearance in lists
 * Filter on known values in lists (known location, known parents)
 * Home, links to full blog. Overflow = hidden
 * Not all blogs on a single page, go to next of prev pages
-* Login pages for people to save notes, favorites etc?
-* Save login information in database
 * Code clean up after done
 
 Bugs:
 - Weird border for first family tree
+- Fix language change when link is available, it does not load page properly for database items
+- And for other items
 
 https://www.gps-coordinaten.nl/
 
