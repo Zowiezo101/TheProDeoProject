@@ -2,12 +2,7 @@
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
 
-* Do not reload entire page when clicking in an item, just replace contents
-	Keep information for current 100 items in objects
 * Separate explanations per "default text"
-* Remove ID=x,y when clicking other family tree, time line & location
-* Find language of user? 
-* Find language based on location?
 * Filter on alphabet in lists
 * Filter on appearance in lists
 * Filter on known values in lists (known location, known parents)
@@ -17,8 +12,6 @@
 
 Bugs:
 - Weird border for first family tree
-- Fix language change when link is available, it does not load page properly for database items
-- And for other items
 
 https://www.gps-coordinaten.nl/
 
