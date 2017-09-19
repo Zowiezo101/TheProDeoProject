@@ -60,6 +60,10 @@ function createWorldMap() {
 	}
 	worldBar.appendChild(table);
 	
+	// Done loading, show the descriptions
+	var defaultText = document.getElementById("default");
+	defaultText.innerHTML = "<?php echo $Content["default_wm"]; ?>"
+	
 <?php if (isset($_GET['id'])) { ?>
 	var IDnum = <?php echo $_GET['id']; ?>;
 	

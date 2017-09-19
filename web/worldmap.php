@@ -12,7 +12,7 @@
 	
 	<div class="contents_right" id="worldmap">			
 		<div id="default">
-			<?php echo $Content["default_wm"]; ?>
+			<?php echo $Content["loading_wm"]; ?>
 		</div>
 		
 		<div id="google_maps"></div>
