@@ -285,9 +285,9 @@ body {
 #event_bar a, #event_info a,
 #book_bar a, #book_info a,
 #special_bar a, #special_info a,
-#family_bar button,
+#family_bar a,
 #world_bar button,
-#timeline_bar button
+#timeline_bar a
  {
 	display: block;
 	text-align: center;
@@ -401,6 +401,11 @@ body {
 	margin: 0;
 	padding: 0;
 	border: 0;
+}
+
+#familytree,
+#timeline {
+	height: 500px;
 }
 
 #google_maps {

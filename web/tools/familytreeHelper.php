@@ -43,7 +43,7 @@ var levelIDs = [];
 var globalOffset = 0;
 var globalWidth = 0;
 
-function createFamilyTree() {	
+function createFamilyTree() {
 	// Make a nice list here to choose from the set of PeopleList people
 	// When chosen, update PeopleId and redraw page
 	var familyBar = document.getElementById("family_bar");
@@ -53,14 +53,12 @@ function createFamilyTree() {
 		var PeopleId = PeoplesList[i];
 		var People = Peoples[PeopleId];
 		
-		var TableButton = document.createElement("button");
-		TableButton.innerHTML = People.name;
-		TableButton.value = People.ID;
-		TableButton.onclick = SetSVG;
-		TableButton.className = "FamilyTree";
+		var TableLink = document.createElement("a");
+		TableLink.innerHTML = People.name;
+		TableLink.href = updateURLParameter(window.location.href, "id", i + "," + People.ID);
 		
 		var TableData = document.createElement("td");
-		TableData.appendChild(TableButton);
+		TableData.appendChild(TableLink);
 	
 		var TableRow = document.createElement("tr");
 		TableRow.appendChild(TableData);
@@ -69,21 +67,14 @@ function createFamilyTree() {
 	}
 	familyBar.appendChild(table);
 	
-<?php if (isset($_GET['id'])) { ?>
-	var IDStr = "<?php echo $_GET['id']; ?>".split(",");
+<?php if (isset($_GET['id'])) { ?>	
+	var IDs = "<?php echo $_GET['id']; ?>".split(",");
 	
 	// Get the Tree and the ID numbers
-	var IDTree = IDStr[0];
-	var IDnum = IDStr[1];
+	var TreeId = IDs[0];
+	var PeopleId = IDs[1];
 	
-	// Now "click" the button in the table to draw it's family tree
-	var Buttons = document.getElementsByClassName("FamilyTree");
-	var Button = Buttons[parseInt(IDTree)];
-	Button.click();
-	
-	// And pan to it's location
-	People = Peoples[IDnum];
-	panTo(People.Location[0], People.Location[1]);
+	SetSVG(TreeId, PeopleId);
 <?php } ?>
 }
 
@@ -1037,9 +1028,7 @@ function calcLocations(firstID, highestLevel) {
 	return;
 }
 
-function SetSVG(Event) {
-	var PeopleId = Event.target.value;
-	
+function SetSVG(TreeId, PeopleId) {
 	// The FamilyTree div
 	var FamilyTree = document.getElementById("familytree");
 	
@@ -1052,15 +1041,15 @@ function SetSVG(Event) {
 	// Set all the generation levels of all people
 	// Start out clean
 	resetLevels();
-	var highestLevel = setLevels(PeopleId);
+	var highestLevel = setLevels(PeoplesList[TreeId]);
 	
 	resetIndexes();
-	setIndexes(PeopleId, highestLevel);
+	setIndexes(PeoplesList[TreeId], highestLevel);
 	
 	// Make the calculations to see where everyone should be placed
 	globalOffset = 0;
 	globalWidth = 0;
-	calcLocations(PeopleId, highestLevel);
+	calcLocations(PeoplesList[TreeId], highestLevel);
 	
 	// Start out clean, remove the current SVG
 	var SVG = document.getElementById("svg");
@@ -1072,7 +1061,6 @@ function SetSVG(Event) {
 	var svgns = "http://www.w3.org/2000/svg";
 	SVG = document.createElementNS(svgns, "svg");
 	SVG.id = "svg";
-	FamilyTree.appendChild(SVG);
 	
 	// Set the height and the width
 	var SVGHeight = (highestLevel + 1)*75;
@@ -1081,10 +1069,15 @@ function SetSVG(Event) {
 	SVG.setAttribute('width',  SVGWidth);
 	
 	// Draw the current family tree
-	var People = Peoples[PeopleId];
+	var People = Peoples[PeoplesList[TreeId]];
 	People.drawFamilyTree(SVG);
 	
-	panTo(0, 0);
+	// Now add it to the screen
+	FamilyTree.appendChild(SVG);
+	
+	// Move to the person
+	var People = Peoples[PeopleId];
+	panTo(People.Location[0], People.Location[1]);
 }
 
 function panTo(x, y) {

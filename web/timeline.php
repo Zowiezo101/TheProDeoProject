@@ -15,7 +15,11 @@
 			<!-- Here comes the legenda -->
 		</div>
 		<div id="default">
-			<?php echo $Content["default_tl"]; ?>
+			<?php if (isset($_GET['id'])) {
+				echo $Content["loading_tl"];
+			} else {
+				echo $Content["default_tl"];
+			} ?>
 		</div>
 	</div>
 </div>

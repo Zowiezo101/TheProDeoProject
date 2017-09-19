@@ -79,14 +79,12 @@ function createTimeLine() {
 		var EventId = EventsList[i];
 		var Event = Events[EventId];
 		
-		var TableButton = document.createElement("button");
-		TableButton.innerHTML = Event.name;
-		TableButton.value = Event.ID;
-		TableButton.onclick = SetSVG;
-		TableButton.className = "TimeLine";
+		var TableLink = document.createElement("a");
+		TableLink.innerHTML = Event.name;
+		TableLink.href = updateURLParameter(window.location.href, "id", i + "," + Event.ID);
 		
 		var TableData = document.createElement("td");
-		TableData.appendChild(TableButton);
+		TableData.appendChild(TableLink);
 	
 		var TableRow = document.createElement("tr");
 		TableRow.appendChild(TableData);
@@ -96,20 +94,14 @@ function createTimeLine() {
 	timeLine.appendChild(table);
 	
 <?php if (isset($_GET['id'])) { ?>
-	var IDStr = "<?php echo $_GET['id']; ?>".split(",");
+	var IDs = "<?php echo $_GET['id']; ?>".split(",");
 	
 	// Get the Timeline and the ID numbers
-	var IDTimeline = IDStr[0];
-	var IDnum = IDStr[1];
-	
-	// Now "click" the button in the table to draw it's family tree
-	var Buttons = document.getElementsByClassName("TimeLine");
-	var Button = Buttons[parseInt(IDTimeline)];
-	Button.click();
+	var TimelineId = IDs[0];
+	var EventId = IDs[1];
 	
 	// And pan to it's location
-	Event = Events[IDnum];
-	panTo(Event.Location[0], Event.Location[1]);
+	SetSVG(TimelineId, EventId);
 <?php } ?>
 }
 
@@ -1213,9 +1205,7 @@ function drawTimeLine(SVG) {
 	return;
 }
 
-function SetSVG(ClickEvent) {
-	var EventId = ClickEvent.target.value;
-	
+function SetSVG(TimelineId, EventId) {	
 	// The Time line div
 	var TimeLine = document.getElementById("timeline");
 	
@@ -1228,10 +1218,10 @@ function SetSVG(ClickEvent) {
 	// Set all the generation levels of all events
 	// Start out clean
 	resetLevels();
-	var highestLevel = setLevels(EventId);
+	var highestLevel = setLevels(EventsList[TimelineId]);
 	
 	resetIndexes();
-	setIndexes(EventId, highestLevel);
+	setIndexes(EventsList[TimelineId], highestLevel);
 	
 	// Make the calculations to see where everyone should be placed
 	globalOffset = 0;
@@ -1248,7 +1238,6 @@ function SetSVG(ClickEvent) {
 	var svgns = "http://www.w3.org/2000/svg";
 	SVG = document.createElementNS(svgns, "svg");
 	SVG.id = "svg";
-	TimeLine.appendChild(SVG);
 	
 	// Set the height and the width
 	SVG.setAttribute('height', globalHeight + globalOffset + 75);	
@@ -1276,8 +1265,13 @@ function SetSVG(ClickEvent) {
 		SVG.appendChild(Rect);
 		SVG.appendChild(Text);
 	}
-	
 	drawTimeLine(SVG);
+	
+	// Now add it to the screen
+	TimeLine.appendChild(SVG);
+	
+	// Move to the person
+	panTo(Event.Location[0], Event.Location[1]);
 }
 
 function panTo(x, y) {

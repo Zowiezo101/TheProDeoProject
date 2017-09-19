@@ -12,7 +12,11 @@
 	
 	<div class="contents_right" id="familytree">
 		<div id="default">
-			<?php echo $Content["default_ft"]; ?>
+			<?php if (isset($_GET['id'])) {
+				echo $Content["loading_ft"];
+			} else {
+				echo $Content["default_ft"];
+			} ?>
 		</div>
 	</div>
 </div>
