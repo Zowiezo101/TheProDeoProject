@@ -8,3 +8,7 @@
 </div>
 
 <?php require "layout/footer.php" ?>
+
+<script>
+window.onload = CheckBlogs;
+</script>

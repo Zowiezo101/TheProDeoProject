@@ -130,8 +130,8 @@ function ShowBlogs() {
 				echo "<tr>";
 				echo "<td>";
 				echo "<h1>".$blog['title']."</h1>";
-				echo "<pre>".$blog['text']."</pre>";
-				echo "<p>".$blog['date']." by ".$blog["user"]."</p>";
+				echo "<pre id='blog".$blog["id"]."' class='blog_pre'>".$blog['text']."</pre>";
+				echo "<p class='blog_date'>".$blog['date']." by ".$blog["user"]."</p>";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -140,3 +140,52 @@ function ShowBlogs() {
 	}
 }
 ?>
+
+<script>
+function CheckBlogs() {	
+	var blogs = document.getElementsByClassName("blog_pre");
+	var dates = document.getElementsByClassName("blog_date");
+			
+	for(var blogId = 0; blogId < blogs.length; blogId++) {
+		var currentBlog = blogs[blogId];
+		var currentDate = dates[blogId];
+		
+		// If the length of this blog exceeds the maximum allowed
+		if (currentBlog.offsetHeight > 75) {
+			var Parent = currentBlog.parentNode;
+			
+			// Add a link and some preview text with "click here"
+			var blogLink = document.createElement("a");
+			blogLink.innerHTML = "<?php echo $Content["link_blog"]; ?>...";
+			blogLink.href = "javascript:expandBlog('" + currentBlog.id + "')";
+			blogLink.id = "link" + currentBlog.id;
+			blogLink.className = "blog_link";
+			
+			// First find the node where to put it in between
+			Parent.insertBefore(blogLink, currentDate);
+		}
+	}
+}
+
+function expandBlog(idBlog) {
+	// Use a different class, one that does not hide the overflow
+	var elBlog = document.getElementById(idBlog);
+	elBlog.className = "blog_pre_expand";
+	
+	// Add the function to collapse again
+	var elLink = document.getElementById("link" + idBlog);
+	elLink.innerHTML = "<?php echo $Content["unlink_blog"]; ?>...";
+	elLink.href = "javascript:collapseBlog('" + idBlog + "')";
+}
+
+function collapseBlog(idBlog) {
+	// Use a different class, one that hides the overflow
+	var elBlog = document.getElementById(idBlog);
+	elBlog.className = "blog_pre";
+	
+	// Add the function to expand again
+	var elLink = document.getElementById("link" + idBlog);
+	elLink.innerHTML = "<?php echo $Content["link_blog"]; ?>...";
+	elLink.href = "javascript:expandBlog('" + idBlog + "')";
+}
+</script>

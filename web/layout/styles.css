@@ -358,6 +358,25 @@ body {
 	margin: auto;
 }
 
+.blog_pre {
+	width: 100%;
+	word-wrap: break-all;
+	white-space: pre-wrap;
+	max-height: 90px;
+	overflow: hidden;
+}
+
+.blog_pre_expand {
+	width: 100%;
+	word-wrap: break-all;
+	white-space: pre-wrap;
+}
+
+.blog_link {
+	color: black;
+	/* text-decoration: none; */
+}
+
 #contact {
 	text-align: center;
 }
