@@ -38,8 +38,7 @@
 					
 					<div id="lang_menu">
 						<form method="post">
-							<input class="lang" type="submit" name="lang" value="nl"></a>
-							<input class="lang" type="submit" name="lang" value="en"></a>
+							<?php getLangList(); ?>
 						</form>
 					</div>
 				</div>

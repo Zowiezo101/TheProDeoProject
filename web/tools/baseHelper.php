@@ -24,18 +24,42 @@ function prefered_language(array $available_languages, $http_accept_language) {
 		}
 
 	}
-	arsort($langs);
-	foreach ($langs as $lang => $value) {
-		$langsSet[] = $lang;
+	
+	if (count($langs) > 0) {
+		arsort($langs);
+		foreach ($langs as $lang => $value) {
+			$langsSet[] = $lang;
+		}
+	} else {
+		$langsSet[] = "en";
 	}
 
 	return $langsSet;
 }
 
+function get_available_langs() {
+	$langsSet;
+	
+	$langFiles = glob("./translations/*.php");
+	foreach ($langFiles as $filename) {
+		$lang = substr($filename, -6, 2);
+		$langsSet[] = $lang;
+	}
+	
+	
+	return $langsSet;
+}
+
+function getLangList() {
+	foreach (get_available_langs() as $lang) {
+		echo '<input class="lang" type="submit" name="lang" value="'.$lang.'">';
+	}
+}
+
 // Set the language to a default
 if (!isset($_SESSION["lang"])) {
 	// Languages we support
-	$available_languages = array("en", "nl");
+	$available_languages = get_available_langs();
 
 	$langs = prefered_language($available_languages, $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
 	if ($langs) {

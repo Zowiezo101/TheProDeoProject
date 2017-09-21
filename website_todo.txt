@@ -3,8 +3,6 @@
 * Create API for website & related app to view information on phone
 
 * Code clean up after done
-* Get all available translations by reading the files in the translations folder
-* Make entire td of home a link instead of just the klik hier
 
 Tasks:
 - Interface TimeLine
@@ -17,6 +15,7 @@ Tasks:
 
 Bugs:
 - Weird border for first family tree
+- Too long blogs not put in database
 
 https://www.gps-coordinaten.nl/
 
