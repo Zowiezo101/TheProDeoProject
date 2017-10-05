@@ -3,19 +3,45 @@
 * Create API for website & related app to view information on phone
 
 * Code clean up after done
+* Make nice images for sort buttons
+* Keep scroll bar in item_bar on its current location
+* Use 'item' names instead of 'peoples, locations' etc
+* Update all "default text" contents
 
 Tasks:
 - Interface TimeLine
 - Interface FamilyTree
+	Via animatie netjes opzij gaan
+	Wanneer ingedrukt, doorgaan met scrollen
+	Netjes bovenop SVG zelf
+	Begin scherm centreren, makkelijker met inzoomen eerste keer
+	Zoom fit werkend maken
+	Easter egg foto of plaatje in een ver gedeelte
+	Pan to werkend maken
+	Hold mouse to pan too
+	Scroll mouse to zoom too
+	
 - Filters for searching
-- Sort on appearance
-- Sort on Alphabet
+	Set options after search and retry search query when changed
+	- Type (People/Location/etc)
+	- options per item
+		* gender
+		* amount of kids
+		* Population
+		* etc
+	- Show search options in table
+	
 - API
-- Update all "default text" contents
+	- Create app to get nice view on phone
+	- Enables getting information on a phone using API
+	- Nice for game app
+	- Create Python program to do the same
+	- Create other website to do the same
 
 Bugs:
 - Weird border for first family tree
 - Too long blogs not put in database
+- Sort buttons Gen-Op won't stay on Op-Gen due to restart page
 
 https://www.gps-coordinaten.nl/
 
