@@ -10,7 +10,34 @@ function GetListOfItems($table) {
 		$page_nr = $_GET["page"];
 	}
 	
-	$sql = "SELECT ID,Name FROM ".$table." WHERE ID>=".($page_nr*100)." LIMIT 100";
+	if (!isset($_GET["sort"])) {
+		$sort = "app";
+	} else {
+		$sort = $_GET["sort"];
+	}
+				
+	switch($sort) {
+		case 'alp':
+		// Get new SQL array of items
+		$sortBy = 'Name ASC';
+		break;
+		
+		case 'r-alp':
+		// Get new SQL array of items
+		$sortBy = 'Name DESC';
+		break;
+		
+		case 'r-app':
+		// Get new SQL array of items
+		$sortBy = 'ID DESC';
+		break;
+		
+		default:
+		// Get new SQL array of items
+		$sortBy = 'ID ASC';
+	}
+	
+	$sql = "SELECT ID,Name FROM ".$table." ORDER BY ".$sortBy." LIMIT ".($page_nr*100).",".(($page_nr+1)*100);
 	$result = $conn->query($sql);
 	
 	if (!$result) {
@@ -21,7 +48,7 @@ function GetListOfItems($table) {
 		while ($name = $result->fetch_array()) {
 			echo "<tr>";
 			echo "<td>";
-			echo "<a href='".$table.".php".AddPageParam($page_nr).AddIdParam($name['ID'])."'>".$name['Name']."</a>";
+			echo "<a href='".$table.".php".AddParams($page_nr, $name['ID'], $sort)."'>".$name['Name']."</a>";
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -121,7 +148,7 @@ function SearchItems($text, $table) {
 			while ($item = $result->fetch_array()) {
 				echo "<tr>";
 					echo "<td>";
-						echo "<a href='".$table.".php".AddIdParam($item['ID'])."'>".$item['Name']."</a>";
+						echo "<a href='".$table.".php".AddParam(-1, $item['ID'], -2)."'>".$item['Name']."</a>";
 					echo "</td>";
 				
 				if (in_array($table, Array("peoples", "locations", "specials"))) {
@@ -161,19 +188,26 @@ if (isset($item_type)) { ?>
 				$page_nr = $_GET["page"];
 			}
 			
+			if (!isset($_GET["sort"])) {
+				$sort = 'app';
+			} else {
+				$sort = $_GET["sort"];
+			}
+			
 			echo "var PageNr = ".$page_nr.";";
 			echo "var NrOfItems = ".GetNumberOfItems($item_type).";";
+			echo "var SortType = '".$sort."';";
 		?>
 		
 		if (PageNr == 0) {
 			ButtonPrev.disabled = true;
 		} else {
-			ButtonPrev.disable = false;
+			ButtonPrev.disabled = false;
 		}
 		if (NrOfItems < 100) {
 			ButtonNext.disabled = true;
 		} else {
-			ButtonNext.disable = false;
+			ButtonNext.disabled = false;
 		}
 
 		// Set the height of the left div, to the height of the right div
@@ -221,6 +255,44 @@ if (isset($item_type)) { ?>
 		oldHref = window.location.href;
 		newHref = updateURLParameter(oldHref, "page", PageNr);
 		window.location.href = newHref;
+	}
+	
+	function SortOnAlphabet() {		
+		Button = document.getElementById("button_alp");
+	
+		// The sort parameter only has to be updated
+		oldHref = window.location.href;
+		<?php if (isset($_GET["sort"]) && ($_GET["sort"]) == "alp") { ?>
+			newHref = updateURLParameter(oldHref, "sort", "r-alp");
+			Button.innerHTML = "A-Z";
+		<?php } else { ?>
+			newHref = updateURLParameter(oldHref, "sort", "alp");
+			Button.innerHTML = "Z-A";
+		<?php } ?>
+		
+		newHref = removeURLParameter(newHref, "page");
+		window.location.href = newHref;
+				
+		return;
+	}
+	
+	function SortOnAppearance() {
+		Button = document.getElementById("button_app");
+	
+		// The sort parameter only has to be updated
+		oldHref = window.location.href;
+		<?php if (isset($_GET["sort"]) && ($_GET["sort"]) == "r-app") { ?>
+			newHref = removeURLParameter(oldHref, "sort");
+			Button.innerHTML = "Gen-Op";
+		<?php } else { ?>
+			newHref = updateURLParameter(oldHref, "sort", "r-app");
+			Button.innerHTML = "Op-Gen";
+		<?php } ?>
+		
+		newHref = removeURLParameter(newHref, "page");
+		window.location.href = newHref;
+				
+		return;
 	}
 </script>
 

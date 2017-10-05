@@ -81,14 +81,37 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-function AddPageParam($page_nr) {
+function AddParams($page, $id, $sort) {
 	$return_val = "";
+		
+	// If values are not defined, define them now
+	// Use the default value, if they are not in the address bar
+	if ($page == -1) {
+		if (isset($_GET["page"])) {
+			$page = $_GET["page"];
+		} else {
+			$page = 0;
+		}
+	}
+		
+	if ($sort == -1) {
+		if (isset($_GET["sort"])) {
+			$sort = $_GET["sort"];
+		} else {
+			$sort = "app";
+		}
+	}
 	
-	if ($page_nr > 0) {
-		# When the page language is dutch, there is no parameter in the URL
-		$return_val = "?page=".$page_nr;
+	if ($page != 0) {
+		$return_val = "?page=".$page."&id=".$id;
+	} else {
+		$return_val = "?id=".$id;
 	} 
 	
+	if ($sort != "app") {
+		$return_val = $return_val."&sort=".$sort;
+	}
+		
 	return $return_val;
 }
 
