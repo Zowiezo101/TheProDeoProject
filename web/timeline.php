@@ -11,9 +11,6 @@
 	</div>
 	
 	<div class="contents_right" id="timeline">
-		<div id="legenda">
-			<!-- Here comes the legenda -->
-		</div>
 		<div id="default">
 			<?php if (isset($_GET['id'])) {
 				echo $Content["loading_tl"];
