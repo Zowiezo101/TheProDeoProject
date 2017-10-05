@@ -43,6 +43,14 @@ var levelIDs = [];
 var globalOffset = 0;
 var globalWidth = 0;
 
+var ActualHeight = 0;
+var ActualWidth = 0;
+
+var viewX = 0;
+var viewY = 0;
+var viewWidth = 0;
+var viewHeight = 0;
+
 function createFamilyTree() {
 	// Make a nice list here to choose from the set of PeopleList people
 	// When chosen, update PeopleId and redraw page
@@ -1038,6 +1046,52 @@ function SetSVG(TreeId, PeopleId) {
 		FamilyTree.removeChild(defaultText);
 	}
 	
+	// Show the controls to move around in the SVG
+	var Controls = document.createElement("div");
+	Controls.setAttribute("id", "controls");
+	
+	var ZoomInButton = document.createElement("button");
+	ZoomInButton.setAttribute("onclick", "ZoomIn(1.4)");
+	ZoomInButton.innerHTML = "Zoom in";
+	Controls.appendChild(ZoomInButton);
+	
+	var ZoomOutButton = document.createElement("button");
+	ZoomOutButton.setAttribute("onclick", "ZoomOut(1.4)");
+	ZoomOutButton.innerHTML = "Zoom out";
+	Controls.appendChild(ZoomOutButton);
+	
+	var ZoomFitButton = document.createElement("button");
+	ZoomFitButton.setAttribute("onclick", "ZoomFit()");
+	ZoomFitButton.innerHTML = "Zoom Fit";
+	Controls.appendChild(ZoomFitButton);
+	
+	var ZoomResetButton = document.createElement("button");
+	ZoomResetButton.setAttribute("onclick", "ZoomReset(FamilyTree)");
+	ZoomResetButton.innerHTML = "Reset view";
+	Controls.appendChild(ZoomResetButton);
+	
+	var PanUpButton = document.createElement("button");
+	PanUpButton.setAttribute("onclick", "PanUp(50)");
+	PanUpButton.innerHTML = "Up";
+	Controls.appendChild(PanUpButton);
+	
+	var PanLeftButton = document.createElement("button");
+	PanLeftButton.setAttribute("onclick", "PanLeft(50)");
+	PanLeftButton.innerHTML = "Left";
+	Controls.appendChild(PanLeftButton);
+	
+	var PanRightButton = document.createElement("button");
+	PanRightButton.setAttribute("onclick", "PanRight(50)");
+	PanRightButton.innerHTML = "Right";
+	Controls.appendChild(PanRightButton);
+	
+	var PanDownButton = document.createElement("button");
+	PanDownButton.setAttribute("onclick", "PanDown(50)");
+	PanDownButton.innerHTML = "Down";
+	Controls.appendChild(PanDownButton);
+	
+	FamilyTree.appendChild(Controls);
+	
 	// Set all the generation levels of all people
 	// Start out clean
 	resetLevels();
@@ -1063,10 +1117,10 @@ function SetSVG(TreeId, PeopleId) {
 	SVG.id = "svg";
 	
 	// Set the height and the width
-	var SVGHeight = (highestLevel + 1)*75;
-	var SVGWidth = globalWidth + globalOffset + 150;
-	SVG.setAttribute('height', SVGHeight);	
-	SVG.setAttribute('width',  SVGWidth);
+	var ActualHeight = (highestLevel + 1)*75;
+	var ActualWidth = globalWidth + globalOffset + 150;
+	SVG.setAttribute('height', FamilyTree.offsetHeight);	
+	SVG.setAttribute('width',  FamilyTree.offsetWidth);
 	
 	// Draw the current family tree
 	var People = Peoples[PeoplesList[TreeId]];
@@ -1075,14 +1129,111 @@ function SetSVG(TreeId, PeopleId) {
 	// Now add it to the screen
 	FamilyTree.appendChild(SVG);
 	
+	// Update the width and the height of the viewbox
+	updateViewbox(-1, -1, FamilyTree.offsetWidth, FamilyTree.offsetHeight);
+	
 	// Move to the person
 	var People = Peoples[PeopleId];
 	panTo(People.Location[0], People.Location[1]);
+}
+
+function updateViewbox(x, y, width, height) {
+	var SVG = document.getElementById("svg");
+	
+	if (x != -1) {
+		viewX = x;
+		// Do not exceed the boundaries
+		// if (viewX < 0) {
+			// viewX = 0;
+		// } else if (viewX > ActualWidth) {
+			// viewX = ActualWidth;
+		// }
+	}
+	
+	if (y != -1) {
+		viewY = y;
+		// Do not exceed the boundaries
+		// if (viewY < 0) {
+			// viewY = 0;
+		// } else if (viewY > ActualHeight) {
+			// viewY = ActualHeight;
+		// }
+	}
+	
+	if (width != -1) {
+		viewWidth = width;
+	}
+	
+	if (height != -1) {
+		viewHeight = height
+	}
+	
+	SVG.setAttributeNS(null, 'viewBox', "" + viewX + " " + viewY + " " + viewWidth + " " + viewHeight);
+	
+	return;
 }
 
 function panTo(x, y) {
 	FamilyTree = document.getElementById("familytree");
 	FamilyTree.scrollLeft = (x + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
 	FamilyTree.scrollTop = y - 50;
+}
+
+function ZoomIn(factor) {
+	// To zoom in, we need to decrease the size of the viewHeight and viewWidth
+	var newWidth = viewWidth / factor;
+	var newHeight = viewHeight / factor;
+	
+	var newX = viewX + ((viewWidth - newWidth) / 2);
+	var newY = viewY + ((viewHeight - newHeight) / 2);
+	
+	updateViewbox(newX, newY, newWidth, newHeight);
+}
+
+function ZoomOut(factor) {
+	// To zoom out, we need to increase the size of the viewHeight and viewWidth
+	var newWidth = viewWidth * factor;
+	var newHeight = viewHeight * factor;
+	
+	var newX = viewX + ((viewWidth - newWidth) / 2);
+	var newY = viewY + ((viewHeight - newHeight) / 2);
+	
+	updateViewbox(newX, newY, newWidth, newHeight);
+}
+
+function ZoomFit() {
+	// To zoom out, we need to increase the size of the viewHeight and viewWidth
+	var newWidth = ActualWidth;
+	var newHeight = ActualHeight;
+	
+	updateViewbox(newWidth / 2, newHeight / 2, newWidth, newHeight);
+}
+
+function ZoomReset(parent) {
+	// To zoom out, we need to increase the size of the viewHeight and viewWidth
+	var newWidth = parent.offsetWidth;
+	var newHeight = parent.offsetHeight;
+	
+	updateViewbox(0, 0, newWidth, newHeight);
+}
+
+function PanLeft(left) {
+	var newX = viewX - left;
+	updateViewbox(newX, -1, -1, -1);
+}
+
+function PanRight(right) {
+	var newX = viewX + right;
+	updateViewbox(newX, -1, -1, -1);
+}
+
+function PanUp(up) {
+	var newY = viewY - up;
+	updateViewbox(-1, newY, -1, -1);
+}
+
+function PanDown(down) {
+	var newY = viewY + down;
+	updateViewbox(-1, newY, -1, -1);
 }
 </script>
