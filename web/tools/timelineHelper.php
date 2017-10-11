@@ -1243,7 +1243,7 @@ function SetSVG(TimelineId, EventId) {
 	Controls.appendChild(ZoomFitButton);
 	
 	var ZoomResetButton = document.createElement("button");
-	ZoomResetButton.setAttribute("onclick", "ZoomReset(TimeLine)");
+	ZoomResetButton.setAttribute("onclick", "ZoomReset()");
 	ZoomResetButton.innerHTML = "Reset view";
 	Controls.appendChild(ZoomResetButton);
 	
@@ -1294,8 +1294,8 @@ function SetSVG(TimelineId, EventId) {
 	SVG.id = "svg";
 	
 	// Set the height and the width Plus x pixel border
-	var ActualWidth = globalWidth + (highestLevel + 1)*50;
-	var ActualHeight = globalHeight + globalOffset + 75;
+	ActualWidth = globalWidth + (highestLevel + 1)*50;
+	ActualHeight = globalHeight + globalOffset + 75;
 	
 	SVG.setAttribute('width', TimeLine.offsetWidth);
 	SVG.setAttribute('height', TimeLine.offsetHeight);
@@ -1327,6 +1327,11 @@ function SetSVG(TimelineId, EventId) {
 	// Now add it to the screen
 	TimeLine.appendChild(SVG);
 	
+	// And some functions for mouse or keyboard panning/scrolling
+	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
+	SVG.setAttributeNS(null, 'onmousemove', "GetMouseMov(evt)");
+	SVG.setAttributeNS(null, 'onmouseup',   "GetMouseOut(evt)");
+	
 	// Update the width and the height of the viewbox
 	updateViewbox(-1, -1, TimeLine.offsetWidth, TimeLine.offsetHeight);
 	
@@ -1335,11 +1340,11 @@ function SetSVG(TimelineId, EventId) {
 }
 
 function panTo(x, y) {
-	TimeLine = document.getElementById("timeline");
+	var TimeLine = document.getElementById("timeline");
 	scrollTop = (y + globalOffset + 50) - (TimeLine.offsetHeight / 2);
-	scrollLeft = (x + 100) - (TimeLine.offsetWidth / 2);
+	scrollLeft = (x + 75) - (TimeLine.offsetWidth / 2);
 	
-	updateViewbox(scrollTop, scrollLeft, -1, -1);
+	updateViewbox(scrollLeft, scrollTop, -1, -1);
 }
 
 function updateViewbox(x, y, width, height) {
@@ -1405,13 +1410,15 @@ function ZoomFit() {
 	var newWidth = ActualWidth;
 	var newHeight = ActualHeight;
 	
-	updateViewbox(newWidth / 2, newHeight / 2, newWidth, newHeight);
+	updateViewbox(0, newHeight / 2, newWidth, newHeight);
 }
 
-function ZoomReset(parent) {
+function ZoomReset() {
+	var TimeLine = document.getElementById("timeline");
+	
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
-	var newWidth = parent.offsetWidth;
-	var newHeight = parent.offsetHeight;
+	var newWidth = TimeLine.offsetWidth;
+	var newHeight = TimeLine.offsetHeight;
 	
 	updateViewbox(0, 0, newWidth, newHeight);
 }
@@ -1434,5 +1441,32 @@ function PanUp(up) {
 function PanDown(down) {
 	var newY = viewY + down;
 	updateViewbox(-1, newY, -1, -1);
+}
+
+var MouseX = 0;
+var MouseY = 0;
+var Moving = false;
+GetMousePos = function (event) {
+	MouseX = event.clientX;
+	MouseY = event.clientY;
+	
+	Moving = true;
+}
+
+GetMouseMov = function (event) {
+	if (Moving == true) {
+		var dX = event.clientX - MouseX;
+		var dY = event.clientY - MouseY;
+		
+		PanUp(dY);
+		PanLeft(dX);
+		
+		MouseX = event.clientX;
+		MouseY = event.clientY;
+	}
+}
+
+GetMouseOut = function (event) {
+	Moving = false;
 }
 </script>

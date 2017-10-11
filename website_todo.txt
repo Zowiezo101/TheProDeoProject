@@ -13,13 +13,13 @@ Tasks:
 - Interface FamilyTree
 	Via animatie netjes opzij gaan
 	Wanneer ingedrukt, doorgaan met scrollen
-	Netjes bovenop SVG zelf
-	Begin scherm centreren, makkelijker met inzoomen eerste keer
-	Zoom fit werkend maken
+	Netjes bovenop SVG zelf (Rechts onderin)
+	Net als Legenda, ook bovenop.. (Links onderin)
 	Easter egg foto of plaatje in een ver gedeelte
-	Pan to werkend maken
-	Hold mouse to pan too
 	Scroll mouse to zoom too
+	Pan continueing after SVG has been left
+	Reset view naar item ipv 0,0
+	update Timeline helper with updates from FamilyTree helper
 	
 - Filters for searching
 	Set options after search and retry search query when changed
@@ -42,6 +42,7 @@ Bugs:
 - Weird border for first family tree
 - Too long blogs not put in database
 - Sort buttons Gen-Op won't stay on Op-Gen due to restart page
+- Items no longer clickable after move
 
 https://www.gps-coordinaten.nl/
 

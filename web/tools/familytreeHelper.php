@@ -45,6 +45,7 @@ var globalWidth = 0;
 
 var ActualHeight = 0;
 var ActualWidth = 0;
+var ZoomFactor = 1;
 
 var viewX = 0;
 var viewY = 0;
@@ -1117,8 +1118,8 @@ function SetSVG(TreeId, PeopleId) {
 	SVG.id = "svg";
 	
 	// Set the height and the width
-	var ActualHeight = (highestLevel + 1)*75;
-	var ActualWidth = globalWidth + globalOffset + 150;
+	ActualHeight = (highestLevel + 1)*75;
+	ActualWidth = globalWidth + globalOffset + 150;
 	SVG.setAttribute('height', FamilyTree.offsetHeight);	
 	SVG.setAttribute('width',  FamilyTree.offsetWidth);
 	
@@ -1128,6 +1129,11 @@ function SetSVG(TreeId, PeopleId) {
 	
 	// Now add it to the screen
 	FamilyTree.appendChild(SVG);
+	
+	// And some functions for mouse or keyboard panning/scrolling
+	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
+	SVG.setAttributeNS(null, 'onmousemove', "GetMouseMov(evt)");
+	SVG.setAttributeNS(null, 'onmouseup',   "GetMouseOut(evt)");
 	
 	// Update the width and the height of the viewbox
 	updateViewbox(-1, -1, FamilyTree.offsetWidth, FamilyTree.offsetHeight);
@@ -1175,8 +1181,10 @@ function updateViewbox(x, y, width, height) {
 
 function panTo(x, y) {
 	FamilyTree = document.getElementById("familytree");
-	FamilyTree.scrollLeft = (x + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
-	FamilyTree.scrollTop = y - 50;
+	scrollLeft = (x + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
+	scrollTop = (y + 75) - (FamilyTree.offsetHeight / 2);
+	
+	updateViewbox(scrollLeft, scrollTop, -1, -1);
 }
 
 function ZoomIn(factor) {
@@ -1186,6 +1194,8 @@ function ZoomIn(factor) {
 	
 	var newX = viewX + ((viewWidth - newWidth) / 2);
 	var newY = viewY + ((viewHeight - newHeight) / 2);
+	
+	ZoomFactor = ZoomFactor * factor;
 	
 	updateViewbox(newX, newY, newWidth, newHeight);
 }
@@ -1198,21 +1208,41 @@ function ZoomOut(factor) {
 	var newX = viewX + ((viewWidth - newWidth) / 2);
 	var newY = viewY + ((viewHeight - newHeight) / 2);
 	
+	ZoomFactor = ZoomFactor / factor;
+	
 	updateViewbox(newX, newY, newWidth, newHeight);
 }
 
 function ZoomFit() {
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
-	var newWidth = ActualWidth;
-	var newHeight = ActualHeight;
+	// Keep the ratio between X and Y axis aligned
+	// Find the biggest ratio and use that!
+	var dX = ActualWidth / viewWidth;
+	var dY = ActualHeight / viewHeight;
 	
-	updateViewbox(newWidth / 2, newHeight / 2, newWidth, newHeight);
+	if (dX > dY) { 
+		var newWidth = viewWidth * dX;
+		var newHeight = viewHeight * dX;
+		
+		ZoomFactor = viewWidth / ActualWidth;
+	} else {
+		var newWidth = viewWidth * dY;
+		var newHeight = viewHeight * dY;
+		
+		ZoomFactor = viewHeight / ActualHeight;
+	}
+	
+	// Down half the page, up half the family tree to get it in the middle
+	var offsetY = -(ActualHeight / 2) + (viewHeight / 2);
+	updateViewbox(0, offsetY, newWidth, newHeight);
 }
 
 function ZoomReset(parent) {
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
 	var newWidth = parent.offsetWidth;
 	var newHeight = parent.offsetHeight;
+	
+	ZoomFactor = 1;
 	
 	updateViewbox(0, 0, newWidth, newHeight);
 }
@@ -1235,5 +1265,32 @@ function PanUp(up) {
 function PanDown(down) {
 	var newY = viewY + down;
 	updateViewbox(-1, newY, -1, -1);
+}
+
+var MouseX = 0;
+var MouseY = 0;
+var Moving = false;
+GetMousePos = function (event) {
+	MouseX = event.clientX;
+	MouseY = event.clientY;
+	
+	Moving = true;
+}
+
+GetMouseMov = function (event) {
+	if (Moving == true) {
+		var dX = event.clientX - MouseX;
+		var dY = event.clientY - MouseY;
+		
+		PanUp(dY / ZoomFactor);
+		PanLeft(dX / ZoomFactor);
+		
+		MouseX = event.clientX;
+		MouseY = event.clientY;
+	}
+}
+
+GetMouseOut = function (event) {
+	Moving = false;
 }
 </script>
