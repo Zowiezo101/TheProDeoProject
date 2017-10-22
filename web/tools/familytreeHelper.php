@@ -1071,26 +1071,6 @@ function SetSVG(TreeId, PeopleId) {
 	ZoomResetButton.innerHTML = "Reset view";
 	Controls.appendChild(ZoomResetButton);
 	
-	var PanUpButton = document.createElement("button");
-	PanUpButton.setAttribute("onclick", "PanUp(50)");
-	PanUpButton.innerHTML = "Up";
-	Controls.appendChild(PanUpButton);
-	
-	var PanLeftButton = document.createElement("button");
-	PanLeftButton.setAttribute("onclick", "PanLeft(50)");
-	PanLeftButton.innerHTML = "Left";
-	Controls.appendChild(PanLeftButton);
-	
-	var PanRightButton = document.createElement("button");
-	PanRightButton.setAttribute("onclick", "PanRight(50)");
-	PanRightButton.innerHTML = "Right";
-	Controls.appendChild(PanRightButton);
-	
-	var PanDownButton = document.createElement("button");
-	PanDownButton.setAttribute("onclick", "PanDown(50)");
-	PanDownButton.innerHTML = "Down";
-	Controls.appendChild(PanDownButton);
-	
 	FamilyTree.appendChild(Controls);
 	
 	// Set all the generation levels of all people
@@ -1132,15 +1112,26 @@ function SetSVG(TreeId, PeopleId) {
 	
 	// And some functions for mouse or keyboard panning/scrolling
 	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
-	SVG.setAttributeNS(null, 'onmousemove', "GetMouseMov(evt)");
-	SVG.setAttributeNS(null, 'onmouseup',   "GetMouseOut(evt)");
+	
+	if (SVG.addEventListener) {
+		// IE9, Chrome, Safari, Opera
+		SVG.addEventListener("mousewheel", GetDelta, false);
+		// Firefox
+		SVG.addEventListener("DOMMouseScroll", GetDelta, false);
+	}
+	// IE 6/7/8
+	else 
+		SVG.attachEvent("onmousewheel", GetDelta);
+	
+	window.onmousemove = GetMouseMov;
+	window.onmouseup = GetMouseOut;
 	
 	// Update the width and the height of the viewbox
 	updateViewbox(-1, -1, FamilyTree.offsetWidth, FamilyTree.offsetHeight);
 	
 	// Move to the person
 	var People = Peoples[PeopleId];
-	panTo(People.Location[0], People.Location[1]);
+	panItem(People);
 }
 
 function updateViewbox(x, y, width, height) {
@@ -1179,12 +1170,19 @@ function updateViewbox(x, y, width, height) {
 	return;
 }
 
-function panTo(x, y) {
+function panItem(item) {
 	FamilyTree = document.getElementById("familytree");
-	scrollLeft = (x + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
-	scrollTop = (y + 75) - (FamilyTree.offsetHeight / 2);
+	scrollLeft = (item.Location[0] + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
+	scrollTop = (item.Location[1] + 75) - (FamilyTree.offsetHeight / 2);
 	
 	updateViewbox(scrollLeft, scrollTop, -1, -1);
+}
+
+function panTo(x, y) {	
+	var newX = viewX - x;
+	var newY = viewY - y;	
+	
+	updateViewbox(newX, newY, -1, -1);
 }
 
 function ZoomIn(factor) {
@@ -1232,39 +1230,28 @@ function ZoomFit() {
 		ZoomFactor = viewHeight / ActualHeight;
 	}
 	
-	// Down half the page, up half the family tree to get it in the middle
-	var offsetY = -(ActualHeight / 2) + (viewHeight / 2);
-	updateViewbox(0, offsetY, newWidth, newHeight);
+	updateViewbox(0, 0, newWidth, newHeight);
 }
 
 function ZoomReset(parent) {
+<?php if (isset($_GET['id'])) { ?>
+	var IDs = "<?php echo $_GET['id']; ?>".split(",");
+	
+	// Get the ID number
+	var PeopleId = IDs[1];
+<?php } ?>
+
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
 	var newWidth = parent.offsetWidth;
 	var newHeight = parent.offsetHeight;
 	
 	ZoomFactor = 1;
 	
-	updateViewbox(0, 0, newWidth, newHeight);
-}
-
-function PanLeft(left) {
-	var newX = viewX - left;
-	updateViewbox(newX, -1, -1, -1);
-}
-
-function PanRight(right) {
-	var newX = viewX + right;
-	updateViewbox(newX, -1, -1, -1);
-}
-
-function PanUp(up) {
-	var newY = viewY - up;
-	updateViewbox(-1, newY, -1, -1);
-}
-
-function PanDown(down) {
-	var newY = viewY + down;
-	updateViewbox(-1, newY, -1, -1);
+	updateViewbox(-1, -1, newWidth, newHeight);
+	
+	// Now pan to this item
+	var People = Peoples[PeopleId];
+	panItem(People);
 }
 
 var MouseX = 0;
@@ -1282,8 +1269,7 @@ GetMouseMov = function (event) {
 		var dX = event.clientX - MouseX;
 		var dY = event.clientY - MouseY;
 		
-		PanUp(dY / ZoomFactor);
-		PanLeft(dX / ZoomFactor);
+		panTo(dX / ZoomFactor, dY / ZoomFactor);
 		
 		MouseX = event.clientX;
 		MouseY = event.clientY;
@@ -1292,5 +1278,18 @@ GetMouseMov = function (event) {
 
 GetMouseOut = function (event) {
 	Moving = false;
+}
+
+// https://www.sitepoint.com/html5-javascript-mouse-wheel/
+GetDelta = function (event) {
+	// cross-browser wheel delta
+	var event = window.event || event; // old IE support	
+	var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
+	
+	if (delta > 0) {
+		ZoomIn(1.4);
+	} else {
+		ZoomOut(1.4);
+	}
 }
 </script>

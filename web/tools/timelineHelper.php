@@ -71,6 +71,7 @@ var globalWidth = 0;
 
 var ActualHeight = 0;
 var ActualWidth = 0;
+var ZoomFactor = 1;
 
 var viewX = 0;
 var viewY = 0;
@@ -1247,26 +1248,6 @@ function SetSVG(TimelineId, EventId) {
 	ZoomResetButton.innerHTML = "Reset view";
 	Controls.appendChild(ZoomResetButton);
 	
-	var PanUpButton = document.createElement("button");
-	PanUpButton.setAttribute("onclick", "PanUp(50)");
-	PanUpButton.innerHTML = "Up";
-	Controls.appendChild(PanUpButton);
-	
-	var PanLeftButton = document.createElement("button");
-	PanLeftButton.setAttribute("onclick", "PanLeft(50)");
-	PanLeftButton.innerHTML = "Left";
-	Controls.appendChild(PanLeftButton);
-	
-	var PanRightButton = document.createElement("button");
-	PanRightButton.setAttribute("onclick", "PanRight(50)");
-	PanRightButton.innerHTML = "Right";
-	Controls.appendChild(PanRightButton);
-	
-	var PanDownButton = document.createElement("button");
-	PanDownButton.setAttribute("onclick", "PanDown(50)");
-	PanDownButton.innerHTML = "Down";
-	Controls.appendChild(PanDownButton);
-	
 	TimeLine.appendChild(Controls);
 	
 	// Set all the generation levels of all events
@@ -1329,22 +1310,42 @@ function SetSVG(TimelineId, EventId) {
 	
 	// And some functions for mouse or keyboard panning/scrolling
 	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
-	SVG.setAttributeNS(null, 'onmousemove', "GetMouseMov(evt)");
-	SVG.setAttributeNS(null, 'onmouseup',   "GetMouseOut(evt)");
+	
+	if (SVG.addEventListener) {
+		// IE9, Chrome, Safari, Opera
+		SVG.addEventListener("mousewheel", GetDelta, false);
+		// Firefox
+		SVG.addEventListener("DOMMouseScroll", GetDelta, false);
+	}
+	// IE 6/7/8
+	else 
+		SVG.attachEvent("onmousewheel", GetDelta);
+
+	window.onmousemove = GetMouseMov;
+	window.onmouseup = GetMouseOut;
 	
 	// Update the width and the height of the viewbox
 	updateViewbox(-1, -1, TimeLine.offsetWidth, TimeLine.offsetHeight);
 	
 	// Move to the person
-	panTo(Event.Location[0], Event.Location[1]);
+	panItem(Event);
+}
+
+function panItem(item) {
+	var TimeLine = document.getElementById("timeline");
+	scrollTop = (item.Location[1] + globalOffset + 50) - (TimeLine.offsetHeight / 2);
+	scrollLeft = (item.Location[0] + 75) - (TimeLine.offsetWidth / 2);
+	
+	updateViewbox(scrollLeft, scrollTop, -1, -1);
+	
+	alert("X: " + viewX + "\nY: " + viewY + "\nWidth: " + viewWidth + "\nHeight: " + viewHeight + "\nZoom: " + ZoomFactor);
 }
 
 function panTo(x, y) {
-	var TimeLine = document.getElementById("timeline");
-	scrollTop = (y + globalOffset + 50) - (TimeLine.offsetHeight / 2);
-	scrollLeft = (x + 75) - (TimeLine.offsetWidth / 2);
+	var newX = viewX - x;
+	var newY = viewY - y;
 	
-	updateViewbox(scrollLeft, scrollTop, -1, -1);
+	updateViewbox(newX, newY, -1, -1);
 }
 
 function updateViewbox(x, y, width, height) {
@@ -1391,6 +1392,8 @@ function ZoomIn(factor) {
 	var newX = viewX + ((viewWidth - newWidth) / 2);
 	var newY = viewY + ((viewHeight - newHeight) / 2);
 	
+	ZoomFactor = ZoomFactor * factor;
+	
 	updateViewbox(newX, newY, newWidth, newHeight);
 }
 
@@ -1402,45 +1405,53 @@ function ZoomOut(factor) {
 	var newX = viewX + ((viewWidth - newWidth) / 2);
 	var newY = viewY + ((viewHeight - newHeight) / 2);
 	
+	ZoomFactor = ZoomFactor / factor;
+	
 	updateViewbox(newX, newY, newWidth, newHeight);
 }
 
-function ZoomFit() {
+function ZoomFit() {	
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
-	var newWidth = ActualWidth;
-	var newHeight = ActualHeight;
+	// Keep the ratio between X and Y axis aligned
+	// Find the biggest ratio and use that!
+	var dX = ActualWidth / viewWidth;
+	var dY = ActualHeight / viewHeight;
 	
-	updateViewbox(0, newHeight / 2, newWidth, newHeight);
+	if (dX > dY) { 
+		var newWidth = viewWidth * dX;
+		var newHeight = viewHeight * dX;
+		
+		ZoomFactor = viewWidth / ActualWidth;
+	} else {
+		var newWidth = viewWidth * dY;
+		var newHeight = viewHeight * dY;
+		
+		ZoomFactor = viewHeight / ActualHeight;
+	}
+	
+	updateViewbox(0, -newHeight / 2, newWidth, newHeight);
 }
 
 function ZoomReset() {
 	var TimeLine = document.getElementById("timeline");
+<?php if (isset($_GET['id'])) { ?>
+	var IDs = "<?php echo $_GET['id']; ?>".split(",");
+	
+	// Get the ID number
+	var EventId = IDs[1];
+<?php } ?>
 	
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
 	var newWidth = TimeLine.offsetWidth;
 	var newHeight = TimeLine.offsetHeight;
 	
-	updateViewbox(0, 0, newWidth, newHeight);
-}
-
-function PanLeft(left) {
-	var newX = viewX - left;
-	updateViewbox(newX, -1, -1, -1);
-}
-
-function PanRight(right) {
-	var newX = viewX + right;
-	updateViewbox(newX, -1, -1, -1);
-}
-
-function PanUp(up) {
-	var newY = viewY - up;
-	updateViewbox(-1, newY, -1, -1);
-}
-
-function PanDown(down) {
-	var newY = viewY + down;
-	updateViewbox(-1, newY, -1, -1);
+	ZoomFactor = 1;
+	
+	updateViewbox(-1, -1, newWidth, newHeight);
+	
+	// Now pan to this item
+	var Event = Events[EventId];
+	panItem(Event);
 }
 
 var MouseX = 0;
@@ -1458,8 +1469,7 @@ GetMouseMov = function (event) {
 		var dX = event.clientX - MouseX;
 		var dY = event.clientY - MouseY;
 		
-		PanUp(dY);
-		PanLeft(dX);
+		panTo(dX / ZoomFactor, dY / ZoomFactor);
 		
 		MouseX = event.clientX;
 		MouseY = event.clientY;
@@ -1468,5 +1478,18 @@ GetMouseMov = function (event) {
 
 GetMouseOut = function (event) {
 	Moving = false;
+}
+
+// https://www.sitepoint.com/html5-javascript-mouse-wheel/
+GetDelta = function (event) {
+	// cross-browser wheel delta
+	var event = window.event || event; // old IE support	
+	var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
+	
+	if (delta > 0) {
+		ZoomIn(1.4);
+	} else {
+		ZoomOut(1.4);
+	}
 }
 </script>

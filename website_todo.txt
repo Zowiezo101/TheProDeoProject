@@ -4,22 +4,21 @@
 
 * Code clean up after done
 * Make nice images for sort buttons
-* Keep scroll bar in item_bar on its current location
+* Keep scroll bar in item_bar on its current location after clicking an item
 * Use 'item' names instead of 'peoples, locations' etc
 * Update all "default text" contents
 
 Tasks:
 - Interface TimeLine
 - Interface FamilyTree
-	Via animatie netjes opzij gaan
-	Wanneer ingedrukt, doorgaan met scrollen
-	Netjes bovenop SVG zelf (Rechts onderin)
-	Net als Legenda, ook bovenop.. (Links onderin)
-	Easter egg foto of plaatje in een ver gedeelte
-	Scroll mouse to zoom too
-	Pan continueing after SVG has been left
-	Reset view naar item ipv 0,0
-	update Timeline helper with updates from FamilyTree helper
+	* Via animatie netjes opzij gaan
+	* Netjes bovenop SVG zelf (Rechts onderin)
+	* Net als Legenda, ook bovenop.. (Links onderin)
+	* Easter egg foto of plaatje in een ver gedeelte
+	* Rest van het scherm scrollt ook mee..
+		Wanneer onmouseover -> disable scrolling
+		Wanneer onmouseout -> enable scrolling
+	default text explain muis om te scrollen en wielletje om in en uit te zoomen
 	
 - Filters for searching
 	Set options after search and retry search query when changed
@@ -43,6 +42,8 @@ Bugs:
 - Too long blogs not put in database
 - Sort buttons Gen-Op won't stay on Op-Gen due to restart page
 - Items no longer clickable after move
+- TimeLine & FamilyTree disappears when resetting view after 3 zoom outs
+- Microsoft Edge heel traag bij in of uit zoomen scrollen
 
 https://www.gps-coordinaten.nl/
 
