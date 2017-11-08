@@ -91,7 +91,7 @@ function GetItemInfo($table, $ID) {
 	return $item;
 }
 
-function SearchItems($text, $table) {
+function SearchItems($text, $table, $options) {
 	global $Search;
 	global $NavBar;
 	global $conn;
@@ -102,7 +102,8 @@ function SearchItems($text, $table) {
 	
 	$text = $conn->real_escape_string($text);
 	
-	$sql = "SELECT * FROM ".$table." WHERE name LIKE '%".$text."%'";
+	$sql = "SELECT * FROM ".$table." WHERE name LIKE '%".$text."%'".$options;
+	// echo "alert('".$sql."');";
 	$result = $conn->query($sql);
 	
 	if (!$result) {
@@ -148,7 +149,7 @@ function SearchItems($text, $table) {
 			while ($item = $result->fetch_array()) {
 				echo "<tr>";
 					echo "<td>";
-						echo "<a href='".$table.".php".AddParam(-1, $item['ID'], -2)."'>".$item['Name']."</a>";
+						echo "<a href='".$table.".php".AddParams(-1, $item['ID'], -2)."'>".$item['Name']."</a>";
 					echo "</td>";
 				
 				if (in_array($table, Array("peoples", "locations", "specials"))) {

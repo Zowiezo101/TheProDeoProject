@@ -1,6 +1,10 @@
 * Check on all error messages, do they display?
 * Update website with feedback etc
 * Create API for website & related app to view information on phone
+* Use first and last appearance as 3 byte values, no more errors
+	First byte = Book
+	Second byte = Chapter
+	Third byte = Verse
 
 * Code clean up after done
 * Make nice images for sort buttons
@@ -21,14 +25,7 @@ Tasks:
 	default text explain muis om te scrollen en wielletje om in en uit te zoomen
 	
 - Filters for searching
-	Set options after search and retry search query when changed
-	- Type (People/Location/etc)
-	- options per item
-		* gender
-		* amount of kids
-		* Population
-		* etc
-	- Show search options in table
+	* Optional search options move down after each select change
 	
 - API
 	- Create app to get nice view on phone

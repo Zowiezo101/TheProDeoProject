@@ -391,10 +391,15 @@ body {
 	text-align: center;
 }
 
+.search {
+	text-align: center;
+}
+
 .search table {
 	background-color: yellow;
 	border-width: 1px;
 	border-style: solid;
+	margin: auto;
 }
 
 .search td, .search tr {

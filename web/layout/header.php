@@ -46,7 +46,7 @@
 				<button class="header_options_settings" type="button" onclick="LogIn()"></button>
 				
 				<div class="header_options_search">
-					<form method="post" action="search.php" >
+					<form method="get" action="search.php" >
 						<input class="header_options_search_text" name="search" type="text" placeholder="<?php echo $Search["Search"]; ?>" required>
 						<input class="header_options_search_button" name="submitSearch" type="submit" value="">
 					</form>
