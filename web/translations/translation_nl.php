@@ -81,6 +81,8 @@ $EventsParams = array(
 
 $Search = array(
 	"Search"=>"Zoeken..",
+	"Search2"=>"Opnieuw zoeken",
+	"Options"=>"Extra zoekopties: <br>",
 	"NoResults"=>"Kon geen resultaten vinden..",
 	"Results"=>" resultaten gevonden voor ",
 	"Show"=>"Laat resultaten zien voor ",);
