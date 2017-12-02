@@ -2,7 +2,7 @@
 			<?php echo $Footer["PP_Name"]; ?>&copy <?php echo date("Y"); ?>
 			<br>
 			<?php 
-				echo $Footer["PP_Version"].": v1.0. ";
+				echo $Footer["PP_Version"].": v2.0. ";
 				
 				$uri_parts = explode('?', basename($_SERVER['REQUEST_URI'], 2));
 				$current_page = $uri_parts[0];
