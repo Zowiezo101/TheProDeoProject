@@ -45,14 +45,13 @@ function get_available_langs() {
 		$lang = substr($filename, -6, 2);
 		$langsSet[] = $lang;
 	}
-	
-	
+
 	return $langsSet;
 }
 
 function getLangList() {
 	foreach (get_available_langs() as $lang) {
-		echo '<input class="lang" type="submit" name="lang" value="'.$lang.'">';
+		echo '<input class="lang_option" type="submit" name="lang" value="'.$lang.'">';
 	}
 }
 

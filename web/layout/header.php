@@ -4,65 +4,94 @@
 	if (isset($_POST["lang"])) {
 		$_SESSION["lang"] = $_POST["lang"];
 		?>
+		
 		<script>
+			// Do a reload to the desired language
 			window.location.href = window.location.href;
 		</script>
+		
 		<?php
 	}
 ?>
 
 <!DOCTYPE html>
-<html>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
+<html>	
 	<?php require "tools/baseHelper.php"; ?>
 	
 	<head id="head">
+		<!-- Name shown on the tab -->
 		<title><?php echo $Footer["PP_Name"]; ?> Database</title>
+		
+		<!-- Some extra information used for viewing -->
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- The style sheet -->
 		<link rel="stylesheet" href="layout/styles.css">
 	</head>
 		
 	<body>
+		<!-- Header, with logo, banner and options -->
 		<div class="header">
-			<a class="logo" href="home.php" >
-				<img src="img/logo.bmp" alt="Logo"/>
-			</a>
+			<!-- Logo -->
+			<div class="logo" >
+				<a href="home.php" ></a>
+			</div>
 			
-			<img class="banner" src="img/banner.bmp" alt="Banner"/>
+			<!-- Banner -->
+			<div class="banner" >
+				<img src="img/banner.bmp" alt="Banner" />
+			</div>
 			
-			<div class="header_options">
-				<div class="header_lang_dropdown">
+			<!-- Options -->
+			<div class="options">
+			
+				<!-- Dropdown list for available languages -->
+				<div class="lang">
+				
+					<!-- The button to make the drop down list of options appear -->
 					<button class="lang_button" onclick="DropDown('lang_menu')">
 						<?php echo strtoupper($page_lang);?>
 					</button>
 					
+					<!-- The actual drop down menu, hidden at first -->
 					<div id="lang_menu">
 						<form method="post">
 							<?php getLangList(); ?>
 						</form>
 					</div>
 				</div>
-				<button class="header_options_settings" type="button" onclick="LogIn()"></button>
 				
-				<div class="header_options_search">
+				<!-- Settings -->
+				<div class="settings" >
+					<a href="settings.php" ></a>
+				</div>
+				
+				<!-- Search option -->
+				<div class="search">
 					<form method="get" action="search.php" >
-						<input class="header_options_search_text" name="search" type="text" placeholder="<?php echo $Search["Search"]; ?>" required>
-						<input class="header_options_search_button" name="submitSearch" type="submit" value="">
+						<input class="search_text" name="search" type="text" placeholder="<?php echo $Search["Search"]; ?>" required>
+						<input class="search_button" name="submitSearch" type="submit" value="">
 					</form>
 				</div>
 			</div>
 		</div>
 		
+		<!-- Navigation bar -->
 		<div class="navigation">
 			<ul>
+				<!-- Home page -->
 				<li><a href="home.php" ><?php echo $NavBar["Home"]; ?></a></li>
+				
+				<!-- Dropdown menu for Database items -->
 				<li><div class="nav_dropdown">
+				
+					<!-- Button to get the available options -->
 					<button class="nav_button" onclick="DropDown('nav_menu')">
 						<?php echo $NavBar["Database"]; ?>
 					</button>
 					
+					<!-- The actual drop down menu, hidden at first -->
 					<div id="nav_menu">
 						<a href="peoples.php" ><?php echo $NavBar["Peoples"]; ?></a>
 						<a href="books.php" ><?php echo $NavBar["Books"]; ?></a>
@@ -72,6 +101,7 @@
 					</div>
 				</div></li>
 				
+				<!-- Other options in the navigation bar -->
 				<li><a href="timeline.php" ><?php echo $NavBar["Timeline"]; ?></a></li>
 				<li><a href="familytree.php" ><?php echo $NavBar["Familytree"]; ?></a></li>
 				<li><a href="worldmap.php" ><?php echo $NavBar["Worldmap"]; ?></a></li>
@@ -80,10 +110,6 @@
 		</div>
 		
 <script>
-	
-	function LogIn() {
-		window.location.href = "settings.php";
-	}
 
 	/* When the user clicks on the button, 
 	toggle between hiding and showing the dropdown content */

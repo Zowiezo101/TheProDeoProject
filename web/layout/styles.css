@@ -4,66 +4,62 @@ body {
 	margin: 0;
 	
 	font-family: Arial;
-	background-color: MediumOrchid;
-}
-
-.logo, .logo img {
-	width: 150px;
-	height: 75px;
-	float: left;
-}
-
-.banner {
-	width: 500px;
-	height: 75px;
-	float: left;
-}
-
-.header {
-	height: 75px;
-	background-color: Purple;
-}
-
-.header .lang{	
-	height: 100%;
-	width: 75px;
-	
-	/* This is needed to get the other elements on the 
-	same line on the right side */
-	float: left;
-	
-	/* Making sure that the image fits in the little corner */
 	background-color: White;
 }
 
-.header_options {
-	/**/
-	background-color: Purple;
-	
-	height: 50%;
-	width: 25%;
+
+/************************************************
+ * Header parts
+ */
+.header {
+	height: 75px;
+	background-color: White;
+}
+
+.header .logo a {
+	width: 75px;
+	height: 75px;
 	
 	/* This is needed to get the other elements on the 
 	same line on the left side */
+	float: left;
+
+	background-image: url("../img/logo.bmp");
+	background-size: 75px 75px;
+}
+
+.header .logo a:hover {
+	background-image: url("../img/logo_hover.bmp");
+	background-size: 75px 75px;
+}
+
+.header .banner img {
+	width: 500px;
+	height: 75px;
+	
+	/* This is needed to get the other elements on the 
+	same line on the left side */
+	float: left;
+}
+
+.header .options {	
+	/* This is needed to get the other elements on the 
+	same line on the right side */
 	float: right;
 }
 
-.header_lang_dropdown {
-	height: 100%;
-	width: 12.5%;
+.header .options .lang {
+	height: 50px;
+	width: 50px;
 	
 	float: left;
-
-	/*background-image: url("../img/lang.bmp");
-	background-clip: scale;*/
-	background-color: White;
 	
 	margin: 0;
 	padding: 0;
 	border: 0;
 }
 
-.header_lang_dropdown button {
+.header .options .lang button {
 	border: 0;
 	padding: 0;
 	margin: 0;
@@ -73,66 +69,83 @@ body {
 	display: block;
 	
 	color: black;
-	background-color: White;
+	background-color: Purple;
 }
 
-#lang_menu {
+.header .options .lang button:hover {
+	background-color: Orchid;
+}
+
+.header .options #lang_menu {
 	display: none;
 	position: absolute;
-	background-color: grey;
+	width: 50px;
 	z-index: 1;
 }
 
-.header_lang_dropdown .lang {
-	height: 100%;
+.header .options .lang_option {	
+	height: 25px;
 	width: 100%;
+	
+	/* This is needed to get the other elements on the 
+	same line on the right side */
+	float: left;
+	
+	/* Making sure that the image fits in the little corner */
+	background-color: Purple;
 	color: black;
 }
 
-.header_lang_dropdown .lang:hover {
-	background-color: Purple;
+.header .options .lang_option:hover {
+	background-color: Orchid;
 }
 
-.header_options_settings {
-	height: 100%;
-	width: 12.5%;
+.header .options .settings,
+.header .options .settings a {
+	height: 50px;
+	width: 50px;
 	
 	float: left;
+	
+	margin: 0;
+	padding: 0;
+	border: 0;
 
 	background-image: url("../img/settings.bmp");
-	background-size: 37.5px 37.5px;
+	background-size: 50px 50px;
 	background-repeat: no-repeat;
+	background-color: Grey;
+}
+
+.header .options .settings a:hover {
+	background-image: url("../img/settings_hover.bmp");
+	background-size: 50px 50px;
+	background-repeat: no-repeat;
+	background-color: #c3c3c3;
+}
+
+.header .options .search {
+	height: 50px;
+	width: 250px;
 	
-	background-color: Purple;
+	float: left;
+}
+
+.header .options .search_text {
+	height: 50px;
+	width: 200px;
+	float: left;
+	
+	font-size: large;
 	
 	margin: 0;
 	padding: 0;
 	border: 0;
 }
 
-.header_options_search {
-	height: 100%;
-	width: 75%;
-	float: left;
-}
-
-.header_options_search form {
-	height: 100%;
-}
-
-.header_options_search_text {
-	height: 100%;
-	width: 80%;
-	float: left;
-	
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-.header_options_search_button {
-	height: 100%;
-	width: 20%;
+.header .options .search_button {
+	height: 50px;
+	width: 50px;
 	float: right;
 	
 	margin: 0;
@@ -140,18 +153,27 @@ body {
 	border: 0;
 
 	background-image: url("../img/search.bmp");
-	background-size: 37.5px 37.5px;
+	background-size: 50px 50px;
 	background-repeat: no-repeat;
-	
-	background-color: Purple;
+	background-color: Grey;
+}
+
+.header .options .search_button:hover {
+	background-image: url("../img/search_hover.bmp");
+	background-size: 50px 50px;
+	background-repeat: no-repeat;
+	background-color: #c3c3c3;
 }
 
 
+/************************************************
+ * Navigation parts
+ */
 .navigation {
 	height: 50px;
 	display: block;
 	
-	background-color: White;
+	background-color: Purple;
 }
 
 .navigation ul {
@@ -197,32 +219,38 @@ body {
 	display: block;
 	
 	color: black;
-	background-color: White;
+	background-color: Purple;
 }
 
 .navigation a:hover, .navigation button:hover {
-	background-color: Purple;
+	background-color: Orchid;
 }
 
 #nav_menu {
 	display: none;
 	position: absolute;
-	background-color: White;
+	background-color: Purple;
 	z-index: 1;
 }
 
 
+/************************************************
+ * Footer parts
+ */
 .footer {
 	display: inline-block;
 	
 	height: 50px;
 	width: 100%;
 	
-	background-color: White;
+	background-color: Purple;
 	text-align: center;
 }
 
 
+/************************************************
+ * Body parts
+ */
 .clearfix::after {
 	content: "";
 	clear: both;
@@ -231,7 +259,7 @@ body {
 }
 
 .contents_left {
-	background-color: Grey;
+	background-color: LightGrey;
 	float: left;
 	width: 20%;
 	height: 500px;
@@ -241,7 +269,7 @@ body {
 }
 
 .contents_right {
-	background-color: Red;
+	background-color: Thistle;
 	float: right;
 	width: 80%;
 	min-height: 500px;
@@ -250,6 +278,10 @@ body {
 	border: 0;
 }
 
+
+/************************************************
+ * Side bar parts
+ */
 #button_bar
 {
 	width: 100%;
@@ -293,14 +325,14 @@ body {
 	border-style: solid;
 	border-collapse: 1;
 	text-align: center;
-	background-color: white;
+	background-color: DarkGrey;
 }
 
-#people_bar a, #people_info a,
-#location_bar a, #location_info a,
-#event_bar a, #event_info a,
-#book_bar a, #book_info a,
-#special_bar a, #special_info a,
+#people_bar a, 
+#location_bar a,
+#event_bar a,
+#book_bar a,
+#special_bar a,
 #family_bar a,
 #world_bar button,
 #timeline_bar a
@@ -312,8 +344,47 @@ body {
 	border: 0;
 	color: black;
 	text-decoration: none;
-	background-color: orange;
+	background-color: OldLace;
 	width: 100%;
+}
+
+
+/************************************************
+ * Results from database
+ */
+
+#people_info a,
+#location_info a,
+#event_info a,
+#book_info a,
+#special_info a
+ {
+	display: block;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	color: black;
+	background-color: Plum;
+	width: 100%;
+}
+
+#people_info tr:nth-child(even),
+#location_info tr:nth-child(even),
+#event_info tr:nth-child(even),
+#book_info tr:nth-child(even),
+#special_info tr:nth-child(even)
+{
+	background-color: Orchid
+}
+
+#location_info tr:nth-child(odd),
+#people_info tr:nth-child(odd),
+#event_info tr:nth-child(odd),
+#book_info tr:nth-child(odd),
+#special_info tr:nth-child(odd)
+{
+	background-color: MediumOrchid;
 }
 
 #people_info td,
@@ -330,16 +401,21 @@ body {
 	width: 200px;
 }
 
+
+/************************************************
+ * Settings parts
+ */
+
 #settings_bar a {
 	height: 10%;
 	display: block;
-	background-color: yellow;
+	background-color: Orchid;
 	margin: 10px 0 10px 0;
 	text-align: center;
 }
 
 #settings_bar a:hover {
-	background-color: orange;
+	background-color: Purple;
 }
 
 #settings_content textarea, 
@@ -350,7 +426,7 @@ body {
 
 #settings_login
 {
-	background-color: purple;
+	background-color: Thistle;
 }
 
 #settings_login form 
@@ -368,8 +444,12 @@ body {
 	text-align: center;
 }
 
+
+/************************************************
+ * Home parts
+ */
 #home table {
-	background-color: Blue;
+	background-color: Thistle;
 	width: 80%;
 	margin: auto;
 }
@@ -390,11 +470,6 @@ body {
 
 .blog_link {
 	color: black;
-	/* text-decoration: none; */
-}
-
-#contact {
-	text-align: center;
 }
 
 #home td {
@@ -407,6 +482,18 @@ body {
 	text-align: center;
 }
 
+
+/************************************************
+ * Contact parts
+ */
+#contact {
+	text-align: center;
+}
+
+
+/************************************************
+ * Search results parts
+ */
 .search {
 	text-align: center;
 }
@@ -423,6 +510,10 @@ body {
 	border-style: solid;
 }
 
+
+/************************************************
+ * Database parts
+ */
 .familytree {
 	width: 100%;
 	height: 500px;
@@ -442,14 +533,14 @@ body {
 }
 
 #familytree svg {
-	background-color: lightblue;
+	background-color: Lavender;
 	margin: 0;
 	padding: 0;
 	border: 0;
 }
 
 #timeline svg {
-	background-color: lightblue;
+	background-color: Lavender;
 	margin: 0;
 	padding: 0;
 	border: 0;
