@@ -26,10 +26,11 @@
 		
 	<body>
 		<div class="header">
-			<a href="home.php" >
-				Logo
-				<!-- <img src="img/logo.bmp" alt="Logo"/> -->
+			<a class="logo" href="home.php" >
+				<img src="img/logo.bmp" alt="Logo"/>
 			</a>
+			
+			<img class="banner" src="img/banner.bmp" alt="Banner"/>
 			
 			<div class="header_options">
 				<div class="header_lang_dropdown">

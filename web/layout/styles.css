@@ -4,17 +4,27 @@ body {
 	margin: 0;
 	
 	font-family: Arial;
+	background-color: MediumOrchid;
+}
+
+.logo, .logo img {
+	width: 150px;
+	height: 75px;
+	float: left;
+}
+
+.banner {
+	width: 500px;
+	height: 75px;
+	float: left;
 }
 
 .header {
-	/* Remove this part eventually and replace with background-clip: scale*/
-	background-color: goldenrod;
-	
-	display: block;
 	height: 75px;
+	background-color: Purple;
 }
 
-.header a, .header .lang{	
+.header .lang{	
 	height: 100%;
 	width: 75px;
 	
@@ -23,12 +33,12 @@ body {
 	float: left;
 	
 	/* Making sure that the image fits in the little corner */
-	background-color: Orange;
+	background-color: White;
 }
 
 .header_options {
 	/**/
-	background-color: red;
+	background-color: Purple;
 	
 	height: 50%;
 	width: 25%;
@@ -46,7 +56,7 @@ body {
 
 	/*background-image: url("../img/lang.bmp");
 	background-clip: scale;*/
-	background-color: Purple;
+	background-color: White;
 	
 	margin: 0;
 	padding: 0;
@@ -63,7 +73,7 @@ body {
 	display: block;
 	
 	color: black;
-	background-color: Purple;
+	background-color: White;
 }
 
 #lang_menu {
@@ -80,7 +90,7 @@ body {
 }
 
 .header_lang_dropdown .lang:hover {
-	background-color: yellow;
+	background-color: Purple;
 }
 
 .header_options_settings {
@@ -89,9 +99,11 @@ body {
 	
 	float: left;
 
-	/*background-image: url("../img/settings.bmp");
-	background-clip: scale;*/
-	background-color: Grey;
+	background-image: url("../img/settings.bmp");
+	background-size: 37.5px 37.5px;
+	background-repeat: no-repeat;
+	
+	background-color: Purple;
 	
 	margin: 0;
 	padding: 0;
@@ -120,14 +132,18 @@ body {
 
 .header_options_search_button {
 	height: 100%;
-	width: 19%;
+	width: 20%;
 	float: right;
 	
 	margin: 0;
 	padding: 0;
 	border: 0;
+
+	background-image: url("../img/search.bmp");
+	background-size: 37.5px 37.5px;
+	background-repeat: no-repeat;
 	
-	background-color: Pink;
+	background-color: Purple;
 }
 
 
@@ -135,7 +151,7 @@ body {
 	height: 50px;
 	display: block;
 	
-	background-color: Green;
+	background-color: White;
 }
 
 .navigation ul {
@@ -181,17 +197,17 @@ body {
 	display: block;
 	
 	color: black;
-	background-color: Green;
+	background-color: White;
 }
 
 .navigation a:hover, .navigation button:hover {
-	background-color: blue;
+	background-color: Purple;
 }
 
 #nav_menu {
 	display: none;
 	position: absolute;
-	background-color: green;
+	background-color: White;
 	z-index: 1;
 }
 
@@ -202,7 +218,7 @@ body {
 	height: 50px;
 	width: 100%;
 	
-	background-color: Yellow;
+	background-color: White;
 	text-align: center;
 }
 
