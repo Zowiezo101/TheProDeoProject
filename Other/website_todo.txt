@@ -26,6 +26,7 @@ Tasks:
 	
 - Filters for searching
 	* Optional search options move down after each select change
+	* Set all filters on the side, while actively updating search results
 	
 - API
 	- Create app to get nice view on phone

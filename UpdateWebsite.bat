@@ -1,0 +1,1 @@
+ftp -i -s:"C:\Wamp\www\Other\upload.bat" files.000webhost.com
