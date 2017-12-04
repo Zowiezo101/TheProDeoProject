@@ -246,12 +246,13 @@ body {
 }
 
 .contents_left {
-	background-color: LightGrey;
+	background-color: Thistle;
 	float: left;
 	width: 20%;
 	height: 500px;
 	margin: 0;
 	padding: 0;
+	border: 0;
 	overflow: auto;
 }
 
@@ -269,20 +270,26 @@ body {
 /************************************************
  * Side bar parts
  */
-#button_bar
-{
+#button_bar {
 	width: 100%;
 	display: inline-block;
 }
 
-#button_left
-{
-	float: left;
+#button_bar button {
+	width: 23%;
+	
+	margin: 0;
+	padding: 0;
+	border: 0;
+	
+	background-color: MediumOrchid;
+	color: white;
+	font-size: 100%;
 }
 
-#button_right
-{
-	float: right;
+#button_bar button:hover, 
+#button_bar button:focus {
+	background-color: Orchid;
 }
 
 #people_bar table, #people_bar tr, 
