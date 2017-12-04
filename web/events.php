@@ -5,28 +5,6 @@
 	require "tools/timelineHelper.php"; 
 ?>
 
-<div class="clearfix">
-	<div class="contents_left">
-		<div id="button_bar">
-			<button id="button_left" onClick="PrevPage()"><?php echo $Content["prev"]; ?></button>
-			<!-- TODO -->
-			<button id="button_alp" onClick="SortOnAlphabet()">A-Z</button>
-			<button id="button_app" onClick="SortOnAppearance()">Gen-Op</button>
-			<button id="button_right" onClick="NextPage()"><?php echo $Content["next"]; ?></button>
-		</div>
-		
-		<div id="event_bar">
-			<?php GetListOfItems("events"); ?>
-		</div>
-	</div>
-	
-	<div class="contents_right" id="event_info">
-		<div id="default">
-			<?php echo $Content["default_event"]; ?>
-		</div>
-	</div>
-</div>
-
 <?php require "layout/footer.php"; ?>
 
 <script>

@@ -173,7 +173,13 @@ function SearchItems($text, $table, $options) {
 	}
 }
 
-if (isset($item_type)) { ?>
+if (($id == "peoples") || 
+	($id == "locations") || 
+	($id == "specials") || 
+	($id == "books") || 
+	($id == "events")) { ?>
+	
+<?php $single_item = substr($id, 0, -1); ?>
 
 <script>
 
@@ -196,7 +202,7 @@ if (isset($item_type)) { ?>
 			}
 			
 			echo "var PageNr = ".$page_nr.";";
-			echo "var NrOfItems = ".GetNumberOfItems($item_type).";";
+			echo "var NrOfItems = ".GetNumberOfItems($id).";";
 			echo "var SortType = '".$sort."';";
 		?>
 		
@@ -296,5 +302,43 @@ if (isset($item_type)) { ?>
 		return;
 	}
 </script>
+
+	<div class="clearfix">
+		<div class="contents_left">
+			<div id="button_bar">
+				<!-- Previous page -->
+				<button id="button_left" onClick="PrevPage()">
+					←
+				</button>
+				
+				<!-- Sort on alphabet -->
+				<button id="button_alp" onClick="SortOnAlphabet()">
+					A-Z
+				</button>
+				
+				<!-- Sort on appearance -->
+				<button id="button_app" onClick="SortOnAppearance()">
+					Gen-Op
+				</button>
+				
+				<!-- Next page -->
+				<button id="button_right" onClick="NextPage()">
+					→
+				</button>
+			</div>
+			
+			<!-- Show a list of the available items -->
+			<div id="<?php echo $single_item; ?>_bar">
+				<?php GetListOfItems($id); ?>
+			</div>
+		</div>
+		
+		<!-- This is where the items will be displayed -->
+		<div class="contents_right" id="<?php echo $single_item; ?>_info">
+			<div id="default">
+				<?php echo $Content["default_".$single_item]; ?>
+			</div>
+		</div>
+	</div>
 
 <?php } ?>
