@@ -95,9 +95,12 @@ $NavBar = array(
 	"Specials"=>"Specials",
 	"Books"=>"Books",
 	"Events"=>"Events",
+	"Search"=>"Search database",
 	"Timeline"=>"Timeline",
 	"Worldmap"=>"Worldmap",
 	"Familytree"=>"Family tree",
+	"ProDeo"=>"ProDeo Projects",
+	"AboutUs"=>"About us",
 	"Contact"=>"Contact",);
 
 $Settings = array(
@@ -144,7 +147,7 @@ $Contact = array(
 	"welcome"=>"Welcome!",
 	"aboutus"=>"How nice of you to drop by on the contact page! Let me introduce myself.. I am part of the \"ProDeo Projects\" team. ProDeo means \"For God\", but is also means \"free\". That is also the way I want others to receive my creations: free and for God.</p><p>Right now I'm working alone, but I'm looking for people who are willing to help me to make this website a handy tool for the Bible. I also have some other plans to introduce the Bible to others in a interesting way, to make it easier to become familiar with its valuable contents.",
 	"info"=>"This website can be used as a handy tool for the Bible. There is a database available with people, locations, biblebooks, events and some other stuff from the Bible. There is also a timeline with events, a worldmap with locations and a family tree with people from the database. As much information as possible is collected (like parents, place of residence, founders of cities, ages etc.). Please be aware that the database currently is based on the dutch bible translation abbriviated with \"NBV\"!",
-	"contact"=>"Do you have any questions, tips, remarks (like typos..) about the website or its contents, or do you want to help with something? Then send an email to ProDeoProductions2u@gmail.com.",
+	"contact"=>"Do you have any questions, tips, remarks (like typos..) about the website or its contents, or do you want to help with something?<br>Then send an email to ProDeoProductions2u@gmail.com.",
 	"other"=>"For God, to you!<br>ProDeo Projects&copy",);
 
 $Footer = array(

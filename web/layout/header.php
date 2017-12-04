@@ -40,7 +40,7 @@
 			
 			<!-- Banner -->
 			<div class="banner" >
-				<img src="img/banner.bmp" alt="Banner" />
+				<img src="img/banner_<?php echo $_SESSION["lang"];?>.bmp" alt="Banner" />
 			</div>
 			
 			<!-- Options -->
@@ -66,14 +66,6 @@
 				<div class="settings" >
 					<a href="settings.php" ></a>
 				</div>
-				
-				<!-- Search option -->
-				<div class="search">
-					<form method="get" action="search.php" >
-						<input class="search_text" name="search" type="text" placeholder="<?php echo $Search["Search"]; ?>" required>
-						<input class="search_button" name="submitSearch" type="submit" value="">
-					</form>
-				</div>
 			</div>
 		</div>
 		
@@ -87,17 +79,18 @@
 				<li><div class="nav_dropdown">
 				
 					<!-- Button to get the available options -->
-					<button class="nav_button" onclick="DropDown('nav_menu')">
+					<button class="nav_button_db" onclick="DropDown('nav_menu_db')">
 						<?php echo $NavBar["Database"]; ?>
 					</button>
 					
 					<!-- The actual drop down menu, hidden at first -->
-					<div id="nav_menu">
+					<div id="nav_menu_db" class="nav_menu">
 						<a href="peoples.php" ><?php echo $NavBar["Peoples"]; ?></a>
 						<a href="books.php" ><?php echo $NavBar["Books"]; ?></a>
 						<a href="locations.php" ><?php echo $NavBar["Locations"]; ?></a>
 						<a href="events.php" ><?php echo $NavBar["Events"]; ?></a>
 						<a href="specials.php" ><?php echo $NavBar["Specials"]; ?></a>
+						<a href="search.php" ><?php echo $NavBar["Search"]; ?></a>
 					</div>
 				</div></li>
 				
@@ -105,7 +98,20 @@
 				<li><a href="timeline.php" ><?php echo $NavBar["Timeline"]; ?></a></li>
 				<li><a href="familytree.php" ><?php echo $NavBar["Familytree"]; ?></a></li>
 				<li><a href="worldmap.php" ><?php echo $NavBar["Worldmap"]; ?></a></li>
-				<li><a href="contact.php" ><?php echo $NavBar["Contact"]; ?></a></li>
+				
+				<!-- Dropdown menu for Pro Deo items -->
+				<li><div class="nav_dropdown">
+				
+					<!-- Button to get the available options -->
+					<button class="nav_pd" onclick="DropDown('nav_menu_pd')">
+						<?php echo $NavBar["ProDeo"]; ?>
+					</button>
+					
+					<div id="nav_menu_pd" class="nav_menu">
+						<a href="aboutus.php" ><?php echo $NavBar["AboutUs"]; ?></a>
+						<a href="contact.php" ><?php echo $NavBar["Contact"]; ?></a>
+					</div>
+				</div></li>
 			</ul>
 		</div>
 		
@@ -121,18 +127,26 @@
 	// Close the dropdown if the user clicks outside of it
 	window.onclick = function(event) {
 		if (event.target.matches) {
-			var matchesDropDown = event.target.matches('.nav_button');
+			var matchesNavDB = event.target.matches('.nav_button_db');
+			var matchesNavPD = event.target.matches('.nav_pd');
 			var matchesLang = event.target.matches('.lang_button');
 		} else if (event.target.msMatchesSelector) {
-			var matchesDropDown = event.target.msMatchesSelector('.nav_button');
+			var matchesNavDB = event.target.msMatchesSelector('.nav_button_db');
+			var matchesNavPD = event.target.msMatchesSelector('.nav_pd');
 			var matchesLang = event.target.msMatchesSelector('.lang_button');
 		} else {
-			var matchesDropDown = event.target.webkitMatchesSelector('.nav_button');
+			var matchesNavDB = event.target.webkitMatchesSelector('.nav_button_db');
+			var matchesNavPD = event.target.webkitMatchesSelector('.nav_pd');
 			var matchesLang = event.target.webkitMatchesSelector('.lang_button');
 		}
 		
-	    if (!matchesDropDown) {
-			var menu = document.getElementById("nav_menu");
+	    if (!matchesNavDB) {
+			var menu = document.getElementById("nav_menu_db");
+			menu.style.display = "none";
+	    }
+		
+	    if (!matchesNavPD) {
+			var menu = document.getElementById("nav_menu_pd");
 			menu.style.display = "none";
 	    }
 		

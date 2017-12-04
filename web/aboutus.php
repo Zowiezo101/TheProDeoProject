@@ -1,7 +1,9 @@
 <?php require "layout/header.php"; ?>
 
 <div class="contact">
-	<p><?php echo $Contact["contact"]; ?></p>
+	<h1><?php echo $Contact["welcome"]; ?></h1>
+	<p><?php echo $Contact["aboutus"]; ?></p>
+	<p><?php echo $Contact["info"]; ?></p>
 	<p><?php echo $Contact["other"]; ?></p>
 </div>
 

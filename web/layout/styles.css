@@ -2,6 +2,7 @@
 body {
 	padding: 0;
 	margin: 0;
+	min-width: 675px;
 	
 	font-family: Arial;
 	background-color: White;
@@ -64,8 +65,8 @@ body {
 	padding: 0;
 	margin: 0;
 	
-	height: 100%;
-	width: 100%;
+	height: 50px;
+	width: 50px;
 	display: block;
 	
 	color: black;
@@ -85,7 +86,7 @@ body {
 
 .header .options .lang_option {	
 	height: 25px;
-	width: 100%;
+	width: 50px;
 	
 	/* This is needed to get the other elements on the 
 	same line on the right side */
@@ -124,47 +125,6 @@ body {
 	background-color: #c3c3c3;
 }
 
-.header .options .search {
-	height: 50px;
-	width: 250px;
-	
-	float: left;
-}
-
-.header .options .search_text {
-	height: 50px;
-	width: 200px;
-	float: left;
-	
-	font-size: large;
-	
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-.header .options .search_button {
-	height: 50px;
-	width: 50px;
-	float: right;
-	
-	margin: 0;
-	padding: 0;
-	border: 0;
-
-	background-image: url("../img/search.bmp");
-	background-size: 50px 50px;
-	background-repeat: no-repeat;
-	background-color: Grey;
-}
-
-.header .options .search_button:hover {
-	background-image: url("../img/search_hover.bmp");
-	background-size: 50px 50px;
-	background-repeat: no-repeat;
-	background-color: #c3c3c3;
-}
-
 
 /************************************************
  * Navigation parts
@@ -189,17 +149,19 @@ body {
 }
 
 .navigation li {
-	float: left;
-	text-align: center;
+	float: left;	
 	
 	height: 100%;
-	width: 12.5%;
+	width: 16.66%;
 }
 
 .navigation li a {
 	display: block;
 	height: 100%;
+	
 	text-decoration: none;
+	text-align: center;
+	
 	color: black;
 	padding: 15px;
 }
@@ -222,11 +184,11 @@ body {
 	background-color: Purple;
 }
 
-.navigation a:hover, .navigation button:hover {
+.navigation a:hover, .navigation button:hover, .navigation button:focus {
 	background-color: Orchid;
 }
 
-#nav_menu {
+.nav_menu {
 	display: none;
 	position: absolute;
 	background-color: Purple;
@@ -486,8 +448,10 @@ body {
 /************************************************
  * Contact parts
  */
-#contact {
+.contact {
+	margin: auto;
 	text-align: center;
+	width: 80%;
 }
 
 
