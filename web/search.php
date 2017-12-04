@@ -1,4 +1,5 @@
 <?php 
+	$id = "search";
 	require "layout/header.php";
 	require "tools/databaseHelper.php";
 ?>

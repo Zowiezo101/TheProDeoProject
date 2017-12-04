@@ -1,7 +1,6 @@
 <?php 
+	$id = "events";
 	require "layout/header.php"; 
-	
-	$item_type = "events";
 	require "tools/databaseHelper.php"; 
 	require "tools/timelineHelper.php"; 
 ?>

@@ -1,7 +1,6 @@
 <?php 
+	$id = "peoples";
 	require "layout/header.php"; 
-	
-	$item_type = "peoples";
 	require "tools/databaseHelper.php"; 
 	require "tools/familytreeHelper.php"; 
 ?>

@@ -1,7 +1,6 @@
 <?php 
+	$id = "books";
 	require "layout/header.php"; 
-	
-	$item_type = "books";
 	require "tools/databaseHelper.php"; 
 ?>
 

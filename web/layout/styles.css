@@ -184,7 +184,9 @@ body {
 	background-color: Purple;
 }
 
-.navigation a:hover, .navigation button:hover, .navigation button:focus {
+.navigation a:hover, 
+.navigation button:hover, 
+.navigation button:focus {
 	background-color: Orchid;
 }
 
@@ -193,6 +195,29 @@ body {
 	position: absolute;
 	background-color: Purple;
 	z-index: 1;
+}
+
+#home #nav_home,
+#peoples #nav_peoples,
+#peoples #nav_button_db,
+#locations #nav_locations,
+#locations #nav_button_db,
+#specials #nav_specials,
+#specials #nav_button_db,
+#books #nav_books,
+#books #nav_button_db,
+#events #nav_events,
+#events #nav_button_db,
+#search #nav_search,
+#search #nav_button_db,
+#timeline #nav_timeline,
+#familytree #nav_familytree,
+#worldmap #nav_worldmap,
+#aboutus #nav_aboutus,
+#aboutus #nav_button_pd,
+#contact #nav_contact,
+#contact #nav_button_pd {
+	background-color: MediumOrchid;
 }
 
 

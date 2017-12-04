@@ -1,4 +1,5 @@
 <?php 
+	$id = "timeline";
 	require "layout/header.php"; 
 	require "tools/timelineHelper.php";
 ?>

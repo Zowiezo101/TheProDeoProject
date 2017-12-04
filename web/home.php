@@ -1,4 +1,5 @@
 <?php 
+	$id = "home";
 	require "layout/header.php"; 
 	require "tools/blogHelper.php"; 
 ?>

@@ -1,7 +1,6 @@
 <?php 
+	$id = "locations";
 	require "layout/header.php"; 
-	
-	$item_type = "locations";
 	require "tools/databaseHelper.php"; 
 ?>
 

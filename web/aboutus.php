@@ -1,4 +1,7 @@
-<?php require "layout/header.php"; ?>
+<?php 
+	$id = "aboutus";
+	require "layout/header.php"; 
+?>
 
 <div class="contact">
 	<h1><?php echo $Contact["welcome"]; ?></h1>

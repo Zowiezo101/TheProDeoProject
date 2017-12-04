@@ -1,4 +1,5 @@
 <?php 
+	$id = "worldmap";
 	require "layout/header.php"; 
 	require "tools/worldmapHelper.php";
 ?>

@@ -1,4 +1,5 @@
 <?php 
+	$id = "familytree";
 	require "layout/header.php"; 
 	require "tools/familytreeHelper.php";
 ?>
