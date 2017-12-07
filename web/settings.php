@@ -7,9 +7,9 @@
 <?php if (isset($_SESSION['login'])) { ?>
 	<div class="clearfix">
 		<div class="contents_left" id="settings_bar">
-			<a onclick="ShowNew()"><?php echo $Settings["new_blog"]; ?></a>
-			<a onclick="ShowDelete()"><?php echo $Settings["delete_blog"]; ?></a>
-			<a onclick="ShowEdit()"><?php echo $Settings["edit_blog"]; ?></a>
+			<button onclick="ShowNew()"><?php echo $Settings["new_blog"]; ?></button>
+			<button onclick="ShowDelete()"><?php echo $Settings["delete_blog"]; ?></button>
+			<button onclick="ShowEdit()"><?php echo $Settings["edit_blog"]; ?></button>
 			<a href="tools/logout.php"><?php echo $Settings["logout"]; ?></a>
 		</div>
 		
@@ -21,17 +21,24 @@
 		</div>
 	</div>
 <?php } else { ?>
+	<!-- Log in page, in case no login is found yet -->
 	<div id="settings_login">
 		<form method="post" action="tools/login.php">
+			<!-- User name -->
 			<p><?php echo $Settings["user"]; ?></p>
-			<input type="text" name="user" value="<?php echo $Settings["user"]; ?>">
+			<input type="text" name="user" placeholder="<?php echo $Settings["user"]; ?>">
+			
+			<!-- Password -->
 			<p><?php echo $Settings["password"]; ?></p>
-			<input type="password" name="password" value="<?php echo $Settings["password"]; ?>">
+			<input type="password" name="password" placeholder="<?php echo $Settings["password"]; ?>">
+			
+			<!-- Submit button -->
 			<br>
 			<input type="submit" name="submitLogin" value="<?php echo $Settings["login"]; ?>">
 		</form>
 		
 		<?php
+		// When the entered data is incorrect
 		if (isset($_SESSION["error"])) {
 			if ($_SESSION["error"] == true) {
 				echo "<p>".$Settings["incorrect"]."</p>";

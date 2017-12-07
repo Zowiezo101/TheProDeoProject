@@ -1,5 +1,7 @@
 <?php
 session_start();
+// Remove the login data
+// When this is unset, no login is found
 unset($_SESSION["login"]);
 ?>
 

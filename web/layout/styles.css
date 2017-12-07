@@ -202,6 +202,10 @@ body {
 .nav_dropdown .nav_menu {
 	display: none;
 	position: absolute;
+	min-width: 112.5px;
+	width: 16.6%;
+	max-width: 16.6%;
+	
 	background-color: Purple;
 	z-index: 1;
 }
@@ -258,17 +262,20 @@ body {
 	background-color: Thistle;
 	float: left;
 	width: 20%;
+	min-width: 145px;
 	height: 500px;
 	margin: 0;
 	padding: 0;
 	border: 0;
-	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 .contents_right {
 	background-color: Thistle;
 	float: right;
 	width: 80%;
+	min-width: 580px;
 	min-height: 500px;
 	margin: 0;
 	padding: 0;
@@ -408,15 +415,24 @@ body {
 /************************************************
  * Settings parts
  */
-
-#settings_bar a {
+#settings_bar a,
+#settings_bar button {
 	height: 10%;
+	width: 90%;
 	display: block;
 	background-color: Orchid;
-	margin: 10px 0 10px 0;
+	
+	margin: 15px 5px 15px 5px;
+	border-radius: 12px;
+	border: 0px;
+	
 	text-align: center;
+	font-size: 25px;
+	font-weight: bold;
+	color: White;
 }
 
+#settings_bar button:hover,
 #settings_bar a:hover {
 	background-color: Purple;
 }
