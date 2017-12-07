@@ -49,12 +49,6 @@ function get_available_langs() {
 	return $langsSet;
 }
 
-function getLangList() {
-	foreach (get_available_langs() as $lang) {
-		echo '<input class="lang_option" type="submit" name="lang" value="'.$lang.'">';
-	}
-}
-
 // Set the language to a default
 if (!isset($_SESSION["lang"])) {
 	// Languages we support
@@ -72,6 +66,20 @@ $page_lang = $_SESSION["lang"];
 
 require "translations/translation_".$page_lang.".php"; 
 require "../login_data.php";
+
+function getLangList($page_lang) {
+	foreach (get_available_langs() as $lang) {
+		if ($lang != $page_lang) {
+			echo '<input style=" 
+							background-image: url(\'img/lang_'.$lang.'.svg\'); 
+							background-size: auto 100%;" 
+						  class="lang_option" 
+						  type="submit" 
+						  name="lang" 
+						  value="'.$lang.'">';
+		}
+	}
+}
 
 $conn = new mysqli($servername, $username, $password, $database);
 

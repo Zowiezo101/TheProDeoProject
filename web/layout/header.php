@@ -50,14 +50,19 @@
 				<div class="lang">
 				
 					<!-- The button to make the drop down list of options appear -->
-					<button class="lang_button" onclick="DropDown('lang_menu')">
-						<?php echo strtoupper($page_lang);?>
+					<button 
+						style=" 
+							background-image: url('img/lang_<?php echo $_SESSION["lang"]; ?>.svg'); 
+							background-size: auto 100%;" 
+						class="lang_button" 
+						onclick="DropDown('lang_menu')">
+							<?php echo $_SESSION["lang"]; ?>
 					</button>
 					
 					<!-- The actual drop down menu, hidden at first -->
 					<div id="lang_menu">
 						<form method="post">
-							<?php getLangList(); ?>
+							<?php getLangList($_SESSION["lang"]); ?>
 						</form>
 					</div>
 				</div>
@@ -121,7 +126,7 @@
 	toggle between hiding and showing the dropdown content */
 	function DropDown(name) {
 		var menu = document.getElementById(name);
-		menu.style.display = "inline-block";
+		menu.style.display = "block";
 	}
 
 	// Close the dropdown if the user clicks outside of it

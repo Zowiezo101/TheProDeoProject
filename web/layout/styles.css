@@ -2,7 +2,7 @@
 body {
 	padding: 0;
 	margin: 0;
-	min-width: 675px;
+	min-width: 725px;
 	
 	font-family: Arial;
 	background-color: White;
@@ -51,7 +51,7 @@ body {
 
 .header .options .lang {
 	height: 50px;
-	width: 50px;
+	width: 100px;
 	
 	float: left;
 	
@@ -66,39 +66,48 @@ body {
 	margin: 0;
 	
 	height: 50px;
-	width: 50px;
+	width: 100px;
+	
 	display: block;
 	
+	/* Showing the currect language */
 	color: black;
-	background-color: Purple;
-}
-
-.header .options .lang button:hover {
-	background-color: Orchid;
+	text-transform: uppercase;
+	font-size: 30px;
+	font-weight: bold;
 }
 
 .header .options #lang_menu {
 	display: none;
 	position: absolute;
-	width: 50px;
+	width: 100px;
+	height: 50px;
 	z-index: 1;
 }
 
 .header .options .lang_option {	
-	height: 25px;
-	width: 50px;
+	height: 50px;
+	width: 100px;
+	
+	border: 1px solid black;
+	padding: 0;
+	margin: 0;
 	
 	/* This is needed to get the other elements on the 
 	same line on the right side */
 	float: left;
 	
-	/* Making sure that the image fits in the little corner */
-	background-color: Purple;
+	/* Showing available languages */
 	color: black;
+	text-transform: uppercase;
+	font-size: 30px;
+	font-weight: bold;
 }
 
+.header .options .lang button:hover,
 .header .options .lang_option:hover {
-	background-color: Orchid;
+	border: 2px solid red;
+	color: red;
 }
 
 .header .options .settings,
@@ -157,7 +166,6 @@ body {
 
 .navigation li a {
 	display: block;
-	height: 100%;
 	
 	text-decoration: none;
 	text-align: center;
@@ -178,6 +186,7 @@ body {
 	
 	height: 100%;
 	width: 100%;
+	
 	display: block;
 	
 	color: black;
@@ -190,7 +199,7 @@ body {
 	background-color: Orchid;
 }
 
-.nav_menu {
+.nav_dropdown .nav_menu {
 	display: none;
 	position: absolute;
 	background-color: Purple;
