@@ -11,6 +11,7 @@
 * Keep scroll bar in item_bar on its current location after clicking an item
 * Use 'item' names instead of 'peoples, locations' etc
 * Update all "default text" contents
+* Select boxes mogen mooier :)
 
 Tasks:
 - Interface TimeLine
@@ -37,7 +38,6 @@ Tasks:
 
 Bugs:
 - Weird border for first family tree
-- Too long blogs not put in database
 - Sort buttons Gen-Op won't stay on Op-Gen due to restart page
 - Items no longer clickable after move
 - TimeLine & FamilyTree disappears when resetting view after 3 zoom outs

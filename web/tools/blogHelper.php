@@ -1,5 +1,28 @@
 <?php 
 
+function CleanText($text, $convertBR = 0) {
+	// The newlines in the string cause problems..
+	$text1 = str_replace(array("\r\n","\r","\n","\\r\\n","\\r","\\n"), "<br/>", $text);
+	
+	// Escape slashes
+	$text2 = str_replace("\\", "\\\\", $text1);
+	
+	// Escape apastrophs
+	$text3 = str_replace("'", "\\'", $text2);
+	
+	// Escape quotes
+	$text4 = str_replace('"', '\\"', $text3);
+	
+	if ($convertBR == 1) {
+		// Put the \n chars back
+		$text5 = str_replace('<br/>', '\n', $text4);
+	} else {
+		$text5 = $text4;
+	}
+	
+	return $text5;
+}
+
 function AddBlog($title, $text, $user) {
 	global $Settings;
 	global $conn;
@@ -14,7 +37,7 @@ function AddBlog($title, $text, $user) {
 		date_default_timezone_set('Europe/Amsterdam');
 		$date = date("Y-m-d H:i:s a"); 
 		
-		$sql = "INSERT INTO blog (title, text, user, date) VALUES ('".$title."','".$text."','".$user."','".$date."')";
+		$sql = "INSERT INTO blog (title, text, user, date) VALUES ('".CleanText($title)."','".CleanText($text)."','".$user."','".$date."')";
 		$result = $conn->query($sql);	
 		
 		if (!$result) {
@@ -56,7 +79,7 @@ function EditBlog($id, $title, $text) {
 	if (!$result) {
 		echo "<h1>SQL: ".$conn->error."</h1>";
 	} else {		
-		$sql = "UPDATE blog SET title='".$title."', text='".$text."' WHERE id=".$id;
+		$sql = "UPDATE blog SET title='".CleanText($title)."', text='".CleanText($text)."' WHERE id=".$id;
 		$result = $conn->query($sql);
 	
 		if (!$result) {
@@ -94,15 +117,12 @@ function GetListOfBlogs() {
 			echo "optionForm.innerHTML = '".$Settings['default']."';";
 			echo $addOption;
 			
-			while ($blog = $result->fetch_array()) {
-				// The newlines in the string cause problems..
-				$cleanText = str_replace(array("\r\n","\r","\n","\\r","\\n","\\r\\n"), "<br/>", $blog['text']);
-				
+			while ($blog = $result->fetch_array()) {				
 				echo $newOption;
 				echo "optionForm.value = '".$blog['id']."';";
-				echo "optionForm.innerHTML = '".$blog['title']." @".$blog['date']."';";
-				echo "optionForm.extra_text = '".$cleanText."';";
-				echo "optionForm.extra_title = '".$blog['title']."';";
+				echo "optionForm.innerHTML = '".CleanText($blog['title'], 1)." @".$blog['date']."';";
+				echo "optionForm.extra_text = '".CleanText($blog['text'], 1)."';";
+				echo "optionForm.extra_title = '".CleanText($blog['title'], 1)."';";
 				echo $addOption;
 			}
 		}	
