@@ -5,7 +5,14 @@ body {
 	min-width: 725px;
 	
 	font-family: Arial;
-	background-color: White;
+	
+	background-image: linear-gradient(
+		to bottom right,
+		DarkGrey,
+		LightGrey,
+		White,
+		Grey
+	);
 }
 
 
@@ -14,7 +21,12 @@ body {
  */
 .header {
 	height: 75px;
-	background-color: White;
+	background-image: linear-gradient(
+		to right,
+		White 575px,
+		LightGrey,
+		Grey
+	);
 }
 
 .header .logo a {
@@ -487,10 +499,38 @@ body {
 /************************************************
  * Home parts
  */
+
+#home {
+	display: block;
+	text-align: center;
+}
+
 #home table {
-	background-color: Thistle;
 	width: 80%;
+	
 	margin: auto;
+	padding: 10px;
+	border-spacing: 10px;
+}
+
+#home td {
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 8px;
+	
+	background-image: linear-gradient(
+		to top right, 
+		rgb(255, 255, 255),
+		rgb(249, 236, 249),
+		rgb(249, 236, 249),
+		rgb(230, 179, 230),
+		rgb(242, 217, 242),
+		rgb(255, 255, 255),
+		rgb(249, 236, 249),
+		rgb(249, 236, 249), 
+		rgb(230, 179, 230),
+		rgb(242, 217, 242)
+    );
 }
 
 .blog_pre {
@@ -509,16 +549,6 @@ body {
 
 .blog_link {
 	color: black;
-}
-
-#home td {
-	border-width: 1px;
-	border-style: solid;
-}
-
-#home {
-	display: block;
-	text-align: center;
 }
 
 
