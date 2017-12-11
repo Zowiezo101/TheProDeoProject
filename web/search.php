@@ -4,242 +4,294 @@
 	require "tools/databaseHelper.php";
 ?>
 
-<?php if (isset($_GET['submitSearch']) || isset($_GET['submitSearch2'])) { ?>
-	<div class="search" id="search_options">		
+<div class="clearfix">
+	<div class="contents_left" id="search_bar">	
 		<h1><?php echo $Search["Options"]; ?></h1>
 		
 		<form method="get" action="search.php">
-			<select name="table" onchange="selectTableOptions(this)">
-				<option value="" disabled="true" selected="true"><?php echo $Settings["default"]; ?></option>
+			<select id="table" name="table" onchange="selectTableOptions(this)">
+				<option value="" disabled="true" selected="true"><?php echo $Search["Category"]; ?></option>
 				<option value="peoples"><?php echo $NavBar["Peoples"]; ?></option>
 				<option value="locations"><?php echo $NavBar["Locations"]; ?></option>
 				<option value="specials"><?php echo $NavBar["Specials"]; ?></option>
 				<option value="books"><?php echo $NavBar["Books"]; ?></option>
 				<option value="events"><?php echo $NavBar["Events"]; ?></option>
+				<option value="all"><?php echo $Search["All"]; ?></option>
 			</select>
 		
-			<input id="submit2" name="submitSearch2" type="submit" disabled="true" value="<?php echo $Search["Search2"]; ?>"/>
-			<input type="hidden" name="search" value="<?php echo $_GET['search']; ?>"/>
+			<input id="submit" name="submitSearch" type="submit" disabled="true" value="<?php echo $Search["Search"]; ?>"/>
 		</form>
 	</div>
-<?php } ?>
-
-<div class="search" id="search_results">
-	<?php if (isset($_GET['submitSearch'])) { ?>
-		<center>
-			<?php echo $Search["Show"]."<a href='#peoples'>".$NavBar["Peoples"]."</a> | <a href='#locations'>".$NavBar["Locations"]."</a> | <a href='#specials'>".$NavBar["Specials"]."</a> | <a href='#books'>".$NavBar["Books"]."</a> | <a href='#events'>".$NavBar["Events"]."</a>";?>
-		</center>
 	
-		<div id="peoples">
-			<?php // Search Peoples database
-			SearchItems($_GET['search'], "peoples", ""); ?>
+	<!-- This is where the items will be displayed -->
+	<div class="contents_right" id="search_results">
+
+			<!-- When no search is performed yet -->
+			<?php echo $Content["default_".$id]; ?>
+			<?php if (isset($_GET['submitSearch'])) {
+				// Generating search results
+				$options = "";
+				
+				if (isset($_GET['MeaningName']) and ($_GET["MeaningName"] != "")) {
+					$options = $options." AND MeaningName LIKE '%".$_GET["MeaningName"]."%'";
+				}
+				
+				if (isset($_GET['NameChanges']) and ($_GET["NameChanges"] != "")) {
+					$multoptions = explode(";", $_GET["NameChanges"]);
+					foreach ($multoptions as $value) {
+						$options = $options." AND NameChanges LIKE '%".$value."%'";
+					}
+				}
+				
+				if (isset($_GET['Father']) and ($_GET["Father"] != "")) {
+					$options = $options." AND Father LIKE '%".$_GET["Father"]."%'";
+				}
+				
+				if (isset($_GET['Mother']) and ($_GET["Mother"] != "")) {
+					$options = $options." AND Mother LIKE '%".$_GET["Mother"]."%'";
+				}
+				
+				if (isset($_GET['Gender']) and ($_GET["Gender"] != "")) {
+					$options = $options." AND Gender = '%".$_GET["Gender"]."%'";
+				}
+				
+				if (isset($_GET['Tribe']) and ($_GET["Tribe"] != "")) {
+					$options = $options." AND Tribe = '%".$_GET["Mother"]."%'";
+				}
+				
+				if (isset($_GET['TypeOfLocation']) and ($_GET["TypeOfLocation"] != "")) {
+					$options = $options." AND TypeOfLocation = '%".$_GET["TypeOfLocation"]."%'";
+				}
+				
+				if (isset($_GET['Founder']) and ($_GET["Founder"] != "")) {
+					$options = $options." AND Founder LIKE '%".$_GET["Founder"]."%'";
+				}
+				
+				if (isset($_GET['Destroyer']) and ($_GET["Destroyer"] != "")) {
+					$options = $options." AND Destroyer LIKE '%".$_GET["Destroyer"]."%'";
+				}
+				
+				if (isset($_GET['Type']) and ($_GET["Type"] != "")) {
+					$options = $options." AND Type = '%".$_GET["Type"]."%'";
+				}
+				
+				if (isset($_GET['Previous']) and ($_GET["Previous"] != "")) {
+					$options = $options." AND Previous LIKE '%".$_GET["Previous"]."%'";
+				}
+				
+				if (isset($_GET['Locations']) and ($_GET["Locations"] != "")) {
+					$multoptions = explode(";", $_GET["Locations"]);
+					foreach ($multoptions as $value) {
+						$options = $options." AND Locations LIKE '%".$value."%'";
+					}
+				}
+				
+				if (isset($_GET['Peoples']) and ($_GET["Peoples"] != "")) {
+					$multoptions = explode(";", $_GET["Peoples"]);
+					foreach ($multoptions as $value) {
+						$options = $options." AND Peoples LIKE '%".$value."%'";
+					}
+				}
+				
+				if (isset($_GET['Specials']) and ($_GET["Specials"] != "")) {
+					$multoptions = explode(";", $_GET["Specials"]);
+					foreach ($multoptions as $value) {
+						$options = $options." AND Specials LIKE '%".$value."%'";
+					}
+				}
+				
+				if (isset($_GET['First appearance']) and ($_GET["First appearance"] != "")) {
+					$options = $options." AND First appearance >= '%".$_GET["First appearance"]."%'";
+				}
+				
+				if (isset($_GET['Last appearance']) and ($_GET["Last appearance"] != "")) {
+					$options = $options." AND Last appearance <= '%".$_GET["Last appearance"]."%'";
+				}
+				
+				?>
+				
+				<?php if ($_GET['table'] == "all") { ?>
+					<center>
+						<?php echo $Search["Show"]."<a href='#peoples'>".$NavBar["Peoples"]."</a> | <a href='#locations'>".$NavBar["Locations"]."</a> | <a href='#specials'>".$NavBar["Specials"]."</a> | <a href='#books'>".$NavBar["Books"]."</a> | <a href='#events'>".$NavBar["Events"]."</a>";?>
+					</center>
+				<?php } ?>
+			
+				<?php if (($_GET['table'] == "peoples") || 
+							($_GET['table'] == "all")) { ?>
+					<div id="peoples">
+						<?php // Search Peoples database
+						SearchItems($_GET['search'], "peoples", $options); ?>
+					</div>
+				<?php } ?>
+				
+				<?php if (($_GET['table'] == "locations") || 
+							($_GET['table'] == "all")) { ?>
+					<div id="locations">
+						<?php // Search Locations
+						SearchItems($_GET['search'], "locations", $options); ?>
+					</div>
+				<?php } ?>
+				
+				<?php if (($_GET['table'] == "specials") || 
+							($_GET['table'] == "all")) { ?>
+					<div id="specials">
+						<?php // Search Specials
+						SearchItems($_GET['search'], "specials", $options); ?>
+					</div>
+				<?php } ?>
+				
+				<?php if (($_GET['table'] == "books") || 
+							($_GET['table'] == "all")) { ?>
+					<div id="books">
+						<?php // Search Books
+						SearchItems($_GET['search'], "books", $options); ?>
+					</div>
+				<?php } ?>
+				
+				<?php if (($_GET['table'] == "events") || 
+							($_GET['table'] == "all")) { ?>
+					<div id="events">
+						<?php // Search Events
+						SearchItems($_GET['search'], "events", $options); ?>
+					</div>
+				<?php } ?>
+			<?php } ?>
 		</div>
-		
-		<div id="locations">
-			<?php // Search Locations
-			SearchItems($_GET['search'], "locations", ""); ?>
-		</div>
-		
-		<div id="specials">
-			<?php // Search Specials
-			SearchItems($_GET['search'], "specials", ""); ?>
-		</div>
-		
-		<div id="books">
-			<?php // Search Books
-			SearchItems($_GET['search'], "books", ""); ?>
-		</div>
-		
-		<div id="events">
-			<?php // Search Events
-			SearchItems($_GET['search'], "events", ""); ?>
-		</div>
-	<?php } else if (isset($_GET['submitSearch2'])) {
-		$options = "";
-		
-		if (isset($_GET['MeaningName']) and ($_GET["MeaningName"] != "")) {
-			$options = " AND meaningname LIKE '%".$_GET["MeaningName"]."%'";
-		}
-		
-		// TODO:
-		// Name changes
-		// Name Father
-		// Name Mother
-		// Gender
-		// Tribe
-		// First appearance
-		// Last appearance
-		// Type of Location
-		// Founder
-		// Destroyer
-		// Type (of Special)
-		// Previous
-		// Locations
-		// Peoples
-		// Specials
-		
-		SearchItems($_GET['search'], $_GET['table'], $options);
-	} ?>
+	</div>
 </div>
 
 <?php require "layout/footer.php" ?>
 
 <script>
 function selectTableOptions(sel) {
+	var SubmitButton = document.getElementById("submit");
+	
 	var value = sel.value;
 	var form = sel.parentNode;
 	
 	resetForm(form);
 	
-	form.appendChild(document.createElement("br"));
-	Input = addInput("text", "search", "<?php echo $PeoplesParams["Name"]; ?>");
-	form.appendChild(Input);
+	Input = addInput("text", "search", "<?php echo $PeoplesParams["Name"]; ?>", 1);
+	form.insertBefore(Input, SubmitButton);
 	
 	switch(value) {
 		case "peoples":
 		// Meaning Name
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "MeaningName", "<?php echo $PeoplesParams["MeaningName"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Name changes
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "NameChanges", "<?php echo $PeoplesParams["NameChanges"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Name Father
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Father", "<?php echo $PeoplesParams["Father"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Name Mother
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Mother", "<?php echo $PeoplesParams["Mother"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Gender
-		form.appendChild(document.createElement("br"));
 		Input = addSelect("Gender", [0], ["To be done"]);
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Tribe
-		form.appendChild(document.createElement("br"));
 		Input = addSelect("Tribe", [0], ["To be done"]);
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// TODO
 		// // First appearance
-		// form.appendChild(document.createElement("br"));
 		// Input = addInput("text", "MeaningName", "<?php echo $PeoplesParams["MeaningName"]; ?>");
-		// form.appendChild(Input);
+		// form.insertBefore(Input, SubmitButton);
 		
 		// // Last appearance
-		// form.appendChild(document.createElement("br"));
 		// Input = addInput("text", "MeaningName", "<?php echo $PeoplesParams["MeaningName"]; ?>");
-		// form.appendChild(Input);
+		// form.insertBefore(Input, SubmitButton);
 		break;
 		
 		case "locations":
 		// Meaning name
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "MeaningName", "<?php echo $LocationsParams["MeaningName"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Name changes
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "NameChanges", "<?php echo $LocationsParams["NameChanges"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Type of Location
-		form.appendChild(document.createElement("br"));
 		Input = addSelect("TypeOfLocation", [0], ["To be done"]);
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Founder
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Founder", "<?php echo $LocationsParams["Founder"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Destroyer
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Destroyer", "<?php echo $LocationsParams["Destroyer"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// TODO:
 		// // Meaning name
-		// form.appendChild(document.createElement("br"));
 		// Input = addInput("text", "MeaningName", "<?php echo $LocationsParams["MeaningName"]; ?>");
-		// form.appendChild(Input);
+		// form.insertBefore(Input, SubmitButton);
 		
 		// // Meaning name
-		// form.appendChild(document.createElement("br"));
 		// Input = addInput("text", "MeaningName", "<?php echo $LocationsParams["MeaningName"]; ?>");
-		// form.appendChild(Input);
+		// form.insertBefore(Input, SubmitButton);
 		
 		break;
 		
 		case "specials":
 		// Meaning Name
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "MeaningName", "<?php echo $SpecialsParams["MeaningName"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Type op Special
-		form.appendChild(document.createElement("br"));
 		Input = addSelect("Type", [0], ["To be done"]);
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// TODO
 		// // First appearance
-		// form.appendChild(document.createElement("br"));
 		// Input = addInput("text", "MeaningName", "<?php echo $SpecialsParams["MeaningName"]; ?>");
-		// form.appendChild(Input);
+		// form.insertBefore(Input, SubmitButton);
 		
 		// // Last appearance
-		// form.appendChild(document.createElement("br"));
 		// Input = addInput("text", "MeaningName", "<?php echo $SpecialsParams["MeaningName"]; ?>");
-		// form.appendChild(Input);
+		// form.insertBefore(Input, SubmitButton);
 		break;
 		
 		case "events":
 		
 		// Previous
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Previous", "<?php echo $EventsParams["Previous"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Location
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Locations", "<?php echo $EventsParams["Locations"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// People
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Peoples", "<?php echo $EventsParams["Peoples"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		
 		// Special
-		form.appendChild(document.createElement("br"));
 		Input = addInput("text", "Specials", "<?php echo $EventsParams["Specials"]; ?>");
-		form.appendChild(Input);
+		form.insertBefore(Input, SubmitButton);
 		break;
 	}
 	
-	SubmitButton = document.getElementById("submit2");
+	SubmitButton = document.getElementById("submit");
 	SubmitButton.disabled = false;
 }
 
-function addInput(type, name, string) {
+function addInput(type, name, string, required = 0) {
 	var element = document.createElement("input");
 	element.type = type;
 	element.name = name;
 	element.placeholder = string;
 	element.className = "added";
-	
-	if (name == "search") {
-		element.value = "<?php echo $_GET["search"]; ?>";
-	}
-	
+	element.required = required;	
 	return element;
 }
 

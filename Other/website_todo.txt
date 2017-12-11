@@ -5,6 +5,7 @@
 	First byte = Book
 	Second byte = Chapter
 	Third byte = Verse
+  Also, add matching on first appearance and last appearance
 
 * Code clean up after done
 * Update all "default text" contents
@@ -22,10 +23,6 @@ Tasks:
 		Wanneer onmouseout -> enable scrolling
 	default text explain muis om te scrollen en wielletje om in en uit te zoomen
 	
-- Filters for searching
-	* Optional search options move down after each select change
-	* Set all filters on the side, while actively updating search results
-	
 - API
 	- Create app to get nice view on phone
 	- Enables getting information on a phone using API
@@ -35,10 +32,10 @@ Tasks:
 
 Bugs:
 - Weird border for first family tree
-- Sort buttons Gen-Op won't stay on Op-Gen due to restart page
 - Items no longer clickable after move
 - TimeLine & FamilyTree disappears when resetting view after 3 zoom outs
 - Microsoft Edge heel traag bij in of uit zoomen scrollen
+- zoekopties niet doen voor IE en safari
 
 https://www.gps-coordinaten.nl/
 

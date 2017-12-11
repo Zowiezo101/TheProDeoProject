@@ -601,20 +601,56 @@ body {
 /************************************************
  * Search results parts
  */
-.search {
+#search_results {
 	text-align: center;
 }
 
-.search table {
-	background-color: yellow;
+#search_results table {
+	background-color: Black;
 	border-width: 1px;
 	border-style: solid;
 	margin: auto;
 }
 
-.search td, .search tr {
+#search_results td,
+#search_results tr {
 	border-width: 1px;
 	border-style: solid;
+	background-color: LightGrey;
+}
+
+#search_bar {
+	text-align: center;
+	background-color: LightGrey;
+}
+
+#search_bar #table {
+	display: block;
+	width: 80%;
+	
+	border: 1px solid black;
+	border-radius: 4px;
+	padding: 3px;
+	margin: 5px auto 20px auto;
+}
+
+.added {
+	display: block;
+	width: 80%;
+	
+	border: 1px solid black;
+	border-radius: 4px;
+	padding: 3px;
+	margin: 5px auto 5px auto;
+}
+
+#search_bar #verses {
+	width: 40%;
+	
+	border: 1px solid black;
+	border-radius: 4px;
+	padding: 3px;
+	margin: 5px auto 5px auto;
 }
 
 
