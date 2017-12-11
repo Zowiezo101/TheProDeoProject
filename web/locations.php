@@ -11,7 +11,7 @@
 
 if (isset($_GET['id'])) {
 ?>
-	var contentEl = document.getElementById("location_info");
+	var contentEl = document.getElementById("item_info");
 	
 	// Remove the default text
 	var defaultText = document.getElementById("default");

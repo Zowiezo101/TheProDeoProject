@@ -328,13 +328,13 @@ if (($id == "peoples") ||
 			</div>
 			
 			<!-- Show a list of the available items -->
-			<div id="<?php echo $single_item; ?>_bar">
+			<div id="item_bar">
 				<?php GetListOfItems($id); ?>
 			</div>
 		</div>
 		
 		<!-- This is where the items will be displayed -->
-		<div class="contents_right" id="<?php echo $single_item; ?>_info">
+		<div class="contents_right" id="item_info">
 			<div id="default">
 				<?php echo $Content["default_".$single_item]; ?>
 			</div>

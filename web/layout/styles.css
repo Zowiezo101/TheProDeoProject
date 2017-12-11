@@ -6,6 +6,7 @@ body {
 	
 	font-family: Arial;
 	
+	background-color: LightGrey;
 	background-image: linear-gradient(
 		to bottom right,
 		DarkGrey,
@@ -21,6 +22,7 @@ body {
  */
 .header {
 	height: 75px;
+	background-color: LightGrey;
 	background-image: linear-gradient(
 		to right,
 		White 575px,
@@ -320,27 +322,13 @@ body {
 	background-color: Orchid;
 }
 
-#people_bar table, #people_bar tr, 
-#location_bar table, #location_bar tr, 
-#event_bar table, #event_bar tr,
-#book_bar table, #book_bar tr,
-#special_bar table, #special_bar tr,
-#family_bar table, #family_bar tr,
-#world_bar table, #world_bar tr,
-#timeline_bar table, #timeline_bar tr
+#item_bar table, #item_bar tr
 {
 	width: 100%;
 	height: 100%;
 }
 
-#people_bar td, 
-#location_bar td, 
-#event_bar td,
-#book_bar td,
-#special_bar td,
-#family_bar td,
-#world_bar td,
-#timeline_bar td
+#item_bar td
 {
 	width: 100%;
 	border-width: 1px;
@@ -350,15 +338,8 @@ body {
 	background-color: DarkGrey;
 }
 
-#people_bar a, 
-#location_bar a,
-#event_bar a,
-#book_bar a,
-#special_bar a,
-#family_bar a,
-#world_bar button,
-#timeline_bar a
- {
+#item_bar button
+{
 	display: block;
 	text-align: center;
 	margin: 0;
@@ -375,11 +356,7 @@ body {
  * Results from database
  */
 
-#people_info a,
-#location_info a,
-#event_info a,
-#book_info a,
-#special_info a
+#item_info a
  {
 	display: block;
 	text-align: center;
@@ -391,29 +368,17 @@ body {
 	width: 100%;
 }
 
-#people_info tr:nth-child(even),
-#location_info tr:nth-child(even),
-#event_info tr:nth-child(even),
-#book_info tr:nth-child(even),
-#special_info tr:nth-child(even)
+#item_info tr:nth-child(even)
 {
 	background-color: Orchid
 }
 
-#location_info tr:nth-child(odd),
-#people_info tr:nth-child(odd),
-#event_info tr:nth-child(odd),
-#book_info tr:nth-child(odd),
-#special_info tr:nth-child(odd)
+#item_info tr:nth-child(odd)
 {
 	background-color: MediumOrchid;
 }
 
-#people_info td,
-#location_info td,
-#event_info td,
-#book_info td,
-#special_info td
+#item_info td
  {
 	border: 1px;
 	border-style: solid;
@@ -518,6 +483,7 @@ body {
 	border-style: solid;
 	border-radius: 8px;
 	
+	background-color: rgb(249, 236, 249);
 	background-image: linear-gradient(
 		to top right, 
 		rgb(255, 255, 255),
