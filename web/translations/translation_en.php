@@ -81,11 +81,13 @@ $EventsParams = array(
 
 $Search = array(
 	"Search"=>"Search..",
-	"Search2"=>"Search again",
-	"Options"=>"Extra options for searching: <br>",
+	"Options"=>"Search options: <br>",
+	"Category"=>"Select a category",
 	"NoResults"=>"Can't find any results..",
 	"Results"=>" results found for ",
-	"Show"=>"Show results for ",);
+	"Result"=>" result found for ",
+	"Show"=>"Show results for ",
+	"All"=>"All categories",);
 
 $NavBar = array(
 	"Home"=>"Home",
@@ -126,6 +128,7 @@ $Content = array(
 	"default_people"=>"<h1>Peoples</h1>Click on a name in the list for more information",
 	"default_location"=>"<h1>Locations</h1>Click on a name in the list for more information",
 	"default_special"=>"<h1>Specials</h1>Click on a name in the list for more information",
+	"default_search"=>"<h1>Search</h1>Use the options on the left to get search results.<br/>Tip: If you don't know the name, but you do know other information, use % for the name.<br/>Also, use ; to seperate multiple names.",
 	"default_ft"=>"<h1>Familytree</h1>Click on a name in the list for more information",
 	"default_tl"=>"<h1>Timeline</h1>Click on a name in the list for more information",
 	"default_wm"=>"<h1>Worldmap</h1>Click on a name in the list for more information",

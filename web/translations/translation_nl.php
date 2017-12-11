@@ -81,11 +81,13 @@ $EventsParams = array(
 
 $Search = array(
 	"Search"=>"Zoeken..",
-	"Search2"=>"Opnieuw zoeken",
-	"Options"=>"Extra zoekopties: <br>",
+	"Options"=>"Zoekopties: <br>",
+	"Category"=>"Kies een categorie",
 	"NoResults"=>"Kon geen resultaten vinden..",
 	"Results"=>" resultaten gevonden voor ",
-	"Show"=>"Laat resultaten zien voor ",);
+	"Result"=>" resultaat gevonden voor ",
+	"Show"=>"Laat resultaten zien voor ",
+	"All"=>"Alle categorieën",);
 
 $NavBar = array(
 	"Home"=>"Home",
@@ -126,6 +128,7 @@ $Content = array(
 	"default_people"=>"<h1>Personen</h1>Klik op een naam in de lijst om meer informatie te zien",
 	"default_location"=>"<h1>Locaties</h1>Klik op een naam in de lijst om meer informatie te zien",
 	"default_special"=>"<h1>Speciaal</h1>Klik op een naam in de lijst om meer informatie te zien",
+	"default_search"=>"<h1>Zoeken</h1>Gebruik de opties aan de linkerkant om zoekresultaten te krijgen.<br/>Tip: Als je de naam niet weet, maar wel andere informatie, gebruik dan % als naam.<br/>Verder, gebruik ; om verschillende namen van elkaar te scheiden.",
 	"default_ft"=>"<h1>Stamboom</h1>Klik op een naam in de lijst om meer informatie te zien",
 	"default_tl"=>"<h1>Tijdslijn</h1>Klik op een naam in de lijst om meer informatie te zien",
 	"default_wm"=>"<h1>Wereldkaart</h1>Klik op een naam in de lijst om meer informatie te zien",
