@@ -1,5 +1,7 @@
 <?php 
 
+require "scrollHelper.php";
+
 function GetListOfItems($table) {
 	global $Search;
 	global $conn;
@@ -48,7 +50,7 @@ function GetListOfItems($table) {
 		while ($name = $result->fetch_array()) {
 			echo "<tr>";
 			echo "<td>";
-			echo "<a href='".$table.".php".AddParams($page_nr, $name['ID'], $sort)."'>".$name['Name']."</a>";
+			echo "<button onclick='saveScroll(\"".$table.".php".AddParams($page_nr, $name['ID'], $sort)."\")'>".$name['Name']."</button>";
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -113,7 +115,11 @@ function SearchItems($text, $table, $options) {
 		$num_res = $result->num_rows;
 		
 		echo "<a name='".$table."'><h1>".$NavBar[ucfirst($table)].":</h1><br /></a>";
-		echo $num_res.$Search['Results']."\"".$text."\":<br />";
+		if ($num_res == 1) {
+			echo $num_res.$Search['Result']."\"".$text."\":<br />";
+		} else {
+			echo $num_res.$Search['Results']."\"".$text."\":<br />";
+		}
 		
 		if ($num_res > 0) {
 			echo "<table>";
@@ -186,6 +192,8 @@ if (($id == "peoples") ||
 	function CheckButtons() {
 		var ButtonPrev = document.getElementById("button_left");
 		var ButtonNext = document.getElementById("button_right");
+		var ButtonApp = document.getElementById("button_app");
+		var ButtonAlp = document.getElementById("button_alp");
 		
 		// Check if this is page 0. If so, disable to prev button..	
 		<?php			
@@ -216,12 +224,39 @@ if (($id == "peoples") ||
 		} else {
 			ButtonNext.disabled = false;
 		}
+		
+		switch (SortType) {
+			case "app":
+					ButtonApp.className = "sort_9_1";
+					ButtonAlp.className = "sort_a_z";
+				break;
+			
+			case "r-app":
+					ButtonApp.className = "sort_1_9";
+					ButtonAlp.className = "sort_a_z";
+				break;
+				
+			case "alp":
+					ButtonApp.className = "sort_1_9";
+					ButtonAlp.className = "sort_z_a";
+				break;
+				
+			case "r-alp":
+					ButtonApp.className = "sort_1_9";
+					ButtonAlp.className = "sort_a_z";
+				break;
+			
+			default:
+				break;
+		}
 
 		// Set the height of the left div, to the height of the right div
 		var ContentsR = document.getElementsByClassName("contents_right")[0];
 		var ContentsL = document.getElementsByClassName("contents_left")[0];
 		
 		ContentsL.setAttribute("style", "height: " + ContentsR.offsetHeight + "px");
+		
+		loadScroll();
 	}
 	
 	function PrevPage() {		
@@ -271,10 +306,8 @@ if (($id == "peoples") ||
 		oldHref = window.location.href;
 		<?php if (isset($_GET["sort"]) && ($_GET["sort"]) == "alp") { ?>
 			newHref = updateURLParameter(oldHref, "sort", "r-alp");
-			Button.innerHTML = "A-Z";
 		<?php } else { ?>
 			newHref = updateURLParameter(oldHref, "sort", "alp");
-			Button.innerHTML = "Z-A";
 		<?php } ?>
 		
 		newHref = removeURLParameter(newHref, "page");
@@ -290,10 +323,8 @@ if (($id == "peoples") ||
 		oldHref = window.location.href;
 		<?php if (isset($_GET["sort"]) && ($_GET["sort"]) == "r-app") { ?>
 			newHref = removeURLParameter(oldHref, "sort");
-			Button.innerHTML = "Gen-Op";
 		<?php } else { ?>
 			newHref = updateURLParameter(oldHref, "sort", "r-app");
-			Button.innerHTML = "Op-Gen";
 		<?php } ?>
 		
 		newHref = removeURLParameter(newHref, "page");
@@ -304,7 +335,7 @@ if (($id == "peoples") ||
 </script>
 
 	<div class="clearfix">
-		<div class="contents_left">
+		<div class="contents_left" id="item_choice">
 			<div id="button_bar">
 				<!-- Previous page -->
 				<button id="button_left" onClick="PrevPage()">
@@ -312,13 +343,13 @@ if (($id == "peoples") ||
 				</button>
 				
 				<!-- Sort on alphabet -->
-				<button id="button_alp" onClick="SortOnAlphabet()">
-					A-Z
+				<button id="button_alp" class="sort_a_z" onClick="SortOnAlphabet()">
+					
 				</button>
 				
 				<!-- Sort on appearance -->
-				<button id="button_app" onClick="SortOnAppearance()">
-					Gen-Op
+				<button id="button_app" class="sort_9_1" onClick="SortOnAppearance()">
+					
 				</button>
 				
 				<!-- Next page -->

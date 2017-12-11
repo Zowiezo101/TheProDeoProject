@@ -7,9 +7,6 @@
 	Third byte = Verse
 
 * Code clean up after done
-* Make nice images for sort buttons (Numbers and alphabet)
-* Keep scroll bar in item_bar on its current location after clicking an item
-* Use 'item' names instead of 'peoples, locations' etc
 * Update all "default text" contents
 * Select boxes mogen mooier :)
 

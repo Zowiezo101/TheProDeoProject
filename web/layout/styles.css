@@ -302,11 +302,17 @@ body {
  */
 #button_bar {
 	width: 100%;
+	min-width: 145px;
 	display: inline-block;
+	
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
 
 #button_bar button {
-	width: 23%;
+	width: 30%;
+	height: 25px;
 	
 	margin: 0;
 	padding: 0;
@@ -315,6 +321,70 @@ body {
 	background-color: MediumOrchid;
 	color: white;
 	font-size: 100%;
+}
+
+#button_bar #button_left {
+	float: left;
+}
+
+#button_bar #button_right {
+	float: right;
+}
+
+#button_bar .sort_a_z {
+	background-image: url("../img/sort_a_z.svg");
+	background-size: 25px 25px;
+	background-color: White;
+	
+	float: left;
+	margin: auto;
+	padding: 0;
+	border: 0;
+	
+	width: 25px;
+	height: 25px;
+}
+
+#button_bar .sort_z_a {
+	background-image: url("../img/sort_z_a.svg");
+	background-size: 25px 25px;
+	background-color: White;
+	
+	float: left;
+	margin: auto;
+	padding: 0;
+	border: 0;
+	
+	width: 25px;
+	height: 25px;
+}
+
+#button_bar .sort_1_9 {
+	background-image: url("../img/sort_1_9.svg");
+	background-size: 25px 25px;
+	background-color: White;
+	
+	float: left;
+	margin: auto;
+	padding: 0;
+	border: 0;
+	
+	width: 25px;
+	height: 25px;
+}
+
+#button_bar .sort_9_1 {
+	background-image: url("../img/sort_9_1.svg");
+	background-size: 25px 25px;
+	background-color: White;
+	
+	float: left;
+	margin: auto;
+	padding: 0;
+	border: 0;
+	
+	width: 25px;
+	height: 25px;
 }
 
 #button_bar button:hover, 
