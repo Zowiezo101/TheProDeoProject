@@ -35,7 +35,6 @@ Bugs:
 - Items no longer clickable after move
 - TimeLine & FamilyTree disappears when resetting view after 3 zoom outs
 - Microsoft Edge heel traag bij in of uit zoomen scrollen
-- zoekopties niet doen voor IE en safari
 
 https://www.gps-coordinaten.nl/
 

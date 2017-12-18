@@ -285,7 +285,10 @@ function selectTableOptions(sel) {
 	SubmitButton.disabled = false;
 }
 
-function addInput(type, name, string, required = 0) {
+function addInput(type, name, string, required) {
+	if (required === undefined) {
+		required = false;
+	}
 	var element = document.createElement("input");
 	element.type = type;
 	element.name = name;
