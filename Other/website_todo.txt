@@ -14,10 +14,7 @@
 Tasks:
 - Interface TimeLine
 - Interface FamilyTree
-	* Via animatie netjes opzij gaan
-	* Netjes bovenop SVG zelf (Rechts onderin)
 	* Net als Legenda, ook bovenop.. (Links onderin)
-	* Easter egg foto of plaatje in een ver gedeelte
 	* Rest van het scherm scrollt ook mee..
 		Wanneer onmouseover -> disable scrolling
 		Wanneer onmouseout -> enable scrolling
@@ -31,9 +28,7 @@ Tasks:
 	- Create other website to do the same
 
 Bugs:
-- Weird border for first family tree
 - Items no longer clickable after move
-- TimeLine & FamilyTree disappears when resetting view after 3 zoom outs
 - Microsoft Edge heel traag bij in of uit zoomen scrollen
 
 https://www.gps-coordinaten.nl/

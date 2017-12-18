@@ -1,4 +1,7 @@
 <?php
+
+require "scrollHelper.php";
+
 function FindEvents() {
 	global $Search;
 	global $conn;
@@ -71,7 +74,7 @@ var globalWidth = 0;
 
 var ActualHeight = 0;
 var ActualWidth = 0;
-var ZoomFactor = 1;
+var ZoomFactor = 1.00;
 
 var viewX = 0;
 var viewY = 0;
@@ -81,16 +84,17 @@ var viewHeight = 0;
 function createTimeLine() {	
 	// Make a nice list here to choose from the set of EventsList Events
 	// When chosen, update focus in the timeline
-	var timeLine = document.getElementById("timeline_bar");
+	var timeLine = document.getElementById("item_bar");
 	
 	var table = document.createElement("table");
 	for (var i = 0; i < EventsList.length; i++) {
 		var EventId = EventsList[i];
 		var Event = Events[EventId];
 		
-		var TableLink = document.createElement("a");
+		var TableLink = document.createElement("button");
+		TableLink.onclick = UpdateLink;
+		TableLink.newLink = updateURLParameter(window.location.href, "id", i + "," + Event.ID)
 		TableLink.innerHTML = Event.name;
-		TableLink.href = updateURLParameter(window.location.href, "id", i + "," + Event.ID);
 		
 		var TableData = document.createElement("td");
 		TableData.appendChild(TableLink);
@@ -101,6 +105,8 @@ function createTimeLine() {
 		table.appendChild(TableRow);
 	}
 	timeLine.appendChild(table);
+	
+	loadScroll();
 	
 <?php if (isset($_GET['id'])) { ?>
 	var IDs = "<?php echo $_GET['id']; ?>".split(",");
@@ -1021,9 +1027,9 @@ function calcLocations() {
 					if (Event.Location[1] < (Neighbour.Location[1] + 100)) {
 						// alert("set of IDs of level " + Person.level + " :" + IDset);
 						if (Event.level >= debugFrom) {
-						alert("Is people " + Event.name + " on location (" + Event.Location[0] + ", " + Event.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
-						alert("Idx of " + Event.name + " :" + Event.levelIndex);
-						alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
+						// alert("Is people " + Event.name + " on location (" + Event.Location[0] + ", " + Event.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
+						// alert("Idx of " + Event.name + " :" + Event.levelIndex);
+						// alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
 						}
 						
 						var found = 0;
@@ -1042,15 +1048,15 @@ function calcLocations() {
 						while (found == 0) {
 							// Get a list with people that are a generation level lower (placed higher)
 							if (Event.level >= debugFrom) {
-							alert("Trying level: " + currentLevel);
+							// alert("Trying level: " + currentLevel);
 							}
 							var currentIDset = levelIDs[currentLevel];
 							if (Event.level >= debugFrom) {
-							alert("Set of people: " + currentIDset);
+							// alert("Set of people: " + currentIDset);
 							}
 							var currentIDset = levelIDs[currentLevel - 1];
 							if (Event.level >= debugFrom) {
-							alert("Set of people: " + currentIDset);
+							// alert("Set of people: " + currentIDset);
 							}
 							var newAncestorsR = [];
 							var newAncestorsL = [];
@@ -1059,7 +1065,7 @@ function calcLocations() {
 							for (var j = 0; j < currentAncestorsR.length; j++) {
 								var EventR = Events[currentAncestorsR[j]];
 								if (Event.level >= debugFrom) {
-								alert("Working with " + EventR.name);
+								// alert("Working with " + EventR.name);
 								}
 								
 								for (var k = 0; k < currentIDset.length; k++) {
@@ -1069,7 +1075,7 @@ function calcLocations() {
 									if (ID == EventR.previousID) {
 										newAncestorsR.push(ID);
 										if (Event.level >= debugFrom) {
-										alert("Found parentR with ID: " + ID);
+										// alert("Found parentR with ID: " + ID);
 										}
 									}
 								}
@@ -1079,7 +1085,7 @@ function calcLocations() {
 							for (var j = 0; j < currentAncestorsL.length; j++) {
 								var EventL = Events[currentAncestorsL[j]];
 								if (Event.level >= debugFrom) {
-								alert("Working with " + EventL.name);
+								// alert("Working with " + EventL.name);
 								}
 								
 								for (var k = 0; k < currentIDset.length; k++) {
@@ -1089,7 +1095,7 @@ function calcLocations() {
 									if (ID == EventL.previousID) {
 										newAncestorsL.push(ID);
 										if (Event.level >= debugFrom) {
-										alert("Found parentL with ID: " + ID);
+										// alert("Found parentL with ID: " + ID);
 										}
 									}
 								}
@@ -1113,7 +1119,7 @@ function calcLocations() {
 							}
 							
 							if (Event.level >= debugFrom) {
-							alert("Count is equal to: " + count);
+							// alert("Count is equal to: " + count);
 							}
 							
 							// collision = 1;
@@ -1134,7 +1140,7 @@ function calcLocations() {
 						var Parent = Events[FoundID];
 						var Child = null;
 						if (Event.level >= debugFrom) {
-						alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
+						// alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
 						}							
 						
 						// This is just a normal clash, fix in the normal way
@@ -1153,7 +1159,7 @@ function calcLocations() {
 							
 						Child.offset += (Neighbour.Location[1] + 100) - Event.Location[1];
 						if (Event.level >= debugFrom) {
-						alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
+						// alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
 						}
 						collision = 1;
 						
@@ -1216,7 +1222,7 @@ function drawTimeLine(SVG) {
 
 function SetSVG(TimelineId, EventId) {	
 	// The Time line div
-	var TimeLine = document.getElementById("timeline");
+	var TimeLine = document.getElementById("timeline_div");
 	
 	// Remove the default text
 	var defaultText = document.getElementById("default");
@@ -1332,13 +1338,13 @@ function SetSVG(TimelineId, EventId) {
 }
 
 function panItem(item) {
-	var TimeLine = document.getElementById("timeline");
+	var TimeLine = document.getElementById("timeline_div");
 	scrollTop = (item.Location[1] + globalOffset + 50) - (TimeLine.offsetHeight / 2);
 	scrollLeft = (item.Location[0] + 75) - (TimeLine.offsetWidth / 2);
 	
 	updateViewbox(scrollLeft, scrollTop, -1, -1);
 	
-	alert("X: " + viewX + "\nY: " + viewY + "\nWidth: " + viewWidth + "\nHeight: " + viewHeight + "\nZoom: " + ZoomFactor);
+	// alert("X: " + viewX + "\nY: " + viewY + "\nWidth: " + viewWidth + "\nHeight: " + viewHeight + "\nZoom: " + ZoomFactor);
 }
 
 function panTo(x, y) {
@@ -1353,22 +1359,10 @@ function updateViewbox(x, y, width, height) {
 	
 	if (x != -1) {
 		viewX = x;
-		// Do not exceed the boundaries
-		// if (viewX < 0) {
-			// viewX = 0;
-		// } else if (viewX > ActualWidth) {
-			// viewX = ActualWidth;
-		// }
 	}
 	
 	if (y != -1) {
 		viewY = y;
-		// Do not exceed the boundaries
-		// if (viewY < 0) {
-			// viewY = 0;
-		// } else if (viewY > ActualHeight) {
-			// viewY = ActualHeight;
-		// }
 	}
 	
 	if (width != -1) {
@@ -1379,6 +1373,7 @@ function updateViewbox(x, y, width, height) {
 		viewHeight = height
 	}
 	
+	// alert("New viewBox: \nZoomFactor: " + ZoomFactor + "\nViewX: " + viewX + "\nviewY: " + viewY + "\nviewWidth: " + viewWidth + "\nviewHeight: " + viewHeight);
 	SVG.setAttributeNS(null, 'viewBox', "" + viewX + " " + viewY + " " + viewWidth + " " + viewHeight);
 	
 	return;
@@ -1433,7 +1428,8 @@ function ZoomFit() {
 }
 
 function ZoomReset() {
-	var TimeLine = document.getElementById("timeline");
+	var TimeLine = document.getElementById("timeline_div");
+	
 <?php if (isset($_GET['id'])) { ?>
 	var IDs = "<?php echo $_GET['id']; ?>".split(",");
 	
@@ -1447,11 +1443,11 @@ function ZoomReset() {
 	
 	ZoomFactor = 1;
 	
-	updateViewbox(-1, -1, newWidth, newHeight);
-	
 	// Now pan to this item
 	var Event = Events[EventId];
 	panItem(Event);
+	
+	updateViewbox(-1, -1, newWidth, newHeight);
 }
 
 var MouseX = 0;
@@ -1491,5 +1487,11 @@ GetDelta = function (event) {
 	} else {
 		ZoomOut(1.4);
 	}
+}
+
+function UpdateLink() {
+	var Link = this.newLink;
+	saveScroll(Link);
+	return;
 }
 </script>

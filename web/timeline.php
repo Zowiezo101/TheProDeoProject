@@ -5,13 +5,13 @@
 ?>
 
 <div class="clearfix">
-	<div class="contents_left">			
-		<div id="timeline_bar">
+	<div class="contents_left" id="item_choice">			
+		<div id="item_bar">
 			<!-- We fill this up in the TimeLine javascript code -->
 		</div>
 	</div>
 	
-	<div class="contents_right" id="timeline">
+	<div class="contents_right" id="timeline_div">
 		<div id="default">
 			<?php if (isset($_GET['id'])) {
 				echo $Content["loading_tl"];

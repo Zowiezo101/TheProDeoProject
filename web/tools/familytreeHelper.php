@@ -1,4 +1,7 @@
 <?php
+
+require "scrollHelper.php";
+
 function FindPeoples() {
 	global $Search;
 	global $conn;
@@ -55,16 +58,17 @@ var viewHeight = 0;
 function createFamilyTree() {
 	// Make a nice list here to choose from the set of PeopleList people
 	// When chosen, update PeopleId and redraw page
-	var familyBar = document.getElementById("family_bar");
+	var familyBar = document.getElementById("item_bar");
 	
 	var table = document.createElement("table");
 	for (var i = 0; i < PeoplesList.length; i++) {
 		var PeopleId = PeoplesList[i];
 		var People = Peoples[PeopleId];
 		
-		var TableLink = document.createElement("a");
+		var TableLink = document.createElement("button");
+		TableLink.onclick = UpdateLink;
+		TableLink.newLink = updateURLParameter(window.location.href, "id", i + "," + People.ID);
 		TableLink.innerHTML = People.name;
-		TableLink.href = updateURLParameter(window.location.href, "id", i + "," + People.ID);
 		
 		var TableData = document.createElement("td");
 		TableData.appendChild(TableLink);
@@ -75,6 +79,8 @@ function createFamilyTree() {
 		table.appendChild(TableRow);
 	}
 	familyBar.appendChild(table);
+	
+	loadScroll();
 	
 <?php if (isset($_GET['id'])) { ?>	
 	var IDs = "<?php echo $_GET['id']; ?>".split(",");
@@ -470,16 +476,15 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		Rect.setAttributeNS(null, 'stroke', 'black');
 		Rect.setAttributeNS(null, 'fill', this.getGenderColor());
 		
-		Rect.id = "Rect" + this.ID;		
-		Rect.ID = this.ID;
+		Rect.className.baseVal = "Rect";
+		Rect.id = "Rect" + this.ID;
+		Rect.RectID = this.ID;
 		
 		var Text = document.createElementNS(svgns, "text");
 		Text.setAttributeNS(null, 'x', x);
 		Text.setAttributeNS(null, 'y', y + 25);
-		
 		Text.textContent = this.name;
-		Text.id = "Text" + this.ID;
-		Text.ID = this.ID;
+		Text.RectID = this.ID;
 		
 		var newHref = updateURLParameter("peoples.php", "id", this.ID);
 		var Link = document.createElementNS(svgns, "a");
@@ -490,10 +495,9 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 		Link.appendChild(Rect);
 		Link.appendChild(Text);
 		
+		Link.RectID = this.ID;
 		Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
 		Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
-		Link.id = "Link" + this.ID;
-		Link.ID = this.ID;
 		
 		Group.appendChild(Link);		
 		return Group;
@@ -523,19 +527,15 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 }
 	
 setBorder = function (event) {
-	var IDnum = event.target.ID;
-	
+	var IDnum = event.target.RectID;
 	var Rect = document.getElementById("Rect" + IDnum);
-	Rect.setAttributeNS(null, "stroke", "red");
-	Rect.setAttributeNS(null, "stroke-width", 5);
+	Rect.className.baseVal = "Rect_hover";
 }
 
 clearBorder = function (event) {
-	var IDnum = event.target.ID;
-	
+	var IDnum = event.target.RectID;
 	var Rect = document.getElementById("Rect" + IDnum);
-	Rect.setAttributeNS(null, "stroke", "black");
-	Rect.setAttributeNS(null, "stroke-width", 1);
+	Rect.className.baseVal = "Rect";
 }
 
 function setPeoples() {	
@@ -1039,7 +1039,7 @@ function calcLocations(firstID, highestLevel) {
 
 function SetSVG(TreeId, PeopleId) {
 	// The FamilyTree div
-	var FamilyTree = document.getElementById("familytree");
+	var FamilyTree = document.getElementById("familytree_div");
 	
 	// Remove the default text
 	var defaultText = document.getElementById("default");
@@ -1171,7 +1171,7 @@ function updateViewbox(x, y, width, height) {
 }
 
 function panItem(item) {
-	FamilyTree = document.getElementById("familytree");
+	FamilyTree = document.getElementById("familytree_div");
 	scrollLeft = (item.Location[0] + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
 	scrollTop = (item.Location[1] + 75) - (FamilyTree.offsetHeight / 2);
 	
@@ -1247,11 +1247,11 @@ function ZoomReset(parent) {
 	
 	ZoomFactor = 1;
 	
-	updateViewbox(-1, -1, newWidth, newHeight);
-	
 	// Now pan to this item
 	var People = Peoples[PeopleId];
 	panItem(People);
+	
+	updateViewbox(-1, -1, newWidth, newHeight);
 }
 
 var MouseX = 0;
@@ -1291,5 +1291,11 @@ GetDelta = function (event) {
 	} else {
 		ZoomOut(1.4);
 	}
+}
+
+function UpdateLink() {
+	var Link = this.newLink;
+	saveScroll(Link);
+	return;
 }
 </script>
