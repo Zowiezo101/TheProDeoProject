@@ -21,6 +21,11 @@ if (isset($_GET['id'])) {
 		$information = GetItemInfo("locations", $_GET['id']); 
 	?>
 	
+	// Show a list of family trees where this person is included in
+	var Name = document.createElement("h1");
+	Name.innerHTML = "<?php echo $information["Name"]; ?>";
+	contentEl.appendChild(Name);
+	
 	// Create a Table
 	var table = document.createElement("table");
 	
@@ -31,10 +36,13 @@ if (isset($_GET['id'])) {
 			
 			<?php if ($value == -1) {
 				$value = "";
+			} 
+			if (($key == "Name") or ($key == "ID")) {
+				continue;
 			}?>
 			var value = "<?php echo $value ?>";
 			
-			<?php if ((strpos($key, "ID") !== false) and ($key != "ID")) {
+			<?php if (strpos($key, "ID") !== false) {
 				
 				if ($value != "") {
 					

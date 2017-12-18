@@ -425,37 +425,37 @@ body {
 /************************************************
  * Results from database
  */
-
-#item_info a
- {
-	display: block;
+ 
+#item_info {
+	margin: auto;
 	text-align: center;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	color: black;
-	background-color: Plum;
-	width: 100%;
 }
 
-#item_info tr:nth-child(even)
+#item_info table
 {
-	background-color: Orchid
+	margin: auto;
+	padding: 10px;
+	text-align: center;
+	border-collapse: collapse;
 }
 
-#item_info tr:nth-child(odd)
+#item_info td {
+	border-bottom: 1px black solid;
+	border-top: 1px black solid;
+	padding: 5px;
+}
+
+#item_info td td {
+	border-width: 0px;
+}
+
+#item_info td:first-child
 {
-	background-color: MediumOrchid;
+	font-weight: bold;
 }
 
-#item_info td
- {
-	border: 1px;
-	border-style: solid;
-	border-collapse: 1;
-	padding: 0;
-	margin: 0;
-	width: 200px;
+#item_info td td:first-child {
+	font-weight: normal;
 }
 
 
@@ -657,15 +657,7 @@ body {
 /************************************************
  * Database parts
  */
-.familytree {
-	width: 100%;
-	height: 500px;
-	
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
+.familytree,
 .timeline {
 	width: 100%;
 	height: 500px;
@@ -675,22 +667,16 @@ body {
 	border: 0;
 }
 
-#familytree svg {
+#familytree_div svg,
+#timeline_div svg {
 	background-color: Lavender;
 	margin: 0;
 	padding: 0;
 	border: 0;
 }
 
-#timeline svg {
-	background-color: Lavender;
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-#familytree,
-#timeline {
+#familytree_div,
+#timeline_div {
 	height: 500px;
 }
 
@@ -698,4 +684,19 @@ body {
 	width: 100%;
 	height: 500px;
 	display: none;
+}
+
+.Rect {
+	stroke: black;
+	stroke-width: 1px;
+}
+
+.Rect:hover {
+	stroke: red;
+	stroke-width: 5px;
+}
+
+.Rect_hover {
+	stroke: red;
+	stroke-width: 5px;
 }
