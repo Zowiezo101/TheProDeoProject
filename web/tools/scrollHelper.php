@@ -80,4 +80,34 @@ function loadScroll() {
 	setCookie(cookieName, 0, null)
 }
 
+// source: http://stackoverflow.com/a/4770179/1428241
+
+var keys = [37, 38, 39, 40];
+
+function preventDefault(e) {
+	e = e || window.event;
+	if (e.preventDefault) {
+		e.preventDefault();
+	}
+	e.returnValue = false;  
+}
+
+function wheel(e) { 
+	preventDefault(e); 
+}
+
+function disableScroll() {
+	if (window.addEventListener) {
+		window.addEventListener('DOMMouseScroll', wheel, false);
+	}
+	window.onmousewheel = document.onmousewheel = wheel;
+}
+
+function enableScroll() {
+	if (window.removeEventListener) {
+		window.removeEventListener('DOMMouseScroll', wheel, false);
+	}
+	window.onmousewheel = document.onmousewheel = null;
+}
+
 </script>

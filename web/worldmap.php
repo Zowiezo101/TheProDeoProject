@@ -5,13 +5,13 @@
 ?>
 	
 <div class="clearfix">
-	<div class="contents_left">			
-		<div id="world_bar">
+	<div class="contents_left" id="item_choice">			
+		<div id="item_bar">
 			<!-- We fill this up in the Worldmap javascript code -->
 		</div>
 	</div>
 	
-	<div class="contents_right" id="worldmap">			
+	<div class="contents_right" id="worldmap_div">			
 		<div id="default">
 			<?php echo $Content["loading_wm"]; ?>
 		</div>

@@ -74,12 +74,12 @@ var globalWidth = 0;
 
 var ActualHeight = 0;
 var ActualWidth = 0;
+
 var ZoomFactor = 1.00;
+var transMatrix = [1,0,0,1,0,0];
 
 var viewX = 0;
 var viewY = 0;
-var viewWidth = 0;
-var viewHeight = 0;
 
 function createTimeLine() {	
 	// Make a nice list here to choose from the set of EventsList Events
@@ -1279,6 +1279,7 @@ function SetSVG(TimelineId, EventId) {
 	var svgns = "http://www.w3.org/2000/svg";
 	SVG = document.createElementNS(svgns, "svg");
 	SVG.id = "svg";
+	SVG.setAttributeNS(null, "transform", "matrix(1 0 0 1 0 0)");
 	
 	// Set the height and the width Plus x pixel border
 	ActualWidth = globalWidth + (highestLevel + 1)*50;
@@ -1292,6 +1293,7 @@ function SetSVG(TimelineId, EventId) {
 	
 	//Legenda
 	var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
+	var Group = document.createElementNS(svgns, "g");	
 	for (var i = 0; i < (MULTS.length + 2); i++) {
 		var Rect = document.createElementNS(svgns, "rect");		
 		Rect.setAttributeNS(null, 'width', 10);
@@ -1306,32 +1308,43 @@ function SetSVG(TimelineId, EventId) {
 		Text.setAttributeNS(null, 'y', 15*((i % 5) + 1) + 10);
 		Text.textContent = Event.StringToType(LegendaStr[i], 0);
 		
-		SVG.appendChild(Rect);
-		SVG.appendChild(Text);
+		Group.appendChild(Rect);
+		Group.appendChild(Text);
 	}
-	drawTimeLine(SVG);
+	Group.id = "Legenda";
+	SVG.appendChild(Group);
+	
+	var Group = document.createElementNS(svgns, "g");	
+	Group.id = "timeline_svg";
+	drawTimeLine(Group);
+	SVG.appendChild(Group);
 	
 	// Now add it to the screen
 	TimeLine.appendChild(SVG);
 	
 	// And some functions for mouse or keyboard panning/scrolling
 	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
+	SVG.setAttributeNS(null, 'ontouchstart', "GetTouchPos(evt)");
 	
-	if (SVG.addEventListener) {
-		// IE9, Chrome, Safari, Opera
-		SVG.addEventListener("mousewheel", GetDelta, false);
-		// Firefox
-		SVG.addEventListener("DOMMouseScroll", GetDelta, false);
-	}
-	// IE 6/7/8
-	else 
-		SVG.attachEvent("onmousewheel", GetDelta);
+	// Disabled until I found out how to prevent body from scrolling along..
+	// if (SVG.addEventListener) {
+		// // IE9, Chrome, Safari, Opera
+		// SVG.addEventListener("mousewheel", GetDelta, false);
+		// // Firefox
+		// SVG.addEventListener("DOMMouseScroll", GetDelta, false);
+	// }
+	// // IE 6/7/8
+	// else 
+		// SVG.attachEvent("onmousewheel", GetDelta);
 
 	window.onmousemove = GetMouseMov;
+	window.ontouchmove = GetTouchMov;
+	
 	window.onmouseup = GetMouseOut;
+	window.ontouchend = GetMouseOut;
 	
 	// Update the width and the height of the viewbox
-	updateViewbox(-1, -1, TimeLine.offsetWidth, TimeLine.offsetHeight);
+	updateViewbox(0, 0, 1);
 	
 	// Move to the person
 	panItem(Event);
@@ -1342,94 +1355,84 @@ function panItem(item) {
 	scrollTop = (item.Location[1] + globalOffset + 50) - (TimeLine.offsetHeight / 2);
 	scrollLeft = (item.Location[0] + 75) - (TimeLine.offsetWidth / 2);
 	
-	updateViewbox(scrollLeft, scrollTop, -1, -1);
-	
-	// alert("X: " + viewX + "\nY: " + viewY + "\nWidth: " + viewWidth + "\nHeight: " + viewHeight + "\nZoom: " + ZoomFactor);
+	updateViewbox(-scrollLeft, -scrollTop, -1);
 }
 
 function panTo(x, y) {
-	var newX = viewX - x;
-	var newY = viewY - y;
+	var newX = viewX + x;
+	var newY = viewY + y;
 	
-	updateViewbox(newX, newY, -1, -1);
+	updateViewbox(newX, newY, -1);
 }
 
-function updateViewbox(x, y, width, height) {
-	var SVG = document.getElementById("svg");
-	
-	if (x != -1) {
+function updateViewbox(x, y, zoom) {
+	var SVG = document.getElementById("timeline_svg");	
+	if ((x != -1) || (y != -1)) {
 		viewX = x;
-	}
-	
-	if (y != -1) {
 		viewY = y;
+		
+		transMatrix[4] = viewX;
+		transMatrix[5] = viewY;
 	}
 	
-	if (width != -1) {
-		viewWidth = width;
+	if (zoom != -1) {
+		ZoomFactor = zoom;
+		
+		transMatrix[0] = ZoomFactor;
+		transMatrix[3] = ZoomFactor;
 	}
 	
-	if (height != -1) {
-		viewHeight = height
-	}
 	
-	// alert("New viewBox: \nZoomFactor: " + ZoomFactor + "\nViewX: " + viewX + "\nviewY: " + viewY + "\nviewWidth: " + viewWidth + "\nviewHeight: " + viewHeight);
-	SVG.setAttributeNS(null, 'viewBox', "" + viewX + " " + viewY + " " + viewWidth + " " + viewHeight);
+	newMatrix = "matrix(" + transMatrix.join(' ') + ")";
+	SVG.setAttributeNS(null, "transform", newMatrix);
+	SVG.setAttributeNS(null, "webkitTransform", newMatrix);
+	SVG.setAttributeNS(null, "MozTransform", newMatrix);
+	SVG.setAttributeNS(null, "msTransform", newMatrix);
+	SVG.setAttributeNS(null, "OTransform", newMatrix);
 	
 	return;
 }
 
-function ZoomIn(factor) {
-	// To zoom in, we need to decrease the size of the viewHeight and viewWidth
-	var newWidth = viewWidth / factor;
-	var newHeight = viewHeight / factor;
+function ZoomIn(factor) {	
+	var TimeLine = document.getElementById("timeline_div");
 	
-	var newX = viewX + ((viewWidth - newWidth) / 2);
-	var newY = viewY + ((viewHeight - newHeight) / 2);
+	newZoom = ZoomFactor * factor;
 	
-	ZoomFactor = ZoomFactor * factor;
-	
-	updateViewbox(newX, newY, newWidth, newHeight);
+	newX = viewX*factor + (1 - factor)*(TimeLine.offsetWidth / 2);
+	newY = viewY*factor + (1 - factor)*(TimeLine.offsetHeight / 2);
+	updateViewbox(newX, newY, newZoom);
 }
 
-function ZoomOut(factor) {
-	// To zoom out, we need to increase the size of the viewHeight and viewWidth
-	var newWidth = viewWidth * factor;
-	var newHeight = viewHeight * factor;
+function ZoomOut(factor) {	
+	var TimeLine = document.getElementById("timeline_div");
 	
-	var newX = viewX + ((viewWidth - newWidth) / 2);
-	var newY = viewY + ((viewHeight - newHeight) / 2);
+	newZoom = ZoomFactor / factor;
 	
-	ZoomFactor = ZoomFactor / factor;
-	
-	updateViewbox(newX, newY, newWidth, newHeight);
+	newX = (viewX / factor) + (1 - (1 / factor))*(TimeLine.offsetWidth / 2);
+	newY = (viewY / factor) + (1 - (1 / factor))*(TimeLine.offsetHeight / 2);
+	updateViewbox(newX, newY, newZoom);
 }
 
 function ZoomFit() {	
+	var TimeLine = document.getElementById("timeline_div");
+	
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
 	// Keep the ratio between X and Y axis aligned
 	// Find the biggest ratio and use that!
-	var dX = ActualWidth / viewWidth;
-	var dY = ActualHeight / viewHeight;
+	var dX = ActualWidth / TimeLine.offsetWidth;
+	var dY = ActualHeight / TimeLine.offsetHeight;
 	
 	if (dX > dY) { 
-		var newWidth = viewWidth * dX;
-		var newHeight = viewHeight * dX;
-		
-		ZoomFactor = viewWidth / ActualWidth;
+		newZoom = TimeLine.offsetWidth / ActualWidth;
 	} else {
-		var newWidth = viewWidth * dY;
-		var newHeight = viewHeight * dY;
-		
-		ZoomFactor = viewHeight / ActualHeight;
+		newZoom = TimeLine.offsetHeight / ActualHeight;
 	}
 	
-	updateViewbox(0, -newHeight / 2, newWidth, newHeight);
+	// Now zoom out untill the whole timeline is visible
+	updateViewbox(0, TimeLine.offsetHeight / 2 - ((100 + globalOffset)*newZoom), newZoom);
 }
 
-function ZoomReset() {
-	var TimeLine = document.getElementById("timeline_div");
-	
+function ZoomReset() {	
 <?php if (isset($_GET['id'])) { ?>
 	var IDs = "<?php echo $_GET['id']; ?>".split(",");
 	
@@ -1437,17 +1440,14 @@ function ZoomReset() {
 	var EventId = IDs[1];
 <?php } ?>
 	
-	// To zoom out, we need to increase the size of the viewHeight and viewWidth
-	var newWidth = TimeLine.offsetWidth;
-	var newHeight = TimeLine.offsetHeight;
-	
-	ZoomFactor = 1;
+	newZoom = 1;
 	
 	// Now pan to this item
 	var Event = Events[EventId];
 	panItem(Event);
 	
-	updateViewbox(-1, -1, newWidth, newHeight);
+	// And zoom to the default zoom level (1)
+	updateViewbox(-1, -1, newZoom);
 }
 
 var MouseX = 0;
@@ -1457,7 +1457,20 @@ GetMousePos = function (event) {
 	MouseX = event.clientX;
 	MouseY = event.clientY;
 	
-	Moving = true;
+	Moving = true
+	
+	// Disable selecting text or any other element
+	disable_select();
+}
+
+GetTouchPos = function (event) {
+	MouseX = event.changedTouches[0].pageX;
+	MouseY = event.changedTouches[0].pageY;
+	
+	Moving = true
+	
+	// Disable selecting text or any other element
+	disable_select();
 }
 
 GetMouseMov = function (event) {
@@ -1465,15 +1478,30 @@ GetMouseMov = function (event) {
 		var dX = event.clientX - MouseX;
 		var dY = event.clientY - MouseY;
 		
-		panTo(dX / ZoomFactor, dY / ZoomFactor);
+		panTo(dX, dY);
 		
 		MouseX = event.clientX;
 		MouseY = event.clientY;
 	}
 }
 
+GetTouchMov = function (event) {
+	if (Moving == true) {
+		var dX = event.changedTouches[0].pageX - MouseX;
+		var dY = event.changedTouches[0].pageY - MouseY;
+		
+		panTo(dX, dY);
+		
+		MouseX = event.changedTouches[0].pageX;
+		MouseY = event.changedTouches[0].pageY;
+	}
+}
+
 GetMouseOut = function (event) {
 	Moving = false;
+	
+	// Enable the disabled selections again
+	enable_select();
 }
 
 // https://www.sitepoint.com/html5-javascript-mouse-wheel/
@@ -1494,4 +1522,15 @@ function UpdateLink() {
 	saveScroll(Link);
 	return;
 }
+
+function disable_select() {
+	element = document.body;
+	element.classList.add('no_select');
+}
+
+function enable_select() {
+	element = document.body;
+	element.classList.remove('no_select');
+}
+
 </script>

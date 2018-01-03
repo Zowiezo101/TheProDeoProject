@@ -38,7 +38,7 @@ var openWindow = null;
 function createWorldMap() {
 	// Make a nice list here to choose from the set of locations that are known
 	// When chosen, update location in the map
-	var worldBar = document.getElementById("world_bar");
+	var worldBar = document.getElementById("item_bar");
 	
 	var table = document.createElement("table");
 	for (var i = 0; i < Locations.length; i++) {
@@ -160,7 +160,7 @@ function focusOnLocation(Event) {
 	var GoogleMaps = document.getElementById("google_maps");
 	
 	// Remove the default text
-	var WorldMap = document.getElementById("worldmap");
+	var WorldMap = document.getElementById("worldmap_div");
 	var defaultText = document.getElementById("default");
 	if (defaultText != null) {
 		WorldMap.removeChild(defaultText);
