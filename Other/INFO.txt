@@ -1,0 +1,26 @@
+https://www.gps-coordinaten.nl/
+
+Website:
+https://nl.000webhost.com/members/website/list
+prodeo.000webhostapp.com
+
+FTP:
+host: files.000webhost.com
+login: prodeo
+
+databases.000webhost.com
+sql2.000webhost.com
+Database: id2294956_bible
+login: id2294956_prodeo
+
+To update database:
+click database bible
+export
+click database host
+drop all tables
+import
+
+Google Maps API:
+id: prodeo-177715
+AIzaSyAyFq1pKyxT7asd87wAgr83_yWIrT-sz7E
+API-sleutel 1
