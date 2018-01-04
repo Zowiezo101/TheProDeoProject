@@ -48,12 +48,12 @@ var globalWidth = 0;
 
 var ActualHeight = 0;
 var ActualWidth = 0;
+
 var ZoomFactor = 1;
+var transMatrix = [1,0,0,1,0,0];
 
 var viewX = 0;
 var viewY = 0;
-var viewWidth = 0;
-var viewHeight = 0;
 
 function createFamilyTree() {
 	// Make a nice list here to choose from the set of PeopleList people
@@ -529,13 +529,15 @@ function CreatePeople(name, ID, MotherID, FatherID, Gender) {
 setBorder = function (event) {
 	var IDnum = event.target.RectID;
 	var Rect = document.getElementById("Rect" + IDnum);
-	Rect.className.baseVal = "Rect_hover";
+	Rect.setAttributeNS(null, "stroke", "red");
+	Rect.setAttributeNS(null, "stroke-width", 5);
 }
 
 clearBorder = function (event) {
 	var IDnum = event.target.RectID;
 	var Rect = document.getElementById("Rect" + IDnum);
-	Rect.className.baseVal = "Rect";
+	Rect.setAttributeNS(null, "stroke", "black");
+	Rect.setAttributeNS(null, "stroke-width", 1);
 }
 
 function setPeoples() {	
@@ -1067,7 +1069,7 @@ function SetSVG(TreeId, PeopleId) {
 	Controls.appendChild(ZoomFitButton);
 	
 	var ZoomResetButton = document.createElement("button");
-	ZoomResetButton.setAttribute("onclick", "ZoomReset(FamilyTree)");
+	ZoomResetButton.setAttribute("onclick", "ZoomReset()");
 	ZoomResetButton.innerHTML = "Reset view";
 	Controls.appendChild(ZoomResetButton);
 	
@@ -1096,76 +1098,79 @@ function SetSVG(TreeId, PeopleId) {
 	var svgns = "http://www.w3.org/2000/svg";
 	SVG = document.createElementNS(svgns, "svg");
 	SVG.id = "svg";
+	SVG.setAttributeNS(null, "transform", "matrix(1 0 0 1 0 0)");
 	
 	// Set the height and the width
 	ActualHeight = (highestLevel + 1)*75;
 	ActualWidth = globalWidth + globalOffset + 150;
+	
 	SVG.setAttribute('height', FamilyTree.offsetHeight);	
 	SVG.setAttribute('width',  FamilyTree.offsetWidth);
 	
 	// Draw the current family tree
-	var People = Peoples[PeoplesList[TreeId]];
-	People.drawFamilyTree(SVG);
+	var People = Peoples[PeoplesList[TreeId]];	
+	var Group = document.createElementNS(svgns, "g");	
+	
+	Group.id = "familytree_svg";
+	People.drawFamilyTree(Group);
+	SVG.appendChild(Group);
 	
 	// Now add it to the screen
 	FamilyTree.appendChild(SVG);
 	
 	// And some functions for mouse or keyboard panning/scrolling
 	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
+	SVG.setAttributeNS(null, 'ontouchstart', "GetTouchPos(evt)");
 	
-	if (SVG.addEventListener) {
-		// IE9, Chrome, Safari, Opera
-		SVG.addEventListener("mousewheel", GetDelta, false);
-		// Firefox
-		SVG.addEventListener("DOMMouseScroll", GetDelta, false);
-	}
-	// IE 6/7/8
-	else 
-		SVG.attachEvent("onmousewheel", GetDelta);
+	// Disabled until I found out how to prevent body from scrolling along
+	// if (SVG.addEventListener) {
+		// // IE9, Chrome, Safari, Opera
+		// SVG.addEventListener("mousewheel", GetDelta, false);
+		// // Firefox
+		// SVG.addEventListener("DOMMouseScroll", GetDelta, false);
+	// }
+	// // IE 6/7/8
+	// else 
+		// SVG.attachEvent("onmousewheel", GetDelta);
 	
 	window.onmousemove = GetMouseMov;
+	window.ontouchmove = GetTouchMov;
+	
 	window.onmouseup = GetMouseOut;
+	window.ontouchend = GetMouseOut;
 	
 	// Update the width and the height of the viewbox
-	updateViewbox(-1, -1, FamilyTree.offsetWidth, FamilyTree.offsetHeight);
+	updateViewbox(0, 0, 1);
 	
 	// Move to the person
 	var People = Peoples[PeopleId];
 	panItem(People);
 }
 
-function updateViewbox(x, y, width, height) {
-	var SVG = document.getElementById("svg");
-	
-	if (x != -1) {
+function updateViewbox(x, y, zoom) {
+	var SVG = document.getElementById("familytree_svg");
+	if ((x != -1) || (y != -1)) {
 		viewX = x;
-		// Do not exceed the boundaries
-		// if (viewX < 0) {
-			// viewX = 0;
-		// } else if (viewX > ActualWidth) {
-			// viewX = ActualWidth;
-		// }
-	}
-	
-	if (y != -1) {
 		viewY = y;
-		// Do not exceed the boundaries
-		// if (viewY < 0) {
-			// viewY = 0;
-		// } else if (viewY > ActualHeight) {
-			// viewY = ActualHeight;
-		// }
+		
+		transMatrix[4] = viewX;
+		transMatrix[5] = viewY;
 	}
 	
-	if (width != -1) {
-		viewWidth = width;
+	if (zoom != -1) {
+		ZoomFactor = zoom;
+		
+		transMatrix[0] = ZoomFactor;
+		transMatrix[3] = ZoomFactor;
 	}
 	
-	if (height != -1) {
-		viewHeight = height
-	}
 	
-	SVG.setAttributeNS(null, 'viewBox', "" + viewX + " " + viewY + " " + viewWidth + " " + viewHeight);
+	newMatrix = "matrix(" + transMatrix.join(' ') + ")";
+	SVG.setAttributeNS(null, "transform", newMatrix);
+	SVG.setAttributeNS(null, "webkitTransform", newMatrix);
+	SVG.setAttributeNS(null, "MozTransform", newMatrix);
+	SVG.setAttributeNS(null, "msTransform", newMatrix);
+	SVG.setAttributeNS(null, "OTransform", newMatrix);
 	
 	return;
 }
@@ -1175,83 +1180,71 @@ function panItem(item) {
 	scrollLeft = (item.Location[0] + globalOffset + 50) - (FamilyTree.offsetWidth / 2);
 	scrollTop = (item.Location[1] + 75) - (FamilyTree.offsetHeight / 2);
 	
-	updateViewbox(scrollLeft, scrollTop, -1, -1);
+	updateViewbox(-scrollLeft, -scrollTop, -1);
 }
 
 function panTo(x, y) {	
-	var newX = viewX - x;
-	var newY = viewY - y;	
+	var newX = viewX + x;
+	var newY = viewY + y;	
 	
-	updateViewbox(newX, newY, -1, -1);
+	updateViewbox(newX, newY, -1);
 }
 
 function ZoomIn(factor) {
-	// To zoom in, we need to decrease the size of the viewHeight and viewWidth
-	var newWidth = viewWidth / factor;
-	var newHeight = viewHeight / factor;
+	var FamilyTree = document.getElementById("familytree_div");
 	
-	var newX = viewX + ((viewWidth - newWidth) / 2);
-	var newY = viewY + ((viewHeight - newHeight) / 2);
+	newZoom = ZoomFactor * factor;
 	
-	ZoomFactor = ZoomFactor * factor;
-	
-	updateViewbox(newX, newY, newWidth, newHeight);
+	newX = viewX*factor + (1 - factor)*(FamilyTree.offsetWidth / 2);
+	newY = viewY*factor + (1 - factor)*(FamilyTree.offsetHeight / 2);
+	updateViewbox(newX, newY, newZoom);
 }
 
 function ZoomOut(factor) {
-	// To zoom out, we need to increase the size of the viewHeight and viewWidth
-	var newWidth = viewWidth * factor;
-	var newHeight = viewHeight * factor;
+	var FamilyTree = document.getElementById("familytree_div");
 	
-	var newX = viewX + ((viewWidth - newWidth) / 2);
-	var newY = viewY + ((viewHeight - newHeight) / 2);
+	newZoom = ZoomFactor / factor;
 	
-	ZoomFactor = ZoomFactor / factor;
-	
-	updateViewbox(newX, newY, newWidth, newHeight);
+	newX = (viewX / factor) + (1 - (1 / factor))*(FamilyTree.offsetWidth / 2);
+	newY = (viewY / factor) + (1 - (1 / factor))*(FamilyTree.offsetHeight / 2);
+	updateViewbox(newX, newY, newZoom);
 }
 
 function ZoomFit() {
+	var FamilyTree = document.getElementById("familytree_div");
+	
 	// To zoom out, we need to increase the size of the viewHeight and viewWidth
 	// Keep the ratio between X and Y axis aligned
 	// Find the biggest ratio and use that!
-	var dX = ActualWidth / viewWidth;
-	var dY = ActualHeight / viewHeight;
+	var dX = ActualWidth / FamilyTree.offsetWidth;
+	var dY = ActualHeight / FamilyTree.offsetHeight;
 	
 	if (dX > dY) { 
-		var newWidth = viewWidth * dX;
-		var newHeight = viewHeight * dX;
-		
-		ZoomFactor = viewWidth / ActualWidth;
+		newZoom = FamilyTree.offsetWidth / ActualWidth;
 	} else {
-		var newWidth = viewWidth * dY;
-		var newHeight = viewHeight * dY;
-		
-		ZoomFactor = viewHeight / ActualHeight;
+		newZoom = FamilyTree.offsetHeight / ActualHeight;
 	}
 	
-	updateViewbox(0, 0, newWidth, newHeight);
+	// Now zoom out untill the whole family tree is visible
+	updateViewbox(0, FamilyTree.offsetHeight / 2 - ((100 + globalOffset)*newZoom), newZoom);
 }
 
-function ZoomReset(parent) {
+function ZoomReset() {
 <?php if (isset($_GET['id'])) { ?>
 	var IDs = "<?php echo $_GET['id']; ?>".split(",");
 	
 	// Get the ID number
 	var PeopleId = IDs[1];
 <?php } ?>
-
-	// To zoom out, we need to increase the size of the viewHeight and viewWidth
-	var newWidth = parent.offsetWidth;
-	var newHeight = parent.offsetHeight;
 	
-	ZoomFactor = 1;
+	newZoom = 1;
 	
 	// Now pan to this item
 	var People = Peoples[PeopleId];
 	panItem(People);
 	
-	updateViewbox(-1, -1, newWidth, newHeight);
+	// And zoom to the default zoom level (1)
+	updateViewbox(-1, -1, newZoom);
 }
 
 var MouseX = 0;
@@ -1262,6 +1255,19 @@ GetMousePos = function (event) {
 	MouseY = event.clientY;
 	
 	Moving = true;
+	
+	// Disable selecting text or any other element
+	disable_select();
+}
+
+GetTouchPos = function (event) {
+	MouseX = event.changedTouches[0].pageX;
+	MouseY = event.changedTouches[0].pageY;
+	
+	Moving = true
+	
+	// Disable selecting text or any other element
+	disable_select();
 }
 
 GetMouseMov = function (event) {
@@ -1269,15 +1275,30 @@ GetMouseMov = function (event) {
 		var dX = event.clientX - MouseX;
 		var dY = event.clientY - MouseY;
 		
-		panTo(dX / ZoomFactor, dY / ZoomFactor);
+		panTo(dX, dY);
 		
 		MouseX = event.clientX;
 		MouseY = event.clientY;
 	}
 }
 
+GetTouchMov = function (event) {
+	if (Moving == true) {
+		var dX = event.changedTouches[0].pageX - MouseX;
+		var dY = event.changedTouches[0].pageY - MouseY;
+		
+		panTo(dX, dY);
+		
+		MouseX = event.changedTouches[0].pageX;
+		MouseY = event.changedTouches[0].pageY;
+	}
+}
+
 GetMouseOut = function (event) {
 	Moving = false;
+	
+	// Enable the disabled selections again
+	enable_select();
 }
 
 // https://www.sitepoint.com/html5-javascript-mouse-wheel/
@@ -1298,4 +1319,15 @@ function UpdateLink() {
 	saveScroll(Link);
 	return;
 }
+
+function disable_select() {
+	element = document.body;
+	element.classList.add('no_select');
+}
+
+function enable_select() {
+	element = document.body;
+	element.classList.remove('no_select');
+}
+
 </script>

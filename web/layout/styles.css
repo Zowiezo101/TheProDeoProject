@@ -694,18 +694,3 @@ body {
 	height: 500px;
 	display: none;
 }
-
-.Rect {
-	stroke: black;
-	stroke-width: 1px;
-}
-
-.Rect:hover {
-	stroke: red;
-	stroke-width: 5px;
-}
-
-.Rect_hover {
-	stroke: red;
-	stroke-width: 5px;
-}
