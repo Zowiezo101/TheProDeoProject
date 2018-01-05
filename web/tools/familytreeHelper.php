@@ -55,6 +55,11 @@ var transMatrix = [1,0,0,1,0,0];
 var viewX = 0;
 var viewY = 0;
 
+var globalPeopleId = -1;
+var globalTreeId = -1;
+
+var highestLevel = 0;
+
 function createFamilyTree() {
 	// Make a nice list here to choose from the set of PeopleList people
 	// When chosen, update PeopleId and redraw page
@@ -86,10 +91,10 @@ function createFamilyTree() {
 	var IDs = "<?php echo $_GET['id']; ?>".split(",");
 	
 	// Get the Tree and the ID numbers
-	var TreeId = IDs[0];
-	var PeopleId = IDs[1];
+	globalTreeId = IDs[0];
+	globalPeopleId = IDs[1];
 	
-	SetSVG(TreeId, PeopleId);
+	SetSVG();
 <?php } ?>
 }
 
@@ -573,6 +578,8 @@ function setPeoples() {
 /** setLevels function */
 function resetLevels(ID) {
 	
+	highestLevel = 0;
+	
 	for (var m = 0; m < Peoples.length; m++)
 	{		
 		var Person = Peoples[m];
@@ -1039,112 +1046,9 @@ function calcLocations(firstID, highestLevel) {
 	return;
 }
 
-function SetSVG(TreeId, PeopleId) {
-	// The FamilyTree div
-	var FamilyTree = document.getElementById("familytree_div");
-	
-	// Remove the default text
-	var defaultText = document.getElementById("default");
-	if (defaultText != null) {
-		FamilyTree.removeChild(defaultText);
-	}
-	
-	// Show the controls to move around in the SVG
-	var Controls = document.createElement("div");
-	Controls.setAttribute("id", "controls");
-	
-	var ZoomInButton = document.createElement("button");
-	ZoomInButton.setAttribute("onclick", "ZoomIn(1.4)");
-	ZoomInButton.innerHTML = "Zoom in";
-	Controls.appendChild(ZoomInButton);
-	
-	var ZoomOutButton = document.createElement("button");
-	ZoomOutButton.setAttribute("onclick", "ZoomOut(1.4)");
-	ZoomOutButton.innerHTML = "Zoom out";
-	Controls.appendChild(ZoomOutButton);
-	
-	var ZoomFitButton = document.createElement("button");
-	ZoomFitButton.setAttribute("onclick", "ZoomFit()");
-	ZoomFitButton.innerHTML = "Zoom Fit";
-	Controls.appendChild(ZoomFitButton);
-	
-	var ZoomResetButton = document.createElement("button");
-	ZoomResetButton.setAttribute("onclick", "ZoomReset()");
-	ZoomResetButton.innerHTML = "Reset view";
-	Controls.appendChild(ZoomResetButton);
-	
-	FamilyTree.appendChild(Controls);
-	
-	// Set all the generation levels of all people
-	// Start out clean
-	resetLevels();
-	var highestLevel = setLevels(PeoplesList[TreeId]);
-	
-	resetIndexes();
-	setIndexes(PeoplesList[TreeId], highestLevel);
-	
-	// Make the calculations to see where everyone should be placed
-	globalOffset = 0;
-	globalWidth = 0;
-	calcLocations(PeoplesList[TreeId], highestLevel);
-	
-	// Start out clean, remove the current SVG
-	var SVG = document.getElementById("svg");
-	if (SVG != null) {
-		FamilyTree.removeChild(SVG);
-	}
-	
-	// Create this element
-	var svgns = "http://www.w3.org/2000/svg";
-	SVG = document.createElementNS(svgns, "svg");
-	SVG.id = "svg";
-	SVG.setAttributeNS(null, "transform", "matrix(1 0 0 1 0 0)");
-	
-	// Set the height and the width
-	ActualHeight = (highestLevel + 1)*75;
-	ActualWidth = globalWidth + globalOffset + 150;
-	
-	SVG.setAttribute('height', FamilyTree.offsetHeight);	
-	SVG.setAttribute('width',  FamilyTree.offsetWidth);
-	
-	// Draw the current family tree
-	var People = Peoples[PeoplesList[TreeId]];	
-	var Group = document.createElementNS(svgns, "g");	
-	
-	Group.id = "familytree_svg";
-	People.drawFamilyTree(Group);
-	SVG.appendChild(Group);
-	
-	// Now add it to the screen
-	FamilyTree.appendChild(SVG);
-	
-	// And some functions for mouse or keyboard panning/scrolling
-	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
-	SVG.setAttributeNS(null, 'ontouchstart', "GetTouchPos(evt)");
-	
-	// Disabled until I found out how to prevent body from scrolling along
-	// if (SVG.addEventListener) {
-		// // IE9, Chrome, Safari, Opera
-		// SVG.addEventListener("mousewheel", GetDelta, false);
-		// // Firefox
-		// SVG.addEventListener("DOMMouseScroll", GetDelta, false);
-	// }
-	// // IE 6/7/8
-	// else 
-		// SVG.attachEvent("onmousewheel", GetDelta);
-	
-	window.onmousemove = GetMouseMov;
-	window.ontouchmove = GetTouchMov;
-	
-	window.onmouseup = GetMouseOut;
-	window.ontouchend = GetMouseOut;
-	
-	// Update the width and the height of the viewbox
-	updateViewbox(0, 0, 1);
-	
-	// Move to the person
-	var People = Peoples[PeopleId];
-	panItem(People);
+function SetSVG() {	
+	// Add the control buttons to the div
+	setTimeout(AddControlButtons, 1);
 }
 
 function updateViewbox(x, y, zoom) {
@@ -1328,6 +1232,239 @@ function disable_select() {
 function enable_select() {
 	element = document.body;
 	element.classList.remove('no_select');
+}
+
+function UpdateProgress(value) {	
+	var ProgressBar = document.getElementById("progress");
+	
+    ProgressBar.style.width = value + "%";
+	ProgressBar.innerHTML = value + "%";
+}
+
+function AddControlButtons() {
+	// The FamilyTree div
+	var FamilyTree = document.getElementById("familytree_div");
+	
+	// Show the controls to move around in the SVG
+	var Controls = document.createElement("div");
+	Controls.setAttribute("id", "controls");
+	Controls.style.display = "none";
+	
+	var ZoomInButton = document.createElement("button");
+	ZoomInButton.setAttribute("onclick", "ZoomIn(1.4)");
+	ZoomInButton.innerHTML = "Zoom in";
+	Controls.appendChild(ZoomInButton);
+	
+	var ZoomOutButton = document.createElement("button");
+	ZoomOutButton.setAttribute("onclick", "ZoomOut(1.4)");
+	ZoomOutButton.innerHTML = "Zoom out";
+	Controls.appendChild(ZoomOutButton);
+	
+	var ZoomFitButton = document.createElement("button");
+	ZoomFitButton.setAttribute("onclick", "ZoomFit()");
+	ZoomFitButton.innerHTML = "Zoom Fit";
+	Controls.appendChild(ZoomFitButton);
+	
+	var ZoomResetButton = document.createElement("button");
+	ZoomResetButton.setAttribute("onclick", "ZoomReset()");
+	ZoomResetButton.innerHTML = "Reset view";
+	Controls.appendChild(ZoomResetButton);
+	
+	var DownloadButton = document.createElement("button");
+	DownloadButton.setAttribute("onclick", "download_png()");
+	DownloadButton.innerHTML = "Download";
+	Controls.appendChild(DownloadButton);
+	
+	FamilyTree.appendChild(Controls);
+	UpdateProgress(5);
+	
+	// Get all the information of the peoples included
+	setTimeout(SetAllLevels, 1);
+	return
+}
+
+function SetAllLevels() {
+	// Set all the generation levels of all people. Start out clean
+	resetLevels();
+	highestLevel = setLevels(PeoplesList[globalTreeId]);
+	UpdateProgress(15);
+	
+	// Get all the information of the peoples included
+	setTimeout(SetAllIndexes, 1);
+}
+
+function SetAllIndexes() {
+	// And all the indexes of all people
+	resetIndexes();
+	setIndexes(PeoplesList[globalTreeId], highestLevel);
+	UpdateProgress(25);
+	
+	// Make the calculations to see where everyone should be placed
+	setTimeout(CalcAllLocations, 1);
+}
+
+function CalcAllLocations() {
+	globalOffset = 0;
+	globalWidth = 0;
+	
+	calcLocations(PeoplesList[globalTreeId], highestLevel);
+	UpdateProgress(45);
+	
+	// Draw the actual family tree, event though it is not yet visible
+	setTimeout(appendSVG, 1);
+}
+
+function appendSVG() {
+	var svgns = "http://www.w3.org/2000/svg";
+	var FamilyTree = document.getElementById("familytree_div");
+	
+	// Create this element
+	var SVG = document.createElementNS(svgns, "svg");
+	SVG.id = "svg";
+	
+	SVG.setAttributeNS(null, "transform", "matrix(1 0 0 1 0 0)");
+	SVG.setAttributeNS(null, "display", "none");
+	
+	FamilyTree.appendChild(SVG);
+	UpdateProgress(50);
+	
+	// Set the different actions for mouse and touch events
+	setTimeout(appendGroup, 1);
+}
+
+function appendGroup() {
+	var svgns = "http://www.w3.org/2000/svg";
+	var SVG = document.getElementById("svg");
+	
+	var Group = document.createElementNS(svgns, "g");	
+	Group.id = "familytree_svg";
+	
+	SVG.appendChild(Group);
+	UpdateProgress(55);
+	
+	// Now add it to the screen
+	setTimeout(DrawFamilyTree, 1);
+}
+
+function DrawFamilyTree() {
+	// The FamilyTree div
+	var FamilyTree = document.getElementById("familytree_div");
+	var SVG = document.getElementById("svg");
+	var Group = document.getElementById("familytree_svg");
+	
+	// Set the height and the width
+	ActualHeight = (highestLevel + 1)*75;
+	ActualWidth = globalWidth + globalOffset + 150;
+	
+	SVG.setAttribute('height', FamilyTree.offsetHeight);	
+	SVG.setAttribute('width',  FamilyTree.offsetWidth);
+	
+	// Draw the current family tree
+	var People = Peoples[PeoplesList[globalTreeId]];	
+	People.drawFamilyTree(Group);
+	UpdateProgress(75);
+	
+	// Add the drawn part to the SVG
+	setTimeout(SetInterrupts, 1);
+}
+
+function SetInterrupts() {
+	// The FamilyTree div
+	var SVG = document.getElementById("svg");
+	
+	// And some functions for mouse or keyboard panning/scrolling
+	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
+	SVG.setAttributeNS(null, 'ontouchstart', "GetTouchPos(evt)");
+	
+	// Disabled until I found out how to prevent body from scrolling along
+	// if (SVG.addEventListener) {
+		// // IE9, Chrome, Safari, Opera
+		// SVG.addEventListener("mousewheel", GetDelta, false);
+		// // Firefox
+		// SVG.addEventListener("DOMMouseScroll", GetDelta, false);
+	// }
+	// // IE 6/7/8
+	// else 
+		// SVG.attachEvent("onmousewheel", GetDelta);
+	
+	window.onmousemove = GetMouseMov;
+	window.ontouchmove = GetTouchMov;
+	
+	window.onmouseup = GetMouseOut;
+	window.ontouchend = GetMouseOut;
+	UpdateProgress(85);
+	
+	// Update the width and the height of the viewbox and move to the person
+	setTimeout(SetView, 1);
+}
+
+function SetView() {
+	updateViewbox(0, 0, 1);
+	
+	// Move to the person
+	var People = Peoples[globalPeopleId];
+	panItem(People);
+	UpdateProgress(95);
+	
+	// Now make the family tree visible
+	setTimeout(MakeVisible, 1);
+}
+
+function MakeVisible() {
+	// The FamilyTree div
+	var FamilyTree = document.getElementById("familytree_div");
+	
+	// Remove the default text
+	var defaultText = document.getElementById("default");
+	
+	if (defaultText != null) {
+		FamilyTree.removeChild(defaultText);
+		
+		// Make the SVG visible
+		var SVG = document.getElementById("svg");
+		SVG.setAttributeNS(null, "display", "inline");
+		
+		// Make the controls visible
+		var Controls = document.getElementById("controls");
+		Controls.style.display = "inline";
+	}
+}
+
+function download_png () {
+	// The FamilyTree div
+	var FamilyTree = document.getElementById("familytree_div");
+	var SVG = document.getElementById("svg");
+	
+	var WS = document.getElementById("hidden_div");
+	
+	var canvas = document.getElementById('hidden_cs');	
+	canvas.setAttribute('height', ActualHeight);	
+	canvas.setAttribute('width',  ActualWidth);
+	
+	var svg = document.getElementById('hidden_svg');	
+	svg.setAttribute('height', ActualHeight);	
+	svg.setAttribute('width',  ActualWidth);
+	
+	var link = document.getElementById('hidden_a');
+	
+	svg.setAttribute("version", 1.1);
+	svg.setAttribute("xmlns", "http:// www.w3.org/2000/svg");
+	svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+	
+	updateViewbox(0, 0, 1);
+	svg.innerHTML = SVG.innerHTML;
+	
+	canvg(canvas, svg.outerHTML,
+		{
+			'scaleWidth': ActualWidth,
+			'scaleHeight': ActualHeight
+		});
+
+	var theImage = canvas.toDataURL('image/png');
+	link.href = theImage;
+	link.click();
+	
+	ZoomReset();
 }
 
 </script>

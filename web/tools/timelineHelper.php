@@ -1224,15 +1224,10 @@ function SetSVG(TimelineId, EventId) {
 	// The Time line div
 	var TimeLine = document.getElementById("timeline_div");
 	
-	// Remove the default text
-	var defaultText = document.getElementById("default");
-	if (defaultText != null) {
-		TimeLine.removeChild(defaultText);
-	}
-	
 	// Show the controls to move around in the SVG
 	var Controls = document.createElement("div");
 	Controls.setAttribute("id", "controls");
+	Controls.style.display = "none";
 	
 	var ZoomInButton = document.createElement("button");
 	ZoomInButton.setAttribute("onclick", "ZoomIn(1.4)");
@@ -1253,21 +1248,25 @@ function SetSVG(TimelineId, EventId) {
 	ZoomResetButton.setAttribute("onclick", "ZoomReset()");
 	ZoomResetButton.innerHTML = "Reset view";
 	Controls.appendChild(ZoomResetButton);
-	
+
 	TimeLine.appendChild(Controls);
+	UpdateProgress(5);
 	
 	// Set all the generation levels of all events
 	// Start out clean
 	resetLevels();
 	var highestLevel = setLevels(EventsList[TimelineId]);
+	UpdateProgress(15);
 	
 	resetIndexes();
 	setIndexes(EventsList[TimelineId], highestLevel);
+	UpdateProgress(25);
 	
 	// Make the calculations to see where everyone should be placed
 	globalOffset = 0;
 	globalHeight = 0;
 	calcLocations();
+	UpdateProgress(45);
 	
 	// Start out clean, remove the current SVG
 	var SVG = document.getElementById("svg");
@@ -1280,6 +1279,7 @@ function SetSVG(TimelineId, EventId) {
 	SVG = document.createElementNS(svgns, "svg");
 	SVG.id = "svg";
 	SVG.setAttributeNS(null, "transform", "matrix(1 0 0 1 0 0)");
+	SVG.setAttributeNS(null, "display", "none");
 	
 	// Set the height and the width Plus x pixel border
 	ActualWidth = globalWidth + (highestLevel + 1)*50;
@@ -1313,14 +1313,20 @@ function SetSVG(TimelineId, EventId) {
 	}
 	Group.id = "Legenda";
 	SVG.appendChild(Group);
+	UpdateProgress(65);
 	
 	var Group = document.createElementNS(svgns, "g");	
 	Group.id = "timeline_svg";
+	
 	drawTimeLine(Group);
+	UpdateProgress(85);
+	
 	SVG.appendChild(Group);
+	UpdateProgress(90);
 	
 	// Now add it to the screen
 	TimeLine.appendChild(SVG);
+	UpdateProgress(95);
 	
 	// And some functions for mouse or keyboard panning/scrolling
 	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
@@ -1345,9 +1351,19 @@ function SetSVG(TimelineId, EventId) {
 	
 	// Update the width and the height of the viewbox
 	updateViewbox(0, 0, 1);
+	UpdateProgress(100);
 	
 	// Move to the person
 	panItem(Event);
+	
+	// Remove the default text
+	var defaultText = document.getElementById("default");
+	if (defaultText != null) {
+		TimeLine.removeChild(defaultText);
+		
+		SVG.setAttributeNS(null, "display", "inline");
+		Controls.style.display = "inline";
+	}
 }
 
 function panItem(item) {
@@ -1531,6 +1547,13 @@ function disable_select() {
 function enable_select() {
 	element = document.body;
 	element.classList.remove('no_select');
+}
+
+function UpdateProgress(value) {
+	var ProgressBar = document.getElementById("progress");
+	
+    ProgressBar.style.width = value + "%";
+	ProgressBar.innerHTML = value + "%";
 }
 
 </script>

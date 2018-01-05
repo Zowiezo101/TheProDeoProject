@@ -14,8 +14,14 @@
 	<div class="contents_right" id="familytree_div">
 		<div id="default">
 			<?php if (isset($_GET['id'])) {
-				echo $Content["loading_ft"];
-			} else {
+				echo $Content["loading_ft"]; ?>
+				
+				<div id="progress_bar">
+					<div id="progress">
+						1%
+					</div>
+				</div>
+			<?php } else {
 				echo $Content["default_ft"];
 			} ?>
 		</div>

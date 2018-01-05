@@ -14,8 +14,14 @@
 	<div class="contents_right" id="timeline_div">
 		<div id="default">
 			<?php if (isset($_GET['id'])) {
-				echo $Content["loading_tl"];
-			} else {
+				echo $Content["loading_tl"];?>
+				
+				<div id="progress_bar">
+					<div id="progress">
+						1%
+					</div>
+				</div>
+			<?php } else {
 				echo $Content["default_tl"];
 			} ?>
 		</div>
