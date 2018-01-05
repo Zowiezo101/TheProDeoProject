@@ -30,6 +30,10 @@ function FindPeoples() {
 }
 ?>
 
+<script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script> 
+<script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+<script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script> 
+
 <script>
 // List of peoples
 // This NEEDS to be filled up by the using side
@@ -1053,6 +1057,34 @@ function SetSVG() {
 
 function updateViewbox(x, y, zoom) {
 	var SVG = document.getElementById("familytree_svg");
+	if ((x != -1) || (y != -1)) {
+		viewX = x;
+		viewY = y;
+		
+		transMatrix[4] = viewX;
+		transMatrix[5] = viewY;
+	}
+	
+	if (zoom != -1) {
+		ZoomFactor = zoom;
+		
+		transMatrix[0] = ZoomFactor;
+		transMatrix[3] = ZoomFactor;
+	}
+	
+	
+	newMatrix = "matrix(" + transMatrix.join(' ') + ")";
+	SVG.setAttributeNS(null, "transform", newMatrix);
+	SVG.setAttributeNS(null, "webkitTransform", newMatrix);
+	SVG.setAttributeNS(null, "MozTransform", newMatrix);
+	SVG.setAttributeNS(null, "msTransform", newMatrix);
+	SVG.setAttributeNS(null, "OTransform", newMatrix);
+	
+	return;
+}
+
+function updateViewboxDownload(x, y, zoom) {
+	var SVG = document.getElementById("hidden_svg");
 	if ((x != -1) || (y != -1)) {
 		viewX = x;
 		viewY = y;

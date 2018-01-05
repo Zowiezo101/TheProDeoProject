@@ -26,6 +26,15 @@
 			} ?>
 		</div>
 	</div>
+	
+	<!--
+      this is used to download content dynamically from the client side. Note
+      that this div is, by default, not visible with the styling above.
+    -->
+    <div 
+		id="crowbar-workspace"
+		style="display: none">
+    </div>
 </div>
 
 <?php require "layout/footer.php" ?>

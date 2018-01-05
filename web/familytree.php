@@ -24,9 +24,24 @@
 			<?php } else {
 				echo $Content["default_ft"];
 			} ?>
+		</div>	
+		
+		<div id="hidden_div"
+			 style="display: none"
+			 >
+			 
+			<svg id="hidden_svg"></svg>
+			<canvas id="hidden_cs"></canvas>
+			<a id="hidden_a"></a>
 		</div>
+
 	</div>
 </div>
+	
+<!--
+  this is used to download content dynamically from the client side. Note
+  that this div is, by default, not visible with the styling above.
+-->
 
 <?php require "layout/footer.php" ?>
 
