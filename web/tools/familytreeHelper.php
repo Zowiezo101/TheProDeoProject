@@ -1302,10 +1302,11 @@ function AddControlButtons() {
 	ZoomResetButton.innerHTML = "Reset view";
 	Controls.appendChild(ZoomResetButton);
 	
-	var DownloadButton = document.createElement("button");
-	DownloadButton.setAttribute("onclick", "download_png()");
-	DownloadButton.innerHTML = "Download";
-	Controls.appendChild(DownloadButton);
+	// TODO
+	// var DownloadButton = document.createElement("button");
+	// DownloadButton.setAttribute("onclick", "download_png()");
+	// DownloadButton.innerHTML = "Download";
+	// Controls.appendChild(DownloadButton);
 	
 	FamilyTree.appendChild(Controls);
 	UpdateProgress(5);

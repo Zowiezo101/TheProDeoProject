@@ -30,6 +30,10 @@ function FindEvents() {
 }
 ?>
 
+<script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script> 
+<script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+<script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script> 
+
 <script>
 // Small list of enums:
 var ENUM_UNDEFINED = -1;
@@ -81,6 +85,11 @@ var transMatrix = [1,0,0,1,0,0];
 var viewX = 0;
 var viewY = 0;
 
+var globalEventId = -1;
+var globalTimelineId = -1;
+
+var highestLevel = 0;
+
 function createTimeLine() {	
 	// Make a nice list here to choose from the set of EventsList Events
 	// When chosen, update focus in the timeline
@@ -112,11 +121,11 @@ function createTimeLine() {
 	var IDs = "<?php echo $_GET['id']; ?>".split(",");
 	
 	// Get the Timeline and the ID numbers
-	var TimelineId = IDs[0];
-	var EventId = IDs[1];
+	globalTimelineId = IDs[0];
+	globalEventId = IDs[1];
 	
 	// And pan to it's location
-	SetSVG(TimelineId, EventId);
+	SetSVG();
 <?php } ?>
 }
 
@@ -843,6 +852,8 @@ function setEvents() {
 /** setLevels function */
 function resetLevels(ID) {
 	
+	highestLevel = 0;
+	
 	for (var m = 0; m < Events.length; m++)
 	{		
 		var Event = Events[m];
@@ -1220,7 +1231,11 @@ function drawTimeLine(SVG) {
 	return;
 }
 
-function SetSVG(TimelineId, EventId) {	
+function SetSVG() {	
+	setTimeout(AddControlButtons, 1);
+}
+
+function AddControlButtons() {
 	// The Time line div
 	var TimeLine = document.getElementById("timeline_div");
 	
@@ -1248,52 +1263,90 @@ function SetSVG(TimelineId, EventId) {
 	ZoomResetButton.setAttribute("onclick", "ZoomReset()");
 	ZoomResetButton.innerHTML = "Reset view";
 	Controls.appendChild(ZoomResetButton);
+	
+	// TODO:
+	// var DownloadButton = document.createElement("button");
+	// DownloadButton.setAttribute("onclick", "download_png()");
+	// DownloadButton.innerHTML = "Download";
+	// Controls.appendChild(DownloadButton);
 
 	TimeLine.appendChild(Controls);
 	UpdateProgress(5);
 	
+	setTimeout(SetAllLevels, 1);
+}
+
+function SetAllLevels() {
 	// Set all the generation levels of all events
 	// Start out clean
 	resetLevels();
-	var highestLevel = setLevels(EventsList[TimelineId]);
+	highestLevel = setLevels(EventsList[globalTimelineId]);
 	UpdateProgress(15);
 	
+	setTimeout(SetAllIndexes, 2);
+}
+
+function SetAllIndexes() {
 	resetIndexes();
-	setIndexes(EventsList[TimelineId], highestLevel);
+	setIndexes(EventsList[globalTimelineId], highestLevel);
 	UpdateProgress(25);
 	
+	setTimeout(CalcAllLocations, 1);
+}
+
+function CalcAllLocations() {	
 	// Make the calculations to see where everyone should be placed
 	globalOffset = 0;
 	globalHeight = 0;
+	
 	calcLocations();
 	UpdateProgress(45);
 	
-	// Start out clean, remove the current SVG
-	var SVG = document.getElementById("svg");
-	if (SVG != null) {
-		TimeLine.removeChild(SVG);
-	}
+	setTimeout(appendSVG, 1);
+}
+
+function appendSVG() {
+	var svgns = "http://www.w3.org/2000/svg";
+	var TimeLine = document.getElementById("timeline_div");
 	
 	// Create this element
-	var svgns = "http://www.w3.org/2000/svg";
 	SVG = document.createElementNS(svgns, "svg");
 	SVG.id = "svg";
+	
 	SVG.setAttributeNS(null, "transform", "matrix(1 0 0 1 0 0)");
 	SVG.setAttributeNS(null, "display", "none");
 	
-	// Set the height and the width Plus x pixel border
-	ActualWidth = globalWidth + (highestLevel + 1)*50;
-	ActualHeight = globalHeight + globalOffset + 75;
+	// Now add it to the screen
+	TimeLine.appendChild(SVG);
+	UpdateProgress(50);
 	
-	SVG.setAttribute('width', TimeLine.offsetWidth);
-	SVG.setAttribute('height', TimeLine.offsetHeight);
+	setTimeout(appendGroup);
+}
+
+function appendGroup() {
+	var svgns = "http://www.w3.org/2000/svg";
+	var SVG = document.getElementById("svg");
 	
-	// Draw the current family tree
-	var Event = Events[EventId];
-	
-	//Legenda
-	var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
 	var Group = document.createElementNS(svgns, "g");	
+	Group.id = "timeline_svg";
+	
+	SVG.appendChild(Group);
+	UpdateProgress(55);
+	
+	setTimeout(DrawLegenda, 1);
+}
+
+function DrawLegenda() {
+	//Legenda
+	var svgns = "http://www.w3.org/2000/svg";
+	var SVG = document.getElementById("svg");
+	
+	var Event = Events[globalEventId];
+	
+	var Group = document.createElementNS(svgns, "g");	
+	Group.id = "Legenda";
+	
+	var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
 	for (var i = 0; i < (MULTS.length + 2); i++) {
 		var Rect = document.createElementNS(svgns, "rect");		
 		Rect.setAttributeNS(null, 'width', 10);
@@ -1311,22 +1364,35 @@ function SetSVG(TimelineId, EventId) {
 		Group.appendChild(Rect);
 		Group.appendChild(Text);
 	}
-	Group.id = "Legenda";
 	SVG.appendChild(Group);
 	UpdateProgress(65);
 	
-	var Group = document.createElementNS(svgns, "g");	
-	Group.id = "timeline_svg";
+	setTimeout(DrawTimeLine, 1);
+}
+
+function DrawTimeLine() {
+	// The TimeLine div
+	var TimeLine = document.getElementById("timeline_div");
+	var SVG = document.getElementById("svg");
+	var Group = document.getElementById("timeline_svg");
 	
+	// Set the height and the width Plus x pixel border
+	ActualWidth = globalWidth + (highestLevel + 1)*50;
+	ActualHeight = globalHeight + globalOffset + 75;
+	
+	SVG.setAttribute('width', TimeLine.offsetWidth);
+	SVG.setAttribute('height', TimeLine.offsetHeight);
+	
+	// Draw the current timeline
 	drawTimeLine(Group);
-	UpdateProgress(85);
+	UpdateProgress(75);
 	
-	SVG.appendChild(Group);
-	UpdateProgress(90);
-	
-	// Now add it to the screen
-	TimeLine.appendChild(SVG);
-	UpdateProgress(95);
+	setTimeout(SetInterrups);
+}
+
+function SetInterrups() {
+	// The FamilyTree div
+	var SVG = document.getElementById("svg");
 	
 	// And some functions for mouse or keyboard panning/scrolling
 	SVG.setAttributeNS(null, 'onmousedown', "GetMousePos(evt)");
@@ -1348,20 +1414,37 @@ function SetSVG(TimelineId, EventId) {
 	
 	window.onmouseup = GetMouseOut;
 	window.ontouchend = GetMouseOut;
+	UpdateProgress(85);
 	
+	setTimeout(SetView, 1);
+}
+
+function SetView() {
 	// Update the width and the height of the viewbox
 	updateViewbox(0, 0, 1);
-	UpdateProgress(100);
 	
-	// Move to the person
+	// Move to the event
+	var Event = Events[globalEventId];
 	panItem(Event);
+	UpdateProgress(95);
+	
+	setTimeout(MakeVisible, 1);
+}
+	
+function MakeVisible() {
+	// The TimeLine div
+	var TimeLine = document.getElementById("timeline_div");
 	
 	// Remove the default text
 	var defaultText = document.getElementById("default");
+	
 	if (defaultText != null) {
 		TimeLine.removeChild(defaultText);
 		
+		var SVG = document.getElementById("svg");
 		SVG.setAttributeNS(null, "display", "inline");
+		
+		var Controls = document.getElementById("controls");
 		Controls.style.display = "inline";
 	}
 }
@@ -1554,6 +1637,43 @@ function UpdateProgress(value) {
 	
     ProgressBar.style.width = value + "%";
 	ProgressBar.innerHTML = value + "%";
+}
+
+function download_png () {
+	// The TimeLine div
+	var TimeLine = document.getElementById("timeline_div");
+	var SVG = document.getElementById("svg");
+	
+	var WS = document.getElementById("hidden_div");
+	
+	var canvas = document.getElementById('hidden_cs');	
+	canvas.setAttribute('height', ActualHeight);	
+	canvas.setAttribute('width',  ActualWidth);
+	
+	var svg = document.getElementById('hidden_svg');	
+	svg.setAttribute('height', ActualHeight);	
+	svg.setAttribute('width',  ActualWidth);
+	
+	var link = document.getElementById('hidden_a');
+	
+	svg.setAttribute("version", 1.1);
+	svg.setAttribute("xmlns", "http:// www.w3.org/2000/svg");
+	svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+	
+	updateViewbox(0, 0, 1);
+	svg.innerHTML = SVG.innerHTML;
+	
+	canvg(canvas, svg.outerHTML,
+		{
+			'scaleWidth': ActualWidth,
+			'scaleHeight': ActualHeight
+		});
+
+	var theImage = canvas.toDataURL('image/png');
+	link.href = theImage;
+	link.click();
+	
+	ZoomReset();
 }
 
 </script>

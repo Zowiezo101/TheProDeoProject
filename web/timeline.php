@@ -25,16 +25,16 @@
 				echo $Content["default_tl"];
 			} ?>
 		</div>
+		
+		<div id="hidden_div"
+			 style="display: none"
+			 >
+			 
+			<svg id="hidden_svg"></svg>
+			<canvas id="hidden_cs"></canvas>
+			<a id="hidden_a"></a>
+		</div>
 	</div>
-	
-	<!--
-      this is used to download content dynamically from the client side. Note
-      that this div is, by default, not visible with the styling above.
-    -->
-    <div 
-		id="crowbar-workspace"
-		style="display: none">
-    </div>
 </div>
 
 <?php require "layout/footer.php" ?>
