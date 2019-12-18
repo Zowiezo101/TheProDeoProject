@@ -1,0 +1,377 @@
+
+/* When a box is NOT selected */
+.nav_purple {
+	background-color: Purple;
+	border: 0;
+	color: White;
+	font-weight: bold;
+}
+.nav_orange {
+	background-color: Orange;
+	border: 0;
+	color: Black;
+	font-weight: bold;
+}
+.nav_red {
+	background-color: Tomato;
+	border: 0;
+	color: Black;
+	font-weight: bold;
+}
+.nav_yellow {
+	background-color: Gold;
+	border: 0;
+	color: Black;
+	font-weight: bold;
+}
+.nav_green {
+	background-color: LightGreen;
+	border: 0;
+	color: Black;
+	font-weight: bold;
+}
+.nav_blue {
+	background-color: Blue;
+	border: 0;
+	color: White;
+	font-weight: bold;
+}
+.nav_black {
+	background-color: Black;
+	border: 0;
+	color: White;
+	font-weight: bold;
+}
+
+
+/* When a box is selected */
+.select_purple {
+	background-color: White;
+	color: Black;
+	font-weight: bold;
+	
+	border-color: Purple;
+	border-style: solid;
+	border-width: 3px;
+}
+.select_purple:hover {
+	background-color: Purple;
+	color: White;
+}
+.select_red {
+	background-color: White;
+	color: Black;
+	font-weight: bold;
+	
+	border-color: Tomato;
+	border-style: solid;
+	border-width: 3px;
+}
+.select_red:hover {
+	background-color: Tomato;
+}
+.select_yellow {
+	background-color: White;
+	color: Black;
+	font-weight: bold;
+	
+	border-color: Gold;
+	border-style: solid;
+	border-width: 3px;
+}
+.select_yellow:hover {
+	background-color: Gold;
+}
+.select_green {
+	background-color: White;
+	color: Black;
+	font-weight: bold;
+	
+	border-color: LightGreen;
+	border-style: solid;
+	border-width: 3px;
+}
+.select_green:hover {
+	background-color: LightGreen;
+}
+.select_blue {
+	background-color: White;
+	color: Black;
+	font-weight: bold;
+	
+	border-color: Blue;
+	border-style: solid;
+	border-width: 3px;
+}
+.select_blue:hover {
+	background-color: Blue;
+	color: White;
+}
+.select_black {
+	background-color: White;
+	color: Black;
+	font-weight: bold;
+	
+	border-color: Black;
+	border-style: solid;
+	border-width: 3px;
+}
+.select_black:hover {
+	background-color: Black;
+	color: White;
+}
+.select_orange {
+	background-color: White;
+	color: Black;
+	font-weight: bold;
+	
+	border-color: Orange;
+	border-style: solid;
+	border-width: 3px;
+}
+.select_orange:hover {
+	background-color: Orange;
+}
+
+
+/* Background colors of the banners */
+.purple #header {
+	background-image: linear-gradient(to right, Lavender, Thistle, LightGrey, Grey);
+	background-color: Thistle;
+}
+.black #header {
+	background-image: linear-gradient(to right, Silver, Snow, LightGrey, Grey);
+	background-color: Snow;
+}
+.red #header  {
+	background-image: linear-gradient(to right, Pink, LightPink, LightGrey, Grey);
+	background-color: LightPink;
+}
+.yellow #header {
+	background-image: linear-gradient(to right, LemonChiffon, Beige, LightGrey, Grey);
+	background-color: Beige;
+}
+.green #header {
+	background-image: linear-gradient(to right, MediumAquaMarine, DarkSeaGreen, LightGrey, Grey);
+	background-color: DarkSeaGreen;
+}
+.blue #header {
+	background-image: linear-gradient(to right, LightCyan, LightBlue, LightGrey, Grey);
+	background-color: LightBlue;
+}
+.orange #header {
+	background-image: linear-gradient(to right, BurlyWood, LightSalmon, LightGrey, Grey);
+	background-color: LightBlue;
+}
+
+
+/* Text colors of the banners */
+.purple #banner_text {
+	color: Yellow;
+}
+.black #banner_text {
+	color: Black;
+}
+.red #banner_text  {
+	color: SeaGreen;
+}
+.yellow #banner_text {
+	color: Purple;
+}
+.green #banner_text {
+	color: Red;
+}
+.blue #banner_text {
+	color: Orange;
+}
+.orange #banner_text {
+	color: Blue;
+}
+
+
+/* Color of the footers */
+.purple #footer {
+	background-color: Purple;
+	color: White;
+}
+.black #footer {
+	background-color: Black;
+	color: White;
+}
+.red #footer {
+	background-color: Tomato;
+}
+.yellow #footer {
+	background-color: Gold;
+}
+.green #footer {
+	background-color: LightGreen;
+}
+.blue #footer {
+	background-color: Blue;
+	color: White;
+}
+.orange #footer {
+	background-color: Orange;
+}
+
+
+/* Backgrounds of the different pages */
+#home {
+	/* White background, in case the image fails to load
+	   The background looks like a noteblock, every line 
+	   is about 32 pixels apart, and repeating on the y-axis
+	   (up to down). Do use the entire width of the screen. */
+	background-color: White;
+	background-image: url("../img/background/background_home.svg");
+	background-repeat: repeat, repeat-y;
+	background-size: 100% 32px;
+}
+
+.blue {
+	background-color: rgb(230, 247, 255);
+}
+
+.red {
+	background-color: rgb(255, 230, 230);
+}
+
+.yellow {
+	background-color: rgb(255, 255, 230);
+}
+
+.purple {
+	background-color: rgb(230, 230, 255);
+}
+
+.green {
+	background-color: rgb(230, 255, 230);
+}
+
+.black {
+	background-color: rgb(242, 242, 242);
+}
+
+.orange {
+	background-color: rgb(255, 243, 230);
+}
+
+
+/* Colors of the different buttons */
+/* This includes the disabled buttons */
+.off_button_blue, 
+.button_blue {
+	background-color: Blue;
+	color: White;
+}
+.off_button_red, 
+.button_red {
+	background-color: Tomato;
+	color: Black;
+}
+.off_button_yellow, 
+.button_yellow {
+	background-color: Gold;
+	color: Black;
+}
+.off_button_purple, 
+.button_purple {
+	background-color: Purple;
+	color: White;
+}
+.off_button_green, 
+.button_green {
+	background-color: LightGreen;
+	color: Black;
+}
+.off_button_black, 
+.button_black {
+	background-color: Black;
+	color: White;
+}
+.off_button_orange, 
+.button_orange {
+	background-color: Orange;
+	color: Black;
+}
+
+
+/* Hovering over buttons */
+/* Or when a button is disabled */
+.off_button_orange, 
+.off_button_black, 
+.off_button_blue, 
+.off_button_green, 
+.off_button_red, 
+.off_button_yellow, 
+.off_button_purple, 
+.button_orange:hover, 
+.button_black:hover, 
+.button_blue:hover, 
+.button_green:hover, 
+.button_red:hover, 
+.button_yellow:hover, 
+.button_purple:hover, 
+.button_orange:focus,
+.button_black:focus,
+.button_blue:focus,
+.button_green:focus,
+.button_red:focus,
+.button_yellow:focus,
+.button_purple:focus {
+	opacity: 0.5;
+}
+
+
+/* Item bar buttons */
+.item_blue button {
+	background-color: rgb(204, 239, 255);
+}
+.item_red button {
+	background-color: rgb(255, 204, 204);
+}
+.item_yellow button {
+	background-color: rgb(255, 255, 204);
+}
+.item_purple button {
+	background-color: rgb(204, 204, 255);
+}
+.item_green button {
+	background-color: rgb(204, 255, 204);
+}
+.item_black button {
+	background-color: rgb(230, 230, 230);
+}
+.item_orange button {
+	background-color: rgb(255, 230, 204);
+}
+
+
+/* SVG buttons to go along with the color code */
+.svg_blue {
+	fill: rgb(230, 247, 255);
+}
+
+.svg_red {
+	fill: rgb(255, 230, 230);
+}
+
+.svg_yellow {
+	fill: rgb(255, 255, 230);
+}
+
+.svg_purple {
+	fill: rgb(230, 230, 255);
+}
+
+.svg_green {
+	fill: rgb(230, 255, 230);
+}
+
+.svg_black {
+	fill: rgb(242, 242, 242);
+}
+
+.svg_orange {
+	fill: rgb(255, 243, 230);
+}

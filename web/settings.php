@@ -1,77 +1,231 @@
 <?php 
+	// Make it easier to copy/paste code or make a new file
 	$id = "settings";
-	require "layout/header.php"; 
-	require "tools/blogHelper.php"; 
+	require "layout/layout.php"; 
 ?>
+<?php 
 
-<?php if (isset($_SESSION['login'])) { ?>
-	<div class="clearfix">
-		<div class="contents_left" id="settings_bar">
-			<button onclick="ShowNew()"><?php echo $Settings["new_blog"]; ?></button>
-			<button onclick="ShowDelete()"><?php echo $Settings["delete_blog"]; ?></button>
-			<button onclick="ShowEdit()"><?php echo $Settings["edit_blog"]; ?></button>
-			<a href="tools/logout.php"><?php echo $Settings["logout"]; ?></a>
-		</div>
+function CleanText($text, $convertBR = 0) {
+	// The newlines in the string cause problems..
+	$text1 = str_replace(array("\r\n","\r","\n","\\r\\n","\\r","\\n"), "<br/>", $text);
+	
+	// Escape slashes
+	$text2 = str_replace("\\", "\\\\", $text1);
+	
+	// Escape apastrophs
+	$text3 = str_replace("'", "\\'", $text2);
+	
+	// Escape quotes
+	$text4 = str_replace('"', '\\"', $text3);
+	
+	if ($convertBR == 1) {
+		// Put the \n chars back
+		$text5 = str_replace('<br/>', '\n', $text4);
+	} else {
+		$text5 = $text4;
+	}
+	
+	return $text5;
+}
+
+function AddBlog($title, $text, $user) {
+	global $dict_Settings;
+	global $conn;
+	
+	// The query to run
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
+	$result = $conn->query($sql);
+
+	if (!$result) {
+		// Display an error if anything failed
+		echo "<h1>SQL: ".$conn->error."</h1>";
+	} else {		
+		// Get the current date
+		date_default_timezone_set('Europe/Amsterdam');
+		$date = date("Y-m-d H:i:s a"); 
 		
-		<div class="contents_right" id="settings_content">
-			<?php echo $Settings["welcome"]; ?>
-			<?php echo "- ".$Settings["new_blog"]."<br>"; ?>
-			<?php echo "- ".$Settings["delete_blog"]."<br>"; ?>
-			<?php echo "- ".$Settings["edit_blog"]."<br>"; ?>
-		</div>
-	</div>
-<?php } else { ?>
-	<!-- Log in page, in case no login is found yet -->
-	<div id="settings_login">
-		<form method="post" action="tools/login.php">
-			<!-- User name -->
-			<p><?php echo $Settings["user"]; ?></p>
-			<input type="text" name="user" placeholder="<?php echo $Settings["user"]; ?>">
-			
-			<!-- Password -->
-			<p><?php echo $Settings["password"]; ?></p>
-			<input type="password" name="password" placeholder="<?php echo $Settings["password"]; ?>">
-			
-			<!-- Submit button -->
-			<br>
-			<input id="submitForm" type="submit" name="submitLogin" value="<?php echo $Settings["login"]; ?>">
-			<br>
-		</form>
+		// Insert the new added blog into the database
+		$sql = "INSERT INTO blog (title, text, user, date) VALUES ('".CleanText($title)."','".CleanText($text)."','".$user."','".$date."')";
+		$result = $conn->query($sql);	
 		
-		<?php
+		// Give some indication of the result
+		if (!$result) {
+			echo "<h1>SQL: ".$conn->error."</h1>";
+		} else {
+			echo "<h1>".$dict_Settings["blog_added"]."</h1>";
+		}
+	}	
+}
+
+function DeleteBlog($id) {
+	global $dict_Settings;
+	global $conn;
+	
+	// The query to run
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
+	$result = $conn->query($sql);
+
+	if (!$result) {
+		// Display an error if anything went wrong
+		echo "<h1>SQL: ".$conn->error."</h1>";
+	} else {		
+		// Delete the corresponding blog
+		$sql = "DELETE FROM blog WHERE id=".$id;
+		$result = $conn->query($sql);
+		
+		// Show the results
+		if (!$result) {
+			echo "<h1>SQL: ".$conn->error."</h1>";
+		} else {		
+			echo "<h1>".$dict_Settings["blog_removed"]."</h1>";
+		}
+	}	
+}
+
+function EditBlog($id, $title, $text) {
+	global $dict_Settings;
+	global $conn;
+	
+	// The query to run
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
+	$result = $conn->query($sql);
+
+	if (!$result) {
+		// Show an error if the query failed
+		echo "<h1>SQL: ".$conn->error."</h1>";
+	} else {		
+		// Update the corresponding blog in the database
+		$sql = "UPDATE blog SET title='".CleanText($title)."', text='".CleanText($text)."' WHERE id=".$id;
+		$result = $conn->query($sql);
+	
+		// Show an indication of the results
+		if (!$result) {
+			echo "<h1>SQL: ".$conn->error."</h1>";
+		} else {		
+			echo "<h1>".$dict_Settings["blog_edited"]."</h1>";
+		}
+	}	
+}
+
+function GetListOfBlogs() {
+	global $dict_Settings;
+	global $conn;
+	
+	// The query to run
+	$sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
+	$result = $conn->query($sql);
+
+	if (!$result) {
+		// Show an error if the query failed
+		echo "<h1>SQL: ".$conn->error."</h1>";
+	} else {	
+		// Get all the blogs in the database
+		$sql = "SELECT * FROM blog";
+		$result = $conn->query($sql);
+	
+		// Show an error if anything failed
+		if (!$result) {
+			echo "<h1>SQL: ".$conn->error."</h1>";
+		} else {
+			// Generate the default option in the selection list
+			$newOption = "optionForm = document.createElement('option');";
+			$addOption = "selectForm.appendChild(optionForm);";
+			
+			// Default string and option that cannot be chosen.
+			// This forces the user the actually chose an option
+			echo $newOption;
+			echo "optionForm.value = '';";
+			echo "optionForm.disabled = true;";
+			echo "optionForm.selected = true;";
+			echo "optionForm.innerHTML = '".$dict_Settings['default']."';";
+			echo $addOption;
+			
+			while ($blog = $result->fetch_array()) {	
+				// Add all the blog names to the selection list as individual options
+				echo $newOption;
+				echo "optionForm.value = '".$blog['id']."';";
+				echo "optionForm.innerHTML = '".CleanText($blog['title'], 1)." @".$blog['date']."';";
+				echo "optionForm.extra_text = '".CleanText($blog['text'], 1)."';";
+				echo "optionForm.extra_title = '".CleanText($blog['title'], 1)."';";
+				echo $addOption;
+			}
+		}	
+	}
+}
+
+function settings_Helper_Layout() {
+	global $dict_Settings;
+	global $id;
+	global $$id;
+	
+	if (isset($_SESSION['login'])) {
+		// A login is found
+		PrettyPrint('<div class="clearfix"> ', 1);
+		PrettyPrint('	<div class="contents_left" id="settings_bar"> ');
+		PrettyPrint('		<button class="button_'.$$id.'" onclick="ShowNew()">'.$dict_Settings["new_blog"].'</button> ');
+		PrettyPrint('		<button class="button_'.$$id.'" onclick="ShowDelete()">'.$dict_Settings["delete_blog"].'</button> ');
+		PrettyPrint('		<button class="button_'.$$id.'" onclick="ShowEdit()">'.$dict_Settings["edit_blog"].'</button> ');
+		PrettyPrint('		<button class="button_'.$$id.'" onclick="location.href=\'tools/logout.php\'">'.$dict_Settings["logout"].'</button> ');
+		PrettyPrint('	</div> ');
+		PrettyPrint('');	
+		PrettyPrint('	<div class="contents_right" id="settings_content"> ');
+		PrettyPrint('		'.$dict_Settings["welcome"]);
+		PrettyPrint('		- '.$dict_Settings["new_blog"].'<br>');
+		PrettyPrint('		- '.$dict_Settings["delete_blog"].'<br>');
+		PrettyPrint('		- '.$dict_Settings["edit_blog"].'<br>');
+		PrettyPrint('	</div> ');
+		PrettyPrint('</div> ');
+	} else {
+		// Log in page, in case no login is found yet
+		PrettyPrint('<div id="settings_login"> ');
+		PrettyPrint('	<form method="post" action="tools/login.php"> ');
+					// User name
+		PrettyPrint('		<p>'.$dict_Settings["user"].'</p> ');
+		PrettyPrint('		<input type="text" name="user" placeholder="'.$dict_Settings["user"].'"> ');
+		PrettyPrint('');		
+					// Password
+		PrettyPrint('		<p>'.$dict_Settings["password"].'</p> ');
+		PrettyPrint('		<input type="password" name="password" placeholder="'.$dict_Settings["password"].'"> ');
+		PrettyPrint('');		
+					// Submit button
+		PrettyPrint('		<br> ');
+		PrettyPrint('		<input id="submit_form_button" class="button_'.$$id.'" type="submit" name="submitLogin" value="'.$dict_Settings["login"].'"> ');
+		PrettyPrint('		<br> ');
+		PrettyPrint('	</form> ');
+		PrettyPrint('');	
+		
 		// When the entered data is incorrect
 		if (isset($_SESSION["error"])) {
 			if ($_SESSION["error"] == true) {
-				echo "<p>".$Settings["incorrect"]."</p>";
+				PrettyPrint("<p>".$dict_Settings["incorrect"]."</p>");
 				$_SESSION["error"] = false;
 			}
 		}
-		?>
-	</div>
-<?php }?>
+		PrettyPrint('</div> ');
+	}
+} 
+?>
 
-<?php require "layout/footer.php" ?>
-
+<script>
 <!-- This part is only available, when the user is logged in -->
 <?php if (isset($_SESSION['login'])) { ?>
-<script>
 	// Add a new blog to the database
 	function ShowNew() {
 		// This is the title of the right side of the page
 		Settings = document.getElementById("settings_content");
-		Settings.innerHTML = "<h1><?php echo $Settings["new_blog"]; ?></h1>";
+		Settings.innerHTML = "<h1><?php echo $dict_Settings["new_blog"]; ?></h1>";
 
 		// A little textbox for the title of a new blog
 		titleForm = document.createElement("textarea");
 		titleForm.name = "title";
-		titleForm.placeholder = "<?php echo $Settings["title"]; ?>";
+		titleForm.placeholder = "<?php echo $dict_Settings["title"]; ?>";
 		titleForm.rows = 1;
 		titleForm.required = true;
 		
 		// Contents of the new blok
 		textForm = document.createElement("textarea");
 		textForm.name = "text";
-		textForm.placeholder = "<?php echo $Settings["text"]; ?>";
+		textForm.placeholder = "<?php echo $dict_Settings["text"]; ?>";
 		textForm.rows = 10;
 		textForm.required = true;
 		
@@ -79,8 +233,9 @@
 		submitForm = document.createElement("input");
 		submitForm.type = "submit";
 		submitForm.name = "submitAdd";
-		submitForm.value = "<?php echo $Settings["new_blog"]; ?>";
-		submitForm.id = "submitForm";
+		submitForm.value = "<?php echo $dict_Settings["new_blog"]; ?>";
+		submitForm.id = "submit_form_button";
+		submitForm.className = "button_<?php echo $$id; ?>";
 		
 		// Add all these things to the form
 		newForm = document.createElement("form");
@@ -98,7 +253,7 @@
 	function ShowDelete() {
 		// This is the title of the right side of the page
 		Settings = document.getElementById("settings_content");
-		Settings.innerHTML = "<h1><?php echo $Settings["delete_blog"]; ?></h1>";
+		Settings.innerHTML = "<h1><?php echo $dict_Settings["delete_blog"]; ?></h1>";
 
 		// Make a selection bar
 		selectForm = document.createElement("select");
@@ -112,7 +267,7 @@
 		// Place holder for the text that will be deleted
 		textForm = document.createElement("textarea");
 		textForm.name = "text";
-		textForm.placeholder = "<?php echo $Settings["text"]; ?>";
+		textForm.placeholder = "<?php echo $dict_Settings["text"]; ?>";
 		textForm.rows = 10;
 		textForm.disabled = true;
 		textForm.id = "text";
@@ -121,8 +276,9 @@
 		submitForm = document.createElement("input");
 		submitForm.type = "submit";
 		submitForm.name = "submitDelete";
-		submitForm.value = "<?php echo $Settings["delete_blog"]; ?>";
-		submitForm.id = "submitForm";
+		submitForm.value = "<?php echo $dict_Settings["delete_blog"]; ?>";
+		submitForm.id = "submit_form_button";
+		submitForm.className = "off_button_<?php echo $$id; ?>";
 		submitForm.disabled = true;
 		
 		// Add all these things to a form
@@ -141,7 +297,7 @@
 	function ShowEdit() {
 		// The title of the right side of the page
 		Settings = document.getElementById("settings_content");
-		Settings.innerHTML = "<h1><?php echo $Settings["edit_blog"]; ?></h1>";
+		Settings.innerHTML = "<h1><?php echo $dict_Settings["edit_blog"]; ?></h1>";
 
 		// Add a selection bar
 		selectForm = document.createElement("select");
@@ -155,7 +311,7 @@
 		// Place holder for the title that will be edited
 		titleForm = document.createElement("textarea");
 		titleForm.name = "title";
-		titleForm.placeholder = "<?php echo $Settings["title"]; ?>";
+		titleForm.placeholder = "<?php echo $dict_Settings["title"]; ?>";
 		titleForm.rows = 1;
 		titleForm.required = true;
 		titleForm.disabled = true;
@@ -164,7 +320,7 @@
 		// Place holder for the text that will be edited
 		textForm = document.createElement("textarea");
 		textForm.name = "text";
-		textForm.placeholder = "<?php echo $Settings["text"]; ?>";
+		textForm.placeholder = "<?php echo $dict_Settings["text"]; ?>";
 		textForm.rows = 10;
 		textForm.required = true;
 		textForm.disabled = true;
@@ -174,8 +330,9 @@
 		submitForm = document.createElement("input");
 		submitForm.type = "submit";
 		submitForm.name = "submitEdit";
-		submitForm.value = "<?php echo $Settings["edit_blog"]; ?>";
-		submitForm.id = "submitForm";
+		submitForm.value = "<?php echo $dict_Settings["edit_blog"]; ?>";
+		submitForm.id = "submit_form_button";
+		submitForm.className = "off_button_<?php echo $$id; ?>";
 		submitForm.disabled = true;
 		
 		// Add all these things to a form
@@ -203,8 +360,9 @@
 		textForm.value = text;
 		
 		// Now enable the submit button
-		var select = document.getElementById("submitForm");
-		select.disabled = false;
+		var submitForm = document.getElementById("submit_form_button");
+		submitForm.className = "button_<?php echo $$id; ?>";
+		submitForm.disabled = false;
 	}
 	
 	function PreviewEdit() {
@@ -222,48 +380,38 @@
 		textForm.value = text;
 		
 		// Now enable the submit button and the textareas
-		var selectForm = document.getElementById("submitForm");
-		selectForm.disabled = false;
+		var submitForm = document.getElementById("submit_form_button");
+		submitForm.className = "button_<?php echo $$id; ?>";
+		submitForm.disabled = false;
 		titleForm.disabled = false;
 		textForm.disabled = false;
 	}
+<?php } ?>
 
-<?php
-	if (isset($_POST['submitAdd'])) {
-?>
+function Helper_onLoad() {
+	<?php if (isset($_POST['submitAdd'])) { ?>
 		Settings = document.getElementById("settings_content");
-		
 		Settings.innerHTML = "<?php AddBlog($_POST["title"], $_POST["text"], $_SESSION['login']); ?>";
 		
 		// Reload without resending the action
 		oldHref = window.location.href;
 		window.location.href = oldHref;
-<?php
-	}
-
-	if (isset($_POST['submitDelete'])) {
-?>
+	<?php } if (isset($_POST['submitDelete'])) { ?>
 		Settings = document.getElementById("settings_content");
-		
 		Settings.innerHTML = "<?php DeleteBlog($_POST["select"]); ?>";
 		
 		// Reload without resending the action
 		oldHref = window.location.href;
 		window.location.href = oldHref;
-<?php
-	}
-
-	if (isset($_POST['submitEdit'])) {
-?>
+	<?php } if (isset($_POST['submitEdit'])) { ?>
 		Settings = document.getElementById("settings_content");
-		
 		Settings.innerHTML = "<?php EditBlog($_POST["select"], $_POST["title"], $_POST["text"]); ?>";
 		
 		// Reload without resending the action
 		oldHref = window.location.href;
 		window.location.href = oldHref;
-<?php
-	}
+	<?php } ?>
 }
-?>
+	
+window.onload = Helper_onLoad;
 </script>

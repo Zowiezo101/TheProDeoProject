@@ -3,34 +3,101 @@
 // https://stackoverflow.com/questions/3770513/detect-browser-language-in-php	
 function prefered_language(array $available_languages, $http_accept_language) {
 
+	// Change the keys and values around.
+	// The keys become the values (integer indexes in this case) and
+	// the values become the keys (abbreviated languages)
 	$available_languages = array_flip($available_languages);
 
+	// Languages that are supported AND requested, including the priority values
 	$langs;
+	
+	// The languages that are supported AND requested
 	$langsSet;
 	
+	/*
+		The variable $http_accept_language can contain string like:
+		fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
+		
+		This weird combinations of characters is a regular expression:
+		It is divided into groups, using the ( and )
+		
+		Group 1: ([\w-]+)
+		Group 2: (?:[^,\d]+([\d.]+))?
+		Group 3: ([\d.]+)
+		
+		Group 1:
+		\w means, look for a to z, A to Z and _
+		[\w-] means, look for either (range described above) or a dash
+		The plus means to look for groups of character that match what is described in the previous line
+		
+		So according to the example, the first group would contain:
+		fr-CH 	fr		en	 	de		q
+		
+		Group 3:
+		\d means, look for 0 to 9. 
+		[\d.]+ means, look for a group of characters that contain a dot or a digit.
+		According to the example:
+		0.9		0.8		0.7		0.5
+		
+		Group 2:
+		^ means not to look for the specified characters.
+		[^,\d]+ means to ignore groups of characters containing a digit or a comma.
+		According to the example:
+		fr-CH	.	fr;q=	.	en;q=	.	de;q=	.	*;q=	.
+		
+		But since group 3 is IN group 2, the results of group 3 are also taken into account.
+		This means that the match is only valid if it is followed by any of the results of group 3.
+		According to the example: ( and ) means group 3.
+		fr;q=(0.9)	en;q=(0.8)	de;q=(0.7)	 *;q=(0.5)	
+
+		For the full matches, all these groups need to be combined.
+		The ? behind group 2, means that group 2 doesn't necasserily needs a match for a full match
+		So a full match is when group 1 has a match, and possibly followed by any of te results of group 2.
+		According to the example: [ and ] means group 2, ( and ) means group 3.
+		fr-CH	fr[;q=(0.9)]	en[;q=(0.8)]	de[;q=(0.7)]	 [*;]q[=(0.5)]
+		
+		Since group 2 contains the character combination ?:, the results of group two itself are not saved.
+		Only the results of group 1 and group 3.
+		According to the example:
+		Full matches:	fr-CH	fr[;q=(0.9)]	en[;q=(0.8)]	de[;q=(0.7)]	[*;]q[=(0.5)]
+		Group 1:		fr-CH	fr				en				de				q
+		Group 3:				0.9				0.8				0.7				0.5
+		
+		These results are stored in the variable $matches. Each result in it's own index ($match).
+		The full matches in sub index [0], group 1 in sub index [1] and group 3 in sub index [2]
+		
+	*/
 	preg_match_all('~([\w-]+)(?:[^,\d]+([\d.]+))?~', strtolower($http_accept_language), $matches, PREG_SET_ORDER);
 	foreach($matches as $match) {
 
+		// Split results that have a dash in it. The array('', '') part is to
+		// prevent errors if there is no dash.
+		// According to the example (fr-CH)
+		// $a = 'fr'		$b = 'CH'
 		list($a, $b) = explode('-', $match[1]) + array('', '');
 		$value = isset($match[2]) ? (float) $match[2] : 1.0;
 
-		if(isset($available_languages[$match[1]])) {
-			$langs[$match[1]] = $value;
-			continue;
-		}
-
+		// If the requested language is in the list of supported languages
+		// Put it in the list of requested AND supported languages.
+		// Save the priority value, to see what language is highest requested
 		if(isset($available_languages[$a])) {
-			$langs[$a] = $value - 0.1;
+			$langs[$a] = $value;
 		}
 
 	}
 	
+	// If there are any matches, sort them using the values (not the keys) of the arrays.
+	// Start with the greatest value and end with the smallest value
 	if (count($langs) > 0) {
 		arsort($langs);
+		
+		// Add them to the list of supported AND requested languages 
+		// without saving the priority values
 		foreach ($langs as $lang => $value) {
 			$langsSet[] = $lang;
 		}
 	} else {
+		// If there are no matches, use the most known language English
 		$langsSet[] = "en";
 	}
 
@@ -38,49 +105,40 @@ function prefered_language(array $available_languages, $http_accept_language) {
 }
 
 function get_available_langs() {
+	// List of available languages
 	$langsSet;
-	
+
+	// Check all the available translation files
 	$langFiles = glob("./translations/*.php");
 	foreach ($langFiles as $filename) {
+		// Take the two-letter language abbreviation
 		$lang = substr($filename, -6, 2);
+		
+		// And add it to the list of available languages
 		$langsSet[] = $lang;
 	}
 
 	return $langsSet;
 }
 
-// Set the language to a default
+// Set the language to a prefered language, if available
 if (!isset($_SESSION["lang"])) {
 	// Languages we support
 	$available_languages = get_available_langs();
 
+	// Language settings of the browser AND supported by the website
 	$langs = prefered_language($available_languages, $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-	if ($langs) {
-		$_SESSION["lang"] = $langs[0];
-	} else {
-		$_SESSION["lang"] = "en";
-	}
-
+	
+	// Most prefered language. Save it in the session
+	$_SESSION["lang"] = $langs[0];
 } 
+
+// Get the correct translation file, that corresponds with the prefered language
 $page_lang = $_SESSION["lang"];
-
 require "translations/translation_".$page_lang.".php"; 
+
+// Log in data, needed to connect to the database
 require "../login_data.php";
-
-function getLangList($page_lang) {
-	foreach (get_available_langs() as $lang) {
-		if ($lang != $page_lang) {
-			echo '<input style=" 
-							background-image: url(\'img/lang_'.$lang.'.svg\'); 
-							background-size: auto 100%;" 
-						  class="lang_option" 
-						  type="submit" 
-						  name="lang" 
-						  value="'.$lang.'">';
-		}
-	}
-}
-
 $conn = new mysqli($servername, $username, $password, $database);
 
 // Check connection
@@ -88,125 +146,163 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-function AddParams($page, $id, $sort) {
-	$return_val = "";
-		
-	// If values are not defined, define them now
-	// Use the default value, if they are not in the address bar
-	if ($page == -1) {
-		if (isset($_GET["page"])) {
-			$page = $_GET["page"];
-		} else {
-			$page = 0;
-		}
-	}
-		
-	if ($sort == -1) {
-		if (isset($_GET["sort"])) {
-			$sort = $_GET["sort"];
-		} else {
-			$sort = "app";
-		}
-	}
-	
-	if ($page != 0) {
-		$return_val = "?page=".$page."&id=".$id;
-	} else {
-		$return_val = "?id=".$id;
-	} 
-	
-	if ($sort != "app") {
-		$return_val = $return_val."&sort=".$sort;
-	}
-		
-	return $return_val;
+// Which helper file do we need? One for items or one for maps?
+if (($id == "timeline") || ($id == "familytree")) {
+	require "tools/mapHelper.php";
+} elseif (($id == "peoples") 	|| 
+		($id == "locations") 	|| 
+		($id == "specials") 	|| 
+		($id == "books") 		|| 
+		($id == "events")		||
+		($id == "search")) {
+	require "tools/itemHelper.php";
 }
 
-function AddIdParam($id_nr) {
-	$return_val = "";
-	
-	if (!isset($_GET["page"])) {
-		$page_nr = 0;
+/* Used pretty much everywhere. 
+   This function adds newlines and tabs, to make the generated HTML and Javascript
+   code more readable */
+function PrettyPrint($string, $firstLine = 0) {
+	if ($firstLine) {
+		echo $string."\r\n";
 	} else {
-		$page_nr = $_GET["page"];
+		echo "\t\t\t".$string."\r\n";
 	}
-	
-	if ($page_nr > 0) {
-		# When the page language is dutch, there is no parameter in the URL
-		$return_val = "&id=".$id_nr;
-	} else  {
-		# When the page language is not dutch, there is already a parameter in the URL
-		# Now use & to add this parameter as well.
-		$return_val = "?id=".$id_nr;
-	}
-	
-	return $return_val;
 }
+
 ?>
 
 <script>
 
-//https://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
-function uniq(a) {
-    var prims = {"boolean":{}, "number":{}, "string":{}}, objs = [];
+	// https://stackoverflow.com/questions/7577897/javascript-page-reload-while-maintaining-current-window-position
 
-    return a.filter(function(item) {
-        var type = typeof item;
-        if(type in prims)
-            return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
-        else
-            return objs.indexOf(item) >= 0 ? false : objs.push(item);
-    });
-}
-	
-/**
-* http://stackoverflow.com/a/10997390/11236
-*/
-function updateURLParameter(url, param, paramVal){
-// function updateURLParameter(url, param){
-	var newAdditionalURL = "";
-	var tempArray = url.split("?");
-	var baseURL = tempArray[0];
-	var additionalURL = tempArray[1];
-	var temp = "";
-	
-	if (additionalURL) {
-		tempArray = additionalURL.split("&");
-		
-		for (var i=0; i<tempArray.length; i++){
-			if(tempArray[i].split('=')[0] != param){
-				newAdditionalURL += temp + tempArray[i];
-				temp = "&";
-			}
-		}
+	var cookieName = "page_scroll";
+	var expdays = 365;
+
+	// An adaptation of Dorcht's cookie functions.
+
+	function setCookie(name, value, expires, path, domain, secure) {
+		// Creates the cookie for the page scroll position
+		if (!expires) expires = new Date();
+		document.cookie = name + "=" + escape(value) + 
+			((expires == null) ? "" : "; expires=" + expires.toGMTString()) +
+			((path    == null) ? "" : "; path=" + path) +
+			((domain  == null) ? "" : "; domain=" + domain) +
+			((secure  == null) ? "" : "; secure");
 	}
 
-	var rows_txt = temp + "" + param + "=" + paramVal;
-	return baseURL + "?" + newAdditionalURL + rows_txt;
-}
-	
-function removeURLParameter(url, param){
-	var newAdditionalURL = "";
-	var tempArray = url.split("?");
-	var baseURL = tempArray[0];
-	var additionalURL = tempArray[1];
-	var temp = "?";
-	
-	if (additionalURL) {
-		tempArray = additionalURL.split("&");
+	function getCookie(name) {
+		// Gets the cookie value
+		var arg = name + "=";
+		var alen = arg.length;
+		var clen = document.cookie.length;
+		var i = 0;
+		while (i < clen) {
+			var j = i + alen;
+			if (document.cookie.substring(i, j) == arg) {
+				return getCookieVal(j);
+			}
+			i = document.cookie.indexOf(" ", i) + 1;
+			if (i == 0) break;
+		}
+		return null;
+	}
+
+	// Gets the parameter out of the cookie at the given offset
+	function getCookieVal(offset) {
+		var endstr = document.cookie.indexOf(";", offset);
+		if (endstr == -1) endstr = document.cookie.length;
+		return unescape(document.cookie.substring(offset, endstr));
+	}
+
+	// Deletes the cookie
+	function deleteCookie(name, path, domain) {
+		document.cookie = name + "=" +
+			((path   == null) ? "" : "; path=" + path) +
+			((domain == null) ? "" : "; domain=" + domain) +
+			"; expires=Thu, 01-Jan-00 00:00:01 GMT";
+	}
+
+	function saveScroll(link) {
+		itemBar = document.getElementById("item_choice");
 		
-		for (var i=0; i<tempArray.length; i++){
-			if(tempArray[i].split('=')[0] != param){
-				newAdditionalURL += temp + tempArray[i];
-				temp = "&";
+		// Expiration date
+		var expdate = new Date();
+		expdate.setTime(expdate.getTime() + (expdays*24*60*60*1000)); // expiry date
+
+		// Value that we want to store and retrieve
+		var scrollValue = "" + itemBar.scrollTop;
+		
+		// Make the cookie
+		setCookie(cookieName, scrollValue, expdate);
+		
+		// Now go to the desired link
+		window.location.href = link;
+	}
+
+	function loadScroll() {
+		itemBar = document.getElementById("item_choice");
+		
+		// The information that we want to retrieve
+		var inf = getCookie(cookieName);
+		
+		// In case there is no information
+		if (!inf) { 
+			return; 
+		}
+		
+		// Get the value to scroll to
+		var scrollValue = parseInt(inf)
+		itemBar.scrollTop = scrollValue;
+		
+		setCookie(cookieName, 0, null)
+	}
+		
+
+	// http://stackoverflow.com/a/10997390/11236
+	function updateURLParameter(url, param, paramVal){
+		var newAdditionalURL = "";
+		var tempArray = url.split("?");
+		var baseURL = tempArray[0];
+		var additionalURL = tempArray[1];
+		var temp = "";
+		
+		if (additionalURL) {
+			tempArray = additionalURL.split("&");
+			
+			for (var i=0; i<tempArray.length; i++){
+				if(tempArray[i].split('=')[0] != param){
+					newAdditionalURL += temp + tempArray[i];
+					temp = "&";
+				}
 			}
 		}
-	}
-	return baseURL + newAdditionalURL;
-}
 
-window.onerror = function(msg, url, linenumber) {
-	alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
-	return true;
-}
+		var rows_txt = temp + "" + param + "=" + paramVal;
+		return baseURL + "?" + newAdditionalURL + rows_txt;
+	}
+	
+	function removeURLParameter(url, param){
+		var newAdditionalURL = "";
+		var tempArray = url.split("?");
+		var baseURL = tempArray[0];
+		var additionalURL = tempArray[1];
+		var temp = "?";
+		
+		if (additionalURL) {
+			tempArray = additionalURL.split("&");
+			
+			for (var i=0; i<tempArray.length; i++){
+				if(tempArray[i].split('=')[0] != param){
+					newAdditionalURL += temp + tempArray[i];
+					temp = "&";
+				}
+			}
+		}
+		return baseURL + newAdditionalURL;
+	}
+
+	window.onerror = function(msg, url, linenumber) {
+		alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+		return true;
+	}
 </script>
