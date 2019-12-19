@@ -1,0 +1,8 @@
+Website V4.0:
+
+Template:
+=========
+[Header]
+[Navigation]
+[Body]	<-- This and the color scheme is all that changes
+[Footer]

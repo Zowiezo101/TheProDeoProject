@@ -1,5 +1,5 @@
 <script>
-window.onload = function goHome() {
+window.onload = function onLoad() {
 	window.location.href = "web/home.php";
 }
 </script>
