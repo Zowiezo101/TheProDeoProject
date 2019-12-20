@@ -81,11 +81,11 @@ if($__included_by_maps__) {
 					$item = 'new CreateEvent("'.$name.'", "'.$ID.'", "'.$previousID.'", "'.$length.'"),';
 					$item_set = $item_set."\r\n\t".$item;
 				} else {
-					$name = $item['Name'];
-					$ID = $item['ID'];
-					$IDMother = $item['MotherID'];
-					$IDFather = $item['FatherID'];
-					$Gender = $item['Gender'];
+					$name = $item['name'];
+					$ID = $item[substr($id, 0, -1).'_id'];
+					$IDMother = $item['mother_id'];
+					$IDFather = $item['father_id'];
+					$Gender = $item['gender'];
 				
 					$item = 'new CreatePeople("'.$name.'", "'.$ID.'", "'.$IDMother.'", "'.$IDFather.'", "'.$Gender.'"),';
 					$item_set = $item_set."\r\n\t".$item;

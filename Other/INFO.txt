@@ -24,3 +24,6 @@ Google Maps API:
 id: prodeo-177715
 AIzaSyAyFq1pKyxT7asd87wAgr83_yWIrT-sz7E
 API-sleutel 1
+
+Debugging the website:
+https://www.cloudways.com/blog/php-debug/

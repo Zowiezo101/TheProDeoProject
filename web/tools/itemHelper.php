@@ -47,6 +47,7 @@ function AddParams($page, $id, $sort) {
 // This function creates a table with one page of item results.
 // One page contains 100 items in a table.
 function GetListOfItems($table) {
+        global $id;
 	global $dict_Search;
 	global $conn;
 	
@@ -69,26 +70,26 @@ function GetListOfItems($table) {
 	switch($sort) {
 		case 'alp':
 		// Get new SQL array of items
-		$sortBy = 'Name ASC';
+		$sortBy = 'name ASC';
 		break;
 		
 		case 'r-alp':
 		// Get new SQL array of items
-		$sortBy = 'Name DESC';
+		$sortBy = 'name DESC';
 		break;
 		
 		case 'r-app':
 		// Get new SQL array of items
-		$sortBy = 'ID DESC';
+		$sortBy = substr($id, 0, -1).'_id DESC';
 		break;
 		
 		default:
 		// Get new SQL array of items
-		$sortBy = 'ID ASC';
+		$sortBy = substr($id, 0, -1).'_id ASC';
 	}
 	
 	// Getting the query ready
-	$sql = "SELECT ID,Name FROM ".$table." ORDER BY ".$sortBy." LIMIT ".($page_nr*100).",".(($page_nr+1)*100);
+	$sql = "SELECT ".substr($id, 0, -1)."_id, name FROM ".$table." ORDER BY ".$sortBy." LIMIT ".($page_nr*100).",".(($page_nr+1)*100);
 	$result = $conn->query($sql);
 	
 	// If there are no results
@@ -102,7 +103,7 @@ function GetListOfItems($table) {
 		while ($name = $result->fetch_array()) {
 			PrettyPrint("				<tr>");
 			PrettyPrint("					<td>");
-			PrettyPrint("						<button onclick='saveScroll(\"".$table.".php".AddParams($page_nr, $name['ID'], $sort)."\")'>".$name['Name']."</button>");
+			PrettyPrint("						<button onclick='saveScroll(\"".$table.".php".AddParams($page_nr, $name[substr($id, 0, -1).'_id'], $sort)."\")'>".$name['name']."</button>");
 			PrettyPrint("					</td>");
 			PrettyPrint("				</tr>");
 			PrettyPrint("");
@@ -138,11 +139,12 @@ function GetNumberOfItems($table) {
 
 // Get the information for a single item
 function GetItemInfo($table, $ID) {
+        global $id;
 	global $dict_Search;
 	global $conn;
 	
 	// The query to run
-	$sql = "SELECT * FROM ".$table." WHERE ID=".$ID;
+	$sql = "SELECT * FROM ".$table." WHERE ".substr($id, 0, -1)."_id=".$ID;
 	$result = $conn->query($sql);
 	$item = NULL;
 	
@@ -238,7 +240,7 @@ function _Database_Helper_layout() {
 		
 				// Add the name of the current person as a header
 		PrettyPrint('	var Name = document.createElement("h1"); ');
-		PrettyPrint('	Name.innerHTML = "'.$information["Name"].'"; ');
+		PrettyPrint('	Name.innerHTML = "'.$information["name"].'"; ');
 		PrettyPrint('	contentEl.appendChild(Name); ');
 		PrettyPrint('');
 				// Create a Table
@@ -255,7 +257,7 @@ function _Database_Helper_layout() {
 			
 			// Name is already shown. 
 			// ID number might just confuse the reader, so hide it.
-			if (($key == "Name") or ($key == "ID")) {
+			if (($key == "name") or ($key == substr($id, 0, -1)."_id")) {
 				continue;
 			}
 			

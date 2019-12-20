@@ -6,3 +6,7 @@ Template:
 [Navigation]
 [Body]	<-- This and the color scheme is all that changes
 [Footer]
+
+
+- Color scheme is done with classes
+- Header, Navigation and Footer are all in a separate understandable page or function, ect..
