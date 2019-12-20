@@ -102,104 +102,8 @@
 	</head>
 		
 	<body id="<?php echo $id; ?>" class="<?php echo $$id; ?>">
-			<!-- Header, with logo, banner and options -->
-			<div id="header">
-				<!-- Logo -->
-				<div >
-					<a id="logo_link" href="home.php" ></a>
-				</div>
-				
-				<!-- Banner, in the corresponding language -->
-				<div >
-					<img id="banner_img" src="img/banner/banner_<?php echo $$id; ?>.svg" alt="Banner" />
-					<h1 id="banner_text"><?php echo $dict_Footer["slogan"]; ?></h1>
-				</div>
-				
-				<!-- Options -->
-				<div id="options">
-				
-					<!-- Dropdown list for available languages -->
-					<div id="dropdown_lang_div">
-					
-						<!-- The button to make the drop down list of options appear -->
-						<button 
-							style=" 
-								background-image: url('img/lang/lang_<?php echo $_SESSION["lang"]; ?>.svg'); 
-								background-size: auto 100%;" 
-							id="dropdown_lang_button" 
-							onclick="ShowDropDown('dropdown_lang_menu')">
-								<?php PrettyPrint($_SESSION["lang"], 1); ?>
-						</button>
-						
-						<!-- The actual drop down menu, hidden at first -->
-						<div id="dropdown_lang_menu">
-							<form method="post">
-								<?php getLangList($_SESSION["lang"]); ?>
-							</form>
-						</div>
-					</div>
-					
-					<!-- Settings -->
-					<div class="settings" >
-						<a class="settings" href="settings.php" ></a>
-					</div>
-				</div>
-			</div>
-			
-			<!-- Navigation bar -->
-			<div id="navigation">
-				<ul>
-					<!-- Home page -->
-					<li>
-						<?php MakeButton("home"); ?>
-					</li>
-					
-					<!-- Dropdown menu for Database items -->
-					<li><div id="dropdown_db_div">
-					
-						<!-- The button to make the drop down list of options appear -->
-						<?php MakeButton("items");
-							PrettyPrint("				".$dict_NavBar["Database"]); ?>
-						</button>
-						
-						<!-- The actual drop down menu, hidden at first -->
-						<div id="dropdown_db_menu" class="dropdown_nav_menu">
-							<?php MakeButton("peoples"); ?>
-							<?php MakeButton("locations"); ?>
-							<?php MakeButton("specials"); ?>
-							<?php MakeButton("books"); ?>
-							<?php MakeButton("events"); ?>
-							<?php MakeButton("search"); ?>
-						</div>
-					</div></li>
-					
-					<!-- Other options in the navigation bar -->
-					<li>
-						<?php MakeButton("timeline"); ?>
-					</li>
-					<li>
-						<?php MakeButton("familytree"); ?>
-					</li>
-					<li>
-						<?php MakeButton("worldmap"); ?>
-					</li>
-					
-					<!-- Dropdown menu for Pro Deo items -->
-					<li><div id="dropdown_prodeo_div">
-					
-						<!-- The button to make the drop down list of options appear -->
-						<?php MakeButton("prodeo");
-							PrettyPrint("				".$dict_NavBar["ProDeo"]); ?>
-						</button>
-						
-						<!-- The actual drop down menu, hidden at first -->
-						<div id="dropdown_prodeo_menu" class="dropdown_nav_menu">
-							<?php MakeButton("aboutus"); ?>
-							<?php MakeButton("contact"); ?>
-						</div>
-					</div></li>
-				</ul>
-			</div>
+		<?php require "layout/header.php" ?>
+		<?php require "layout/navigation.php" ?>
 
 			<!-- Actual content of the page itself 
 				 This is defined in the corresponding php page -->
@@ -209,29 +113,8 @@
 					$Helper_layout(); 
 				?>
 			</div>		
-
-			<!-- And the footer of every page -->
-			<div id="footer">
-				<?php 
-					// Get the name of the file that has currently included this file
-					$uri_parts = explode('?', basename($_SERVER['REQUEST_URI'], 2));
-					$current_page = $uri_parts[0];
-					
-					// Now get the timestamp of that file
-					$date_page = filemtime($current_page);
-					
-					// Set the timezone to the timezone that I use on my computer
-					date_default_timezone_set('Europe/Amsterdam');
-					
-					// Print the copyright year and the name of this website
-					PrettyPrint($dict_Footer["PP_name"]."&copy;".date("Y"), 1);
-					PrettyPrint("<br>");
-					
-					// Version and date of file modification
-					PrettyPrint($dict_Footer["PP_version"].": v3.0. ");
-					PrettyPrint($dict_Footer["PP_date"]." ".date("d-m-Y H:i", $date_page)); 
-				?>
-			</div>
+			
+		<?php require "layout/footer.php" ?>
 	</body>
 </html>
 		
