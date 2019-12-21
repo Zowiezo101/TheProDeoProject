@@ -864,15 +864,19 @@ pre {
 }
 
 /* Right side of the screen */
+/* TODO: Extended events */
 #familytree_div,
-#timeline_div {
+#timeline_div,
+#timeline_ext_div{
 	max-height: 500px;
 	overflow: hidden;
 }
 
 /* The SVG in the div */
+/* TODO: Extended events */
 #familytree_div svg,
-#timeline_div svg {
+#timeline_div svg,
+#timeline_ext_div svg{
 	/* No offsets or anything */
 	margin: 0;
 	padding: 0;

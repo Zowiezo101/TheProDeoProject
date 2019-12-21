@@ -28,7 +28,8 @@
 					
 					<!-- Other options in the navigation bar -->
 					<li>
-						<?php MakeButton("timeline"); ?>
+						<?php // MakeButton("timeline"); ?>
+						<?php MakeButton("timeline_ext"); // TODO: Extended events timelin ?>
 					</li>
 					<li>
 						<?php MakeButton("familytree"); ?>

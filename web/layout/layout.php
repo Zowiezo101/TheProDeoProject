@@ -23,6 +23,7 @@
 	$specials = "purple";
 	$search = "black";
 	$timeline = "blue";
+	$timeline_ext = "blue"; // TODO: Extended events
 	$familytree = "red";
 	$worldmap = "yellow";
 	$prodeo = "orange";

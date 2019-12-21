@@ -1,5 +1,6 @@
 <?php
-	$__included_by_maps__ = (($id == "timeline") || ($id == "familytree"));
+    // TODO: Extended events
+	$__included_by_maps__ = (($id == "timeline") || ($id == "familytree") || ($id == "timeline_ext"));
 
 if($__included_by_maps__) {
 		
@@ -61,6 +62,9 @@ if($__included_by_maps__) {
 		
 		if (($id == "timeline") || ($id == "events")) {
 			$sql = "SELECT * FROM events";
+        } elseif ($id == "timeline_ext") {
+            // TODO: Extended events
+            $sql = "SELECT * FROM ext_events LEFT JOIN event_to_event ON ext_events.ext_event_id = event_to_event.next_event_id";
 		} else {
 			$sql = "SELECT * FROM peoples";
 		}
@@ -82,7 +86,16 @@ if($__included_by_maps__) {
 					
 					$item = 'new CreateEvent("'.$name.'", "'.$ID.'", "'.$previousID.'", "'.$length.'"),';
 					$item_set = $item_set."\r\n\t".$item;
-				} else {
+				} elseif ($id == "timeline_ext") {
+                    // TODO: Extended events
+					$name = $item['descr'];
+					$ID = $item['ext_event_id'];
+					$length = $item['length'];
+                    $previousID = $item['curr_event_id'];
+					
+					$item = 'new CreateEvent("'.$name.'", "'.$ID.'", "'.$previousID.'", "'.$length.'"),';
+					$item_set = $item_set."\r\n\t".$item; 
+                } else {
 					$name = $item['name'];
 					$ID = $item['people_id'];
 					$IDMother = $item['mother_id'];

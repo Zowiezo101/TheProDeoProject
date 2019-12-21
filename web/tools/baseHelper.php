@@ -149,6 +149,9 @@ if ($conn->connect_error) {
 // Which helper file do we need? One for items or one for maps?
 if (($id == "timeline") || ($id == "familytree")) {
 	require "tools/mapHelper.php";
+} elseif ($id == "timeline_ext") {
+	// TODO: Extended events
+	require "tools/mapHelper.php";    
 } elseif (($id == "peoples") 	|| 
 		($id == "locations") 	|| 
 		($id == "specials") 	|| 
