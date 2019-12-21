@@ -5,17 +5,27 @@
         <group>
             <file>file:/C:/Wamp/www/index.php</file>
             <file>file:/C:/Wamp/www/web/settings.php</file>
+            <file>file:/C:/Wamp/www/web/events.php</file>
+            <file>file:/C:/Wamp/www/web/search.php</file>
+            <file>file:/C:/Wamp/www/web/worldmap.php</file>
             <file>file:/C:/Wamp/www/web/peoples.php</file>
             <file>file:/C:/Wamp/www/web/tools/baseHelper.php</file>
             <file>file:/C:/Wamp/www/web/layout/styles.css</file>
             <file>file:/C:/Wamp/www/web/aboutus.php</file>
             <file>file:/C:/Wamp/www/web/phpmailer/PHPMailer.php</file>
+            <file>file:/C:/Wamp/www/web/layout/footer.php</file>
+            <file>file:/C:/Wamp/www/web/timeline_ext.php</file>
+            <file>file:/C:/Wamp/www/web/layout/header.php</file>
             <file>file:/C:/Wamp/www/web/translations/translation_nl.php</file>
+            <file>file:/C:/Wamp/www/web/locations.php</file>
+            <file>file:/C:/Wamp/www/web/timeline.php</file>
             <file>file:/C:/Wamp/www/web/tools/itemHelper.php</file>
             <file>file:/C:/Wamp/www/web/layout/layout.php</file>
             <file>file:/C:/Wamp/www/web/layout/styles_color_theme.css</file>
+            <file>file:/C:/Wamp/www/web/familytree.php</file>
             <file>file:/C:/Wamp/www/web/tools/mapHelper.php</file>
             <file>file:/C:/Wamp/www/web/home.php</file>
+            <file>file:/C:/Wamp/www/web/layout/navigation.php</file>
         </group>
     </open-files>
 </project-private>
