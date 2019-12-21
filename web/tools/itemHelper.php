@@ -47,7 +47,6 @@ function AddParams($page, $id, $sort) {
 // This function creates a table with one page of item results.
 // One page contains 100 items in a table.
 function GetListOfItems($table) {
-        global $id;
 	global $dict_Search;
 	global $conn;
 	
@@ -80,16 +79,16 @@ function GetListOfItems($table) {
 		
 		case 'r-app':
 		// Get new SQL array of items
-		$sortBy = substr($id, 0, -1).'_id DESC';
+		$sortBy = substr($table, 0, -1).'_id DESC';
 		break;
 		
 		default:
 		// Get new SQL array of items
-		$sortBy = substr($id, 0, -1).'_id ASC';
+		$sortBy = substr($table, 0, -1).'_id ASC';
 	}
 	
 	// Getting the query ready
-	$sql = "SELECT ".substr($id, 0, -1)."_id, name FROM ".$table." ORDER BY ".$sortBy." LIMIT ".($page_nr*100).",".(($page_nr+1)*100);
+	$sql = "SELECT ".substr($table, 0, -1)."_id, name FROM ".$table." ORDER BY ".$sortBy." LIMIT ".($page_nr*100).",".(($page_nr+1)*100);
 	$result = $conn->query($sql);
 	
 	// If there are no results
@@ -103,7 +102,7 @@ function GetListOfItems($table) {
 		while ($name = $result->fetch_array()) {
 			PrettyPrint("				<tr>");
 			PrettyPrint("					<td>");
-			PrettyPrint("						<button onclick='saveScroll(\"".$table.".php".AddParams($page_nr, $name[substr($id, 0, -1).'_id'], $sort)."\")'>".$name['name']."</button>");
+			PrettyPrint("						<button onclick='saveScroll(\"".$table.".php".AddParams($page_nr, $name[substr($table, 0, -1).'_id'], $sort)."\")'>".$name['name']."</button>");
 			PrettyPrint("					</td>");
 			PrettyPrint("				</tr>");
 			PrettyPrint("");
@@ -115,7 +114,6 @@ function GetListOfItems($table) {
 // Get the numbers of items that are stored in a table for a certain page
 // This is to see if it was the last page
 function GetNumberOfItems($table) {
-	global $dict_Search;
 	global $conn;
 	
 	// Check if the page number is set
@@ -126,7 +124,7 @@ function GetNumberOfItems($table) {
 	}
 	
 	// The query to run
-	$sql = "SELECT ID,Name FROM ".$table." WHERE ID>=".($page_nr*100)." LIMIT 101";
+	$sql = "SELECT ".substr($table, 0, -1)."_id, name FROM ".$table." WHERE ".substr($table, 0, -1)."_id >= ".($page_nr*100)." LIMIT 101";
 	$result = $conn->query($sql);
 	
 	if (!$result) {
@@ -139,12 +137,11 @@ function GetNumberOfItems($table) {
 
 // Get the information for a single item
 function GetItemInfo($table, $ID) {
-        global $id;
 	global $dict_Search;
-	global $conn;
+    global $conn;
 	
 	// The query to run
-	$sql = "SELECT * FROM ".$table." WHERE ".substr($id, 0, -1)."_id=".$ID;
+	$sql = "SELECT * FROM ".$table." WHERE ".substr($table, 0, -1)."_id = ".$ID;
 	$result = $conn->query($sql);
 	$item = NULL;
 	
@@ -193,7 +190,7 @@ function _Database_Helper_layout() {
 					// Sort on appearance
 	PrettyPrint('			<button id="button_app" class="sort_9_1" onClick="SortOnAppearance()"> ');
 	PrettyPrint('			</button> ');
-		PrettyPrint('');
+	PrettyPrint('');
 					// Next page
 	PrettyPrint('			<button id="button_right" class="button_'.$$id.'" onClick="NextPage()"> ');
 	PrettyPrint('				→ ');
@@ -257,9 +254,19 @@ function _Database_Helper_layout() {
 			
 			// Name is already shown. 
 			// ID number might just confuse the reader, so hide it.
-			if (($key == "name") or ($key == substr($id, 0, -1)."_id")) {
+			if (($key == "name") or ($key == substr($id, 0, -1)."_id") or ($key == "order_id")) {
 				continue;
 			}
+            
+            // We'll use these when we get to book_start_vers
+            if (($key == "book_start_id") or ($key == "book_start_chap")) {
+                continue;
+            }
+            
+            // We'll use these when we get to book_end_vers
+            if (($key == "book_end_id") or ($key == "book_end_chap")) {
+                continue;
+            }
 			
 			// Get the value in Javascript
 			PrettyPrint('	var value = "'.$value.'"; ');
@@ -267,86 +274,87 @@ function _Database_Helper_layout() {
 			
 			// When a key contains the name 'ID', give it a special treatment.
 			// These keys usually contain references to peoples, locations, specials or events. 
-			if (strpos($key, "ID") !== false) {
+			if (strpos($key, "_id") !== false) {
 					
-				if (($key == "PlaceOfBirthID") 	|| 
-					($key == "PlaceOfEndID") 	|| 
-					($key == "PlaceOfLivingID") || 
-					($key == "LocationIDs")) 	{	
-						$table = "locations";
-				} else if (
-					($key == "FounderID") 	||
-					($key == "DestroyerID") ||
-					($key == "PeopleIDs"))	{
-						$table = "peoples";
-				} else if  (
-					($key == "StartEventID") ||
-					($key == "EndEventID"))	{
-						$table = "events";
-				} else if  ($key == "SpecialIDs") {
-						$table = "specials";
-				} else {
-						$table = $id;
-				}
+                // TODO: This comes from item_to_item tables
+//				if (($key == "PlaceOfBirthID") 	|| 
+//					($key == "PlaceOfEndID") 	|| 
+//					($key == "PlaceOfLivingID") || 
+//					($key == "LocationIDs")) 	{	
+//						$table = "locations";
+//				} else if (
+//					($key == "FounderID") 	||
+//					($key == "DestroyerID") ||
+//					($key == "PeopleIDs"))	{
+//						$table = "peoples";
+//				} else if  (
+//					($key == "StartEventID") ||
+//					($key == "EndEventID"))	{
+//						$table = "events";
+//				} else if  ($key == "SpecialIDs") {
+//						$table = "specials";
+//				} else {
+//						$table = $id;
+//				}
+//				
+//				// Only if the value of this key is actually set, 
+//				// otherwise we might run into some errors..
+//				if ($value != "") {
+//					
+//					// There might be multiple IDs linked to this item.
+//					// The different IDs are separated by comma's
+//					PrettyPrint('	var linkParts = value.split(","); ');
+//					PrettyPrint('');	
+//							// Same for the names they refer to
+//					PrettyPrint('	names = TableData.innerHTML; ');
+//					PrettyPrint('	var nameParts = names.split(","); ');
+//					PrettyPrint('');
+//							// Create a table with the different names
+//					PrettyPrint('	Table2 = document.createElement("table"); ');
+//					PrettyPrint('');
+//							// And for each name, create the amount of rows needed to show
+//							// all the different linked names
+//					PrettyPrint('	for (var types = 0; types < nameParts.length; types++) { ');
+//								
+//								// Table data
+//					PrettyPrint('		TableData2 = document.createElement("td"); ');
+//					PrettyPrint('');
+//								// Not every linked name has an ID given..
+//								// When the ID is given, refer to the item with the same ID.
+//								// If not, just place the name
+//					PrettyPrint('		if (types < linkParts.length) { ');
+//									// Table links, the name is the name of the item
+//					PrettyPrint('			TableLink2 = document.createElement("a"); ');
+//					PrettyPrint('			TableLink2.innerHTML = nameParts[types]; ');
+//					PrettyPrint('');		
+//									// The link itself is linked to the item it is referring to
+//					PrettyPrint('			currentHref = window.location.href; ');
+//					PrettyPrint('			TableLink2.href = updateURLParameter("'.$table.'.php", "id", linkParts[types]); ');
+//					PrettyPrint('');			
+//									// Add it to the table with linked items
+//					PrettyPrint('			TableData2.appendChild(TableLink2); ');
+//					PrettyPrint('		} else { ');
+//									// When the ID is not given, just give the name..
+//					PrettyPrint('			TableData2.innerHTML = nameParts[types]; ');
+//					PrettyPrint('		} ');
+//					PrettyPrint('');		
+//								// Table row
+//					PrettyPrint('		TableRow2 = document.createElement("tr"); ');
+//					PrettyPrint('		TableRow2.appendChild(TableData2); ');
+//					PrettyPrint('');		
+//								// Little table inside of table
+//					PrettyPrint('		Table2.appendChild(TableRow2); ');					
+//					PrettyPrint('	} ');
+//					PrettyPrint('');
+//							// Update the previous table cell with links to the IDs
+//					PrettyPrint('	TableData.innerHTML = ""; ');
+//					PrettyPrint('	TableData.appendChild(Table2); ');
+//					PrettyPrint('');
+//					PrettyPrint('');
+//				}
 				
-				// Only if the value of this key is actually set, 
-				// otherwise we might run into some errors..
-				if ($value != "") {
-					
-					// There might be multiple IDs linked to this item.
-					// The different IDs are separated by comma's
-					PrettyPrint('	var linkParts = value.split(","); ');
-					PrettyPrint('');	
-							// Same for the names they refer to
-					PrettyPrint('	names = TableData.innerHTML; ');
-					PrettyPrint('	var nameParts = names.split(","); ');
-					PrettyPrint('');
-							// Create a table with the different names
-					PrettyPrint('	Table2 = document.createElement("table"); ');
-					PrettyPrint('');
-							// And for each name, create the amount of rows needed to show
-							// all the different linked names
-					PrettyPrint('	for (var types = 0; types < nameParts.length; types++) { ');
-								
-								// Table data
-					PrettyPrint('		TableData2 = document.createElement("td"); ');
-					PrettyPrint('');
-								// Not every linked name has an ID given..
-								// When the ID is given, refer to the item with the same ID.
-								// If not, just place the name
-					PrettyPrint('		if (types < linkParts.length) { ');
-									// Table links, the name is the name of the item
-					PrettyPrint('			TableLink2 = document.createElement("a"); ');
-					PrettyPrint('			TableLink2.innerHTML = nameParts[types]; ');
-					PrettyPrint('');		
-									// The link itself is linked to the item it is referring to
-					PrettyPrint('			currentHref = window.location.href; ');
-					PrettyPrint('			TableLink2.href = updateURLParameter("'.$table.'.php", "id", linkParts[types]); ');
-					PrettyPrint('');			
-									// Add it to the table with linked items
-					PrettyPrint('			TableData2.appendChild(TableLink2); ');
-					PrettyPrint('		} else { ');
-									// When the ID is not given, just give the name..
-					PrettyPrint('			TableData2.innerHTML = nameParts[types]; ');
-					PrettyPrint('		} ');
-					PrettyPrint('');		
-								// Table row
-					PrettyPrint('		TableRow2 = document.createElement("tr"); ');
-					PrettyPrint('		TableRow2.appendChild(TableData2); ');
-					PrettyPrint('');		
-								// Little table inside of table
-					PrettyPrint('		Table2.appendChild(TableRow2); ');					
-					PrettyPrint('	} ');
-					PrettyPrint('');
-							// Update the previous table cell with links to the IDs
-					PrettyPrint('	TableData.innerHTML = ""; ');
-					PrettyPrint('	TableData.appendChild(Table2); ');
-					PrettyPrint('');
-					PrettyPrint('');
-				}
-				
-			} else if ((($key == "FirstAppearance") ||
-						($key == "LastAppearance")) & ($value != "")) {
+			} else if ((($key == "book_start_vers") ||
+						($key == "book_end_vers")) & ($value != "")) {
 				// Create a link to the EO jongerenbijbel website or an english bible website!
 				// This website should correspond to the translation used for the database!
 				
@@ -355,8 +363,21 @@ function _Database_Helper_layout() {
 				PrettyPrint('');
 								// Only show two decimals after the comma
 				PrettyPrint('	var TableLink = document.createElement("a"); ');
-				PrettyPrint('	TableLink.innerHTML = "'.convertBibleVerseText($value).'"; ');
-				PrettyPrint('	TableLink.href = "'.convertBibleVerseLink($value).'"; ');
+                if ($key == "book_start_vers") {
+                    PrettyPrint('	TableLink.innerHTML = "'.convertBibleVerseText($information["book_start_id"], 
+                                                                                   $information["book_start_chap"], 
+                                                                                   $value).'"; ');
+                    PrettyPrint('	TableLink.href = "'.convertBibleVerseLink($information["book_start_id"], 
+                                                                              $information["book_start_chap"], 
+                                                                              $value).'"; ');
+                } else {
+                    PrettyPrint('	TableLink.innerHTML = "'.convertBibleVerseText($information["book_end_id"], 
+                                                                                   $information["book_end_chap"], 
+                                                                                   $value).'"; ');
+                    PrettyPrint('	TableLink.href = "'.convertBibleVerseLink($information["book_end_id"], 
+                                                                              $information["book_end_chap"], 
+                                                                              $value).'"; ');
+                }
 				PrettyPrint('	TableLink.target = "_blank"; ');
 				PrettyPrint('');
 				PrettyPrint('	var TableData = document.createElement("td"); ');
@@ -380,7 +401,7 @@ function _Database_Helper_layout() {
 				PrettyPrint('');
 				PrettyPrint('	var TableData = document.createElement("td"); ');
 				// In case of coordinates
-				if (($key == "Coordinates") && ($value != "")) {
+				if (($key == "coordinates") && ($value != "")) {
 									// Split the string coordinates into two separate coordinates
 					PrettyPrint('	var coordinatesStr = value.split(","); ');
 					PrettyPrint('');
@@ -394,7 +415,7 @@ function _Database_Helper_layout() {
 					PrettyPrint('	TableLink.innerHTML = coordinatesFl[0].toFixed(2) + ", " + coordinatesFl[1].toFixed(2); ');
 					PrettyPrint('');
 									// Link it to the worldmap
-					PrettyPrint('	TableLink.href = updateURLParameter("worldmap.php", "id", '.$information["ID"].'); ');
+					PrettyPrint('	TableLink.href = updateURLParameter("worldmap.php", "id", '.$information[substr($id, 0, -1)."_id"].'); ');
 					PrettyPrint('	TableData.appendChild(TableLink); ');
 				} else {
 					PrettyPrint('	TableData.innerHTML = "'.$value.'"; ');
@@ -466,27 +487,24 @@ function _Database_Helper_layout() {
 
 // TODO: When more than one language is available, 
 // use convertBibleVerseLinkDEF, convertBibleVerseLinkEN functions 
-function convertBibleVerseLink($value) {
+function convertBibleVerseLink($book, $chap, $verse) {
 	global $dict_Footer;
-	$bookNum = intval(substr($value, 0, 2), 16);
-	$chapNum = intval(substr($value, 2, 2), 16);
-	$verseNum = intval(substr($value, 4, 2), 16);
 	
 	// Get the book name from the databse (this is to be sure it is in the correct language
-	$book = GetItemInfo("books", $bookNum);
+	$bookTXT = GetItemInfo("books", $book);
 	
 	// Convert the text to UTF for the dutch website to understand
 	// Local and hosted websites use different encoding..
-	if (mb_detect_encoding($book['Name']) == "UTF-8") {
+	if (mb_detect_encoding($bookTXT['name']) == "UTF-8") {
 		// Already UTF-8
-		$bookUTF = $book['Name'];
+		$bookUTF = $bookTXT['name'];
 		// $bookUTF = mb_detect_encoding($book['Name']);
 	} else {
-		$bookUTF = iconv("ISO-8859-1", "UTF-8", $book['Name']);
+		$bookUTF = iconv("ISO-8859-1", "UTF-8", $bookTXT['name']);
 	}
 	
 	// The first part of the webpage to refer to
-	$weblink = $dict_Footer['DB_website'].$bookUTF."/".$chapNum;
+	$weblink = $dict_Footer['DB_website'].$bookUTF."/".$chap;
 	
 	$bookAbv = ["GEN", "EXO", "LEV", "NUM", "DEU",
 				"JOS", "JDG", "RUT", "1SA", "2SA",
@@ -504,20 +522,16 @@ function convertBibleVerseLink($value) {
 				"REV"];
 	
 	// Link to a certain part of the webpage, to get the exact verse mentioned
-	$weblink2 = sprintf("#%s-%03d-%03d", $bookAbv[$bookNum], $chapNum, $verseNum);
+	$weblink2 = sprintf("#%s-%03d-%03d", $bookAbv[$book], $chap, $verse);
 	
 	return $weblink.$weblink2;
 }
 
-function convertBibleVerseText($value) {
+function convertBibleVerseText($book, $chap, $verse) {
 	$text = "";
-	if ($value != "") {
-		$bookNum = intval(substr($value, 0, 2), 16);
-		$chapNum = intval(substr($value, 2, 2), 16);
-		$verseNum = intval(substr($value, 4, 2), 16);
-		
-		$book = GetItemInfo("books", $bookNum);
-		$text = $book['Name']." ".$chapNum.":".$verseNum;
+	if ($book != "") {		
+		$bookTXT = GetItemInfo("books", $book);
+		$text = $bookTXT['name']." ".$chap.":".$verse;
 	}
 	return $text;
 }

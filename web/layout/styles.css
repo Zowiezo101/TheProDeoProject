@@ -23,18 +23,6 @@ body {
 	
 }
 
-/* Store some variables in here */
-:root {
-	--header-height: 75px;
-	--options-height: 50px;
-	--nav-height: 50px;
-	--footer-height: 50px;
-	--button-height: 25px;
-	--banner-width: 500px;
-	--lang-width: 100px;
-}
-
-
 /************************************************
  * Header parts
  */
@@ -962,4 +950,19 @@ pre {
 	/* Clear letters in the center of the button */
 	text-align: center;
 	font-weight: bold;
+}
+
+/************************************************
+ * The root element (gives an error in netbeans, so at the bottom for now)
+ */
+
+/* Store some variables in here */
+:root {
+	--header-height: 75px;
+	--options-height: 50px;
+	--nav-height: 50px;
+	--footer-height: 50px;
+	--button-height: 25px;
+	--banner-width: 500px;
+	--lang-width: 100px;
 }
