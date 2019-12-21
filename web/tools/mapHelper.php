@@ -73,16 +73,18 @@ if($__included_by_maps__) {
 		} else {
 			while ($item = $result->fetch_array()) {
 				if (($id == "timeline") || ($id == "events")) {
-					$name = $item['Name'];
-					$ID = $item['ID'];
-					$previousID = $item['PreviousID'];
-					$length = $item['Length'];
+					$name = $item['name'];
+					$ID = $item['event_id'];
+					$length = $item['length'];
+                    
+                    // TODO: This needs to change, unless everything is nicely on order..?
+                    $previousID = $ID - 1;
 					
 					$item = 'new CreateEvent("'.$name.'", "'.$ID.'", "'.$previousID.'", "'.$length.'"),';
 					$item_set = $item_set."\r\n\t".$item;
 				} else {
 					$name = $item['name'];
-					$ID = $item[substr($id, 0, -1).'_id'];
+					$ID = $item['people_id'];
 					$IDMother = $item['mother_id'];
 					$IDFather = $item['father_id'];
 					$Gender = $item['gender'];

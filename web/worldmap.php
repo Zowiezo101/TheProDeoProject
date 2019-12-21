@@ -33,7 +33,7 @@ function FindLocations() {
 	global $conn;
 	$location_set = "";
 	
-	$sql = "SELECT * FROM locations WHERE Coordinates IS NOT NULL";
+	$sql = "SELECT * FROM locations WHERE coordinates IS NOT NULL AND coordinates != ''";
 	$result = $conn->query($sql);
 	
 	if (!$result) {
@@ -43,9 +43,9 @@ function FindLocations() {
 	} else {
 		$counter = 0;
 		while ($location = $result->fetch_array()) {
-			$name = $location['Name'];
-			$ID = $location['ID'];
-			$Coordinates = $location['Coordinates'];
+			$name = $location['name'];
+			$ID = $location['location_id'];
+			$Coordinates = $location['coordinates'];
 			
 			$location = "new CreateLocation('".$name."', '".$counter."', '".$ID."', '".$Coordinates."'),";
 			$location_set = $location_set."\r\n\t".$location;
@@ -162,7 +162,7 @@ function CreateLocation(name, index, ID, coordinates) {
 		
 		// This is the text that is shown, when the marker is clicked
 		this.marker.infoWindow = new google.maps.InfoWindow({
-			content: this.name + "<br><?php echo $dict_LocationsParams["Coordinates"]; ?>: " + this.coordinates[0].toFixed(2) + ", " + this.coordinates[1].toFixed(2) + "<br><a href=" + updateURLParameter("locations.php", "id", this.ID) + "><?php echo $dict_Worldmap["link_location"]; ?></a>"
+			content: this.name + "<br><?php echo $dict_LocationsParams["coordinates"]; ?>: " + this.coordinates[0].toFixed(2) + ", " + this.coordinates[1].toFixed(2) + "<br><a href=" + updateURLParameter("locations.php", "id", this.ID) + "><?php echo $dict_Worldmap["link_location"]; ?></a>"
 		});
 		
 		this.marker.addListener('click', function() {
