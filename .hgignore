@@ -1,3 +1,4 @@
 syntax: glob
 web/web.zip
 web.zip
+nbproject/private/private.xml
