@@ -1075,5 +1075,11 @@ if($__included_by_maps__) {
 				return objs.indexOf(item) >= 0 ? false : objs.push(item);
 		});
 	}
+
+/* Function to get any item using the ID of that item */
+function getItemById(ID) {
+    var Item = Items.find(x => x.ID === ID);
+    return Item;
+}
 	
 </script>
