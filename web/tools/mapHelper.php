@@ -84,25 +84,27 @@ if($__included_by_maps__) {
                     // TODO: This needs to change, unless everything is nicely on order..?
                     $previousID = $ID - 1;
 					
-					$item = 'new CreateEvent("'.$name.'", "'.$ID.'", "'.$previousID.'", "'.$length.'"),';
+					$item = 'new CreateEvent("'.$name.'", '.$ID.', '.$previousID.', "'.$length.'"),';
 					$item_set = $item_set."\r\n\t".$item;
 				} elseif ($id == "timeline_ext") {
                     // TODO: Extended events
 					$name = $item['descr'];
 					$ID = $item['ext_event_id'];
 					$length = $item['length'];
-                    $previousID = $item['curr_event_id'];
+                    
+                    // TODO: Some events have multiple previous IDs
+                    $previousID = $item['curr_event_id'] ? $item['curr_event_id'] : -1;
 					
-					$item = 'new CreateEvent("'.$name.'", "'.$ID.'", "'.$previousID.'", "'.$length.'"),';
+					$item = 'new CreateEvent("'.$name.'", '.$ID.', '.$previousID.', "'.$length.'"),';
 					$item_set = $item_set."\r\n\t".$item; 
                 } else {
 					$name = $item['name'];
 					$ID = $item['people_id'];
-					$IDMother = $item['mother_id'];
-					$IDFather = $item['father_id'];
+					$IDMother = $item['mother_id'] ? $item['mother_id'] : -1;
+					$IDFather = $item['father_id'] ? $item['father_id'] : -1;
 					$Gender = $item['gender'];
 				
-					$item = 'new CreatePeople("'.$name.'", "'.$ID.'", "'.$IDMother.'", "'.$IDFather.'", "'.$Gender.'"),';
+					$item = 'new CreatePeople("'.$name.'", '.$ID.', '.$IDMother.', '.$IDFather.', "'.$Gender.'"),';
 					$item_set = $item_set."\r\n\t".$item;
 				}
 			}
@@ -193,7 +195,7 @@ if($__included_by_maps__) {
 		var table = document.createElement("table");
 		for (var i = 0; i < ItemsList.length; i++) {
 			var ItemId = ItemsList[i];
-			var Item = Items[ItemId];
+			var Item = getItemById(ItemId);
 			
 			var TableLink = document.createElement("button");
 			TableLink.onclick = UpdateLink;
@@ -216,8 +218,8 @@ if($__included_by_maps__) {
 			var IDs = "<?php echo $_GET['id']; ?>".split(",");
 			
 			// Get the Map and the ID numbers
-			globalMapId = IDs[0];
-			globalItemId = IDs[1];
+			globalMapId = Number(IDs[0]);
+			globalItemId = Number(IDs[1]);
 			
 			prep_SetSVG();
 		<?php } ?>
@@ -237,11 +239,11 @@ if($__included_by_maps__) {
 		// The current generation level we are in
 		var levelCount = 0;
 		
-		while (lastSet == 0)
+		while (lastSet === 0)
 		{
 			var newIDset = [];
 			for (i = 0; i < IDset.length; i++) {
-				var Item = Items[IDset[i]];
+				var Item = getItemById(IDset[i]);
 				var childSet = Item.setLevel(levelCount);
 				
 				// Create the ID set of the next generation
@@ -251,7 +253,7 @@ if($__included_by_maps__) {
 			
 			// There are no more children to update
 			IDset = uniq(newIDset);
-			if (IDset.length == 0) {
+			if (IDset.length === 0) {
 				lastSet = 1;
 			}
 		}
@@ -294,20 +296,20 @@ if($__included_by_maps__) {
 			levelCounter.push(0);
 		}
 		
-		while (lastSet == 0)
+		while (lastSet === 0)
 		{		
 			var newIDset = [];
 			for (i = 0; i < IDset.length; i++) {
-				var Item = Items[IDset[i]];
+				var Item = getItemById(IDset[i]);
 				var level = Item.level;
 				
 				var childSet = [];
 				
 				// Only use the children of the direct next generation to get the correct numbers
 				for (var j = 0; j < Item.ChildIDs.length; j++) {
-					Child = Items[Item.ChildIDs[j]];
+					Child = getItemById(Item.ChildIDs[j]);
 					
-					if (Child.level == (Item.level + 1)) {
+					if (Child.level === (Item.level + 1)) {
 						childSet.push(Child.ID);
 					}
 				}
@@ -317,7 +319,7 @@ if($__included_by_maps__) {
 				
 				// Keep track of the amount of people on a certain level
 				// Only if the levelIndex is not already set
-				if (Item.levelIndex == -1) {
+				if (Item.levelIndex === -1) {
 					var currentLevelIDs = levelIDs[level];
 					currentLevelIDs.push(Item.ID);
 					levelIDs[level] = currentLevelIDs;
@@ -337,7 +339,7 @@ if($__included_by_maps__) {
 			
 			// There are no more children to update
 			IDset = uniq(newIDset);
-			if (IDset.length == 0) {
+			if (IDset.length === 0) {
 				lastSet = 1;
 			}
 		}
@@ -386,7 +388,7 @@ if($__included_by_maps__) {
 		
 		updateViewbox(0, 0, 1);
 		
-		if (window.navigator.msSaveOrOpenBlob != undefined) {			
+		if (window.navigator.msSaveOrOpenBlob !== undefined) {			
 			// Temporary div to save the svg in
 			var tempDiv = document.createElement("div");
 			var svgParent = svg.parentNode;
@@ -420,7 +422,7 @@ if($__included_by_maps__) {
 			newURL = newURL.replace(">>", ">");
 			
 			// Get the link and download the file
-			var topItem = Items[ItemsList[globalMapId]];
+			var topItem = getItemById(ItemsList[globalMapId]);
 			var blobObject = new Blob([newURL]);
 			window.navigator.msSaveOrOpenBlob(blobObject, topItem.name + ".svg");
 			
@@ -457,7 +459,7 @@ if($__included_by_maps__) {
 			SVG.appendChild(Controls);
 					
 			// Get the link and download the file
-			var topItem = Items[ItemsList[globalMapId]];
+			var topItem = getItemById(ItemsList[globalMapId]);
 			var link = document.getElementById('hidden_a');
 			link.href = URL;
 			link.download = topItem.name + ".svg";
@@ -486,7 +488,7 @@ if($__included_by_maps__) {
 			function toSolidBytes(match, p1) {
 				return String.fromCharCode('0x' + p1);
 			}
-		)
+		);
 		
 		var BToAString = btoa(RawBytes);
 		
@@ -520,20 +522,20 @@ if($__included_by_maps__) {
 		
 		// Disable selecting text or any other element
 		disable_select();
-	}
+	};
 
 	GetTouchPos = function (event) {
 		MouseX = event.changedTouches[0].pageX;
 		MouseY = event.changedTouches[0].pageY;
 		
-		Moving = true
+		Moving = true;
 		
 		// Disable selecting text or any other element
 		disable_select();
-	}
+	};
 
 	GetMouseMov = function (event) {
-		if (Moving == true) {
+		if (Moving === true) {
 			var dX = event.clientX - MouseX;
 			var dY = event.clientY - MouseY;
 			
@@ -542,10 +544,10 @@ if($__included_by_maps__) {
 			MouseX = event.clientX;
 			MouseY = event.clientY;
 		}
-	}
+	};
 
 	GetTouchMov = function (event) {
-		if (Moving == true) {
+		if (Moving === true) {
 			var dX = event.changedTouches[0].pageX - MouseX;
 			var dY = event.changedTouches[0].pageY - MouseY;
 			
@@ -554,14 +556,14 @@ if($__included_by_maps__) {
 			MouseX = event.changedTouches[0].pageX;
 			MouseY = event.changedTouches[0].pageY;
 		}
-	}
+	};
 
 	GetMouseOut = function (event) {
 		Moving = false;
 		
 		// Enable the disabled selections again
 		enable_select();
-	}
+	};
 
 	// https://www.sitepoint.com/html5-javascript-mouse-wheel/
 	GetDelta = function (event) {
@@ -574,7 +576,7 @@ if($__included_by_maps__) {
 		} else {
 			ZoomOut(1.4);
 		}
-	}
+	};
 
 	function UpdateProgress(value) {	
 		var ProgressBar = document.getElementById("progress");
@@ -822,7 +824,7 @@ if($__included_by_maps__) {
 		
 		// Get all the information of the peoples included
 		setTimeout(prep_DrawMap, 1);
-		return
+		return;
 	}
 
 	function prep_SetInterrupts() {
@@ -873,7 +875,7 @@ if($__included_by_maps__) {
 		// Remove the default text
 		var defaultText = document.getElementById("default");
 		
-		if (defaultText != null) {
+		if (defaultText !== null) {
 			ItemMap.removeChild(defaultText);
 			
 			// Make the SVG visible
@@ -886,7 +888,7 @@ if($__included_by_maps__) {
 	// Zooming and panning
 	function updateViewbox(x, y, zoom) {
 		var SVG = document.getElementById("<?php echo $id; ?>_svg");
-		if ((x != -1) || (y != -1)) {
+		if ((x !== -1) || (y !== -1)) {
 			viewX = x;
 			viewY = y;
 			
@@ -894,7 +896,7 @@ if($__included_by_maps__) {
 			transMatrix[5] = viewY;
 		}
 		
-		if (zoom != -1) {
+		if (zoom !== -1) {
 			ZoomFactor = zoom;
 			
 			transMatrix[0] = ZoomFactor;
@@ -966,7 +968,7 @@ if($__included_by_maps__) {
 		var IDs = "<?php echo $_GET['id']; ?>".split(",");
 		
 		// Get the ID number
-		var ItemId = IDs[1];
+		var ItemId = Number(IDs[1]);
 	<?php } ?>
 		
 		newZoom = 1;
@@ -984,28 +986,28 @@ if($__included_by_maps__) {
 		var Rect = document.getElementById("Rect" + IDnum);
 		Rect.setAttributeNS(null, "stroke", "red");
 		Rect.setAttributeNS(null, "stroke-width", 5);
-	}
+	};
 
 	clearBorder = function (event) {
 		var IDnum = event.target.RectID;
 		var Rect = document.getElementById("Rect" + IDnum);
 		Rect.setAttributeNS(null, "stroke", "black");
 		Rect.setAttributeNS(null, "stroke-width", 1);
-	}
+	};
 		
 	setBorderButton = function (event) {
 		var ID = event.target.ID;
 		var Rect = document.getElementById(ID);
 		Rect.setAttributeNS(null, "stroke", "red");
 		Rect.setAttributeNS(null, "stroke-width", 5);
-	}
+	};
 
 	clearBorderButton = function (event) {
 		var ID = event.target.ID;
 		var Rect = document.getElementById(ID);
 		Rect.setAttributeNS(null, "stroke", "black");
 		Rect.setAttributeNS(null, "stroke-width", 1);
-	}
+	};
 	
 	extraInfo = function (event) {
 		var Rect = document.getElementById("Download");
@@ -1018,7 +1020,7 @@ if($__included_by_maps__) {
 		
 		// Create some descriptive text (if they are not already available)
 		var svgns = "http://www.w3.org/2000/svg";
-		if (document.getElementById("DownloadText2") == null) {
+		if (document.getElementById("DownloadText2") === null) {
 			Text2 = document.createElementNS(svgns, "text");
 			Text3 = document.createElementNS(svgns, "text");
 		
@@ -1041,7 +1043,7 @@ if($__included_by_maps__) {
 			Text.parentNode.appendChild(Text2);
 			Text.parentNode.appendChild(Text3);
 		}
-	}
+	};
 
 	lessInfo = function (event) {
 		var Rect = document.getElementById("Download");
@@ -1051,7 +1053,7 @@ if($__included_by_maps__) {
 		Rect.setAttributeNS(null, "stroke-width", 1);
 		Rect.setAttributeNS(null, "height", 40);
 		
-		if (document.getElementById("DownloadText2") != null) {
+		if (document.getElementById("DownloadText2") !== null) {
 			var Text2 = document.getElementById("DownloadText2");
 			var Text3 = document.getElementById("DownloadText3");
 			
@@ -1059,7 +1061,7 @@ if($__included_by_maps__) {
 			Text2.parentNode.removeChild(Text2);
 			Text3.parentNode.removeChild(Text3);
 		}
-	}
+	};
 <?php } ?>
 
 
@@ -1079,7 +1081,14 @@ if($__included_by_maps__) {
 /* Function to get any item using the ID of that item */
 function getItemById(ID) {
     var Item = Items.find(x => x.ID === ID);
+    var ItemOrder = Items.indexOf(Item);
     return Item;
+}
+
+/* Function to get any item using the ID of that item */
+function getItemsById(ID) {
+    var Matches = Items.filter(x => x.ID === ID);
+    return Matches;
 }
 	
 </script>

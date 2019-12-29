@@ -43,6 +43,7 @@ function CreateEvent(name, ID, previousID, length) {
     this.ID = ID;
     this.previousID = previousID;
     this.Length = length;
+    this.multPrevs = [];
 
     // Own loop counter to prevent the counters messing each other up
     this.counter = 0;
@@ -66,6 +67,23 @@ function CreateEvent(name, ID, previousID, length) {
 
     // Make sure this person isn't duplicated
     this.drawn = 0;
+    
+    this.checkForDuplicates = function () { 
+        var matchingItems = getItemsById(this.ID);
+        if (matchingItems.length > 1) {
+            // This event has multiple objects, meaning that multiple events
+            // are linking to this event as their next event
+            var firstItem = getItemById(this.ID);
+            
+            // We already handled this event, this is one of it's duplicates
+            if (firstItem.multPrevs.length == 0) {
+                for (var i = 0; i < matchingItems.length; i++) {
+                    // Link all the previous values to the first of this event
+                    firstItem.multPrevs.push(matchingItems[i].previousID);
+                }
+            }
+        }
+    };
 
     /** 
      * @param {Integer} level - TODO */
@@ -586,8 +604,68 @@ function CreateEvent(name, ID, previousID, length) {
         // Move everything away from the upper border
         var x = this.Location[0];
         var y = this.Location[1] + globalOffset;
+        
+        // This object has multiple parents, draw them all
+        if(this.multPrevs.length > 0) {
+            for (var i = 0; i < this.multPrevs.length; i++) {
+                // Draw the lines to the mother, to the middle of the bottom
+                var Parent = getItemById(this.multPrevs[i]);
 
-        if ((this.previousID !== -1) && (this.previousID !== "")) {
+                // And only if the parents are drawn as well
+                if ((Parent.Location[0] !== -1) && (Parent.Location[1] !== -1)) {
+                    var x_parent = Parent.Location[0] + Parent.lengthIndex*100;
+                    var y_parent = Parent.Location[1] + 25 + globalOffset;
+
+                    // Make three lines, to get nice 90 degree angles
+                    var LineMother1 = document.createElementNS(svgns, "line");
+                    var LineMother2 = document.createElementNS(svgns, "line");
+                    var LineMother3 = document.createElementNS(svgns, "line");
+
+                    var x_halfway1 = x_parent + (50 / 2);
+                    var x_halfway2 = x - (50 / 2);
+
+                    // The first line goes only vertical, and halfway
+                    LineMother1.setAttributeNS(null, 'x1', x_parent);
+                    LineMother1.setAttributeNS(null, 'y1', y_parent);
+                    LineMother1.setAttributeNS(null, 'x2', x_halfway1);
+                    LineMother1.setAttributeNS(null, 'y2', y_parent);
+
+                    // The second line goes only horizontal, or diagonal
+                    LineMother2.setAttributeNS(null, 'x1', x_halfway1);
+                    LineMother2.setAttributeNS(null, 'y1', y_parent);
+                    LineMother2.setAttributeNS(null, 'x2', x_halfway2);
+                    LineMother2.setAttributeNS(null, 'y2', y + 25);
+
+                    // The last line goes only vertical, the second half
+                    LineMother3.setAttributeNS(null, 'x1', x_halfway2);
+                    LineMother3.setAttributeNS(null, 'y1', y + 25);
+                    LineMother3.setAttributeNS(null, 'x2', x);
+                    LineMother3.setAttributeNS(null, 'y2', y + 25);
+
+                    if (this.level === (Parent.level + 1)) {
+                        LineMother1.setAttributeNS(null, 'stroke', 'pink');
+                        LineMother2.setAttributeNS(null, 'stroke', 'pink');
+                        LineMother3.setAttributeNS(null, 'stroke', 'pink');
+
+                        LineMother1.setAttributeNS(null, 'stroke-width', '5');
+                        LineMother2.setAttributeNS(null, 'stroke-width', '5');
+                        LineMother3.setAttributeNS(null, 'stroke-width', '5');
+                    } else {
+                        LineMother1.setAttributeNS(null, 'stroke', 'deeppink');
+                        LineMother2.setAttributeNS(null, 'stroke', 'deeppink');
+                        LineMother3.setAttributeNS(null, 'stroke', 'deeppink');
+
+                        LineMother1.setAttributeNS(null, 'stroke-width', '2');
+                        LineMother2.setAttributeNS(null, 'stroke-width', '2');
+                        LineMother3.setAttributeNS(null, 'stroke-width', '2');
+                    }
+
+                    Group.appendChild(LineMother1);
+                    Group.appendChild(LineMother2);
+                    Group.appendChild(LineMother3);
+                }
+            }
+        } else if ((this.previousID !== -1) && (this.previousID !== "")) {
             // Draw the lines to the mother, to the middle of the bottom
             var Parent = getItemById(this.previousID);
 
@@ -716,8 +794,9 @@ function setItems() {
     // Create all connections
     for (i = 0; i < Items.length; i++) {
         var Item = Items[i];
+        Item.checkForDuplicates();
 
-        if ((Item.previousID !== -1) && (this.previousID !== "")) {                
+        if (Item.previousID > -1) {            
             var Parent = getItemById(Item.previousID);
             Item.ChildIndex = Parent.ChildIDs.length;
             Parent.ChildIDs.push(Item.ID);
@@ -727,7 +806,7 @@ function setItems() {
     // TODO: This can be simply done in PHP using SQL
     for (i = 0; i < Items.length; i++) {
         var Item = Items[i];
-        if (((Item.previousID === -1) || (this.previousID === "")) && (Item.ChildIDs.length > 0)) {
+        if ((Item.previousID === -1) && (Item.ChildIDs.length > 0)) {
             // This event is at the beginning of a time line
             ItemsList.push(Item.ID);
         }
@@ -991,7 +1070,7 @@ function drawTimeLine(SVG) {
 
 /***/
 function panItem(item) {
-	var TimeLine = document.getElementById("timeline_div");
+	var TimeLine = document.getElementById("timeline_ext_div");
 	scrollTop = (item.Location[1] + globalOffset + 50) - (TimeLine.offsetHeight / 2);
 	scrollLeft = (item.Location[0] + 75) - (TimeLine.offsetWidth / 2);
 	
@@ -1003,7 +1082,7 @@ function prep_appendGroup() {
 	var SVG = document.getElementById("svg");
 	
 	var Group = document.createElementNS(svgns, "g");	
-	Group.id = "timeline_svg";
+	Group.id = "timeline_ext_svg";
 	
 	SVG.appendChild(Group);
 	UpdateProgress(45);
@@ -1047,9 +1126,9 @@ function prep_DrawLegenda() {
 
 function prep_DrawMap() {
 	// The TimeLine div
-	var TimeLine = document.getElementById("timeline_div");
+	var TimeLine = document.getElementById("timeline_ext_div");
 	var SVG = document.getElementById("svg");
-	var Group = document.getElementById("timeline_svg");
+	var Group = document.getElementById("timeline_ext_svg");
 	
 	// Set the height and the width Plus x pixel border
 	ActualWidth = globalWidth + (highestLevel + 1)*50;
