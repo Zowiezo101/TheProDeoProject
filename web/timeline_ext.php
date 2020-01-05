@@ -125,6 +125,20 @@ function CreateEvent(name, ID, previousID, length) {
 
             var Parent = getItemById(id);
             var numChildren = Parent.ChildIDs.length;
+            var Location_1 = Parent.Location[1];
+            
+            // If this event has multiple parents, get the average height..
+            if (this.multPrevs.length !== 0) {
+                var TotalYCoord = 0;
+                
+                for (var i = 0; i < this.multPrevs.length; i++) {
+                    var tempParent = getItemById(this.multPrevs[i]);
+                    TotalYCoord += tempParent.Location[1];
+                }
+                
+                var AvgYCoord = TotalYCoord / this.multPrevs.length;
+                Location_1 = AvgYCoord;
+            }
 
             // Is it odd or even?
             var odd = numChildren % 2;
@@ -139,17 +153,17 @@ function CreateEvent(name, ID, previousID, length) {
                 if (Index === middle) {
                     // Are we in the middle? 
                     // Then just use parents X coordinate
-                    Y = Parent.Location[1];
+                    Y = Location_1;
                 } else if (Index > middle) {
                     // Are we on the right side of the middle?
                     // Place the block on the right side of parents X coordinate
                     var offset = Index - middle;
-                    Y = Parent.Location[1] + offset*100;
+                    Y = Location_1 + offset*100;
                 } else {
                     // Are we on the left side of the middle?
                     // Place the block on the left side of parents X coordinate
                     var offset = middle - Index;
-                    Y = Parent.Location[1] - offset*100;
+                    Y = Location_1 - offset*100;
                 }
             } else {
                 var middle = numChildren / 2;
@@ -157,12 +171,12 @@ function CreateEvent(name, ID, previousID, length) {
                     // Are we on the right side of the middle?
                     // Place the block on the right side of parents X coordinate
                     var offset = Index - middle;
-                    Y = (Parent.Location[1] + (100 / 2)) + offset*100;
+                    Y = (Location_1 + (100 / 2)) + offset*100;
                 } else {
                     // Are we on the left side of the middle?
                     // Place the block on the left side of parents X coordinate
                     var offset = middle - Index;
-                    Y = (Parent.Location[1] + (100 / 2)) - offset*100;
+                    Y = (Location_1 + (100 / 2)) - offset*100;
                 }
             }
 
