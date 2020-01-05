@@ -76,7 +76,7 @@ function CreateEvent(name, ID, previousID, length) {
             var firstItem = getItemById(this.ID);
             
             // We already handled this event, this is one of it's duplicates
-            if (firstItem.multPrevs.length == 0) {
+            if (firstItem.multPrevs.length === 0) {
                 for (var i = 0; i < matchingItems.length; i++) {
                     // Link all the previous values to the first of this event
                     firstItem.multPrevs.push(matchingItems[i].previousID);
@@ -476,7 +476,7 @@ function CreateEvent(name, ID, previousID, length) {
         // The second tSpan gets an additional offset
         firstTSPAN = 0;
 
-        if (this.Length !== "") {
+        if (this.Length !== "-1") {
             // The tspan containing the time length
             var tSpan = document.createElementNS(svgns, "tspan");	
             tSpan.RectID = this.ID;
