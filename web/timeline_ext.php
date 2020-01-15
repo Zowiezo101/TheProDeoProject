@@ -820,7 +820,9 @@ function setItems() {
     // TODO: This can be simply done in PHP using SQL
     for (i = 0; i < Items.length; i++) {
         var Item = Items[i];
-        if ((Item.previousID === -1) && (Item.ChildIDs.length > 0)) {
+        if (Item.previousID === -1) {
+//        TODO: Get everything, even without children (for now)
+//        if ((Item.previousID === -1) && (Item.ChildIDs.length > 0)) {
             // This event is at the beginning of a time line
             ItemsList.push(Item.ID);
         }
