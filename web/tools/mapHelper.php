@@ -64,7 +64,7 @@ if($__included_by_maps__) {
 			$sql = "SELECT * FROM events";
         } elseif ($id == "timeline_ext") {
             // TODO: Extended events
-            $sql = "SELECT * FROM ext_events LEFT JOIN event_to_event ON ext_events.ext_event_id = event_to_event.next_event_id";
+            $sql = "SELECT * FROM ext_events LEFT JOIN event_to_event ON ext_events.ext_event_id = event_to_event.next_event_id ORDER BY order_id";
 		} else {
 			$sql = "SELECT * FROM peoples";
 		}
@@ -86,7 +86,7 @@ if($__included_by_maps__) {
 					
 					$item = 'new CreateEvent("'.$name.'", '.$ID.', '.$previousID.', "'.$length.'"),';
 					$item_set = $item_set."\r\n\t".$item;
-				} elseif ($id == "timeline_ext") {
+				} elseif ($id === "timeline_ext") {
                     // TODO: Extended events
 					$name = $item['descr'];
 					$ID = $item['ext_event_id'];
@@ -861,7 +861,7 @@ if($__included_by_maps__) {
 		updateViewbox(0, 0, 1);
 		
 		// Move to the event
-		var Item = Items[globalItemId];
+		var Item = getItemById(globalItemId);
 		panItem(Item);
 		UpdateProgress(95);
 		

@@ -50,7 +50,6 @@ function CreateEvent(name, ID, previousID, length) {
 
     // Children of this event
     this.ChildIDs = [];
-    this.ChildIndex;
 
     // Generations from the first ancestor
     this.level = -1;
@@ -73,9 +72,13 @@ function CreateEvent(name, ID, previousID, length) {
         if (matchingItems.length > 1) {
             // This event has multiple objects, meaning that multiple events
             // are linking to this event as their next event
+            // When searching for a single event with this ID, it will always
+            // return the first match in it's array
             var firstItem = getItemById(this.ID);
             
-            // We already handled this event, this is one of it's duplicates
+            // Since we always get the same first item when looking with the ID
+            // We can easily see if we already handled this item and are
+            // currently looking at a duplicate
             if (firstItem.multPrevs.length === 0) {
                 for (var i = 0; i < matchingItems.length; i++) {
                     // Link all the previous values to the first of this event
@@ -90,7 +93,7 @@ function CreateEvent(name, ID, previousID, length) {
     this.setLevel = function (level) {
         var IDset = [];
 
-        // alert("setLevel! Level " + level + " for child " + this.name);
+        console.log("setLevel! Level " + level + " for child " + this.name);
         if (level > this.level) {
             // Take the highest level possible
             this.level = level;
@@ -118,33 +121,44 @@ function CreateEvent(name, ID, previousID, length) {
         var Y = 50 + 75;
 
         // Is this the first person of the family tree?
-        if (this.previousID !== -1) {
-
+        if (this.previousID !== -1) {            
             // ID number of the parent that will be used
             var id = this.previousID;
 
+            // The parent (if this is the only parent)
             var Parent = getItemById(id);
-            var numChildren = Parent.ChildIDs.length;
             var Location_1 = Parent.Location[1];
             
             // If this event has multiple parents, get the average height..
+            // Also, get the parent with the heighest level to use for the X
+            // coordinate
             if (this.multPrevs.length !== 0) {
                 var TotalYCoord = 0;
                 
                 for (var i = 0; i < this.multPrevs.length; i++) {
                     var tempParent = getItemById(this.multPrevs[i]);
                     TotalYCoord += tempParent.Location[1];
+                    
+                    // Take the parent with the heighest level
+                    if (tempParent.level > Parent.level) {
+                        Parent = tempParent;
+                    }
                 }
                 
                 var AvgYCoord = TotalYCoord / this.multPrevs.length;
                 Location_1 = AvgYCoord;
             }
+            
+            console.log("Used parent for " + this.name + " is " + Parent.name + " with " + Parent.ChildIDs.length + " children.");
+            console.log("Parent height for " + this.name + " is " + Parent.Location[1] + " with a used height of " + Location_1);
+            
+            var numChildren = Parent.ChildIDs.length;
 
             // Is it odd or even?
             var odd = numChildren % 2;
 
             // And which index do we have?
-            var Index = this.ChildIndex;
+            var Index = Parent.ChildIDs.indexOf(this.ID);
 
             // Now calculate where our position should be
             if (odd) {
@@ -178,6 +192,7 @@ function CreateEvent(name, ID, previousID, length) {
                     var offset = middle - Index;
                     Y = (Location_1 + (100 / 2)) - offset*100;
                 }
+                console.log(this.name + ": Even number of children. Index is " + Index);
             }
 
             X = Parent.Location[0] + Parent.lengthIndex*100 + 50;
@@ -186,6 +201,8 @@ function CreateEvent(name, ID, previousID, length) {
         // This value is used, in case someone is overlapping with someone else
         this.Location[0] = X;
         this.Location[1] = Y + this.offset;
+        
+        console.log("The calculated height to use for " + this.name + " is " + this.Location[1]);
 
         return;
     };
@@ -713,7 +730,7 @@ function CreateEvent(name, ID, previousID, length) {
                 LineMother3.setAttributeNS(null, 'y1', y + 25);
                 LineMother3.setAttributeNS(null, 'x2', x);
                 LineMother3.setAttributeNS(null, 'y2', y + 25);
-
+					
                 if (this.level === (Parent.level + 1)) {
                     LineMother1.setAttributeNS(null, 'stroke', 'pink');
                     LineMother2.setAttributeNS(null, 'stroke', 'pink');
@@ -810,9 +827,8 @@ function setItems() {
         var Item = Items[i];
         Item.checkForDuplicates();
 
-        if (Item.previousID > -1) {            
+        if (Item.previousID > -1) {
             var Parent = getItemById(Item.previousID);
-            Item.ChildIndex = Parent.ChildIDs.length;
             Parent.ChildIDs.push(Item.ID);
         }
     }

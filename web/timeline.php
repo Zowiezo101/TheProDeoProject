@@ -585,12 +585,12 @@ function timeline_Helper_layout() {
 			var x = this.Location[0];
 			var y = this.Location[1] + globalOffset;
 			
-			if (this.previousID != -1) {
+			if (this.previousID !== -1) {
 				// Draw the lines to the mother, to the middle of the bottom
 				var Parent = Items[this.previousID];
 				
 				// And only if the parents are drawn as well
-				if ((Parent.Location[0] != -1) && (Parent.Location[1] != -1)) {
+				if ((Parent.Location[0] !== -1) && (Parent.Location[1] !== -1)) {
 					var x_parent = Parent.Location[0] + Parent.lengthIndex*100;
 					var y_parent = Parent.Location[1] + 25 + globalOffset;
 					
@@ -620,7 +620,7 @@ function timeline_Helper_layout() {
 					LineMother3.setAttributeNS(null, 'x2', x);
 					LineMother3.setAttributeNS(null, 'y2', y + 25);
 					
-					if (this.level == (Parent.level + 1)) {
+					if (this.level === (Parent.level + 1)) {
 						LineMother1.setAttributeNS(null, 'stroke', 'pink');
 						LineMother2.setAttributeNS(null, 'stroke', 'pink');
 						LineMother3.setAttributeNS(null, 'stroke', 'pink');
