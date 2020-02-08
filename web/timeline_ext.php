@@ -1,13 +1,13 @@
 <?php
 // Make it easier to copy/paste code or make a new file
 if (!isset($id)) {
-	$id = "timeline_ext";
+    $id = "timeline_ext";
 }
 
 require_once "layout/layout.php"; 
 
 function timeline_ext_Helper_layout() {
-	_Map_Helper_layout();
+    _Map_Helper_layout();
 }
 ?> 
 
@@ -26,15 +26,15 @@ var ENUM_CEN = 8;
 var ENUM_MIL = 9;
 
 // The amount needed to go to the "next level"
-var MULTS = [60, 	// Seconds
-    60,		// Minutes
-    24,		// Hours
-    7,		// Days
-    (52 / 12),		// Weeks
-    12,		// Months
-    10,		// Years
-    10,		// Decades
-    10		// Centuries
+var MULTS = [60,     // Seconds
+    60,        // Minutes
+    24,        // Hours
+    7,        // Days
+    (52 / 12),        // Weeks
+    12,        // Months
+    10,        // Years
+    10,        // Decades
+    10        // Centuries
 ];
 
 
@@ -226,7 +226,7 @@ function CreateEvent(name, ID, previousID, length) {
             var done = 0;
 
             while (done === 0)
-            {				
+            {                
                 var newIDset = [];
                 for (i = 0; i < IDset.length; i++) {
                     var Item = getItemById(IDset[i]);
@@ -509,7 +509,7 @@ function CreateEvent(name, ID, previousID, length) {
 
         if (this.Length !== "-1") {
             // The tspan containing the time length
-            var tSpan = document.createElementNS(svgns, "tspan");	
+            var tSpan = document.createElementNS(svgns, "tspan");    
             tSpan.RectID = this.ID;
 
             // Update the contents of the current tspan object
@@ -527,7 +527,7 @@ function CreateEvent(name, ID, previousID, length) {
         var subString = "";
 
         do {
-            var tSpan = document.createElementNS(svgns, "tspan");	
+            var tSpan = document.createElementNS(svgns, "tspan");    
             tSpan.RectID = this.ID;
 
             // Get the string that we put into the tspan object
@@ -730,7 +730,7 @@ function CreateEvent(name, ID, previousID, length) {
                 LineMother3.setAttributeNS(null, 'y1', y + 25);
                 LineMother3.setAttributeNS(null, 'x2', x);
                 LineMother3.setAttributeNS(null, 'y2', y + 25);
-					
+                    
                 if (this.level === (Parent.level + 1)) {
                     LineMother1.setAttributeNS(null, 'stroke', 'pink');
                     LineMother2.setAttributeNS(null, 'stroke', 'pink');
@@ -755,7 +755,7 @@ function CreateEvent(name, ID, previousID, length) {
             }
         }
 
-        var Rect = document.createElementNS(svgns, "rect");		
+        var Rect = document.createElementNS(svgns, "rect");        
         Rect.setAttributeNS(null, 'width', this.lengthIndex*100);
         Rect.setAttributeNS(null, 'height', 50);
 
@@ -768,10 +768,10 @@ function CreateEvent(name, ID, previousID, length) {
         Rect.setAttributeNS(null, 'stroke', 'black');
         Rect.setAttributeNS(null, 'fill', this.getTimeColor(this.lengthType));
 
-        Rect.id = "Rect" + this.ID;		
+        Rect.id = "Rect" + this.ID;        
         Rect.RectID = this.ID;
 
-        var Text = document.createElementNS(svgns, "text");		
+        var Text = document.createElementNS(svgns, "text");        
         Text.setAttributeNS(null, 'width', this.lengthIndex*100);
         Text.setAttributeNS(null, 'height', 50);
 
@@ -794,13 +794,13 @@ function CreateEvent(name, ID, previousID, length) {
         Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
         Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
 
-        Group.appendChild(Link);		
+        Group.appendChild(Link);        
         return Group;
     };
 
     /**
      * @param {SVGElement} SVG - TODO */
-    this.drawTimeLine = function(SVG) {	
+    this.drawTimeLine = function(SVG) {    
         var IDset = [];
 
         var Group = this.drawEvent();
@@ -821,7 +821,7 @@ function CreateEvent(name, ID, previousID, length) {
 }
 
 
-function setItems() {	
+function setItems() {    
     // Create all connections
     for (i = 0; i < Items.length; i++) {
         var Item = Items[i];
@@ -849,331 +849,331 @@ function setItems() {
 * @param {Integer} firstID - TODO
 * @param {Integer} highestLevel - TODO */
 function calcLocations(firstID, highestLevel) {
-	
-	// This breaks the while loop
-	var done = 0;
-	var MaxLevel = levelCounter.length;
-	// var MaxLevel = 38;
-	var debugFrom = 900;
-	
-	while (done === 0)
-	{
-		var collision = 0;
-		globalWidth = 0;
-		// alert("Start while loop");
-		
-		// Draw the tree per level
-		for (level = 0; level < MaxLevel; level++) {
-			
-			// The IDs of the people of the current level
-			var IDset = levelIDs[level];
-			
-			for (i = 0; i < IDset.length; i++) {
-				var Item = getItemById(IDset[i]);
-				Item.calcLocation();
-				
-				// To get the width, keep the highest Y coordinate we can find
-				if (Item.Location[1] > globalHeight) {
-					globalHeight = Item.Location[1];
-				}
-				
-				// Do a check on the location of the person
-				if (Item.Location[1] < (50 + 75)) {
-					// Person seems to fall out of boundary
-					// What offset do we need?
-					var offset = (50 + 75) - Item.Location[1];
-					
-					if (offset > globalOffset) {
-						// Take the highest offset found
-						globalOffset = offset;
-					}
-				}
-				
-				if ((Item.level > 0) && (Item.levelIndex > 0)) {
-					// alert("Name: " + Person.name + "\nIndex: " + Person.ID + "\nLevel: " + Person.level + "\nLevelIndex: " + Person.levelIndex);
-					// alert("set of IDs of level " + Person.level + " :" + IDset);
-					
-					// Find the neighbour.
-					// This is the person who has the same level, but levelIndex - 1
-					var idNeighbour = IDset[Item.levelIndex - 1];
-					// alert("ID of Neighbour: " + idNeighbour);
-					var Neighbour = getItemById(idNeighbour);
-					
-					// alert("Neighbour Name: " + Neighbour.name + "\nLevel: " + Neighbour.level + "\nLevelIndex: " + Neighbour.levelIndex);
-					
-					// If we get in the if function, these two people are overlapping.
-					// Or the lower person is too far up and needs to move down
-					if (Item.Location[1] < (Neighbour.Location[1] + 100)) {
-						// alert("set of IDs of level " + Person.level + " :" + IDset);
-						if (Item.level >= debugFrom) {
-						// alert("Is people " + Item.name + " on location (" + Item.Location[0] + ", " + Item.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
-						// alert("Idx of " + Item.name + " :" + Item.levelIndex);
-						// alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
-						}
-						
-						var found = 0;
-						var FoundID = -1;
-						
-						// Us
-						var currentAncestorsR = [Item.ID];
-						
-						// The neighbour
-						var currentAncestorsL = [Neighbour.ID];
-						
-						// Our starting level
-						var currentLevel = Item.level;
-						
-						// found = 1;
-						while (found === 0) {
-							// Get a list with people that are a generation level lower (placed higher)
-							if (Item.level >= debugFrom) {
-							// alert("Trying level: " + currentLevel);
-							}
-							var currentIDset = levelIDs[currentLevel];
-							if (Item.level >= debugFrom) {
-							// alert("Set of people: " + currentIDset);
-							}
-							var currentIDset = levelIDs[currentLevel - 1];
-							if (Item.level >= debugFrom) {
-							// alert("Set of people: " + currentIDset);
-							}
-							var newAncestorsR = [];
-							var newAncestorsL = [];
-							
-							// Find all the possible ancestors for the right person
-							for (var j = 0; j < currentAncestorsR.length; j++) {
-								var ItemR = getItemById(currentAncestorsR[j]);
-								if (Item.level >= debugFrom) {
-								// alert("Working with " + ItemR.name);
-								}
-								
-								for (var k = 0; k < currentIDset.length; k++) {
-									var ID = currentIDset[k];
-									
-									// Remember the list of ancestors that we find for this person
-									if (ID === ItemR.previousID) {
-										newAncestorsR.push(ID);
-										if (Item.level >= debugFrom) {
-										// alert("Found parentR with ID: " + ID);
-										}
-									}
-								}
-							}
-							
-							// Find all the possible ancestors for the left person
-							for (var j = 0; j < currentAncestorsL.length; j++) {
-								var ItemL = getItemById(currentAncestorsL[j]);
-								if (Item.level >= debugFrom) {
-								// alert("Working with " + ItemL.name);
-								}
-								
-								for (var k = 0; k < currentIDset.length; k++) {
-									var ID = currentIDset[k];
-									
-									// Remember the list of ancestors that we find for this person
-									if (ID === ItemL.previousID) {
-										newAncestorsL.push(ID);
-										if (Item.level >= debugFrom) {
-										// alert("Found parentL with ID: " + ID);
-										}
-									}
-								}
-							}
-							
-							// Now check if we have a match on this level!
-							var count = 0;
-							for (var j = 0; j < newAncestorsR.length; j++) {
-								var RightID = newAncestorsR[j];
-								for (var k = 0; k < newAncestorsL.length; k++) {
-									var LeftID = newAncestorsL[k];
-									
-									// We have found a match!
-									// This is the ancestor that connects to two colliding people
-									if (RightID === LeftID) {
-										FoundID = RightID;
-										found = 1;
-										count++;
-									}
-								}
-							}
-							
-							if (Item.level >= debugFrom) {
-							// alert("Count is equal to: " + count);
-							}
-							
-							// collision = 1;
-							if (found === 0) {
-								// Keep the current data if we have a match
-								currentAncestorsR = newAncestorsR;
-								currentAncestorsL = newAncestorsL;
-								currentLevel--;
-							}
-							
-							if (currentLevel < 0) {
-								// Couldn't find the parent?
-								// alert("Could not find the connecting parent?");
-								break;
-							}
-						}
-						
-						var Parent = getItemById(FoundID);
-						var Child = null;
-						if (Item.level >= debugFrom) {
-						// alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
-						}							
-						
-						// This is just a normal clash, fix in the normal way
-						for (var k = currentAncestorsR.length; k > 0; k--) {
-							var ID = currentAncestorsR[k - 1];
-							
-							for (var j = 0; j < Parent.ChildIDs.length; j++) {
-								var ChildID = Parent.ChildIDs[j];
+    
+    // This breaks the while loop
+    var done = 0;
+    var MaxLevel = levelCounter.length;
+    // var MaxLevel = 38;
+    var debugFrom = 900;
+    
+    while (done === 0)
+    {
+        var collision = 0;
+        globalWidth = 0;
+        // alert("Start while loop");
+        
+        // Draw the tree per level
+        for (level = 0; level < MaxLevel; level++) {
+            
+            // The IDs of the people of the current level
+            var IDset = levelIDs[level];
+            
+            for (i = 0; i < IDset.length; i++) {
+                var Item = getItemById(IDset[i]);
+                Item.calcLocation();
+                
+                // To get the width, keep the highest Y coordinate we can find
+                if (Item.Location[1] > globalHeight) {
+                    globalHeight = Item.Location[1];
+                }
+                
+                // Do a check on the location of the person
+                if (Item.Location[1] < (50 + 75)) {
+                    // Person seems to fall out of boundary
+                    // What offset do we need?
+                    var offset = (50 + 75) - Item.Location[1];
+                    
+                    if (offset > globalOffset) {
+                        // Take the highest offset found
+                        globalOffset = offset;
+                    }
+                }
+                
+                if ((Item.level > 0) && (Item.levelIndex > 0)) {
+                    // alert("Name: " + Person.name + "\nIndex: " + Person.ID + "\nLevel: " + Person.level + "\nLevelIndex: " + Person.levelIndex);
+                    // alert("set of IDs of level " + Person.level + " :" + IDset);
+                    
+                    // Find the neighbour.
+                    // This is the person who has the same level, but levelIndex - 1
+                    var idNeighbour = IDset[Item.levelIndex - 1];
+                    // alert("ID of Neighbour: " + idNeighbour);
+                    var Neighbour = getItemById(idNeighbour);
+                    
+                    // alert("Neighbour Name: " + Neighbour.name + "\nLevel: " + Neighbour.level + "\nLevelIndex: " + Neighbour.levelIndex);
+                    
+                    // If we get in the if function, these two people are overlapping.
+                    // Or the lower person is too far up and needs to move down
+                    if (Item.Location[1] < (Neighbour.Location[1] + 100)) {
+                        // alert("set of IDs of level " + Person.level + " :" + IDset);
+                        if (Item.level >= debugFrom) {
+                        // alert("Is people " + Item.name + " on location (" + Item.Location[0] + ", " + Item.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
+                        // alert("Idx of " + Item.name + " :" + Item.levelIndex);
+                        // alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
+                        }
+                        
+                        var found = 0;
+                        var FoundID = -1;
+                        
+                        // Us
+                        var currentAncestorsR = [Item.ID];
+                        
+                        // The neighbour
+                        var currentAncestorsL = [Neighbour.ID];
+                        
+                        // Our starting level
+                        var currentLevel = Item.level;
+                        
+                        // found = 1;
+                        while (found === 0) {
+                            // Get a list with people that are a generation level lower (placed higher)
+                            if (Item.level >= debugFrom) {
+                            // alert("Trying level: " + currentLevel);
+                            }
+                            var currentIDset = levelIDs[currentLevel];
+                            if (Item.level >= debugFrom) {
+                            // alert("Set of people: " + currentIDset);
+                            }
+                            var currentIDset = levelIDs[currentLevel - 1];
+                            if (Item.level >= debugFrom) {
+                            // alert("Set of people: " + currentIDset);
+                            }
+                            var newAncestorsR = [];
+                            var newAncestorsL = [];
+                            
+                            // Find all the possible ancestors for the right person
+                            for (var j = 0; j < currentAncestorsR.length; j++) {
+                                var ItemR = getItemById(currentAncestorsR[j]);
+                                if (Item.level >= debugFrom) {
+                                // alert("Working with " + ItemR.name);
+                                }
+                                
+                                for (var k = 0; k < currentIDset.length; k++) {
+                                    var ID = currentIDset[k];
+                                    
+                                    // Remember the list of ancestors that we find for this person
+                                    if (ID === ItemR.previousID) {
+                                        newAncestorsR.push(ID);
+                                        if (Item.level >= debugFrom) {
+                                        // alert("Found parentR with ID: " + ID);
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Find all the possible ancestors for the left person
+                            for (var j = 0; j < currentAncestorsL.length; j++) {
+                                var ItemL = getItemById(currentAncestorsL[j]);
+                                if (Item.level >= debugFrom) {
+                                // alert("Working with " + ItemL.name);
+                                }
+                                
+                                for (var k = 0; k < currentIDset.length; k++) {
+                                    var ID = currentIDset[k];
+                                    
+                                    // Remember the list of ancestors that we find for this person
+                                    if (ID === ItemL.previousID) {
+                                        newAncestorsL.push(ID);
+                                        if (Item.level >= debugFrom) {
+                                        // alert("Found parentL with ID: " + ID);
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Now check if we have a match on this level!
+                            var count = 0;
+                            for (var j = 0; j < newAncestorsR.length; j++) {
+                                var RightID = newAncestorsR[j];
+                                for (var k = 0; k < newAncestorsL.length; k++) {
+                                    var LeftID = newAncestorsL[k];
+                                    
+                                    // We have found a match!
+                                    // This is the ancestor that connects to two colliding people
+                                    if (RightID === LeftID) {
+                                        FoundID = RightID;
+                                        found = 1;
+                                        count++;
+                                    }
+                                }
+                            }
+                            
+                            if (Item.level >= debugFrom) {
+                            // alert("Count is equal to: " + count);
+                            }
+                            
+                            // collision = 1;
+                            if (found === 0) {
+                                // Keep the current data if we have a match
+                                currentAncestorsR = newAncestorsR;
+                                currentAncestorsL = newAncestorsL;
+                                currentLevel--;
+                            }
+                            
+                            if (currentLevel < 0) {
+                                // Couldn't find the parent?
+                                alert("Could not find the connecting parent?");
+                                break;
+                            }
+                        }
+                        
+                        var Parent = getItemById(FoundID);
+                        var Child = null;
+                        if (Item.level >= debugFrom) {
+                        // alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
+                        }                            
+                        
+                        // This is just a normal clash, fix in the normal way
+                        for (var k = currentAncestorsR.length; k > 0; k--) {
+                            var ID = currentAncestorsR[k - 1];
+                            
+                            for (var j = 0; j < Parent.ChildIDs.length; j++) {
+                                var ChildID = Parent.ChildIDs[j];
 
-								if (ID === ChildID) {
-									// Find the child that needs to be moved
-									Child = getItemById(ID);
-								}
-							}
-						}
-							
-						Child.offset += (Neighbour.Location[1] + 100) - Item.Location[1];
-						if (Item.level >= debugFrom) {
-						// alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
-						}
-						collision = 1;
-						
-						if (collision === 1) {
-							// alert("Breaking first for-loop");
-							break;
-						}
-					}
-					
-					// Update IDset to [ID] (start all over again)
-					// newIDset = [ID];
-					// break;
-				}
-			}
-			
-			if (collision === 1) {
-				// Break out of the loop and start again
-				// alert("Breaking second for-loop");
-				break;
-			}
-		}
-		
-		// There are no more children to update
-		if (level === MaxLevel) {
-			done = 1;
-		}
-	}
-	
-	return;
+                                if (ID === ChildID) {
+                                    // Find the child that needs to be moved
+                                    Child = getItemById(ID);
+                                }
+                            }
+                        }
+                            
+                        Child.offset += (Neighbour.Location[1] + 100) - Item.Location[1];
+                        if (Item.level >= debugFrom) {
+                        // alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
+                        }
+                        collision = 1;
+                        
+                        if (collision === 1) {
+                            // alert("Breaking first for-loop");
+                            break;
+                        }
+                    }
+                    
+                    // Update IDset to [ID] (start all over again)
+                    // newIDset = [ID];
+                    // break;
+                }
+            }
+            
+            if (collision === 1) {
+                // Break out of the loop and start again
+                // alert("Breaking second for-loop");
+                break;
+            }
+        }
+        
+        // There are no more children to update
+        if (level === MaxLevel) {
+            done = 1;
+        }
+    }
+    
+    return;
 }
-	
+    
 /** 
 * @param {SVGElement} SVG - TODO */
-function drawTimeLine(SVG) {	
-	
-	// This breaks the while loop
-	var done = 0;
-	var MaxLevel = levelCounter.length;
-	
-	while (done === 0)
-	{		
-		// Draw the timeline per level
-		for (level = 0; level < MaxLevel; level++) {
-			
-			var IDset = levelIDs[level];
-			
-			for (var i = 0; i < IDset.length; i++) {
-				var Item = getItemById(IDset[i]);
-				Item.drawTimeLine(SVG);
-			}
-		}
-		
-		// There are no more children to update
-		if (level === MaxLevel) {
-			done = 1;
-		}
-	}
-	
-	return;
+function drawTimeLine(SVG) {    
+    
+    // This breaks the while loop
+    var done = 0;
+    var MaxLevel = levelCounter.length;
+    
+    while (done === 0)
+    {        
+        // Draw the timeline per level
+        for (level = 0; level < MaxLevel; level++) {
+            
+            var IDset = levelIDs[level];
+            
+            for (var i = 0; i < IDset.length; i++) {
+                var Item = getItemById(IDset[i]);
+                Item.drawTimeLine(SVG);
+            }
+        }
+        
+        // There are no more children to update
+        if (level === MaxLevel) {
+            done = 1;
+        }
+    }
+    
+    return;
 }
 
 /***/
 function panItem(item) {
-	var TimeLine = document.getElementById("timeline_ext_div");
-	scrollTop = (item.Location[1] + globalOffset + 50) - (TimeLine.offsetHeight / 2);
-	scrollLeft = (item.Location[0] + 75) - (TimeLine.offsetWidth / 2);
-	
-	updateViewbox(-scrollLeft, -scrollTop, -1);
+    var TimeLine = document.getElementById("timeline_ext_div");
+    scrollTop = (item.Location[1] + globalOffset + 50) - (TimeLine.offsetHeight / 2);
+    scrollLeft = (item.Location[0] + 75) - (TimeLine.offsetWidth / 2);
+    
+    updateViewbox(-scrollLeft, -scrollTop, -1);
 }
 
 function prep_appendGroup() {
-	var svgns = "http://www.w3.org/2000/svg";
-	var SVG = document.getElementById("svg");
-	
-	var Group = document.createElementNS(svgns, "g");	
-	Group.id = "timeline_ext_svg";
-	
-	SVG.appendChild(Group);
-	UpdateProgress(45);
-	
-	setTimeout(prep_DrawLegenda, 1);
+    var svgns = "http://www.w3.org/2000/svg";
+    var SVG = document.getElementById("svg");
+    
+    var Group = document.createElementNS(svgns, "g");    
+    Group.id = "timeline_ext_svg";
+    
+    SVG.appendChild(Group);
+    UpdateProgress(45);
+    
+    setTimeout(prep_DrawLegenda, 1);
 }
 
 function prep_DrawLegenda() {
-	//Legenda
-	var svgns = "http://www.w3.org/2000/svg";
-	var SVG = document.getElementById("svg");
-	
-	var Item = getItemById(globalItemId);
-	
-	var Group = document.createElementNS(svgns, "g");	
-	Group.id = "Legenda";
-	
-	var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
-	for (var i = 0; i < (MULTS.length + 2); i++) {
-		var Rect = document.createElementNS(svgns, "rect");		
-		Rect.setAttributeNS(null, 'width', 10);
-		Rect.setAttributeNS(null, 'height', 10);
-		Rect.setAttributeNS(null, 'x', 15 + (100*Math.floor(i / 5)));
-		Rect.setAttributeNS(null, 'y', 15*((i % 5) + 1));
-		Rect.setAttributeNS(null, 'stroke', 'black');
-		Rect.setAttributeNS(null, 'fill', Item.getTimeColor(i));
-		
-		var Text = document.createElementNS(svgns, "text");		
-		Text.setAttributeNS(null, 'x', 30 + (100*Math.floor(i / 5)));
-		Text.setAttributeNS(null, 'y', 15*((i % 5) + 1) + 10);
-		Text.textContent = Item.StringToType(LegendaStr[i], 0);
-		
-		Group.appendChild(Rect);
-		Group.appendChild(Text);
-	}
-	SVG.appendChild(Group);
-	UpdateProgress(55);
-	
-	setTimeout(prep_AddControlButtons, 1);
+    //Legenda
+    var svgns = "http://www.w3.org/2000/svg";
+    var SVG = document.getElementById("svg");
+    
+    var Item = getItemById(globalItemId);
+    
+    var Group = document.createElementNS(svgns, "g");    
+    Group.id = "Legenda";
+    
+    var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
+    for (var i = 0; i < (MULTS.length + 2); i++) {
+        var Rect = document.createElementNS(svgns, "rect");        
+        Rect.setAttributeNS(null, 'width', 10);
+        Rect.setAttributeNS(null, 'height', 10);
+        Rect.setAttributeNS(null, 'x', 15 + (100*Math.floor(i / 5)));
+        Rect.setAttributeNS(null, 'y', 15*((i % 5) + 1));
+        Rect.setAttributeNS(null, 'stroke', 'black');
+        Rect.setAttributeNS(null, 'fill', Item.getTimeColor(i));
+        
+        var Text = document.createElementNS(svgns, "text");        
+        Text.setAttributeNS(null, 'x', 30 + (100*Math.floor(i / 5)));
+        Text.setAttributeNS(null, 'y', 15*((i % 5) + 1) + 10);
+        Text.textContent = Item.StringToType(LegendaStr[i], 0);
+        
+        Group.appendChild(Rect);
+        Group.appendChild(Text);
+    }
+    SVG.appendChild(Group);
+    UpdateProgress(55);
+    
+    setTimeout(prep_AddControlButtons, 1);
 }
 
 function prep_DrawMap() {
-	// The TimeLine div
-	var TimeLine = document.getElementById("timeline_ext_div");
-	var SVG = document.getElementById("svg");
-	var Group = document.getElementById("timeline_ext_svg");
-	
-	// Set the height and the width Plus x pixel border
-	ActualWidth = globalWidth + (highestLevel + 1)*50;
-	ActualHeight = globalHeight + globalOffset + 75;
-	
-	SVG.setAttribute('width', TimeLine.offsetWidth);
-	SVG.setAttribute('height', TimeLine.offsetHeight);
-	
-	// Draw the current timeline
-	drawTimeLine(Group);
-	UpdateProgress(75);
-		
-	setTimeout(prep_SetInterrupts, 1);
+    // The TimeLine div
+    var TimeLine = document.getElementById("timeline_ext_div");
+    var SVG = document.getElementById("svg");
+    var Group = document.getElementById("timeline_ext_svg");
+    
+    // Set the height and the width Plus x pixel border
+    ActualWidth = globalWidth + (highestLevel + 1)*50;
+    ActualHeight = globalHeight + globalOffset + 75;
+    
+    SVG.setAttribute('width', TimeLine.offsetWidth);
+    SVG.setAttribute('height', TimeLine.offsetHeight);
+    
+    // Draw the current timeline
+    drawTimeLine(Group);
+    UpdateProgress(75);
+        
+    setTimeout(prep_SetInterrupts, 1);
 }
 
 </script>
