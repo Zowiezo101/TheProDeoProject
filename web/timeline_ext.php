@@ -234,6 +234,12 @@ function CreateEvent(name, ID, previousID, length) {
                     // Create the ID set of the next generation
                     if (Item.previousID !== -1) {
                         newIDset.push(Item.previousID);
+                        
+                        if (Item.multPrevs.length !== 0) {
+                            for (j = 0; j < Item.multPrevs.length; j++) {
+                                newIDset.push(Item.multPrevs[j]);
+                            }
+                        }
                     } else {
                         // This is an ancestor
                         var AncestorID = ItemsList.indexOf(Item.ID);
@@ -652,8 +658,8 @@ function CreateEvent(name, ID, previousID, length) {
                     var LineMother2 = document.createElementNS(svgns, "line");
                     var LineMother3 = document.createElementNS(svgns, "line");
 
-                    var x_halfway1 = x_parent + (50 / 2);
-                    var x_halfway2 = x - (50 / 2);
+                    var x_halfway1 = x_parent + (50 / 2) - 10;
+                    var x_halfway2 = x - (50 / 2) + 10;
 
                     // The first line goes only vertical, and halfway
                     LineMother1.setAttributeNS(null, 'x1', x_parent);
@@ -710,8 +716,8 @@ function CreateEvent(name, ID, previousID, length) {
                 var LineMother2 = document.createElementNS(svgns, "line");
                 var LineMother3 = document.createElementNS(svgns, "line");
 
-                var x_halfway1 = x_parent + (50 / 2);
-                var x_halfway2 = x - (50 / 2);
+                var x_halfway1 = x_parent + (50 / 2) - 10;
+                var x_halfway2 = x - (50 / 2) + 10;
 
                 // The first line goes only vertical, and halfway
                 LineMother1.setAttributeNS(null, 'x1', x_parent);
@@ -950,11 +956,21 @@ function calcLocations(firstID, highestLevel) {
                                 for (var k = 0; k < currentIDset.length; k++) {
                                     var ID = currentIDset[k];
                                     
+                                    // Get all the previous IDs (in case there is more than one)
+                                    var previousIDs = [ItemR.previousID];
+                                    if (ItemR.multPrevs.length !== -1) {
+                                        for (var l = 0; l < ItemR.multPrevs.length; l++) {
+                                            previousIDs.push(ItemR.multPrevs[l]);
+                                        }
+                                    }
+                                    
                                     // Remember the list of ancestors that we find for this person
-                                    if (ID === ItemR.previousID) {
-                                        newAncestorsR.push(ID);
-                                        if (Item.level >= debugFrom) {
-                                        // alert("Found parentR with ID: " + ID);
+                                    for (var l = 0; l < previousIDs.length; l++) {
+                                        if (ID === previousIDs[l]) {
+                                            newAncestorsR.push(ID);
+                                            if (Item.level >= debugFrom) {
+                                            // alert("Found parentR with ID: " + ID);
+                                            }
                                         }
                                     }
                                 }
@@ -970,11 +986,22 @@ function calcLocations(firstID, highestLevel) {
                                 for (var k = 0; k < currentIDset.length; k++) {
                                     var ID = currentIDset[k];
                                     
+                                    // Get all the previous IDs (in case there is more than one)
+                                    var previousIDs = [ItemL.previousID];
+                                    if (ItemL.multPrevs.length !== -1) {
+                                        for (var l = 0; l < ItemL.multPrevs.length; l++) {
+                                            previousIDs.push(ItemL.multPrevs[l]);
+                                        }
+                                    }
+                                    
                                     // Remember the list of ancestors that we find for this person
-                                    if (ID === ItemL.previousID) {
-                                        newAncestorsL.push(ID);
-                                        if (Item.level >= debugFrom) {
-                                        // alert("Found parentL with ID: " + ID);
+                                    for (var l = 0; l < previousIDs.length; l++) {   
+                                        // Remember the list of ancestors that we find for this person
+                                        if (ID === previousIDs[l]) {
+                                            newAncestorsL.push(ID);
+                                            if (Item.level >= debugFrom) {
+                                            // alert("Found parentL with ID: " + ID);
+                                            }
                                         }
                                     }
                                 }

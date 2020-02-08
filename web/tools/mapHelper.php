@@ -974,7 +974,7 @@ if($__included_by_maps__) {
         newZoom = 1;
         
         // Now pan to this item
-        var Item = Items[ItemId];
+        var Item = getItemById(ItemId);
         panItem(Item);
         
         // And zoom to the default zoom level (1)
