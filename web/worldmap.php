@@ -112,16 +112,16 @@ var Helper_onLoad = function () {
     
     // Done loading, show the descriptions
     var defaultText = document.getElementById("default");
-    defaultText.innerHTML = "<?php echo $dict_Worldmap["default_wm"]; ?>"
+    defaultText.innerHTML = "<?php echo $dict_Worldmap["default_wm"]; ?>";
     
-    <?php if (isset($_GET['id'])) { ?>
-        var IDnum = <?php echo $_GET['id']; ?>;
+    <?php if (isset(filter_input(INPUT_GET, 'id'))) { ?>
+        var IDnum = <?php echo $filter_input(INPUT_GET, 'id'); ?>;
         
         // Now "click" the button in the table to focus on this location
         var Button = document.getElementById("WorldMap" + IDnum);
         Button.click();
     <?php } ?>
-}
+};
 
 // This function creates the Location objects
 function CreateLocation(name, index, ID, coordinates) {
@@ -147,7 +147,7 @@ function CreateLocation(name, index, ID, coordinates) {
         // Now turn them into floats
         this.coordinates[0] = parseFloat(coordinatesTemp[0]);
         this.coordinates[1] = parseFloat(coordinatesTemp[1]);
-    }
+    };
     
     // Drawing the marker on the google map
     this.drawMarker = function () {
@@ -167,14 +167,14 @@ function CreateLocation(name, index, ID, coordinates) {
         
         this.marker.addListener('click', function() {
             // Close the current open window
-            if (openWindow != null) {
+            if (openWindow !== null) {
                 openWindow.close();
             }
             
             this.infoWindow.open(MapObject, this);
             openWindow = this.infoWindow;
         });
-    }
+    };
     
     // A function to move the map, so that the clicked location is in the middle of the screen
     this.focusOnMe = function () {
@@ -184,13 +184,13 @@ function CreateLocation(name, index, ID, coordinates) {
         });
         
         // Close the current open window
-        if (openWindow != null) {
+        if (openWindow !== null) {
             openWindow.close();
         }
         
         this.marker.infoWindow.open(MapObject, this.marker);
         openWindow = this.marker.infoWindow;
-    }
+    };
 }
 
 function setLocations() {    
@@ -214,7 +214,7 @@ function focusOnLocation(Event) {
     // Remove the default text
     var WorldMap = document.getElementById("worldmap_div");
     var defaultText = document.getElementById("default");
-    if (defaultText != null) {
+    if (defaultText !== null) {
         WorldMap.removeChild(defaultText);
     
         // This means that we now are looking at the Map for the first time
@@ -236,7 +236,7 @@ function focusOnLocation(Event) {
 function displayGoogleMaps() {
     var mapProp = {
         center: new google.maps.LatLng(51.508742, -0.120850),
-        zoom: 5,
+        zoom: 5
     };
     
     // The handler of the Google map

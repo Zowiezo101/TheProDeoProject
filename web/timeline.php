@@ -77,7 +77,7 @@ function timeline_Helper_layout() {
                 this.level = level;
             }
             
-            if (this.ChildIDs.length != 0)
+            if (this.ChildIDs.length !== 0)
             {
                 IDset = this.ChildIDs;
             }
@@ -85,7 +85,7 @@ function timeline_Helper_layout() {
             // This would have been much easier using recursive functions
             // But there is too much recursion for the browser to handle..
             return IDset;
-        }
+        };
         
         /** CalcLocation function */
         this.calcLocation = function () {
@@ -99,7 +99,7 @@ function timeline_Helper_layout() {
             var Y = 50 + 75;
                     
             // Is this the first person of the family tree?
-            if (this.previousID != -1) {
+            if (this.previousID !== -1) {
                 
                 // ID number of the parent that will be used
                 var id = this.previousID;
@@ -117,7 +117,7 @@ function timeline_Helper_layout() {
                 if (odd) {
                     var middle = ((numChildren + 1) / 2) - 1;
                     
-                    if (Index == middle) {
+                    if (Index === middle) {
                         // Are we in the middle? 
                         // Then just use parents X coordinate
                         Y = Parent.Location[1];
@@ -155,13 +155,13 @@ function timeline_Helper_layout() {
             this.Location[1] = Y + this.offset;
             
             return;
-        }
+        };
         
         this.getAncestors = function () {
             var ListOfIDs = [];
             
-            if (this.previousID == -1) {
-                if (this.ChildIDs.length == 0) {
+            if (this.previousID === -1) {
+                if (this.ChildIDs.length === 0) {
                     // We do not have a family tree for this person..
                 } else {
                     // We are ancestors
@@ -175,14 +175,14 @@ function timeline_Helper_layout() {
                 // This breaks the while loop
                 var done = 0;
                 
-                while (done == 0)
+                while (done === 0)
                 {                
                     var newIDset = [];
                     for (i = 0; i < IDset.length; i++) {
                         var Item = Items[IDset[i]];
                         
                         // Create the ID set of the next generation
-                        if (Item.previousID != -1) {
+                        if (Item.previousID !== -1) {
                             newIDset.push(Item.previousID);
                         } else {
                             // This is an ancestor
@@ -193,14 +193,14 @@ function timeline_Helper_layout() {
                     
                     // There are no more children to update
                     IDset = uniq(newIDset);
-                    if (IDset.length == 0) {
+                    if (IDset.length === 0) {
                         done = 1;
                     }
                 }
             }
             
             return uniq(ListOfIDs);
-        }
+        };
         
         /** */
         this.getTimeColor = function (lengthType) {
@@ -251,7 +251,7 @@ function timeline_Helper_layout() {
                 break;
             }
             return color;
-        }
+        };
         
         this.StringToValue = function (lengthTypeStr) {
             
@@ -302,77 +302,77 @@ function timeline_Helper_layout() {
             }
             
             return lengthType;
-        }
+        };
         
         this.StringToType = function (lengthTypeStr, Length) {
             
             switch(lengthTypeStr) {
                 case 's':
                 lengthType = "<?php echo $dict_Timeline["second"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["seconds"]; ?>";
                 }
                 break;
                 
                 case 'i':
                 lengthType = "<?php echo $dict_Timeline["minute"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["minutes"]; ?>";
                 }
                 break;
                 
                 case 'h':
                 lengthType = "<?php echo $dict_Timeline["hour"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["hours"]; ?>";
                 }
                 break;
                 
                 case 'd':
                 lengthType = "<?php echo $dict_Timeline["day"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["days"]; ?>";
                 }
                 break;
                 
                 case 'w':
                 lengthType = "<?php echo $dict_Timeline["week"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["weeks"]; ?>";
                 }
                 break;
                 
                 case 'm':
                 lengthType = "<?php echo $dict_Timeline["month"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["months"]; ?>";
                 }
                 break;
                 
                 case 'y':
                 lengthType = "<?php echo $dict_Timeline["year"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["years"]; ?>";
                 }
                 break;
                 
                 case 'D':
                 lengthType = "<?php echo $dict_Timeline["decade"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["decades"]; ?>";
                 }
                 break;
                 
                 case 'C':
                 lengthType = "<?php echo $dict_Timeline["century"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["centuries"]; ?>";
                 }
                 break;
                 
                 case 'M':
                 lengthType = "<?php echo $dict_Timeline["millennium"]; ?>";
-                if (Length != 1) {
+                if (Length !== 1) {
                     lengthType = "<?php echo $dict_Timeline["millennia"]; ?>";
                 }
                 break;
@@ -383,7 +383,7 @@ function timeline_Helper_layout() {
             }
             
             return lengthType;
-        }
+        };
         
         this.convertType = function (value, fromType, toType) {
             // This function assumes that the value input, 
@@ -407,7 +407,7 @@ function timeline_Helper_layout() {
             }
             
             return newValue;
-        }
+        };
         
         this.convertLength = function (value, Type) {
             // This function calculates what the length of a block should be
@@ -415,17 +415,17 @@ function timeline_Helper_layout() {
             var newValue = 2;
             if ((Type < ENUM_MIL) && (Type > ENUM_UNDEFINED)) {
                 newValue = (value / MULTS[Type])*10;
-            } else if (Type == ENUM_MIL) {
+            } else if (Type === ENUM_MIL) {
                 newValue = value;
             }
             
             return newValue;
-        }
+        };
         
         this.convertString = function (value) {
             // This function converts the cryptic values to a readable string
             var newValue = "";
-            if (value == "") {
+            if (value === "") {
                 newValue = "<?php echo $dict_Timeline["unknown"]; ?>";
             } else {
                 // Convert every time type
@@ -448,7 +448,7 @@ function timeline_Helper_layout() {
             }
                     
             return newValue;
-        }
+        };
         
         this.convertText = function (Text, value) {
             var svgns = "http://www.w3.org/2000/svg";
@@ -456,7 +456,7 @@ function timeline_Helper_layout() {
             // The second tSpan gets an additional offset
             firstTSPAN = 0;
             
-            if (this.Length != "") {
+            if (this.Length !== "") {
                 // The tspan containing the time length
                 var tSpan = document.createElementNS(svgns, "tspan");    
                 tSpan.RectID = this.ID;
@@ -490,17 +490,17 @@ function timeline_Helper_layout() {
                 tSpan.setAttributeNS(null, "dy", 15 + 10*firstTSPAN);
                 firstTSPAN = 0;
                 
-                if ((subString.length == subLength) && (value[subStart] != " ") && (value[subStart - 1] != " ") && (value.length != subStart) ){
+                if ((subString.length === subLength) && (value[subStart] !== " ") && (value[subStart - 1] !== " ") && (value.length !== subStart) ){
                     tSpan.textContent = (subString + "-");
                 } else {
                     tSpan.textContent = (subString);
                 }
                 
                 Text.appendChild(tSpan);
-            } while (subString.length == subLength);
+            } while (subString.length === subLength);
             
             return;
-        }
+        };
         
         this.calcTime = function () {
             var timeParts = this.Length.split(" ");
@@ -510,7 +510,7 @@ function timeline_Helper_layout() {
             var lengthType = ENUM_UNDEFINED;
             var Length = this.Length;
             
-            if ((timeParts.length > 0) && (timeParts[0] != "")) {
+            if ((timeParts.length > 0) && (timeParts[0] !== "")) {
                 // Clear before we start calculating
                 Length = 0;
                 
@@ -551,14 +551,14 @@ function timeline_Helper_layout() {
                 lengthType = minType;
             
                 // Can we get a higher level length type?
-                if (lengthType != ENUM_UNDEFINED) {
+                if (lengthType !== ENUM_UNDEFINED) {
                     // While loop here, getting a higher level untill a value is smaller than zero
                     var newLength = 0;
                     while (true) {
                         newLength = this.convertType(Length, lengthType, lengthType + 1);
                         // alert("Old length: " + Length + "\nNew length: " + newLength + "\nType: " + lengthType);
                         
-                        if ((newLength < 1) || (lengthType == ENUM_MIL)){
+                        if ((newLength < 1) || (lengthType === ENUM_MIL)){
                             break;
                         }
                         
@@ -573,7 +573,7 @@ function timeline_Helper_layout() {
             
             // Update the global width value
             globalWidth += (this.lengthIndex*100);
-        }
+        };
         
         /** */
         this.drawEvent = function() {
@@ -685,19 +685,19 @@ function timeline_Helper_layout() {
                     
             Group.appendChild(Link);        
             return Group;
-        }
+        };
         
         /** */
         this.drawTimeLine = function(SVG) {    
             var IDset = [];
             
             var Group = this.drawEvent();
-            if ((Group != null) && (this.drawn == 0)) {
+            if ((Group !== null) && (this.drawn === 0)) {
                 SVG.appendChild(Group);
                 this.drawn = 1;
             }
             
-            if (this.ChildIDs.length != 0)
+            if (this.ChildIDs.length !== 0)
             {
                 IDset = this.ChildIDs;
             }
@@ -705,7 +705,7 @@ function timeline_Helper_layout() {
             // This would have been much easier using recursive functions
             // But there is too much recursion for the browser to handle..
             return IDset;
-        }
+        };
     }
 
     
@@ -714,7 +714,7 @@ function timeline_Helper_layout() {
         for (i = 0; i < Items.length; i++) {
             var Item = Items[i];
         
-            if (Item.previousID != -1) {
+            if (Item.previousID !== -1) {
                 var Parent = Items[Item.previousID];
                 Item.ChildIndex = Parent.ChildIDs.length;
                 Parent.ChildIDs.push(Item.ID);
@@ -723,7 +723,7 @@ function timeline_Helper_layout() {
         
         for (i = 0; i < Items.length; i++) {
             var Item = Items[i];
-            if ((Item.previousID == -1) && (Item.ChildIDs.length > 0)) {
+            if ((Item.previousID === -1) && (Item.ChildIDs.length > 0)) {
                 // This event is at the beginning of a time line
                 ItemsList.push(Item.ID);
             }
@@ -739,7 +739,7 @@ function calcLocations(firstID, highestLevel) {
     // var MaxLevel = 38;
     var debugFrom = 900;
     
-    while (done == 0)
+    while (done === 0)
     {
         var collision = 0;
         globalWidth = 0;
@@ -807,7 +807,7 @@ function calcLocations(firstID, highestLevel) {
                         var currentLevel = Item.level;
                         
                         // found = 1;
-                        while (found == 0) {
+                        while (found === 0) {
                             // Get a list with people that are a generation level lower (placed higher)
                             if (Item.level >= debugFrom) {
                             // alert("Trying level: " + currentLevel);
@@ -834,7 +834,7 @@ function calcLocations(firstID, highestLevel) {
                                     var ID = currentIDset[k];
                                     
                                     // Remember the list of ancestors that we find for this person
-                                    if (ID == ItemR.previousID) {
+                                    if (ID === ItemR.previousID) {
                                         newAncestorsR.push(ID);
                                         if (Item.level >= debugFrom) {
                                         // alert("Found parentR with ID: " + ID);
@@ -854,7 +854,7 @@ function calcLocations(firstID, highestLevel) {
                                     var ID = currentIDset[k];
                                     
                                     // Remember the list of ancestors that we find for this person
-                                    if (ID == ItemL.previousID) {
+                                    if (ID === ItemL.previousID) {
                                         newAncestorsL.push(ID);
                                         if (Item.level >= debugFrom) {
                                         // alert("Found parentL with ID: " + ID);
@@ -872,7 +872,7 @@ function calcLocations(firstID, highestLevel) {
                                     
                                     // We have found a match!
                                     // This is the ancestor that connects to two colliding people
-                                    if (RightID == LeftID) {
+                                    if (RightID === LeftID) {
                                         FoundID = RightID;
                                         found = 1;
                                         count++;
@@ -885,7 +885,7 @@ function calcLocations(firstID, highestLevel) {
                             }
                             
                             // collision = 1;
-                            if (found == 0) {
+                            if (found === 0) {
                                 // Keep the current data if we have a match
                                 currentAncestorsR = newAncestorsR;
                                 currentAncestorsL = newAncestorsL;
@@ -912,7 +912,7 @@ function calcLocations(firstID, highestLevel) {
                             for (var j = 0; j < Parent.ChildIDs.length; j++) {
                                 var ChildID = Parent.ChildIDs[j];
 
-                                if (ID == ChildID) {
+                                if (ID === ChildID) {
                                     // Find the child that needs to be moved
                                     Child = Items[ID];
                                 }
@@ -925,7 +925,7 @@ function calcLocations(firstID, highestLevel) {
                         }
                         collision = 1;
                         
-                        if (collision == 1) {
+                        if (collision === 1) {
                             // alert("Breaking first for-loop");
                             break;
                         }
@@ -937,7 +937,7 @@ function calcLocations(firstID, highestLevel) {
                 }
             }
             
-            if (collision == 1) {
+            if (collision === 1) {
                 // Break out of the loop and start again
                 // alert("Breaking second for-loop");
                 break;
@@ -945,7 +945,7 @@ function calcLocations(firstID, highestLevel) {
         }
         
         // There are no more children to update
-        if (level == MaxLevel) {
+        if (level === MaxLevel) {
             done = 1;
         }
     }
@@ -960,7 +960,7 @@ function drawTimeLine(SVG) {
     var done = 0;
     var MaxLevel = levelCounter.length;
     
-    while (done == 0)
+    while (done === 0)
     {        
         // Draw the timeline per level
         for (level = 0; level < MaxLevel; level++) {
@@ -974,7 +974,7 @@ function drawTimeLine(SVG) {
         }
         
         // There are no more children to update
-        if (level == MaxLevel) {
+        if (level === MaxLevel) {
             done = 1;
         }
     }

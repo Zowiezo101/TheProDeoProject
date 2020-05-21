@@ -3,11 +3,11 @@
     require "../../login_data.php";
     
     // The login page
-    if (isset($_POST['submitLogin'])) {
+    if (isset(filter_input(INPUT_POST, 'submitLogin'))) {
         
         // Check if username and password are correct
-        $username = $_POST["user"];
-        $password = $_POST["password"];
+        $username = filter_input(INPUT_POST, "user");
+        $password = filter_input(INPUT_POST, "password");
         
         // If they are, login with the username
         if (($username == $login_username) && ($password == $login_password)) {
@@ -23,5 +23,5 @@
 <script>
 window.onload = function Return2Settings() {
     window.location.href = "../settings.php";
-}
+};
 </script>

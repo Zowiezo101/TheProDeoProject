@@ -16,9 +16,9 @@ require "../phpmailer/POP3.php";
 
 //Import PHPMailer classes into the global namespace
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+//use PHPMailer\PHPMailer\Exception;
     
-if (isset($_GET['sendFeedback'])) {
+if (isset(filter_input(INPUT_GET, 'sendFeedback'))) {
 
     // require '../vendor/autoload.php';
 
@@ -73,11 +73,11 @@ if (isset($_GET['sendFeedback'])) {
     $mail->addAddress('ProDeoProductions2U@gmail.com', 'ProDeo Projects');
 
     //Set the subject line
-    $mail->Subject = 'Received feedback: "'.$_GET['subject'].'"';
+    $mail->Subject = 'Received feedback: "'.filter_input(INPUT_GET, 'subject').'"';
 
     //Read an HTML message body from an external file, convert referenced images to embedded,
     //convert HTML into a basic plain-text alternative body
-    $mail->msgHTML($_GET['text']);
+    $mail->msgHTML(filter_input(INPUT_GET, 'text'));
 
     //Replace the plain text body with one created manually
     // $mail->AltBody = 'This is a plain-text message body';
@@ -98,5 +98,5 @@ if (isset($_GET['sendFeedback'])) {
 <script>
 window.onload = function Return2Contact() {
     window.location.href = "../contact.php";
-}
+};
 </script>

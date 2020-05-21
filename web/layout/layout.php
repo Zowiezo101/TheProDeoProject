@@ -1,8 +1,8 @@
 <?php     
     session_start();
     
-    if (isset($_POST["lang"])) {
-        $_SESSION["lang"] = $_POST["lang"];
+    if (isset(filter_input(INPUT_POST, "lang"))) {
+        $_SESSION["lang"] = filter_input(INPUT_POST, "lang");
         ?>
         
         <script>
@@ -133,8 +133,8 @@
         var ButtonIDs = [
             "dropdown_db",
             "dropdown_prodeo",
-            "dropdown_lang",
-        ]
+            "dropdown_lang"
+        ];
         
         for (i = 0; i < ButtonIDs.length; i++) {
             var ButtonID = ButtonIDs[i];
@@ -154,5 +154,5 @@
                 menu.style.display = "none";
             }
         }
-    }
+    };
 </script>

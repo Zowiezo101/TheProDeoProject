@@ -16,16 +16,16 @@ function AddParams($page, $id, $sort) {
     // If values are not defined, define them now
     // Use the default value, if they are not in the address bar
     if ($page == -1) {
-        if (isset($_GET["page"])) {
-            $page = $_GET["page"];
+        if (isset(filter_input(INPUT_GET, "page"))) {
+            $page = filter_input(INPUT_GET, "page");
         } else {
             $page = 0;
         }
     }
         
     if ($sort == -1) {
-        if (isset($_GET["sort"])) {
-            $sort = $_GET["sort"];
+        if (isset(filter_input(INPUT_GET, "sort"))) {
+            $sort = filter_input(INPUT_GET, "sort");
         } else {
             $sort = "app";
         }
@@ -52,17 +52,17 @@ function GetListOfItems($table) {
     
     // Check the page number. If it isn't defined, just
     // use the default value of 0.
-    if (!isset($_GET["page"])) {
+    if (!isset(filter_input(INPUT_GET, "page"))) {
         $page_nr = 0;
     } else {
-        $page_nr = $_GET["page"];
+        $page_nr = filter_input(INPUT_GET, "page");
     }
     
     // Check if the results should be sorted.
-    if (!isset($_GET["sort"])) {
+    if (!isset(filter_input(INPUT_GET, "sort"))) {
         $sort = "app";
     } else {
-        $sort = $_GET["sort"];
+        $sort = filter_input(INPUT_GET, "sort");
     }
             
     // Sorting results by name or ID.
@@ -117,10 +117,10 @@ function GetNumberOfItems($table) {
     global $conn;
     
     // Check if the page number is set
-    if (!isset($_GET["page"])) {
+    if (!isset(filter_input(INPUT_GET, "page"))) {
         $page_nr = 0;
     } else {
-        $page_nr = $_GET["page"];
+        $page_nr = filter_input(INPUT_GET, "page");
     }
     
     // The query to run
@@ -222,7 +222,7 @@ function _Database_Helper_layout() {
     // Closing div clearfix
     PrettyPrint('</div> ');
 
-    if (isset($_GET['id'])) {
+    if (isset(filter_input(INPUT_GET, 'id'))) {
         PrettyPrint('');
         PrettyPrint('<script>');
                 // Grab the right part of the information window
@@ -233,7 +233,7 @@ function _Database_Helper_layout() {
         PrettyPrint('    contentEl.removeChild(defaultText); ');
         PrettyPrint('');
         // Get the information of the person that we want to show
-        $information = GetItemInfo($id, $_GET['id']); 
+        $information = GetItemInfo($id, filter_input(INPUT_GET, 'id')); 
         
                 // Add the name of the current person as a header
         PrettyPrint('    var Name = document.createElement("h1"); ');
@@ -277,25 +277,25 @@ function _Database_Helper_layout() {
             if (strpos($key, "_id") !== false) {
                     
                 // TODO: This comes from item_to_item tables
-//                if (($key == "PlaceOfBirthID")     || 
-//                    ($key == "PlaceOfEndID")     || 
-//                    ($key == "PlaceOfLivingID") || 
-//                    ($key == "LocationIDs"))     {    
-//                        $table = "locations";
-//                } else if (
-//                    ($key == "FounderID")     ||
-//                    ($key == "DestroyerID") ||
-//                    ($key == "PeopleIDs"))    {
-//                        $table = "peoples";
-//                } else if  (
-//                    ($key == "StartEventID") ||
-//                    ($key == "EndEventID"))    {
-//                        $table = "events";
-//                } else if  ($key == "SpecialIDs") {
-//                        $table = "specials";
-//                } else {
-//                        $table = $id;
-//                }
+                if (($key == "PlaceOfBirthID")     || 
+                    ($key == "PlaceOfEndID")     || 
+                    ($key == "PlaceOfLivingID") || 
+                    ($key == "LocationIDs"))     {    
+                        $table = "locations";
+                } else if (
+                    ($key == "FounderID")     ||
+                    ($key == "DestroyerID") ||
+                    ($key == "PeopleIDs"))    {
+                        $table = "peoples";
+                } else if  (
+                    ($key == "StartEventID") ||
+                    ($key == "EndEventID"))    {
+                        $table = "events";
+                } else if  ($key == "SpecialIDs") {
+                        $table = "specials";
+                } else {
+                        $table = $id;
+                }
 //                
 //                // Only if the value of this key is actually set, 
 //                // otherwise we might run into some errors..
@@ -453,7 +453,7 @@ function _Database_Helper_layout() {
             PrettyPrint('    var ItemList = document.createElement("ul"); ');
             PrettyPrint('');
             PrettyPrint('    // The contents of the list');
-            PrettyPrint('    var ItemListIDs = getMaps('.$_GET['id'].'); ');
+            PrettyPrint('    var ItemListIDs = getMaps('.filter_input(INPUT_GET, 'id').'); ');
             PrettyPrint('');
             PrettyPrint('    if (ItemListIDs.length > 0) { ');
             PrettyPrint('        // For every map that this item is included in');
@@ -461,7 +461,7 @@ function _Database_Helper_layout() {
             PrettyPrint('            // Create a link to the map');
             PrettyPrint('            var ItemListLink = document.createElement("a"); ');
             PrettyPrint('            ItemListLink.innerHTML = "'.$dict_NavBar[$map].' " + (Number(ItemListIDs[i]) + 1); ');
-            PrettyPrint('            ItemListLink.href = updateURLParameter("'.strtolower($map).'.php", "id", "" + ItemListIDs[i] + "," + '.$_GET['id'].'); ');
+            PrettyPrint('            ItemListLink.href = updateURLParameter("'.strtolower($map).'.php", "id", "" + ItemListIDs[i] + "," + '.filter_input(INPUT_GET, 'id').'); ');
             PrettyPrint('');
             PrettyPrint('            // Put the link in a list item');
             PrettyPrint('            var ItemListItem = document.createElement("li"); ');
@@ -522,7 +522,7 @@ function convertBibleVerseLink($book, $chap, $verse) {
                 "REV"];
     
     // Link to a certain part of the webpage, to get the exact verse mentioned
-    $weblink2 = sprintf("#%s-%03d-%03d", $bookAbv[$book], $chap, $verse);
+    $weblink2 = sprintf("#%s-%03d-%03d", $bookAbv[$book - 1], $chap, $verse);
     
     return $weblink.$weblink2;
 }
@@ -547,16 +547,16 @@ function convertBibleVerseText($book, $chap, $verse) {
         
         // Check if this is page 0. If so, disable to prev button..    
         <?php            
-            if (!isset($_GET["page"])) {
+            if (!isset(filter_input(INPUT_GET, "page"))) {
                 $page_nr = 0;
             } else {
-                $page_nr = $_GET["page"];
+                $page_nr = filter_input(INPUT_GET, "page");
             }
             
-            if (!isset($_GET["sort"])) {
+            if (!isset(filter_input(INPUT_GET, "sort"))) {
                 $sort = 'app';
             } else {
-                $sort = $_GET["sort"];
+                $sort = filter_input(INPUT_GET, "sort");
             }
             
             PrettyPrint("var PageNr = ".$page_nr.";", 1);
@@ -564,7 +564,7 @@ function convertBibleVerseText($book, $chap, $verse) {
             PrettyPrint("var SortType = '".$sort."';");
         ?>
         
-        if (PageNr == 0) {
+        if (PageNr === 0) {
             // First page
             ButtonPrev.disabled = true;
             ButtonPrev.className = "off_button_<?php echo $$id; ?>";
@@ -619,16 +619,16 @@ function convertBibleVerseText($book, $chap, $verse) {
     
     function PrevPage() {        
         <?php
-            if (!isset($_GET["page"])) {
+            if (!isset(filter_input(INPUT_GET, "page"))) {
                 $page_nr = 0;
             } else {
-                $page_nr = $_GET["page"];
+                $page_nr = filter_input(INPUT_GET, "page");
             }
             
             PrettyPrint("var PageNr = ".$page_nr.";", 1);
         ?>
         
-        if (PageNr == 1) {
+        if (PageNr === 1) {
             // The page parameter should now be removed
             oldHref = window.location.href;
             newHref = removeURLParameter(oldHref, "page");
@@ -643,10 +643,10 @@ function convertBibleVerseText($book, $chap, $verse) {
     
     function NextPage() {
         <?php
-            if (!isset($_GET["page"])) {
+            if (!isset(filter_input(INPUT_GET, "page"))) {
                 $page_nr = 0;
             } else {
-                $page_nr = $_GET["page"];
+                $page_nr = filter_input(INPUT_GET, "page");
             }
             
             PrettyPrint("var PageNr = ".$page_nr." + 1;", 1);
@@ -662,7 +662,7 @@ function convertBibleVerseText($book, $chap, $verse) {
     
         // The sort parameter only has to be updated
         oldHref = window.location.href;
-        <?php if (isset($_GET["sort"]) && ($_GET["sort"]) == "alp") { ?>
+        <?php if (isset(filter_input(INPUT_GET, "sort")) && (filter_input(INPUT_GET, "sort")) == "alp") { ?>
             newHref = updateURLParameter(oldHref, "sort", "r-alp");
         <?php } else { ?>
             newHref = updateURLParameter(oldHref, "sort", "alp");
@@ -679,7 +679,7 @@ function convertBibleVerseText($book, $chap, $verse) {
     
         // The sort parameter only has to be updated
         oldHref = window.location.href;
-        <?php if (!isset($_GET["sort"])) { ?>
+        <?php if (!isset(filter_input(INPUT_GET, "sort"))) { ?>
             newHref = updateURLParameter(oldHref, "sort", "r-app");
         <?php } else { ?>
             newHref = removeURLParameter(oldHref, "sort");

@@ -60,100 +60,100 @@ function search_Helper_layout() {
     PrettyPrint('        '.$dict_Search["default_search"]);
     PrettyPrint('');
     
-    if (isset($_GET['submitSearch'])) {
+    if (isset(filter_input(INPUT_GET, 'submitSearch'))) {
         // Generating search results
         $options = "";
 
-        if (isset($_GET['meaning_name']) and ($_GET["meaning_name"] != "")) {
-            $options = $options." AND meaning_name LIKE '%".$_GET["meaning_name"]."%'";
+        if (isset(filter_input(INPUT_GET, 'meaning_name')) and (filter_input(INPUT_GET, "meaning_name") != "")) {
+            $options = $options." AND meaning_name LIKE '%".filter_input(INPUT_GET, "meaning_name")."%'";
         }
 
         // TODO: Linking tables
-//        if (isset($_GET['NameChanges']) and ($_GET["NameChanges"] != "")) {
-//            $multoptions = explode(";", $_GET["NameChanges"]);
+//        if (isset(filter_input(INPUT_GET, 'NameChanges']) and (filter_input(INPUT_GET, "NameChanges"] != "")) {
+//            $multoptions = explode(";", filter_input(INPUT_GET, "NameChanges"]);
 //            foreach ($multoptions as $value) {
 //                $options = $options." AND NameChanges LIKE '%".$value."%'";
 //            }
 //        }
 //
-//        if (isset($_GET['Father']) and ($_GET["Father"] != "")) {
-//            $options = $options." AND Father LIKE '%".$_GET["Father"]."%'";
+//        if (isset(filter_input(INPUT_GET, 'Father']) and (filter_input(INPUT_GET, "Father"] != "")) {
+//            $options = $options." AND Father LIKE '%".filter_input(INPUT_GET, "Father"]."%'";
 //        }
 //
-//        if (isset($_GET['Mother']) and ($_GET["Mother"] != "")) {
-//            $options = $options." AND Mother LIKE '%".$_GET["Mother"]."%'";
+//        if (isset(filter_input(INPUT_GET, 'Mother']) and (filter_input(INPUT_GET, "Mother"] != "")) {
+//            $options = $options." AND Mother LIKE '%".filter_input(INPUT_GET, "Mother"]."%'";
 //        }
 
-        if (isset($_GET['gender']) and ($_GET["gender"] != "")) {
-            if ($_GET["gender"] != 0) {
-                $options = $options." AND gender = '%".$_GET["gender"]."%'";
+        if (isset(filter_input(INPUT_GET, 'gender')) and (filter_input(INPUT_GET, "gender") != "")) {
+            if (filter_input(INPUT_GET, "gender") != 0) {
+                $options = $options." AND gender = '%".filter_input(INPUT_GET, "gender")."%'";
             }
         }
 
-        if (isset($_GET['tribe']) and ($_GET["tribe"] != "")) {
-            if ($_GET["tribe"] != 0) {
-                $options = $options." AND tribe = '%".$_GET["tribe"]."%'";
+        if (isset(filter_input(INPUT_GET, 'tribe')) and (filter_input(INPUT_GET, "tribe") != "")) {
+            if (filter_input(INPUT_GET, "tribe") != 0) {
+                $options = $options." AND tribe = '%".filter_input(INPUT_GET, "tribe")."%'";
             }
         }
 
-        if (isset($_GET['type']) and ($_GET["type"] != "")) {
-            if ($_GET["type"] != 0) {
-                $options = $options." AND type = '%".$_GET["type"]."%'";
+        if (isset(filter_input(INPUT_GET, 'type')) and (filter_input(INPUT_GET, "type") != "")) {
+            if (filter_input(INPUT_GET, "type") != 0) {
+                $options = $options." AND type = '%".filter_input(INPUT_GET, "type")."%'";
             }
         }
 
         // TODO: Linking yable
-//        if (isset($_GET['Founder']) and ($_GET["Founder"] != "")) {
-//            $options = $options." AND Founder LIKE '%".$_GET["Founder"]."%'";
+//        if (isset(filter_input(INPUT_GET, 'Founder')) and (filter_input(INPUT_GET, "Founder") != "")) {
+//            $options = $options." AND Founder LIKE '%".filter_input(INPUT_GET, "Founder")."%'";
 //        }
 //        
-//        if (isset($_GET['Destroyer']) and ($_GET["Destroyer"] != "")) {
-//            $options = $options." AND Destroyer LIKE '%".$_GET["Destroyer"]."%'";
+//        if (isset(filter_input(INPUT_GET, 'Destroyer')) and (filter_input(INPUT_GET, "Destroyer") != "")) {
+//            $options = $options." AND Destroyer LIKE '%".filter_input(INPUT_GET, "Destroyer")."%'";
 //        }
 //        
-//        if (isset($_GET['Previous']) and ($_GET["Previous"] != "")) {
-//            $options = $options." AND Previous LIKE '%".$_GET["Previous"]."%'";
+//        if (isset(filter_input(INPUT_GET, 'Previous')) and (filter_input(INPUT_GET, "Previous") != "")) {
+//            $options = $options." AND Previous LIKE '%".filter_input(INPUT_GET, "Previous")."%'";
 //        }
 //        
-//        if (isset($_GET['Locations']) and ($_GET["Locations"] != "")) {
-//            $multoptions = explode(";", $_GET["Locations"]);
+//        if (isset(filter_input(INPUT_GET, 'Locations')) and (filter_input(INPUT_GET, "Locations") != "")) {
+//            $multoptions = explode(";", filter_input(INPUT_GET, "Locations"));
 //            foreach ($multoptions as $value) {
 //                $options = $options." AND Locations LIKE '%".$value."%'";
 //            }
 //        }
 //        
-//        if (isset($_GET['Peoples']) and ($_GET["Peoples"] != "")) {
-//            $multoptions = explode(";", $_GET["Peoples"]);
+//        if (isset(filter_input(INPUT_GET, 'Peoples')) and (filter_input(INPUT_GET, "Peoples") != "")) {
+//            $multoptions = explode(";", filter_input(INPUT_GET, "Peoples"));
 //            foreach ($multoptions as $value) {
 //                $options = $options." AND Peoples LIKE '%".$value."%'";
 //            }
 //        }
 //        
-//        if (isset($_GET['Specials']) and ($_GET["Specials"] != "")) {
-//            $multoptions = explode(";", $_GET["Specials"]);
+//        if (isset(filter_input(INPUT_GET, 'Specials')) and (filter_input(INPUT_GET, "Specials") != "")) {
+//            $multoptions = explode(";", filter_input(INPUT_GET, "Specials"));
 //            foreach ($multoptions as $value) {
 //                $options = $options." AND Specials LIKE '%".$value."%'";
 //            }
 //        }
         
-        if (isset($_GET['book_start_book']) and ($_GET["book_start_book"] != "")) {
-            $options = $options." AND book_start_id >= '".$_GET["book_start_book"]."'";
+        if (isset(filter_input(INPUT_GET, 'book_start_book')) and (filter_input(INPUT_GET, "book_start_book") != "")) {
+            $options = $options." AND book_start_id >= '".filter_input(INPUT_GET, "book_start_book")."'";
             
-            if (isset($_GET['book_start_chap']) and ($_GET["book_start_chap"] != "")) {
-                $options = $options." AND book_start_chap >= '".$_GET["book_start_chap"]."'";
+            if (isset(filter_input(INPUT_GET, 'book_start_chap')) and (filter_input(INPUT_GET, "book_start_chap") != "")) {
+                $options = $options." AND book_start_chap >= '".filter_input(INPUT_GET, "book_start_chap")."'";
             }
         }
         
-        if (isset($_GET['book_end_book']) and ($_GET["book_end_book"] != "")) {
-            $options = $options." AND book_end_id >= '".$_GET["book_end_book"]."'";
+        if (isset(filter_input(INPUT_GET, 'book_end_book')) and (filter_input(INPUT_GET, "book_end_book") != "")) {
+            $options = $options." AND book_end_id >= '".filter_input(INPUT_GET, "book_end_book")."'";
             
-            if (isset($_GET['book_end_chap']) and ($_GET["book_end_chap"] != "")) {
-                $options = $options." AND book_end_chap >= '".$_GET["book_end_chap"]."'";
+            if (isset(filter_input(INPUT_GET, 'book_end_chap')) and (filter_input(INPUT_GET, "book_end_chap") != "")) {
+                $options = $options." AND book_end_chap >= '".filter_input(INPUT_GET, "book_end_chap")."'";
             }
         }
         
         // If all types are chosen, make some shortcuts at the top of the search results
-        if ($_GET['table'] == "all") {
+        if (filter_input(INPUT_GET, 'table') == "all") {
             PrettyPrint('        <center> ');
             PrettyPrint('            '.$dict_Search["Show"].
                                     "<a href='#search_peoples'>".$dict_NavBar["Peoples"]."</a> | ".
@@ -165,43 +165,43 @@ function search_Helper_layout() {
             PrettyPrint('');
         }
     
-        if (($_GET['table'] == "peoples") ||
-            ($_GET['table'] == "all")) {
+        if ((filter_input(INPUT_GET, 'table') == "peoples") ||
+            (filter_input(INPUT_GET, 'table') == "all")) {
             PrettyPrint('        <div id="search_peoples"> ');
             // Search Peoples database
-            SearchItems($_GET['search'], "peoples", $options);
+            SearchItems(filter_input(INPUT_GET, 'search'), "peoples", $options);
             PrettyPrint('        </div> ');
         }
 
-        if (($_GET['table'] == "locations") ||
-            ($_GET['table'] == "all")) {
+        if ((filter_input(INPUT_GET, 'table') == "locations") ||
+            (filter_input(INPUT_GET, 'table') == "all")) {
             PrettyPrint('        <div id="search_locations"> ');
             // Search Locations database
-            SearchItems($_GET['search'], "locations", $options);
+            SearchItems(filter_input(INPUT_GET, 'search'), "locations", $options);
             PrettyPrint('        </div> ');
         }
 
-        if (($_GET['table'] == "specials") ||
-            ($_GET['table'] == "all")) {
+        if ((filter_input(INPUT_GET, 'table') == "specials") ||
+            (filter_input(INPUT_GET, 'table') == "all")) {
             PrettyPrint('        <div id="search_specials"> ');
             // Search Specials database
-            SearchItems($_GET['search'], "specials", $options);
+            SearchItems(filter_input(INPUT_GET, 'search'), "specials", $options);
             PrettyPrint('        </div> ');
         }
 
-        if (($_GET['table'] == "books") ||
-            ($_GET['table'] == "all")) {
+        if ((filter_input(INPUT_GET, 'table') == "books") ||
+            (filter_input(INPUT_GET, 'table') == "all")) {
             PrettyPrint('        <div id="search_books"> ');
             // Search Books database
-            SearchItems($_GET['search'], "books", $options);
+            SearchItems(filter_input(INPUT_GET, 'search'), "books", $options);
             PrettyPrint('        </div> ');
         }
 
-        if (($_GET['table'] == "events") ||
-            ($_GET['table'] == "all")) {
+        if ((filter_input(INPUT_GET, 'table') == "events") ||
+            (filter_input(INPUT_GET, 'table') == "all")) {
             PrettyPrint('        <div id="search_events"> ');
             // Search Events database
-            SearchItems($_GET['search'], "events", $options);
+            SearchItems(filter_input(INPUT_GET, 'search'), "events", $options);
             PrettyPrint('        </div> ');
         }
     }
@@ -221,10 +221,10 @@ function SearchItems($text, $table, $options) {
     $dict = $$dictName;
     
     // Remove any newlines or characters
-    $text = $conn->real_escape_string($text);
+    $text_escaped = $conn->real_escape_string($text);
     
     // Search the database with the chosen string and options
-    $sql = "SELECT * FROM ".$table." WHERE name LIKE '%".$text."%'".$options;
+    $sql = "SELECT * FROM ".$table." WHERE name LIKE '%".$text_escaped."%'".$options;
     $result = $conn->query($sql);
     
     if (!$result) {
@@ -239,9 +239,9 @@ function SearchItems($text, $table, $options) {
         // Show the amount of results found. If it is more than one result, use plural forms
         PrettyPrint("            <a name='".$table."'><h1>".$dict_NavBar[ucfirst($table)].":</h1><br /></a>");
         if ($num_res == 1) {
-            PrettyPrint('            '.$num_res.$dict_Search['Result']."\"".$text."\":<br />");
+            PrettyPrint('            '.$num_res.$dict_Search['Result']."\"".$text_escaped."\":<br />");
         } else {
-            PrettyPrint('            '.$num_res.$dict_Search['Results']."\"".$text."\":<br />");
+            PrettyPrint('            '.$num_res.$dict_Search['Results']."\"".$text_escaped."\":<br />");
         }
         
         // If there are results, draw a table with all the results found
@@ -303,11 +303,11 @@ function selectTableOptions(sel) {
     resetForm(form);
     
     Input = addInput("text", "search", "<?php echo $dict_PeoplesParams["name"]; ?>");
-    <?php if (isset($_GET['search'])) { ?>
+    <?php if (isset(filter_input(INPUT_GET, 'search'))) { ?>
         // Pre-fill the name, if the current table is the same as the one of the previous search
         // And of course when the name is also set
-        if (value == "<?php echo $_GET['table'];?>") {
-            Input.value = "<?php echo $_GET['search'];?>";
+        if (value === "<?php echo filter_input(INPUT_GET, 'table');?>") {
+            Input.value = "<?php echo filter_input(INPUT_GET, 'search');?>";
         }
     <?php } ?>
     form.appendChild(Input);
@@ -316,38 +316,38 @@ function selectTableOptions(sel) {
         case "peoples":
         // Meaning Name
         Input = addInput("text", "meaning_name", "<?php echo $dict_PeoplesParams["meaning_name"]; ?>");
-        <?php if (isset($_GET['meaning_name']) and ($_GET['table'] == "peoples")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'meaning_name')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
-            Input.value = "<?php echo $_GET['meaning_name'];?>";
+            Input.value = "<?php echo filter_input(INPUT_GET, 'meaning_name');?>";
         <?php } ?>
         form.appendChild(Input);
         
         // TODO: Linking tables
         // Name changes
 //        Input = addInput("text", "NameChanges", "<?php //echo $dict_PeoplesParams["NameChanges"]; ?>");
-        <?php //if (isset($_GET['NameChanges']) and ($_GET['table'] == "peoples")) { ?>
+        <?php //if (isset(filter_input(INPUT_GET, 'NameChanges')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php //echo $_GET['NameChanges'];?>";
+//            Input.value = "<?php //echo filter_input(INPUT_GET, 'NameChanges');?>";
         <?php //} ?>
 //        form.appendChild(Input);
         
         // Name Father
 //        Input = addInput("text", "Father", "<?php //echo $dict_PeoplesParams["Father"]; ?>");
-        <?php //if (isset($_GET['Father']) and ($_GET['table'] == "peoples")) { ?>
+        <?php //if (isset(filter_input(INPUT_GET, 'Father')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php //echo $_GET['Father'];?>";
+//            Input.value = "<?php //echo filter_input(INPUT_GET, 'Father');?>";
         <?php //} ?>
 //        form.appendChild(Input);
         
         // Name Mother
 //        Input = addInput("text", "Mother", "<?php //echo $dict_PeoplesParams["Mother"]; ?>");
-        <?php //if (isset($_GET['Mother']) and ($_GET['table'] == "peoples")) { ?>
+        <?php //if (isset(filter_input(INPUT_GET, 'Mother')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php //echo $_GET['Mother'];?>";
+//            Input.value = "<?php //echo filter_input(INPUT_GET, 'Mother');?>";
         <?php //} ?>
 //        form.appendChild(Input);
         
@@ -356,10 +356,10 @@ function selectTableOptions(sel) {
                             [<?php echo $gender_select_values; ?>], 
                             [<?php echo $gender_select_names; ?>], 
                             "<?php echo $dict_PeoplesParams["gender"]; ?>");
-        <?php if (isset($_GET['gender']) and ($_GET['table'] == "peoples")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'gender')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
-            Input.value = "<?php echo $_GET['gender'];?>";
+            Input.value = "<?php echo filter_input(INPUT_GET, 'gender');?>";
         <?php } ?>
         form.appendChild(Input);
         
@@ -368,65 +368,65 @@ function selectTableOptions(sel) {
                             [<?php echo $tribe_select_values; ?>], 
                             [<?php echo $tribe_select_names; ?>], 
                             "<?php echo $dict_PeoplesParams["tribe"]; ?>");
-        <?php if (isset($_GET['tribe']) and ($_GET['table'] == "peoples")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'tribe')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
-            Input.value = "<?php echo $_GET['tribe'];?>";
+            Input.value = "<?php echo filter_input(INPUT_GET, 'tribe');?>";
         <?php } ?>
         form.appendChild(Input);
         
         // First appearance
         Input = addAppearance("book_start", "<?php echo $dict_PeoplesParams["book_start_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_start_book']) and ($_GET['table'] == "peoples")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_start_book')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_book");
-            SelectElement.value = "<?php echo $_GET['book_start_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_start_chap']) and ($_GET['table'] == "peoples")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_start_chap')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_chap");
-            SelectElement.value = "<?php echo $_GET['book_start_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_chap');?>";
         <?php } ?>
         
         // Last appearance
         Input = addAppearance("book_end", "<?php echo $dict_PeoplesParams["book_end_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_end_book']) and ($_GET['table'] == "peoples")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_end_book')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_book");
-            SelectElement.value = "<?php echo $_GET['book_end_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_end_chap']) and ($_GET['table'] == "peoples")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_end_chap')) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_chap");
-            SelectElement.value = "<?php echo $_GET['book_end_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_chap');?>";
         <?php } ?>
         break;
         
         case "locations":
         // Meaning name
         Input = addInput("text", "meaning_name", "<?php echo $dict_LocationsParams["meaning_name"]; ?>");
-        <?php if (isset($_GET['meaning_name']) and ($_GET['table'] == "locations")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'meaning_name')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
-            Input.value = "<?php echo $_GET['meaning_name'];?>";
+            Input.value = "<?php echo filter_input(INPUT_GET, 'meaning_name');?>";
         <?php } ?>
         form.appendChild(Input);
         
         // TODO: Linking tables
         // Name changes
 //        Input = addInput("text", "NameChanges", "<?php //echo $dict_LocationsParams["NameChanges"]; ?>");
-        <?php //if (isset($_GET['NameChanges']) and ($_GET['table'] == "locations")) { ?>
+        <?php //if (isset(filter_input(INPUT_GET, 'NameChanges')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php //echo $_GET['NameChanges'];?>";
+//            Input.value = "<?php //echo filter_input(INPUT_GET, 'NameChanges');?>";
         <?php //} ?>
 //        form.appendChild(Input);
         
@@ -435,74 +435,74 @@ function selectTableOptions(sel) {
                             [<?php echo $locations_select_values; ?>], 
                             [<?php echo $locations_select_names; ?>], 
                             "<?php echo $dict_LocationsParams["type"]; ?>");
-        <?php if (isset($_GET['type']) and ($_GET['table'] == "locations")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'type')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
-            Input.value = "<?php echo $_GET['type'];?>";
+            Input.value = "<?php echo filter_input(INPUT_GET, 'type');?>";
         <?php } ?>
         form.appendChild(Input);
         
         // TODO: Linking tables
         // Founder
 //        Input = addInput("text", "Founder", "<?php // echo $dict_LocationsParams["Founder"]; ?>");
-        <?php // if (isset($_GET['Founder']) and ($_GET['table'] == "locations")) { ?>
+        <?php // if (isset(filter_input(INPUT_GET, 'Founder')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php // echo $_GET['Founder'];?>";
+//            Input.value = "<?php // echo filter_input(INPUT_GET, 'Founder');?>";
         <?php // } ?>
 //        form.appendChild(Input);
         
         // Destroyer
 //        Input = addInput("text", "Destroyer", "<?php // echo $dict_LocationsParams["Destroyer"]; ?>");
-        <?php // if (isset($_GET['Destroyer']) and ($_GET['table'] == "locations")) { ?>
+        <?php // if (isset(filter_input(INPUT_GET, 'Destroyer')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php // echo $_GET['Destroyer'];?>";
+//            Input.value = "<?php // echo filter_input(INPUT_GET, 'Destroyer');?>";
         <?php // } ?>
 //        form.appendChild(Input);
         
         // First appearance
         Input = addAppearance("book_start", "<?php echo $dict_LocationsParams["book_start_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_start_book']) and ($_GET['table'] == "locations")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_start_book')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_book");
-            SelectElement.value = "<?php echo $_GET['book_start_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_start_chap']) and ($_GET['table'] == "locations")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_start_chap')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_chap");
-            SelectElement.value = "<?php echo $_GET['book_start_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_chap');?>";
         <?php } ?>
         
         // Last appearance
         Input = addAppearance("book_end", "<?php echo $dict_LocationsParams["book_end_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_end_book']) and ($_GET['table'] == "locations")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_end_book')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_book");
-            SelectElement.value = "<?php echo $_GET['book_end_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_end_chap']) and ($_GET['table'] == "locations")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_end_chap')) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_chap");
-            SelectElement.value = "<?php echo $_GET['book_end_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_chap');?>";
         <?php } ?>
         break;
         
         case "specials":
         // Meaning Name
         Input = addInput("text", "meaning_name", "<?php echo $dict_SpecialsParams["meaning_name"]; ?>");
-        <?php if (isset($_GET['meaning_name']) and ($_GET['table'] == "specials")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'meaning_name')) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
-            Input.value = "<?php echo $_GET['meaning_name'];?>";
+            Input.value = "<?php echo filter_input(INPUT_GET, 'meaning_name');?>";
         <?php } ?>
         form.appendChild(Input);
         
@@ -511,45 +511,45 @@ function selectTableOptions(sel) {
                             [<?php echo $specials_select_values; ?>], 
                             [<?php echo $specials_select_names; ?>], 
                             "<?php echo $dict_SpecialsParams["type"]; ?>");
-        <?php if (isset($_GET['type']) and ($_GET['table'] == "specials")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'type')) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
-            Input.value = "<?php echo $_GET['type'];?>";
+            Input.value = "<?php echo filter_input(INPUT_GET, 'type');?>";
         <?php } ?>
         form.appendChild(Input);
         
         // First appearance
         Input = addAppearance("book_start", "<?php echo $dict_SpecialsParams["book_start_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_start_book']) and ($_GET['table'] == "specials")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_start_book')) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_book");
-            SelectElement.value = "<?php echo $_GET['book_start_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_start_chap']) and ($_GET['table'] == "specials")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_start_chap')) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_chap");
-            SelectElement.value = "<?php echo $_GET['book_start_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_chap');?>";
         <?php } ?>
         
         // Last appearance
         Input = addAppearance("book_end", "<?php echo $dict_SpecialsParams["book_end_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_end_book']) and ($_GET['table'] == "specials")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_end_book')) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_book");
-            SelectElement.value = "<?php echo $_GET['book_end_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_end_chap']) and ($_GET['table'] == "specials")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_end_chap')) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_chap");
-            SelectElement.value = "<?php echo $_GET['book_end_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_chap');?>";
         <?php } ?>
         break;
         
@@ -557,72 +557,72 @@ function selectTableOptions(sel) {
         // TODO: Linking tables
         // Previous
 //        Input = addInput("text", "Previous", "<?php // echo $dict_EventsParams["Previous"]; ?>");
-        <?php // if (isset($_GET['Previous']) and ($_GET['table'] == "events")) { ?>
+        <?php // if (isset(filter_input(INPUT_GET, 'Previous')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php // echo $_GET['Previous'];?>";
+//            Input.value = "<?php // echo filter_input(INPUT_GET, 'Previous');?>";
         <?php // } ?>
 //        form.appendChild(Input);
         
         // Location
 //        Input = addInput("text", "Locations", "<?php // echo $dict_EventsParams["Locations"]; ?>");
-        <?php // if (isset($_GET['Locations']) and ($_GET['table'] == "events")) { ?>
+        <?php // if (isset(filter_input(INPUT_GET, 'Locations')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php // echo $_GET['Locations'];?>";
+//            Input.value = "<?php // echo filter_input(INPUT_GET, 'Locations');?>";
         <?php // } ?>
 //        form.appendChild(Input);
         
         // People
 //        Input = addInput("text", "Peoples", "<?php // echo $dict_EventsParams["Peoples"]; ?>");
-        <?php // if (isset($_GET['Peoples']) and ($_GET['table'] == "events")) { ?>
+        <?php // if (isset(filter_input(INPUT_GET, 'Peoples')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php // echo $_GET['Peoples'];?>";
+//            Input.value = "<?php // echo filter_input(INPUT_GET, 'Peoples');?>";
         <?php // } ?>
 //        form.appendChild(Input);
         
         // Special
 //        Input = addInput("text", "Specials", "<?php // echo $dict_EventsParams["Specials"]; ?>");
-        <?php // if (isset($_GET['Specials']) and ($_GET['table'] == "events")) { ?>
+        <?php // if (isset(filter_input(INPUT_GET, 'Specials')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
 //            // Pre-fill this property when it is set,
 //            // and when the table is the same of for the previous search
-//            Input.value = "<?php // echo $_GET['Specials'];?>";
+//            Input.value = "<?php // echo filter_input(INPUT_GET, 'Specials');?>";
         <?php // } ?>
 //        form.appendChild(Input);
         
         // First appearance
         Input = addAppearance("book_start", "<?php echo $dict_EventsParams["book_start_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_start_book']) and ($_GET['table'] == "events")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_start_book')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_book");
-            SelectElement.value = "<?php echo $_GET['book_start_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_start_chap']) and ($_GET['table'] == "events")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_start_chap')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_start_chap");
-            SelectElement.value = "<?php echo $_GET['book_start_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_start_chap');?>";
         <?php } ?>
         
         // Last appearance
         Input = addAppearance("book_end", "<?php echo $dict_EventsParams["book_end_vers"]; ?>");
         form.appendChild(Input);
-        <?php if (isset($_GET['book_end_book']) and ($_GET['table'] == "events")) { ?>
+        <?php if (isset(filter_input(INPUT_GET, 'book_end_book')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_book");
-            SelectElement.value = "<?php echo $_GET['book_end_book'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_book');?>";
             SelectElement.onchange();
         <?php } 
-        if (isset($_GET['book_end_chap']) and ($_GET['table'] == "events")) { ?>
+        if (isset(filter_input(INPUT_GET, 'book_end_chap')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
             // Pre-fill this property when it is set,
             // and when the table is the same of for the previous search
             SelectElement = document.getElementById("book_end_chap");
-            SelectElement.value = "<?php echo $_GET['book_end_chap'];?>";
+            SelectElement.value = "<?php echo filter_input(INPUT_GET, 'book_end_chap');?>";
         <?php } ?>
         break;
     }
@@ -636,7 +636,7 @@ function selectTableOptions(sel) {
     SubmitButton.value = "<?php echo $dict_Search["Search"]; ?>";
     form.appendChild(SubmitButton);
     
-    <?php if (isset($_GET['submitSearch'])) { ?>
+    <?php if (isset(filter_input(INPUT_GET, 'submitSearch'))) { ?>
         // Function to remove all selected search options
         var RemoveOptions = document.createElement("a");
         RemoveOptions.innerHTML = "<?php echo $dict_Search["Remove"];?>";
@@ -663,7 +663,7 @@ function selectBookOptions(sel) {
     
     // Remove the old chapters of the dropdown menu
     ChapDropDown = document.getElementById(name + "_chap");
-    numChapsPrev = ChapDropDown.childElementCount
+    numChapsPrev = ChapDropDown.childElementCount;
     
     for (var i = 1; i < numChapsPrev; i++) {
         ChapDropDown.removeChild(ChapDropDown.lastChild);
@@ -843,12 +843,12 @@ window.onload = function () {
     SelectElement.disabled = false;
     
     // Set back all the data that was entered for searching
-    <?php if (isset($_GET['submitSearch'])) { ?>
+    <?php if (isset(filter_input(INPUT_GET, 'submitSearch'))) { ?>
         var SelectElement = document.getElementById("table");
-        SelectElement.value = "<?php echo $_GET['table']; ?>";
+        SelectElement.value = "<?php echo filter_input(INPUT_GET, 'table'); ?>";
         SelectElement.onchange();
     <?php } ?>
     
-}
+};
 
 </script>

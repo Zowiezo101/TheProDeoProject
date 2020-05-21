@@ -54,7 +54,7 @@ function familytree_Helper_layout() {
                 this.level = level;
             }
             
-            if (this.ChildIDs.length != 0)
+            if (this.ChildIDs.length !== 0)
             {
                 IDset = this.ChildIDs;
             }
@@ -62,7 +62,7 @@ function familytree_Helper_layout() {
             // This would have been much easier using recursive functions
             // But there is too much recursion for the browser to handle..
             return IDset;
-        }
+        };
         
         /** CalcLocation function */
         this.calcLocation = function () {
@@ -74,16 +74,16 @@ function familytree_Helper_layout() {
             var X = 0;
                     
             // Is this the first person of the family tree?
-            if ((this.MotherID != -1) || (this.FatherID != -1)) {
+            if ((this.MotherID !== -1) || (this.FatherID !== -1)) {
                 
                 // ID number of the parent that will be used
                 var id = -1;
                 
                 // Who are we gonna use?
-                if (this.MotherID == -1) {
+                if (this.MotherID === -1) {
                     // Use daddy if mommy isn't known
                     id = this.FatherID;
-                } else if (this.FatherID == -1) {
+                } else if (this.FatherID === -1) {
                     // Use mommy if daddy isn't known
                     id = this.MotherID;
                 } else {
@@ -106,8 +106,8 @@ function familytree_Helper_layout() {
                 var odd = numChildren % 2;
                 
                 // And which index do we have?
-                var Index = 0
-                if (this.MotherID == id) {
+                var Index = 0;
+                if (this.MotherID === id) {
                     // Use the one from mommy
                     Index = this.ChildIndexM;
                 } else {
@@ -119,7 +119,7 @@ function familytree_Helper_layout() {
                 if (odd) {
                     var middle = ((numChildren + 1) / 2) - 1;
                     
-                    if (Index == middle) {
+                    if (Index === middle) {
                         // Are we in the middle? 
                         // Then just use parents X coordinate
                         X = Parent.Location[0];
@@ -155,13 +155,13 @@ function familytree_Helper_layout() {
             this.Location[1] = Y;
             
             return;
-        }
+        };
         
         this.getAncestors = function () {
             var ListOfIDs = [];
             
-            if ((this.MotherID == -1) && (this.FatherID == -1)) {
-                if (this.ChildIDs.length == 0) {
+            if ((this.MotherID === -1) && (this.FatherID === -1)) {
+                if (this.ChildIDs.length === 0) {
                     // We do not have a family tree for this person..
                 } else {
                     // We are ancestors
@@ -175,36 +175,36 @@ function familytree_Helper_layout() {
                 // This breaks the while loop
                 var done = 0;
                 
-                while (done == 0)
+                while (done === 0)
                 {    
                     var newIDset = [];
                     for (i = 0; i < IDset.length; i++) {
                         var Item = Items[IDset[i]];
                         
                         // Create the ID set of the next generation
-                        if (Item.MotherID != -1) {
+                        if (Item.MotherID !== -1) {
                             newIDset.push(Item.MotherID);
-                        } else if (Item.FatherID == -1) {
+                        } else if (Item.FatherID === -1) {
                             // This is an ancestor
                             var AncestorID = ItemsList.indexOf(Item.ID);
                             ListOfIDs.push(AncestorID);
                         }
                         
-                        if (Item.FatherID != -1) {
+                        if (Item.FatherID !== -1) {
                             newIDset.push(Item.FatherID);
                         }
                     }
                     
                     // There are no more children to update
                     IDset = uniq(newIDset);
-                    if (IDset.length == 0) {
+                    if (IDset.length === 0) {
                         done = 1;
                     }
                 }
             }
             
             return uniq(ListOfIDs);
-        }
+        };
         
         /** */
         this.getGenderColor = function () {
@@ -222,7 +222,7 @@ function familytree_Helper_layout() {
                 color = 'grey';
             }
             return color;
-        }
+        };
         
         /** */
         this.drawPeople = function() {
@@ -234,12 +234,12 @@ function familytree_Helper_layout() {
             var x = this.Location[0] + globalOffset;
             var y = this.Location[1];
             
-            if (this.MotherID != -1) {
+            if (this.MotherID !== -1) {
                 // Draw the lines to the mother, to the middle of the bottom
                 var Parent = Items[this.MotherID];
                 
                 // And only if the parents are drawn as well
-                if ((Parent.Location[0] != -1) && (Parent.Location[1] != -1)) {
+                if ((Parent.Location[0] !== -1) && (Parent.Location[1] !== -1)) {
                     var x_parent = Parent.Location[0] + 50 + globalOffset;
                     var y_parent = Parent.Location[1] + 50;
                     
@@ -269,7 +269,7 @@ function familytree_Helper_layout() {
                     LineMother3.setAttributeNS(null, 'x2', x + 50);
                     LineMother3.setAttributeNS(null, 'y2', y);
                     
-                    if (this.level == (Parent.level + 1)) {
+                    if (this.level === (Parent.level + 1)) {
                         LineMother1.setAttributeNS(null, 'stroke', 'pink');
                         LineMother2.setAttributeNS(null, 'stroke', 'pink');
                         LineMother3.setAttributeNS(null, 'stroke', 'pink');
@@ -301,12 +301,12 @@ function familytree_Helper_layout() {
                 }
             }
             
-            if (this.FatherID != -1) {
+            if (this.FatherID !== -1) {
                 // Draw the lines to the father, to the middle of the bottom
                 var Parent = Items[this.FatherID];
                 
                 // And only if the parents are drawn as well
-                if ((Parent.Location[0] != -1) && (Parent.Location[1] != -1)) {
+                if ((Parent.Location[0] !== -1) && (Parent.Location[1] !== -1)) {
                     var x_parent = Parent.Location[0] + 50 + globalOffset;
                     var y_parent = Parent.Location[1] + 50;
                     
@@ -337,7 +337,7 @@ function familytree_Helper_layout() {
                     LineFather3.setAttributeNS(null, 'y2', y);
                     
                     
-                    if (this.level == (Parent.level + 1)) {
+                    if (this.level === (Parent.level + 1)) {
                         LineFather1.setAttributeNS(null, 'stroke', 'blue');
                         LineFather2.setAttributeNS(null, 'stroke', 'blue');
                         LineFather3.setAttributeNS(null, 'stroke', 'blue');
@@ -407,18 +407,18 @@ function familytree_Helper_layout() {
             
             Group.appendChild(Link);        
             return Group;
-        }
+        };
         
         /** */
         this.drawFamilyTree = function(SVG) {
             
             var Group = this.drawPeople();
-            if ((Group != null) && (this.drawn == 0)) {
+            if ((Group !== null) && (this.drawn === 0)) {
                 SVG.appendChild(Group);
                 this.drawn = 1;
             }
             
-            if (this.ChildIDs.length != 0)
+            if (this.ChildIDs.length !== 0)
             {
                 for (this.counter = 0; this.counter < this.ChildIDs.length; this.counter++) {
                     // Update all children as well
@@ -429,7 +429,7 @@ function familytree_Helper_layout() {
                 }
 
             }
-        }
+        };
     }
 
     
@@ -438,17 +438,17 @@ function familytree_Helper_layout() {
         for (i = 0; i < Items.length; i++) {
             var Item = Items[i];
         
-            if (Item.MotherID != -1) {
+            if (Item.MotherID !== -1) {
                 var Mother = Items[Item.MotherID];
                 Item.ChildIndexM = Mother.ChildIDs.length;
                 Mother.ChildIDs.push(Item.ID);
             }
             
-            if (Item.FatherID != -1) {
+            if (Item.FatherID !== -1) {
                 var Father = Items[Item.FatherID];
                 Item.ChildIndexF = Father.ChildIDs.length;
                 
-                if (Item.FatherID != Item.MotherID) {
+                if (Item.FatherID !== Item.MotherID) {
                     Father.ChildIDs.push(Item.ID);
                 }
             }
@@ -456,7 +456,7 @@ function familytree_Helper_layout() {
         
         for (i = 0; i < Items.length; i++) {
             var Item = Items[i];
-            if ((Item.MotherID == -1) && (Item.FatherID == -1) && (Item.ChildIDs.length > 0)) {
+            if ((Item.MotherID === -1) && (Item.FatherID === -1) && (Item.ChildIDs.length > 0)) {
                 // This person is on top of a family tree
                 ItemsList.push(Item.ID);
             }
@@ -470,7 +470,7 @@ function calcLocations(firstID, highestLevel) {
     var done = 0;
     var MaxLevel = levelCounter.length;
     
-    while (done == 0)
+    while (done === 0)
     {
         // Is there any collision between two people?
         var collision = 0;
@@ -528,7 +528,7 @@ function calcLocations(firstID, highestLevel) {
                         // Our starting level
                         var currentLevel = Item.level;
                         
-                        while (found == 0) {
+                        while (found === 0) {
                             // Get a list with people that are a generation level lower (placed higher)
                             var currentIDset = levelIDs[currentLevel - 1];
                             
@@ -543,7 +543,7 @@ function calcLocations(firstID, highestLevel) {
                                     var ID = currentIDset[k];
                                     
                                     // Remember the list of ancestors that we find for this person
-                                    if ((ID == ItemR.MotherID) || (ID == ItemR.FatherID)) {
+                                    if ((ID === ItemR.MotherID) || (ID === ItemR.FatherID)) {
                                         newAncestorsR.push(ID);
                                     }
                                 }
@@ -557,7 +557,7 @@ function calcLocations(firstID, highestLevel) {
                                     var ID = currentIDset[k];
                                     
                                     // Remember the list of ancestors that we find for this person
-                                    if ((ID == ItemL.MotherID) || (ID == ItemL.FatherID)) {
+                                    if ((ID === ItemL.MotherID) || (ID === ItemL.FatherID)) {
                                         newAncestorsL.push(ID);
                                     }
                                 }
@@ -572,7 +572,7 @@ function calcLocations(firstID, highestLevel) {
                                     
                                     // We have found a match!
                                     // This is the ancestor that connects the two colliding people
-                                    if (RightID == LeftID) {
+                                    if (RightID === LeftID) {
                                         FoundID = RightID;
                                         found = 1;
                                         count++;
@@ -580,7 +580,7 @@ function calcLocations(firstID, highestLevel) {
                                 }
                             }
                             
-                            if (found == 0) {
+                            if (found === 0) {
                                 // Keep the current data if we have a match
                                 currentAncestorsR = newAncestorsR;
                                 currentAncestorsL = newAncestorsL;
@@ -613,7 +613,7 @@ function calcLocations(firstID, highestLevel) {
                                     for (var j = 0; j < Parent.ChildIDs.length; j++) {
                                         var ChildID = Parent.ChildIDs[j];
 
-                                        if (ID == ChildID) {
+                                        if (ID === ChildID) {
                                             // Find all the matching children
                                             Children.push(ID);
                                         }
@@ -628,7 +628,7 @@ function calcLocations(firstID, highestLevel) {
                                     for (var j = 0; j < Parent.ChildIDs.length; j++) {
                                         var ChildID = Parent.ChildIDs[j];
 
-                                        if (ID == ChildID) {
+                                        if (ID === ChildID) {
                                             // Find all the matching children
                                             Children.push(ID);
                                         }
@@ -637,18 +637,18 @@ function calcLocations(firstID, highestLevel) {
                                 
                             }
                             
-                            if (Children.length == 2) {                                
+                            if (Children.length === 2) {                                
                                 var Child1 = Items[Children[0]];
                                 var Child2 = Items[Children[1]];
                                 var difLevelIndex = Child2.levelIndex - Child1.levelIndex;
                                 
                                 // Are they next to each other?
-                                if (difLevelIndex != 1) {
+                                if (difLevelIndex !== 1) {
                                     // There are not next to each other..
                                     // Change the order of the children to put them next to each other
                                     
                                     // Are we using mommy or daddy?
-                                    if (Child1.MotherID == Parent.ID) {
+                                    if (Child1.MotherID === Parent.ID) {
                                         // Use the one from mommy
                                         var Index1 = Child1.ChildIndexM + 1;
                                         var Index2 = Child2.ChildIndexM + 1;
@@ -686,14 +686,14 @@ function calcLocations(firstID, highestLevel) {
                         }                            
                         
                         // This is just a normal clash, fix in the normal way
-                        if (specialCase == 0) {
+                        if (specialCase === 0) {
                             for (var k = currentAncestorsR.length; k > 0; k--) {
                                 var ID = currentAncestorsR[k - 1];
                                 
                                 for (var j = 0; j < Parent.ChildIDs.length; j++) {
                                     var ChildID = Parent.ChildIDs[j];
 
-                                    if (ID == ChildID) {
+                                    if (ID === ChildID) {
                                         // Find the child that needs to be moved
                                         Child = Items[ID];
                                     }
@@ -701,7 +701,7 @@ function calcLocations(firstID, highestLevel) {
                             }
                             
                             Child.offset += (Neighbour.Location[0] + 150) - Item.Location[0];
-                        } else if (specialCase == 1) {
+                        } else if (specialCase === 1) {
                             // Special case! It seems that the two parents of a kid are actually related..
                             // Some changes were made, now recalculate!
                             resetIndexes();
@@ -709,21 +709,21 @@ function calcLocations(firstID, highestLevel) {
                         }
                         collision = 1;
                         
-                        if (collision == 1) {
+                        if (collision === 1) {
                             break;
                         }
                     }
                 }
             }
             
-            if (collision == 1) {
+            if (collision === 1) {
                 // Break out of the loop and start again
                 break;
             }
         }
         
         // There are no more children to update
-        if (level == MaxLevel) {
+        if (level === MaxLevel) {
             done = 1;
         }
     }

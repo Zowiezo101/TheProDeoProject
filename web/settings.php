@@ -389,23 +389,23 @@ function settings_Helper_Layout() {
 <?php } ?>
 
 function Helper_onLoad() {
-    <?php if (isset($_POST['submitAdd'])) { ?>
+    <?php if (isset(filter_input(INPUT_POST, 'submitAdd'))) { ?>
         Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<?php AddBlog($_POST["title"], $_POST["text"], $_SESSION['login']); ?>";
+        Settings.innerHTML = "<?php AddBlog(filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text"), $_SESSION['login']); ?>";
         
         // Reload without resending the action
         oldHref = window.location.href;
         window.location.href = oldHref;
-    <?php } if (isset($_POST['submitDelete'])) { ?>
+    <?php } if (isset(filter_input(INPUT_POST, 'submitDelete'))) { ?>
         Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<?php DeleteBlog($_POST["select"]); ?>";
+        Settings.innerHTML = "<?php DeleteBlog(filter_input(INPUT_POST, "select")); ?>";
         
         // Reload without resending the action
         oldHref = window.location.href;
         window.location.href = oldHref;
-    <?php } if (isset($_POST['submitEdit'])) { ?>
+    <?php } if (isset(filter_input(INPUT_POST, 'submitEdit'))) { ?>
         Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<?php EditBlog($_POST["select"], $_POST["title"], $_POST["text"]); ?>";
+        Settings.innerHTML = "<?php EditBlog(filter_input(INPUT_POST, "select"), filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text")); ?>";
         
         // Reload without resending the action
         oldHref = window.location.href;

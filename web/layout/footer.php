@@ -3,7 +3,7 @@
             <div id="footer">
                 <?php 
                     // Get the name of the file that has currently included this file
-                    $uri_parts = explode('?', basename($_SERVER['REQUEST_URI'], 2));
+                    $uri_parts = explode('?', basename(filter_input(INPUT_SERVER, 'REQUEST_URI'), 2));
                     $current_page = $uri_parts[0];
                     
                     // Now get the timestamp of that file

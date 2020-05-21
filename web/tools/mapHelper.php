@@ -28,7 +28,7 @@ if($__included_by_maps__) {
         PrettyPrint('');
         PrettyPrint('    <div class="contents_right" id="'.$id.'_div"> ');
         PrettyPrint('        <div id="default"> ');
-    if (isset($_GET['id'])) {
+    if (isset(filter_input(INPUT_GET, 'id'))) {
         PrettyPrint('            '.${"dict_".ucfirst($id)}["loading_".$abv]);
         PrettyPrint('');
         PrettyPrint('            <div id="progress_bar"> ');
@@ -64,7 +64,7 @@ if($__included_by_maps__) {
             $sql = "SELECT * FROM events";
         } elseif ($id == "timeline_ext") {
             // TODO: Extended events
-            $sql = "SELECT * FROM ext_events LEFT JOIN event_to_event ON ext_events.ext_event_id = event_to_event.next_event_id ORDER BY order_id";
+            $sql = "SELECT * FROM activitys LEFT JOIN event_to_event ON ext_events.ext_event_id = event_to_event.next_event_id ORDER BY order_id";
         } else {
             $sql = "SELECT * FROM peoples";
         }
@@ -214,8 +214,8 @@ if($__included_by_maps__) {
         
         loadScroll();
         
-        <?php if (isset($_GET['id'])) { ?>    
-            var IDs = "<?php echo $_GET['id']; ?>".split(",");
+        <?php if (isset(filter_input(INPUT_GET, 'id'))) { ?>    
+            var IDs = "<?php echo filter_input(INPUT_GET, 'id'); ?>".split(",");
             
             // Get the Map and the ID numbers
             globalMapId = Number(IDs[0]);
@@ -964,8 +964,8 @@ if($__included_by_maps__) {
     }
 
     function ZoomReset() {
-    <?php if (isset($_GET['id'])) { ?>
-        var IDs = "<?php echo $_GET['id']; ?>".split(",");
+    <?php if (isset(filter_input(INPUT_GET, 'id'))) { ?>
+        var IDs = "<?php echo filter_input(INPUT_GET, 'id'); ?>".split(",");
         
         // Get the ID number
         var ItemId = Number(IDs[1]);

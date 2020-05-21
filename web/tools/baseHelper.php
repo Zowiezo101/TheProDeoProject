@@ -6,13 +6,16 @@ function prefered_language(array $available_languages, $http_accept_language) {
     // Change the keys and values around.
     // The keys become the values (integer indexes in this case) and
     // the values become the keys (abbreviated languages)
-    $available_languages = array_flip($available_languages);
+    $available_languages_flipped = array_flip($available_languages);
 
     // Languages that are supported AND requested, including the priority values
-    $langs;
+    $langs = null;
     
     // The languages that are supported AND requested
-    $langsSet;
+    $langsSet = null;
+    
+    // Accepted languages by browser
+    $matches = null;
     
     /*
         The variable $http_accept_language can contain string like:
@@ -80,7 +83,7 @@ function prefered_language(array $available_languages, $http_accept_language) {
         // If the requested language is in the list of supported languages
         // Put it in the list of requested AND supported languages.
         // Save the priority value, to see what language is highest requested
-        if(isset($available_languages[$a])) {
+        if(isset($available_languages_flipped[$a])) {
             $langs[$a] = $value;
         }
 
@@ -106,7 +109,7 @@ function prefered_language(array $available_languages, $http_accept_language) {
 
 function get_available_langs() {
     // List of available languages
-    $langsSet;
+    $langsSet = null;
 
     // Check all the available translation files
     $langFiles = glob("./translations/*.php");
@@ -127,7 +130,7 @@ if (!isset($_SESSION["lang"])) {
     $available_languages = get_available_langs();
 
     // Language settings of the browser AND supported by the website
-    $langs = prefered_language($available_languages, $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+    $langs = prefered_language($available_languages, filter_input(INPUT_SERVER, "HTTP_ACCEPT_LANGUAGE"));
     
     // Most prefered language. Save it in the session
     $_SESSION["lang"] = $langs[0];
@@ -187,10 +190,10 @@ function PrettyPrint($string, $firstLine = 0) {
         // Creates the cookie for the page scroll position
         if (!expires) expires = new Date();
         document.cookie = name + "=" + escape(value) + 
-            ((expires == null) ? "" : "; expires=" + expires.toGMTString()) +
-            ((path    == null) ? "" : "; path=" + path) +
-            ((domain  == null) ? "" : "; domain=" + domain) +
-            ((secure  == null) ? "" : "; secure");
+            ((expires === null) ? "" : "; expires=" + expires.toGMTString()) +
+            ((path    === null) ? "" : "; path=" + path) +
+            ((domain  === null) ? "" : "; domain=" + domain) +
+            ((secure  === null) ? "" : "; secure");
     }
 
     function getCookie(name) {
@@ -201,11 +204,11 @@ function PrettyPrint($string, $firstLine = 0) {
         var i = 0;
         while (i < clen) {
             var j = i + alen;
-            if (document.cookie.substring(i, j) == arg) {
+            if (document.cookie.substring(i, j) === arg) {
                 return getCookieVal(j);
             }
             i = document.cookie.indexOf(" ", i) + 1;
-            if (i == 0) break;
+            if (i === 0) break;
         }
         return null;
     }
@@ -213,15 +216,15 @@ function PrettyPrint($string, $firstLine = 0) {
     // Gets the parameter out of the cookie at the given offset
     function getCookieVal(offset) {
         var endstr = document.cookie.indexOf(";", offset);
-        if (endstr == -1) endstr = document.cookie.length;
+        if (endstr === -1) endstr = document.cookie.length;
         return unescape(document.cookie.substring(offset, endstr));
     }
 
     // Deletes the cookie
     function deleteCookie(name, path, domain) {
         document.cookie = name + "=" +
-            ((path   == null) ? "" : "; path=" + path) +
-            ((domain == null) ? "" : "; domain=" + domain) +
+            ((path   === null) ? "" : "; path=" + path) +
+            ((domain === null) ? "" : "; domain=" + domain) +
             "; expires=Thu, 01-Jan-00 00:00:01 GMT";
     }
 
@@ -254,10 +257,10 @@ function PrettyPrint($string, $firstLine = 0) {
         }
         
         // Get the value to scroll to
-        var scrollValue = parseInt(inf)
+        var scrollValue = parseInt(inf);
         itemBar.scrollTop = scrollValue;
         
-        setCookie(cookieName, 0, null)
+        setCookie(cookieName, 0, null);
     }
         
 
@@ -273,7 +276,7 @@ function PrettyPrint($string, $firstLine = 0) {
             tempArray = additionalURL.split("&");
             
             for (var i=0; i<tempArray.length; i++){
-                if(tempArray[i].split('=')[0] != param){
+                if(tempArray[i].split('=')[0] !== param){
                     newAdditionalURL += temp + tempArray[i];
                     temp = "&";
                 }
@@ -295,7 +298,7 @@ function PrettyPrint($string, $firstLine = 0) {
             tempArray = additionalURL.split("&");
             
             for (var i=0; i<tempArray.length; i++){
-                if(tempArray[i].split('=')[0] != param){
+                if(tempArray[i].split('=')[0] !== param){
                     newAdditionalURL += temp + tempArray[i];
                     temp = "&";
                 }
@@ -307,5 +310,5 @@ function PrettyPrint($string, $firstLine = 0) {
     window.onerror = function(msg, url, linenumber) {
         alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
         return true;
-    }
+    };
 </script>
