@@ -1,0 +1,22 @@
+{
+  "name": "prodeo",
+  "version": "3.0.0",
+  "description": "Bible database",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ".hg"
+  },
+  "keywords": [
+    "bible",
+    "database"
+  ],
+  "author": "Zoë Geurts",
+  "license": "ISC",
+  "dependencies": {
+    "bulma": "^0.8.2"
+  }
+}
