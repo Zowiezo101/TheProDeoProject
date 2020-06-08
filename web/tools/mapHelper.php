@@ -28,7 +28,7 @@ if($__included_by_maps__) {
         PrettyPrint('');
         PrettyPrint('    <div class="contents_right" id="'.$id.'_div"> ');
         PrettyPrint('        <div id="default"> ');
-    if (isset(filter_input(INPUT_GET, 'id'))) {
+    if (null !== filter_input(INPUT_GET, 'id')) {
         PrettyPrint('            '.${"dict_".ucfirst($id)}["loading_".$abv]);
         PrettyPrint('');
         PrettyPrint('            <div id="progress_bar"> ');
@@ -100,8 +100,11 @@ if($__included_by_maps__) {
                 } else {
                     $name = $item['name'];
                     $ID = $item['people_id'];
-                    $IDMother = $item['mother_id'] ? $item['mother_id'] : -1;
-                    $IDFather = $item['father_id'] ? $item['father_id'] : -1;
+//                    $IDMother = $item['mother_id'] ? $item['mother_id'] : -1;
+//                    $IDFather = $item['father_id'] ? $item['father_id'] : -1;
+                    $IDMother = -1;
+                    $IDFather = -1;
+                    // TODO:
                     $Gender = $item['gender'];
                 
                     $item = 'new CreatePeople("'.$name.'", '.$ID.', '.$IDMother.', '.$IDFather.', "'.$Gender.'"),';
@@ -214,7 +217,7 @@ if($__included_by_maps__) {
         
         loadScroll();
         
-        <?php if (isset(filter_input(INPUT_GET, 'id'))) { ?>    
+        <?php if (null !== filter_input(INPUT_GET, 'id')) { ?>    
             var IDs = "<?php echo filter_input(INPUT_GET, 'id'); ?>".split(",");
             
             // Get the Map and the ID numbers
@@ -964,7 +967,7 @@ if($__included_by_maps__) {
     }
 
     function ZoomReset() {
-    <?php if (isset(filter_input(INPUT_GET, 'id'))) { ?>
+    <?php if (null !== filter_input(INPUT_GET, 'id')) { ?>
         var IDs = "<?php echo filter_input(INPUT_GET, 'id'); ?>".split(",");
         
         // Get the ID number

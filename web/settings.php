@@ -389,21 +389,21 @@ function settings_Helper_Layout() {
 <?php } ?>
 
 function Helper_onLoad() {
-    <?php if (isset(filter_input(INPUT_POST, 'submitAdd'))) { ?>
+    <?php if (null !== filter_input(INPUT_POST, 'submitAdd')) { ?>
         Settings = document.getElementById("settings_content");
         Settings.innerHTML = "<?php AddBlog(filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text"), $_SESSION['login']); ?>";
         
         // Reload without resending the action
         oldHref = window.location.href;
         window.location.href = oldHref;
-    <?php } if (isset(filter_input(INPUT_POST, 'submitDelete'))) { ?>
+    <?php } if (null !== filter_input(INPUT_POST, 'submitDelete')) { ?>
         Settings = document.getElementById("settings_content");
         Settings.innerHTML = "<?php DeleteBlog(filter_input(INPUT_POST, "select")); ?>";
         
         // Reload without resending the action
         oldHref = window.location.href;
         window.location.href = oldHref;
-    <?php } if (isset(filter_input(INPUT_POST, 'submitEdit'))) { ?>
+    <?php } if (null !== filter_input(INPUT_POST, 'submitEdit')) { ?>
         Settings = document.getElementById("settings_content");
         Settings.innerHTML = "<?php EditBlog(filter_input(INPUT_POST, "select"), filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text")); ?>";
         

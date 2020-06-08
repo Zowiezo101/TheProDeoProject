@@ -161,7 +161,10 @@ if (($id == "timeline") || ($id == "familytree")) {
         ($id == "books")         || 
         ($id == "events")        ||
         ($id == "search")) {
-    require "tools/itemHelper.php";
+    require "helpers/".$id."helper.php";
+    if ($id != "search") {
+        require "tools/itemHelper.php";
+    }
 }
 
 /* Used pretty much everywhere. 
