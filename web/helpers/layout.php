@@ -80,17 +80,43 @@
         } elseif ($name == "prodeo") {
             PrettyPrint('<button id="dropdown_prodeo_button" class="'.$class.'" onclick="ShowDropDown(\'dropdown_prodeo_menu\')">', 1);
         } else {
-            PrettyPrint('<button id="'.$button_id.'" class="'.$class.'" onclick="location.href=\''.$name.'.php\'" type="button" >'.$dict_NavBar[ucfirst($name)].'</button>', 1);
+            PrettyPrint('<button id="'.$button_id.'" class="'.$class.'" onclick="goToPage(\''.$name.'.php\')" type="button" >'.$dict_NavBar[ucfirst($name)].'</button>', 1);
         }
     }
 ?>
 
              
 <script>
+    var session_settings = {
+        'page_id': '<?php echo $id; ?>',
+        'theme': '<?php echo $$id; ?>',
+        <?php foreach($_SESSION as $key => $value) {
+           echo "'".$key."': '".$value."',\n";
+        }?>
+    };
+    var get_settings = {
+        <?php  
+        $input_get = filter_input_array(INPUT_GET);
+        if ($input_get) {
+            foreach($input_get as $key => $value) {
+               echo "'".$key."': '".$value."',\n";
+            }
+        }?>
+    };
+    var post_settings = {
+        <?php 
+        $input_post = filter_input_array(INPUT_POST);
+        if ($input_post) {
+            foreach($input_post as $key => $value) {
+               echo "'".$key."': '".$value."',\n";
+            }
+        }?>
+    };
+    
     function onLoadDefault() {
         var body = document.getElementsByTagName("body")[0];
-        body.id = "<?php echo $id; ?>";
-        body.className = "<?php global $$id; echo $$id; ?>";
+        body.id = session_settings["page_id"];
+        body.className = session_settings["theme"];
     }
 
     /* When the user clicks on the button, 
@@ -127,6 +153,18 @@
             }
         }
     };
+    
+    async function goToPage(url) {
+        // Clear the id, page and sort selections
+        // Then go to the new page
+        await updateSessionSettings("page", "").then(async function () {
+            await updateSessionSettings("id", "").then(async function () {
+                await updateSessionSettings("sort", "").then(function () {
+                    window.location.href = url;
+                }, console.log);
+            }, console.log);
+        }, console.log);
+    }
 
     window.onload = function() {
         // Set some default stuff

@@ -1,12 +1,11 @@
 <script>
     
-    async function peoplesHelperLayout(information) {        
+    async function showPeopleInfo(information) {
         // Grab the right part of the information window
         var contentEl = document.getElementById("item_info");
         
-        // Remove the default text
-        var defaultText = document.getElementById("default");
-        contentEl.removeChild(defaultText);
+        // Clean it
+        contentEl.innerHTML = "";
         
         // Add the name of the current person as a header
         var Name = document.createElement("h1");
@@ -57,7 +56,7 @@
                 TableLink.innerHTML = "";
                 
                 if (key === "book_start_vers") {
-                    await getItemFromDatabase("books", information["book_start_id"], "").then(function (bookInfo) { 
+                    await getItemFromDatabase("books", information["book_start_id"]).then(function (bookInfo) { 
                         // When the information is retreived:
                         TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
                                                                     information["book_start_chap"],
@@ -68,7 +67,7 @@
                                                                value);
                     }, console.log);
                 } else {
-                    await getItemFromDatabase("books", information["book_end_id"], "").then(function (bookInfo) { 
+                    await getItemFromDatabase("books", information["book_end_id"]).then(function (bookInfo) { 
                         TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
                                                                     information["book_end_chap"], 
                                                                     value);
@@ -284,6 +283,184 @@
 //        PrettyPrint('');
 //        PrettyPrint('    contentEl.appendChild(ItemList); ');
     }
-
-    window.onload = _Database_Helper_onLoad;
+    
+    function showPeopleList(information) {
+    
+        // The item bar, where all items are shown
+        var itemBar = document.getElementById("item_bar");
+        
+        // Clean it
+        itemBar.innerHTML = "";
+        
+        // If there are results, create the table with the results
+        var table = document.createElement("table");
+        itemBar.appendChild(table);
+        
+        for (var itemIdx in information) {
+            var item = information[itemIdx];
+            
+            var tableRow = document.createElement('tr');
+            table.appendChild(tableRow);
+            
+            var tableData = document.createElement('td');
+            tableRow.appendChild(tableData);
+            
+            var button = document.createElement('button');
+            button.innerHTML = item["name"];
+            button.id = item["people_id"];
+            button.addEventListener("click", function() {
+                updateSessionSettings("id", this.id).then(getItemFromDatabase("peoples", this.id).then(showPeopleInfo, console.log), console.log);
+            });
+            tableData.appendChild(button);
+            
+        }
+    }
+        
+    async function PrevPage() {
+        // Get the stored page number
+        // If there is no page number, we are already at the first page and don't need to go further back
+        if (session_settings.hasOwnProperty("page")) {
+            var page = parseInt(session_settings["page"], 10);
+            
+            if (page - 1 === 0) {
+                // Going a page back means going to the first page
+                // Remove the page property
+                page = "";
+            } else {
+                page = page - 1;
+            }
+            
+            // Show the new information
+            await updateSessionSettings("page", page).then(async function () {
+                    updateButtonLeft();
+                    updateButtonRight();
+                    await getItemFromDatabase("peoples", "", "", page ? page : 0).then(showPeopleList, console.log);
+                }, console.log
+            );
+        }
+    }
+    
+    async function NextPage() {
+        // Get the stored page number
+        if (session_settings.hasOwnProperty("page")) {
+            var page = parseInt(session_settings["page"], 10);
+        } else {
+            // No page given, means that we are at the first page
+            page = 0;
+        }
+            
+        // Show the new information
+        await updateSessionSettings("page", page + 1).then(async function () {
+                updateButtonLeft();
+                updateButtonRight();
+                await getItemFromDatabase("peoples", "", "", page + 1).then(showPeopleList, console.log);
+            }, console.log
+        );
+    }
+    
+    function SortOnAlphabet() {            
+        // The sort parameter only has to be updated
+        var oldHref = window.location.href;
+        if (get_settings.hasOwnProperty("sort") && (get_settings["sort"] === "alp")) {
+            newHref = updateURLParameter(oldHref, "sort", "r-alp");
+        } else {
+            newHref = updateURLParameter(oldHref, "sort", "alp");
+        }
+        
+        var newHref = removeURLParameter(newHref, "page");
+        window.location.href = newHref;
+                
+        return;
+    }
+    
+    function SortOnAppearance() {    
+        // The sort parameter only has to be updated
+        var oldHref = window.location.href;
+        if (!get_settings.hasOwnProperty("sort")) {
+            newHref = updateURLParameter(oldHref, "sort", "r-app");
+        } else {
+            newHref = removeURLParameter(oldHref, "sort");
+        }
+        
+        var newHref = removeURLParameter(newHref, "page");
+        window.location.href = newHref;
+                
+        return;
+    }
+    
+    function setButtonLeft(parent) {
+        // Previous page
+        var buttonLeft = document.createElement("button");
+        parent.appendChild(buttonLeft);
+        
+        // Set its attributes
+        buttonLeft.id = "button_left";
+        buttonLeft.onclick = PrevPage;
+        buttonLeft.innerHTML = "←";
+        
+        updateButtonLeft();
+    }
+    
+    function updateButtonLeft() {
+        var buttonLeft = document.getElementById("button_left");
+        
+        if (session_settings.hasOwnProperty("page")) {
+            var page = session_settings["page"];
+        } else {
+            page = 0;
+        }
+        
+        buttonLeft.disabled = (page === 0) ? true : false;
+        buttonLeft.className = ((page === 0) ? "off_" : "") + "button_" + session_settings["theme"];
+    }
+    
+    function setButtonApp(parent) {
+        // Sort on Apperance
+        var buttonApp = document.createElement("button");
+        parent.appendChild(buttonApp);
+        
+        // Set its attributes
+        buttonApp.id = "button_app";
+        buttonApp.onclick = SortOnAppearance;
+        buttonApp.className = "sort_9_1";
+        
+    }
+    
+    function setButtonAlp(parent) {
+        // Sort on Alphabet
+        var buttonAlp = document.createElement("button");
+        parent.appendChild(buttonAlp);
+        
+        // Set its attributes
+        buttonAlp.id = "button_alp";
+        buttonAlp.onclick = SortOnAlphabet;
+        buttonAlp.className = "sort_a_z";
+        
+    }
+    
+    function setButtonRight(parent) {
+        // Next page
+        var buttonRight = document.createElement("button");
+        parent.appendChild(buttonRight);
+        
+        // Set its attributes
+        buttonRight.id = "button_right";
+        buttonRight.onclick = NextPage;
+        buttonRight.innerHTML = "→";
+        
+        updateButtonRight();
+    }
+    
+    function updateButtonRight() {
+        var buttonRight = document.getElementById("button_right");
+        
+        // Check if this is the last page. If so, disable next button.
+        // TODO: 
+        <?php        
+            PrettyPrint("var NrOfItems = ".GetNumberOfItems($id).";");
+        ?>
+        buttonRight.disabled = (NrOfItems < 101) ? true : false;
+        buttonRight.className = ((NrOfItems < 101) ? "off_" : "") + "button_" + session_settings["theme"];
+        
+    }
 </script>

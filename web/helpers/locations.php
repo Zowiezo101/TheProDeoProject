@@ -120,7 +120,7 @@ function locations_Helper_layout() {
                 TableLink.innerHTML = "";
                 
                 if (key === "book_start_vers") {
-                    await getItemFromDatabase("books", information["book_start_id"], "").then(function (bookInfo) { 
+                    await getItemFromDatabase("books", information["book_start_id"]).then(function (bookInfo) { 
                         // When the information is retreived:
                         TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
                                                                     information["book_start_chap"],
@@ -131,7 +131,7 @@ function locations_Helper_layout() {
                                                                value);
                     }, console.log);
                 } else {
-                    await getItemFromDatabase("books", information["book_end_id"], "").then(function (bookInfo) { 
+                    await getItemFromDatabase("books", information["book_end_id"]).then(function (bookInfo) { 
                         TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
                                                                     information["book_end_chap"], 
                                                                     value);

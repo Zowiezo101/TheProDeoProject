@@ -179,90 +179,6 @@ function PrettyPrint($string, $firstLine = 0) {
 ?>
 
 <script>
-
-    // https://stackoverflow.com/questions/7577897/javascript-page-reload-while-maintaining-current-window-position
-
-    var cookieName = "page_scroll";
-    var expdays = 365;
-
-    // An adaptation of Dorcht's cookie functions.
-
-    function setCookie(name, value, expires, path, domain, secure) {
-        // Creates the cookie for the page scroll position
-        if (!expires) expires = new Date();
-        document.cookie = name + "=" + escape(value) + 
-            ((expires === null) ? "" : "; expires=" + expires.toGMTString()) +
-            ((path    === null) ? "" : "; path=" + path) +
-            ((domain  === null) ? "" : "; domain=" + domain) +
-            ((secure  === null) ? "" : "; secure");
-    }
-
-    function getCookie(name) {
-        // Gets the cookie value
-        var arg = name + "=";
-        var alen = arg.length;
-        var clen = document.cookie.length;
-        var i = 0;
-        while (i < clen) {
-            var j = i + alen;
-            if (document.cookie.substring(i, j) === arg) {
-                return getCookieVal(j);
-            }
-            i = document.cookie.indexOf(" ", i) + 1;
-            if (i === 0) break;
-        }
-        return null;
-    }
-
-    // Gets the parameter out of the cookie at the given offset
-    function getCookieVal(offset) {
-        var endstr = document.cookie.indexOf(";", offset);
-        if (endstr === -1) endstr = document.cookie.length;
-        return unescape(document.cookie.substring(offset, endstr));
-    }
-
-    // Deletes the cookie
-    function deleteCookie(name, path, domain) {
-        document.cookie = name + "=" +
-            ((path   === null) ? "" : "; path=" + path) +
-            ((domain === null) ? "" : "; domain=" + domain) +
-            "; expires=Thu, 01-Jan-00 00:00:01 GMT";
-    }
-
-    function saveScroll(link) {
-        itemBar = document.getElementById("item_choice");
-        
-        // Expiration date
-        var expdate = new Date();
-        expdate.setTime(expdate.getTime() + (expdays*24*60*60*1000)); // expiry date
-
-        // Value that we want to store and retrieve
-        var scrollValue = "" + itemBar.scrollTop;
-        
-        // Make the cookie
-        setCookie(cookieName, scrollValue, expdate);
-        
-        // Now go to the desired link
-        window.location.href = link;
-    }
-
-    function loadScroll() {
-        itemBar = document.getElementById("item_choice");
-        
-        // The information that we want to retrieve
-        var inf = getCookie(cookieName);
-        
-        // In case there is no information
-        if (!inf) { 
-            return; 
-        }
-        
-        // Get the value to scroll to
-        var scrollValue = parseInt(inf);
-        itemBar.scrollTop = scrollValue;
-        
-        setCookie(cookieName, 0, null);
-    }
         
 
     // http://stackoverflow.com/a/10997390/11236
@@ -272,6 +188,9 @@ function PrettyPrint($string, $firstLine = 0) {
         var baseURL = tempArray[0];
         var additionalURL = tempArray[1];
         var temp = "";
+        
+//        window.location.search
+//        URLSearchParams
         
         if (additionalURL) {
             tempArray = additionalURL.split("&");
@@ -306,6 +225,49 @@ function PrettyPrint($string, $firstLine = 0) {
             }
         }
         return baseURL + newAdditionalURL;
+    }
+    
+    function updateSessionSettings(key, value="") {
+       
+        var promiseObj = new Promise(function(resolve, reject) {
+            // Create a request variable and assign a new XMLHttpRequest object to it.
+            var request = new XMLHttpRequest();
+
+            var link = 'http://localhost/web/api/session_write.php';
+            var params = '?key=' + key;
+
+            if (value !== "") {
+                params += '&value=' + value;
+            }
+
+            // Open a new connection, using the GET request on the URL endpoint
+            request.open('GET', link + params, true);
+
+            // Send request
+            request.send();
+
+            request.onreadystatechange = function() {
+                if (request.readyState === 4 && request.status === 200) {
+                    // The PHP variable has been updated
+                    // Time to update the javascript variable currently used
+                    if (session_settings.hasOwnProperty(key)) {
+                        if (value !== "") {
+                            // Update the value
+                            session_settings[key] = value;
+                        } else {
+                            // Delete the value
+                            delete session_settings[key];
+                        }
+                    } else if (value !== "") {
+                        session_settings[key] = value;
+                    }
+                    
+                    resolve();
+                }
+            };
+        });
+        
+        return promiseObj;
     }
 
     window.onerror = function(msg, url, linenumber) {

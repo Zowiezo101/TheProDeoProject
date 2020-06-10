@@ -10,7 +10,7 @@
 <script>
 
    
-    function getItemFromDatabase(table="", value="", column="") {
+    function getItemFromDatabase(table="", value="", column="", page="") {
        
        var promiseObj = new Promise(function(resolve, reject) {
        
@@ -18,25 +18,30 @@
             var request = new XMLHttpRequest();
 
             var link = 'http://localhost/web/api/item_read.php';
+            var params = '';
 
             if (table === "blog") {
                 // Use a different link for blogs
                 link = 'http://localhost/web/api/blog_read.php';
                 table = "";
             } else if (table !== "") {
-                link += '?table=' + table;
+                params = '?table=' + table;
             }
 
             if (value !== "") {
-                link += (table !== "" ? '&' : '?') + 'value=' + value;
+                params += (params !== "" ? '&' : '?') + 'value=' + value;
             }
 
             if (column !== "") {
-                link += ((table !== "" || value !== "") ? '&' : '?') + 'column=' + column;
+                params += (params !== "" ? '&' : '?') + 'column=' + column;
+            }
+            
+            if (page !== "") {
+                params += (params !== "" ? '&' : '?') + 'offset=' + parseInt(page)*100;
             }
 
             // Open a new connection, using the GET request on the URL endpoint
-            request.open('GET', link, true);
+            request.open('GET', link + params, true);
 
             // Send request
             request.send();
