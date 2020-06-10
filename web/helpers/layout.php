@@ -32,14 +32,15 @@
     $settings = "black";
 
     // Save the old value
-    if ($_SESSION["page_id"]) {
-        $_SESSION["page_id_old"] = $_SESSION["page_id"];
+    if (isset($_SESSION["table"])) {
+        $_SESSION["table_old"] = $_SESSION["table"];
     }
     
-    $_SESSION["page_id"] = $id;
+    $_SESSION["table"] = $id;
     $_SESSION["theme"] = $$id;
 
     require "tools/baseHelper.php";
+    require "helpers/base.php";
 
     /* Only used by layout.php, for the dropdown with languages */
     function getLangList($page_lang) {
@@ -121,8 +122,8 @@
     
     function onLoadDefault() {
         // Are we in a different main page?
-        var main_page_new = session_settings["page_id"];
-        var main_page_old = session_settings["page_id_old"];
+        var main_page_new = session_settings["table"];
+        var main_page_old = session_settings["table_old"];
         
         if (main_page_new !== main_page_old) {
             // Just remove the session settings for the old page
@@ -130,7 +131,7 @@
         }
         
         var body = document.getElementsByTagName("body")[0];
-        body.id = session_settings["page_id"];
+        body.id = session_settings["table"];
         body.className = session_settings["theme"];
     }
 

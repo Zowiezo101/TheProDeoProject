@@ -61,7 +61,8 @@
         
         // Show the current page
         var page = session_settings["page"] ? session_settings["page"] : 0;
-        getItemFromDatabase("peoples", "", "", page).then(showPeopleList, console.log);
+        var sort = session_settings["sort"] ? session_settings["sort"] : "app";
+        getItemFromDatabase("peoples", "", "", page, getSortSql(sort)).then(showItemList, console.log);
         return left;
     }
     
@@ -85,7 +86,7 @@
 
         // Show the selected person, when someone is selected
         if (session_settings.hasOwnProperty("id")) {
-            getItemFromDatabase("peoples", session_settings["id"]).then(showPeopleInfo, console.log);
+            getItemFromDatabase("peoples", session_settings["id"]).then(showItemInfo, console.log);
         }
         
         return right;
