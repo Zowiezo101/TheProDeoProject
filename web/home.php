@@ -59,9 +59,6 @@
                 blogDate.className = "blog_date";
                 blogDate.innerHTML = blogObject["date"] + " " + "<?php echo $dict_Home['user_blog']; ?>" + "" + blogObject["user"];
                 TableData.appendChild(blogDate);
-                
-                // TODO: Look into this
-                TableData.style.textAlign="center";
             }
 
         }, console.log);

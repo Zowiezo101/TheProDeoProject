@@ -353,6 +353,10 @@ pre {
     border-top-style: solid;
 }
 
+#home td {
+    text-align: center;
+}
+
 /* This class is used when text in a blog is longer than 5 lines.
    It breaks the line and hides the other lines */
 .blog_pre {
