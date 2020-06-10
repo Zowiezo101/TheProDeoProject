@@ -159,13 +159,11 @@ if (($id == "timeline") || ($id == "familytree")) {
         ($id == "locations")     || 
         ($id == "specials")     || 
         ($id == "books")         || 
-        ($id == "events")        ||
-        ($id == "search")) {
-    require "helpers/".$id."helper.php";
-    if ($id != "search") {
+        ($id == "events")) {
         require "tools/itemHelper.php";
-    }
 }
+
+require "helpers/".$id.".php";
 
 /* Used pretty much everywhere. 
    This function adds newlines and tabs, to make the generated HTML and Javascript
