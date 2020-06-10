@@ -269,6 +269,35 @@ function PrettyPrint($string, $firstLine = 0) {
         
         return promiseObj;
     }
+    
+    function getSortSql(sortStr) {
+        var sortSql = "";
+            
+        // Sorting results by name or ID.
+        switch(sortStr) {
+            case 'alp':
+                // Get new SQL array of items
+                sortSql = 'name asc';
+                break;
+
+            case 'r-alp':
+                // Get new SQL array of items
+                sortSql = 'name desc';
+                break;
+
+            case 'r-app':
+                // Get new SQL array of items
+                sortSql = 'book_start_id desc, book_start_chap desc, book_start_vers desc';
+                break;
+
+            default:
+                // Get new SQL array of items
+                sortSql = 'book_start_id asc, book_start_chap asc, book_start_vers asc';
+                break;
+        }
+        
+        return sortSql;
+    }
 
     window.onerror = function(msg, url, linenumber) {
         alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);

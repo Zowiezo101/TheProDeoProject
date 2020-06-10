@@ -10,7 +10,7 @@
 <script>
 
    
-    function getItemFromDatabase(table="", value="", column="", page="") {
+    function getItemFromDatabase(table="", value="", column="", page="", sort="") {
        
        var promiseObj = new Promise(function(resolve, reject) {
        
@@ -38,6 +38,10 @@
             
             if (page !== "") {
                 params += (params !== "" ? '&' : '?') + 'offset=' + parseInt(page)*100;
+            }
+            
+            if (sort !== "") {
+                params += (sort !== "" ? '&' : '?') + 'sort=' + sort;
             }
 
             // Open a new connection, using the GET request on the URL endpoint

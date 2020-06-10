@@ -31,6 +31,14 @@
     $contact = "purple";
     $settings = "black";
 
+    // Save the old value
+    if ($_SESSION["page_id"]) {
+        $_SESSION["page_id_old"] = $_SESSION["page_id"];
+    }
+    
+    $_SESSION["page_id"] = $id;
+    $_SESSION["theme"] = $$id;
+
     require "tools/baseHelper.php";
 
     /* Only used by layout.php, for the dropdown with languages */
@@ -88,8 +96,6 @@
              
 <script>
     var session_settings = {
-        'page_id': '<?php echo $id; ?>',
-        'theme': '<?php echo $$id; ?>',
         <?php foreach($_SESSION as $key => $value) {
            echo "'".$key."': '".$value."',\n";
         }?>
@@ -114,6 +120,15 @@
     };
     
     function onLoadDefault() {
+        // Are we in a different main page?
+        var main_page_new = session_settings["page_id"];
+        var main_page_old = session_settings["page_id_old"];
+        
+        if (main_page_new !== main_page_old) {
+            // Just remove the session settings for the old page
+            goToPage();
+        }
+        
         var body = document.getElementsByTagName("body")[0];
         body.id = session_settings["page_id"];
         body.className = session_settings["theme"];
@@ -154,13 +169,15 @@
         }
     };
     
-    async function goToPage(url) {
+    async function goToPage(url="") {
         // Clear the id, page and sort selections
-        // Then go to the new page
+        // Then go to the new page (only if one is given)
         await updateSessionSettings("page", "").then(async function () {
             await updateSessionSettings("id", "").then(async function () {
                 await updateSessionSettings("sort", "").then(function () {
-                    window.location.href = url;
+                    if (url !== "") {
+                        window.location.href = url;
+                    }
                 }, console.log);
             }, console.log);
         }, console.log);

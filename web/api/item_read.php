@@ -28,7 +28,8 @@ if ($conn->connect_error) {
         } else {
             // No ID given means we want all results of that table, or a subset using range
             $offset = filter_input(INPUT_GET, 'offset') !== null ? " limit ".filter_input(INPUT_GET, 'offset').", 100" : "";
-            $sql = "select * from ".$table.$offset;
+            $sort = filter_input(INPUT_GET, 'sort') !== null ? " order by ".filter_input(INPUT_GET, 'sort') : "";
+            $sql = "select * from ".$table.$sort.$offset;
         }
 
         // excecute SQL statement

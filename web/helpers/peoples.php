@@ -334,7 +334,7 @@
             await updateSessionSettings("page", page).then(async function () {
                     updateButtonLeft();
                     updateButtonRight();
-                    await getItemFromDatabase("peoples", "", "", page ? page : 0).then(showPeopleList, console.log);
+                    await getItemFromDatabase("peoples", "", "", page ? page : 0, getSortSql(session_settings["sort"])).then(showPeopleList, console.log);
                 }, console.log
             );
         }
@@ -353,39 +353,49 @@
         await updateSessionSettings("page", page + 1).then(async function () {
                 updateButtonLeft();
                 updateButtonRight();
-                await getItemFromDatabase("peoples", "", "", page + 1).then(showPeopleList, console.log);
+                await getItemFromDatabase("peoples", "", "", page + 1, getSortSql(session_settings["sort"])).then(showPeopleList, console.log);
             }, console.log
         );
     }
     
-    function SortOnAlphabet() {            
-        // The sort parameter only has to be updated
-        var oldHref = window.location.href;
-        if (get_settings.hasOwnProperty("sort") && (get_settings["sort"] === "alp")) {
-            newHref = updateURLParameter(oldHref, "sort", "r-alp");
+    async function SortOnAppearance() {
+        // Get the stored page number
+        if (session_settings.hasOwnProperty("sort")) {
+            var sort = session_settings["sort"];
         } else {
-            newHref = updateURLParameter(oldHref, "sort", "alp");
+            // No sort given, means that we have default sort
+            sort = "app";
         }
-        
-        var newHref = removeURLParameter(newHref, "page");
-        window.location.href = newHref;
-                
-        return;
+        // New sort setting
+        sort = (sort === "app") ? "r-app" : "app";
+            
+        // Show the new information
+        await updateSessionSettings("sort", sort).then(async function () {
+                updateButtonAlp();
+                updateButtonApp();
+                await getItemFromDatabase("peoples", "", "", 0, getSortSql(sort)).then(showPeopleList, console.log);
+            }, console.log
+        );
     }
     
-    function SortOnAppearance() {    
-        // The sort parameter only has to be updated
-        var oldHref = window.location.href;
-        if (!get_settings.hasOwnProperty("sort")) {
-            newHref = updateURLParameter(oldHref, "sort", "r-app");
+    async function SortOnAlphabet() {
+        // Get the stored page number
+        if (session_settings.hasOwnProperty("sort")) {
+            var sort = session_settings["sort"];
         } else {
-            newHref = removeURLParameter(oldHref, "sort");
+            // No sort given, means that we have default sort
+            sort = "app";
         }
-        
-        var newHref = removeURLParameter(newHref, "page");
-        window.location.href = newHref;
-                
-        return;
+        // New sort setting
+        sort = (sort === "alp") ? "r-alp" : "alp";
+            
+        // Show the new information
+        await updateSessionSettings("sort", sort).then(async function () {
+                updateButtonAlp();
+                updateButtonApp();
+                await getItemFromDatabase("peoples", "", "", 0, getSortSql(sort)).then(showPeopleList, console.log);
+            }, console.log
+        );
     }
     
     function setButtonLeft(parent) {
@@ -422,8 +432,20 @@
         // Set its attributes
         buttonApp.id = "button_app";
         buttonApp.onclick = SortOnAppearance;
-        buttonApp.className = "sort_9_1";
         
+        updateButtonApp();
+    }
+    
+    function updateButtonApp() {
+        var buttonApp = document.getElementById("button_app");
+        
+        if (session_settings.hasOwnProperty("sort")) {
+            var sort = session_settings["sort"];
+        } else {
+            sort = "app";
+        }
+        
+        buttonApp.className = (sort === "app") ? "sort_9_1" : "sort_1_9";   
     }
     
     function setButtonAlp(parent) {
@@ -434,8 +456,20 @@
         // Set its attributes
         buttonAlp.id = "button_alp";
         buttonAlp.onclick = SortOnAlphabet;
-        buttonAlp.className = "sort_a_z";
         
+        updateButtonAlp();
+    }
+    
+    function updateButtonAlp() {
+        var buttonAlp = document.getElementById("button_alp");
+        
+        if (session_settings.hasOwnProperty("sort")) {
+            var sort = session_settings["sort"];
+        } else {
+            sort = "app";
+        }
+        
+        buttonAlp.className = (sort === "alp") ? "sort_z_a" : "sort_a_z";   
     }
     
     function setButtonRight(parent) {
