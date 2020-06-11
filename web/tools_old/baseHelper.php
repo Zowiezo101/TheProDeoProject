@@ -138,7 +138,8 @@ if (!isset($_SESSION["lang"])) {
 
 // Get the correct translation file, that corresponds with the prefered language
 $page_lang = $_SESSION["lang"];
-require "translations/translation_".$page_lang.".php"; 
+require "translations/translation_".$page_lang.".php";
+require "translations/translation_".$page_lang."JS.php"; 
 
 // Log in data, needed to connect to the database
 require "../login_data.php";
@@ -151,16 +152,16 @@ if ($conn->connect_error) {
 
 // Which helper file do we need? One for items or one for maps?
 if (($id == "timeline") || ($id == "familytree")) {
-    require "tools/mapHelper.php";
+    require "tools_old/mapHelper.php";
 } elseif ($id == "timeline_ext") {
     // TODO: Extended events
-    require "tools/mapHelper.php";    
+    require "tools_old/mapHelper.php";    
 } elseif (($id == "peoples")     || 
         ($id == "locations")     || 
         ($id == "specials")     || 
         ($id == "books")         || 
         ($id == "events")) {
-        require "tools/itemHelper.php";
+        require "tools_old/itemHelper.php";
 }
 
 require "helpers/".$id.".php";
