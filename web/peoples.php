@@ -1,7 +1,7 @@
 <?php 
     // Make it easier to copy/paste code or make a new file
     $id = "peoples";
-    require 'layout/layout.php';
+    require 'layout/template.php';
 ?>
 
 <script>    

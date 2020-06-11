@@ -4,7 +4,7 @@ if (!isset($id)) {
     $id = "familytree";
 }
 
-require_once "layout/layout.php"; 
+require_once "layout/template.php"; 
 
 function familytree_Helper_layout() {
     _Map_Helper_layout();
