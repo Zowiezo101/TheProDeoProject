@@ -48,7 +48,7 @@
                     // This function will show the rest of the blog that is currently
                     // hidden by default.
                     var blogLink = document.createElement("a");
-                    blogLink.innerHTML = "<?php echo $dict_Home["link_blog"]; ?>...";
+                    blogLink.innerHTML = dict_Home["link_blog"] + "...";
                     blogLink.href = "javascript:_expandBlog('" + blogText.id + "')";
                     blogLink.id = "link" + blogText.id;
                     blogLink.className = "blog_link";
@@ -57,7 +57,7 @@
                 
                 var blogDate = document.createElement('p');
                 blogDate.className = "blog_date";
-                blogDate.innerHTML = blogObject["date"] + " " + "<?php echo $dict_Home['user_blog']; ?>" + "" + blogObject["user"];
+                blogDate.innerHTML = blogObject["date"] + " " + dict_Home['user_blog'] + " " + blogObject["user"];
                 TableData.appendChild(blogDate);
             }
 

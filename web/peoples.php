@@ -82,7 +82,7 @@
         
         // Set its attributes
         defaultText.id = "default";
-        defaultText.innerHTML = "<?php echo $dict_Peoples["default_people"]; ?>";
+        defaultText.innerHTML = dict_Peoples["default_people"];
 
         // Show the selected person, when someone is selected
         if (session_settings.hasOwnProperty("id")) {

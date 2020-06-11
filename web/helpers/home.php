@@ -15,7 +15,7 @@
         var Link = document.getElementById("link" + idBlog);
 
         // Update text
-        Link.innerHTML = "<?php echo $dict_Home["unlink_blog"]; ?>...";
+        Link.innerHTML = dict_Home["unlink_blog"] + "...";
 
         // Update function to execute
         Link.href = "javascript:_collapseBlog('" + idBlog + "')";
@@ -37,7 +37,7 @@
         var Link = document.getElementById("link" + idBlog);
 
         // Update text
-        Link.innerHTML = "<?php echo $dict_Home["link_blog"]; ?>...";
+        Link.innerHTML = dict_Home["link_blog"] + "...";
 
         // Update function to execute
         Link.href = "javascript:_expandBlog('" + idBlog + "')";

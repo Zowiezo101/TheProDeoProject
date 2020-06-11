@@ -53,7 +53,7 @@
                 
                 var TableKey = document.createElement("td");
                 // TODO: We need javascript dicts
-                TableKey.innerHTML = "<?php echo $dict_PeoplesParams["book_start_vers"]; ?>";
+                TableKey.innerHTML = dict_PeoplesParams[key];
                 
                 // Only show two decimals after the comma
                 var TableLink = document.createElement("a");
@@ -98,7 +98,7 @@
                 // Add a new table row
                 var TableKey = document.createElement("td");
                 // TODO
-                TableKey.innerHTML = "<?php echo $dict_PeoplesParams["book_start_vers"]; ?>";
+                TableKey.innerHTML = dict_PeoplesParams[key];
                 
                 var TableData = document.createElement("td");
                 TableData.innerHTML = value;
