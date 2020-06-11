@@ -10,14 +10,13 @@
                 $date_page = filemtime($current_page);
 
                 // Set the timezone to the timezone that I use on my computer
-                date_default_timezone_set('Europe/Amsterdam');
+                date_default_timezone_set('Europe/Amsterdam'); ?>
 
-                // Print the copyright year and the name of this website
-                PrettyPrint($dict_Footer["PP_name"]."&copy;".date("Y"), 1);
-                PrettyPrint("<br>");
+            <?php // Print the copyright year and the name of this website ?>
+            <?php echo $dict_Footer["PP_name"]."&copy;".date("Y"); ?>
+            <?php echo "<br>"; ?>
 
-                // Version and date of file modification
-                PrettyPrint($dict_Footer["PP_version"].": v3.0. ");
-                PrettyPrint($dict_Footer["PP_date"]." ".date("d-m-Y H:i", $date_page)); 
-            ?>
+            <?php // Version and date of file modification ?>
+            <?php echo $dict_Footer["PP_version"].": v3.0. "; ?>
+            <?php echo $dict_Footer["PP_date"]." ".date("d-m-Y H:i", $date_page);  ?>
         </div>

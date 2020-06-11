@@ -8,10 +8,12 @@
                 
             <!-- Banner, in the corresponding language -->
             <div >
-                <img id="banner_img" src="img/banner/banner_<?php echo $$id; ?>.svg" alt="Banner" />
-                <h1 id="banner_text"><?php 
-                    global $dict_Footer;
-                    echo $dict_Footer["slogan"]; ?>
+                <img id="banner_img" src="img/banner/banner_<?php echo $_SESSION["theme"]; ?>.svg" alt="Banner" />
+                <h1 id="banner_text">
+                    <?php 
+                        global $dict_Footer;
+                        echo $dict_Footer["slogan"]; 
+                    ?>
                 </h1>
             </div>
                 
@@ -28,13 +30,13 @@
                             background-size: auto 100%;" 
                         id="dropdown_lang_button" 
                         onclick="ShowDropDown('dropdown_lang_menu')">
-                            <?php PrettyPrint($_SESSION["lang"], 1); ?>
+                            <?php echo $_SESSION["lang"]; ?>
                     </button>
 
                     <!-- The actual drop down menu, hidden at first -->
                     <div id="dropdown_lang_menu">
                         <form method="post">
-                            <?php getLangList($_SESSION["lang"]); ?>
+                            <script>makeLangList();</script>
                         </form>
                     </div>
                 </div>
