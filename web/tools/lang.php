@@ -109,7 +109,7 @@ function prefered_language(array $available_languages, $http_accept_language) {
 
 function get_available_langs() {
     // List of available languages
-    $langsSet = null;
+    $lang_set = null;
 
     // Check all the available translation files
     $langFiles = glob("./translations/*.php");
@@ -118,10 +118,10 @@ function get_available_langs() {
         $lang = substr($filename, -6, 2);
         
         // And add it to the list of available languages
-        $langsSet[] = $lang;
+        $lang_set[] = $lang;
     }
 
-    return $langsSet;
+    return $lang_set;
 }
 
 // Set the language to a prefered language, if available
@@ -139,39 +139,5 @@ if (!isset($_SESSION["lang"])) {
 // Get the correct translation file, that corresponds with the prefered language
 $page_lang = $_SESSION["lang"];
 require "translations/translation_".$page_lang.".php";
-
-// Log in data, needed to connect to the database
-require "../login_data.php";
-$conn = new mysqli($servername, $username, $password, $database);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Which helper file do we need? One for items or one for maps?
-if (($id == "timeline") || ($id == "familytree")) {
-    require "tools_old/mapHelper.php";
-} elseif ($id == "timeline_ext") {
-    // TODO: Extended events
-    require "tools_old/mapHelper.php";    
-} elseif (($id == "peoples")     || 
-        ($id == "locations")     || 
-        ($id == "specials")     || 
-        ($id == "books")         || 
-        ($id == "events")) {
-        require "tools_old/itemHelper.php";
-}
-
-/* Used pretty much everywhere. 
-   This function adds newlines and tabs, to make the generated HTML and Javascript
-   code more readable */
-function PrettyPrint($string, $firstLine = 0) {
-    if ($firstLine) {
-        echo $string."\r\n";
-    } else {
-        echo "\t\t\t".$string."\r\n";
-    }
-}
 
 ?>
