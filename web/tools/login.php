@@ -21,7 +21,7 @@
 ?>
 
 <script>
-window.onload = function Return2Settings() {
+window.onload = function () {
     window.location.href = "../settings.php";
 };
 </script>

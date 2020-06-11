@@ -96,7 +96,7 @@ if (isset(filter_input(INPUT_GET, 'sendFeedback'))) {
 ?>
 
 <script>
-window.onload = function Return2Contact() {
+window.onload = function () {
     window.location.href = "../contact.php";
 };
 </script>
