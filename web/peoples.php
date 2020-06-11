@@ -21,7 +21,7 @@
 
         // Set left and right sides of the content div
         var left = setLeftSide(clearFix);
-        var right = setRightSide(clearFix, dict_Peoples["default_people"]);
+        var right = setRightSide(clearFix);
 
         // Set the height of the left div, to the height of the right div
         left.setAttribute("style", "height: " + right.offsetHeight + "px");

@@ -1,4 +1,24 @@
-/* global session_settings, getItemFromDatabase */
+/* global session_settings, getItemFromDatabase
+ * , dict_PeoplesParams, dict_Peoples */
+
+var dict_params = null;
+var dict = null;
+var item_links = null;
+
+switch(session_settings["table"]) {
+    case "peoples":
+        dict_params = dict_PeoplesParams;
+        dict = dict_Peoples;
+        item_links = [
+            {table: "people_to_activity", column: "people_id"},
+            {table: "people_to_location", column: "people_id"},
+            {table: "people_to_parent", column: "people_id"},
+            {table: "people_to_people", column: "people1_id"},
+            {table: "people_to_people", column: "people2_id"}
+        ];
+        break;
+        
+}
 
 async function showItemInfo(information) {
     // Grab the right part of the information window
@@ -49,7 +69,7 @@ async function showItemInfo(information) {
 
             var TableKey = document.createElement("td");
             // TODO: We need javascript dicts
-            TableKey.innerHTML = dict_PeoplesParams[key];
+            TableKey.innerHTML = dict_params[key];
 
             // Only show two decimals after the comma
             var TableLink = document.createElement("a");
@@ -94,7 +114,7 @@ async function showItemInfo(information) {
             // Add a new table row
             var TableKey = document.createElement("td");
             // TODO
-            TableKey.innerHTML = dict_PeoplesParams[key];
+            TableKey.innerHTML = dict_params[key];
 
             var TableData = document.createElement("td");
             TableData.innerHTML = value;
@@ -109,14 +129,7 @@ async function showItemInfo(information) {
         }
     }
 
-//        // Parts that come from other tables
-//        $peopleLinks = array(
-//            "people_to_activity" => "people_id",
-//            "people_to_location" => "people_id",
-//            "people_to_parent" => "people_id",
-//            "people_to_people" => "people1_id",
-//            "people_to_people" => "people2_id"
-//        );
+//        
 //        
 //        foreach ($peopleLinks as $table => $column) {
 //            // TODO:
@@ -285,7 +298,7 @@ async function showItemInfo(information) {
 }
 
 
-function setRightSide(parent, default_text) {
+function setRightSide(parent) {
     /* Right column. This is where the item info will be displayed
        when an item is clicked from the item bar. When no item is
        clicked yet, show default text with instructions. */
@@ -301,7 +314,7 @@ function setRightSide(parent, default_text) {
 
     // Set its attributes
     defaultText.id = "default";
-    defaultText.innerHTML = default_text;
+    defaultText.innerHTML = dict["default"];
 
     // Show the selected person, when someone is selected
     if (session_settings.hasOwnProperty("id")) {

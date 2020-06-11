@@ -1,6 +1,5 @@
         <!-- The translation files -->
-        <script src="translations/translation_en.js"></script>
-        <script src="translations/translation_nl.js"></script>
+        <script src="translations/translation_<?php echo $_SESSION["lang"]; ?>.js"></script>
         
         <!-- Tools for general things -->
         <script src="tools/base.js"></script>
