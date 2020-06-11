@@ -39,8 +39,8 @@
     $_SESSION["table"] = $id;
     $_SESSION["theme"] = $$id;
 
-    require "tools/baseHelper.php";
-    require "helpers/base.php";
+    require "tools_old/baseHelper.php";
+    require "tools/base.php";
 
     /* Only used by layout.php, for the dropdown with languages */
     function getLangList($page_lang) {
