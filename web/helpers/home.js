@@ -1,5 +1,6 @@
-<script>
-    function _expandBlog(idBlog) {
+    /* global dict_Home */
+
+function _expandBlog(idBlog) {
         // The currently selected blog text will be expanded.
         // This means that the hidden text will be visible.
         var Blog = document.getElementById(idBlog);
@@ -42,4 +43,3 @@
         // Update function to execute
         Link.href = "javascript:_expandBlog('" + idBlog + "')";
     }
-</script>

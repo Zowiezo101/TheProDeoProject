@@ -1,4 +1,3 @@
-<script>
 var dict_PeoplesParams = {
 	"people_id": "ID number",
 	"name": "Name",
@@ -284,4 +283,3 @@ var dict_Footer = {
 	"slogan": "Bible database - For God, to you!",
 };
 
-</script>

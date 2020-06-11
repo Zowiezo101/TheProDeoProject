@@ -139,7 +139,6 @@ if (!isset($_SESSION["lang"])) {
 // Get the correct translation file, that corresponds with the prefered language
 $page_lang = $_SESSION["lang"];
 require "translations/translation_".$page_lang.".php";
-require "translations/translation_".$page_lang."JS.php"; 
 
 // Log in data, needed to connect to the database
 require "../login_data.php";
@@ -164,8 +163,6 @@ if (($id == "timeline") || ($id == "familytree")) {
         require "tools_old/itemHelper.php";
 }
 
-require "helpers/".$id.".php";
-
 /* Used pretty much everywhere. 
    This function adds newlines and tabs, to make the generated HTML and Javascript
    code more readable */
@@ -178,55 +175,3 @@ function PrettyPrint($string, $firstLine = 0) {
 }
 
 ?>
-
-<script>
-        
-
-    // http://stackoverflow.com/a/10997390/11236
-    function updateURLParameter(url, param, paramVal){
-        var newAdditionalURL = "";
-        var tempArray = url.split("?");
-        var baseURL = tempArray[0];
-        var additionalURL = tempArray[1];
-        var temp = "";
-        
-//        window.location.search
-//        URLSearchParams
-        
-        if (additionalURL) {
-            tempArray = additionalURL.split("&");
-            
-            for (var i=0; i<tempArray.length; i++){
-                if(tempArray[i].split('=')[0] !== param){
-                    newAdditionalURL += temp + tempArray[i];
-                    temp = "&";
-                }
-            }
-        }
-
-        var rows_txt = temp + "" + param + "=" + paramVal;
-        return baseURL + "?" + newAdditionalURL + rows_txt;
-    }
-    
-    function removeURLParameter(url, param){
-        var newAdditionalURL = "";
-        var tempArray = url.split("?");
-        var baseURL = tempArray[0];
-        var additionalURL = tempArray[1];
-        var temp = "?";
-        
-        if (additionalURL) {
-            tempArray = additionalURL.split("&");
-            
-            for (var i=0; i<tempArray.length; i++){
-                if(tempArray[i].split('=')[0] !== param){
-                    newAdditionalURL += temp + tempArray[i];
-                    temp = "&";
-                }
-            }
-        }
-        return baseURL + newAdditionalURL;
-    }
-    
-    
-</script>

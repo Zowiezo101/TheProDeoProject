@@ -1,6 +1,5 @@
 <?php 
     require 'tools/layout.php';
-    require 'tools/database.php';
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +15,9 @@
         <!-- The style sheet -->
         <link rel="stylesheet" href="styles/styles.css">
         <link rel="stylesheet" href="styles/styles_color_theme.css">
+        
+        <!-- External Javascript files -->
+        <?php require "layout/import.php"; ?>
     </head>
     
     <body>

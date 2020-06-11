@@ -1,118 +1,114 @@
-<?php  
-    require "tools/item.php";
-    ?>
+/* global session_settings, getItemFromDatabase */
 
-<script>
-    
-    async function showItemInfo(information) {
-        // Grab the right part of the information window
-        var contentEl = document.getElementById("item_info");
-        
-        // Clean it
-        contentEl.innerHTML = "";
-        
-        // Add the name of the current person as a header
-        var Name = document.createElement("h1");
-        Name.innerHTML = information["name"];
-        contentEl.appendChild(Name);
-        
-        // Create a Table
-        var table = document.createElement("table");
-        
-        // For all the available information
-        for (var key in information)
-        {
-            var value = information[key];
-            
-            // If a value is set as -1 (unknown), 
-            // set it to an emtpty string for human readability
-            if (value === -1) {
-                value = " ";
-            } 
-            
-            // Name is already shown. 
-            // ID number might just confuse the reader, so hide it.
-            if ((key === "name") || (key === "people_id") || (key === "order_id")) {
-                continue;
-            }
-            
-            // We'll use these when we get to book_start_vers
-            if ((key === "book_start_id") || (key === "book_start_chap")) {
-                continue;
-            }
-            
-            // We'll use these when we get to book_end_vers
-            if ((key === "book_end_id") || (key === "book_end_chap")) {
-                continue;
-            }
-            
-            if (((key === "book_start_vers") ||
-                 (key === "book_end_vers")) && (value !== "")) {
-                // Create a link to the EO jongerenbijbel website or an english bible website!
-                // This website should correspond to the translation used for the database!
-                
-                var TableKey = document.createElement("td");
-                // TODO: We need javascript dicts
-                TableKey.innerHTML = dict_PeoplesParams[key];
-                
-                // Only show two decimals after the comma
-                var TableLink = document.createElement("a");
-                TableLink.innerHTML = "";
-                
-                if (key === "book_start_vers") {
-                    await getItemFromDatabase("books", information["book_start_id"]).then(function (bookInfo) { 
-                        // When the information is retreived:
-                        TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
-                                                                    information["book_start_chap"],
-                                                                    value);
-                        TableLink.href = convertBibleVerseLink(bookInfo["name"],
-                                                               information["book_start_id"], 
-                                                               information["book_start_chap"], 
-                                                               value);
-                    }, console.log);
-                } else {
-                    await getItemFromDatabase("books", information["book_end_id"]).then(function (bookInfo) { 
-                        TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
-                                                                    information["book_end_chap"], 
-                                                                    value);
-                        TableLink.href = convertBibleVerseLink(bookInfo["name"],
-                                                               information["book_end_id"],
-                                                               information["book_end_chap"],
-                                                               value);
-                    }, console.log);
-                }
-                TableLink.target = "_blank";
-                
-                var TableData = document.createElement("td");
-                TableData.appendChild(TableLink);
-                
-            
-                // Left is key names
-                // right is value names
-                var TableRow = document.createElement("tr");
-                TableRow.appendChild(TableKey);
-                TableRow.appendChild(TableData);
-                
-                table.appendChild(TableRow);
-            } else {
-                // Add a new table row
-                var TableKey = document.createElement("td");
-                // TODO
-                TableKey.innerHTML = dict_PeoplesParams[key];
-                
-                var TableData = document.createElement("td");
-                TableData.innerHTML = value;
-                
-                // Left is key names
-                // right is value names
-                var TableRow = document.createElement("tr");
-                TableRow.appendChild(TableKey);
-                TableRow.appendChild(TableData);
-                
-                table.appendChild(TableRow);
-            }
+async function showItemInfo(information) {
+    // Grab the right part of the information window
+    var contentEl = document.getElementById("item_info");
+
+    // Clean it
+    contentEl.innerHTML = "";
+
+    // Add the name of the current person as a header
+    var Name = document.createElement("h1");
+    Name.innerHTML = information["name"];
+    contentEl.appendChild(Name);
+
+    // Create a Table
+    var table = document.createElement("table");
+
+    // For all the available information
+    for (var key in information)
+    {
+        var value = information[key];
+
+        // If a value is set as -1 (unknown), 
+        // set it to an emtpty string for human readability
+        if (value === -1) {
+            value = " ";
+        } 
+
+        // Name is already shown. 
+        // ID number might just confuse the reader, so hide it.
+        if ((key === "name") || (key === "people_id") || (key === "order_id")) {
+            continue;
         }
-        
+
+        // We'll use these when we get to book_start_vers
+        if ((key === "book_start_id") || (key === "book_start_chap")) {
+            continue;
+        }
+
+        // We'll use these when we get to book_end_vers
+        if ((key === "book_end_id") || (key === "book_end_chap")) {
+            continue;
+        }
+
+        if (((key === "book_start_vers") ||
+             (key === "book_end_vers")) && (value !== "")) {
+            // Create a link to the EO jongerenbijbel website or an english bible website!
+            // This website should correspond to the translation used for the database!
+
+            var TableKey = document.createElement("td");
+            // TODO: We need javascript dicts
+            TableKey.innerHTML = dict_PeoplesParams[key];
+
+            // Only show two decimals after the comma
+            var TableLink = document.createElement("a");
+            TableLink.innerHTML = "";
+
+            if (key === "book_start_vers") {
+                await getItemFromDatabase("books", information["book_start_id"]).then(function (bookInfo) { 
+                    // When the information is retreived:
+                    TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
+                                                                information["book_start_chap"],
+                                                                value);
+                    TableLink.href = convertBibleVerseLink(bookInfo["name"],
+                                                           information["book_start_id"], 
+                                                           information["book_start_chap"], 
+                                                           value);
+                }, console.log);
+            } else {
+                await getItemFromDatabase("books", information["book_end_id"]).then(function (bookInfo) { 
+                    TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
+                                                                information["book_end_chap"], 
+                                                                value);
+                    TableLink.href = convertBibleVerseLink(bookInfo["name"],
+                                                           information["book_end_id"],
+                                                           information["book_end_chap"],
+                                                           value);
+                }, console.log);
+            }
+            TableLink.target = "_blank";
+
+            var TableData = document.createElement("td");
+            TableData.appendChild(TableLink);
+
+
+            // Left is key names
+            // right is value names
+            var TableRow = document.createElement("tr");
+            TableRow.appendChild(TableKey);
+            TableRow.appendChild(TableData);
+
+            table.appendChild(TableRow);
+        } else {
+            // Add a new table row
+            var TableKey = document.createElement("td");
+            // TODO
+            TableKey.innerHTML = dict_PeoplesParams[key];
+
+            var TableData = document.createElement("td");
+            TableData.innerHTML = value;
+
+            // Left is key names
+            // right is value names
+            var TableRow = document.createElement("tr");
+            TableRow.appendChild(TableKey);
+            TableRow.appendChild(TableData);
+
+            table.appendChild(TableRow);
+        }
+    }
+
 //        // Parts that come from other tables
 //        $peopleLinks = array(
 //            "people_to_activity" => "people_id",
@@ -247,8 +243,8 @@
 //            }
 //
 //        }
-        
-        contentEl.appendChild(table);
+
+    contentEl.appendChild(table);
 
 //        PrettyPrint('');
 //        PrettyPrint('    // Show a list of maps where this item is included in');
@@ -286,37 +282,32 @@
 //        PrettyPrint('    } ');
 //        PrettyPrint('');
 //        PrettyPrint('    contentEl.appendChild(ItemList); ');
+}
+
+
+function setRightSide(parent, default_text) {
+    /* Right column. This is where the item info will be displayed
+       when an item is clicked from the item bar. When no item is
+       clicked yet, show default text with instructions. */
+    var right = document.createElement("div");
+    parent.appendChild(right);
+
+    // Set its attributes
+    right.id = "item_info";
+    right.className = "contents_right";
+
+    var defaultText = document.createElement("div");
+    right.appendChild(defaultText);
+
+    // Set its attributes
+    defaultText.id = "default";
+    defaultText.innerHTML = default_text;
+
+    // Show the selected person, when someone is selected
+    if (session_settings.hasOwnProperty("id")) {
+        getItemFromDatabase(session_settings["table"], 
+                            session_settings["id"]).then(showItemInfo, console.log);
     }
-    
-    function showItemList(information) {
-    
-        // The item bar, where all items are shown
-        var itemBar = document.getElementById("item_bar");
-        
-        // Clean it
-        itemBar.innerHTML = "";
-        
-        // If there are results, create the table with the results
-        var table = document.createElement("table");
-        itemBar.appendChild(table);
-        
-        for (var itemIdx in information) {
-            var item = information[itemIdx];
-            
-            var tableRow = document.createElement('tr');
-            table.appendChild(tableRow);
-            
-            var tableData = document.createElement('td');
-            tableRow.appendChild(tableData);
-            
-            var button = document.createElement('button');
-            button.innerHTML = item["name"];
-            button.id = item["people_id"];
-            button.addEventListener("click", function() {
-                updateSessionSettings("id", this.id).then(getItemFromDatabase("peoples", this.id).then(showItemInfo, console.log), console.log);
-            });
-            tableData.appendChild(button);
-            
-        }
-    }
-</script>
+
+    return right;
+}
