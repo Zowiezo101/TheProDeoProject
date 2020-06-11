@@ -1,6 +1,6 @@
 <?php 
-    require 'helpers/layout.php';
-    require "helpers/database.php";
+    require 'tools/layout.php';
+    require 'tools/database.php';
 ?>
 
 <!DOCTYPE html>
@@ -14,8 +14,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <!-- The style sheet -->
-        <link rel="stylesheet" href="layout/styles.css">
-        <link rel="stylesheet" href="layout/styles_color_theme.css">
+        <link rel="stylesheet" href="styles/styles.css">
+        <link rel="stylesheet" href="styles/styles_color_theme.css">
     </head>
     
     <body>
