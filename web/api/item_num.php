@@ -16,21 +16,13 @@ if ($conn->connect_error) {
     $result->error = "Connection failed: " . $conn->connect_error;
 } else {
     if (filter_input(INPUT_GET, 'table') !== null) {
-        // Get the table and the ID that we want to read
+        // Get the table and the id name that we want to read
         $table = filter_input(INPUT_GET, 'table');
+        $column = filter_input(INPUT_GET, 'column') !== null ? filter_input(INPUT_GET, 'column') : substr($table, 0, -1)."_id";
+        $offset = filter_input(INPUT_GET, 'offset') !== null ? " where ".$column." >= ".filter_input(INPUT_GET, 'offset') : "";
 
-        
-        $value = filter_input(INPUT_GET, 'value') !== null ? filter_input(INPUT_GET, 'value') : "";
-        if ($value !== "") {
-            // We just want this specific ID
-            $column = filter_input(INPUT_GET, 'column') !== null ? filter_input(INPUT_GET, 'column') : substr($table, 0, -1)."_id";
-            $sql = "select * from ".$table." where ".$column." = ".$value;
-        } else {
-            // No ID given means we want all results of that table, or a subset using range
-            $offset = filter_input(INPUT_GET, 'offset') !== null ? " limit ".filter_input(INPUT_GET, 'offset').", 100" : "";
-            $sort = filter_input(INPUT_GET, 'sort') !== null ? " order by ".filter_input(INPUT_GET, 'sort') : "";
-            $sql = "select * from ".$table.$sort.$offset;
-        }
+        // Get the count
+        $sql = "select count(".$column.") as num from ".$table.$offset;
 
         // excecute SQL statement
         $result->query = $sql;
@@ -51,8 +43,6 @@ if ($conn->connect_error) {
     } else {
         $result->error = "No table selected";
     }
-
-
 
     // close mysql connection
     mysqli_close($conn);

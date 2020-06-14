@@ -1,4 +1,4 @@
-/* global session_settings, updateSessionSettings, getItemFromDatabase, showItemInfo */
+/* global session_settings, updateSessionSettings, getItemFromDatabase, showItemInfo, getAmountFromDatabase */
 
 function showItemList(information) {
 
@@ -259,16 +259,14 @@ function setButtonRight(parent) {
     updateButtonRight();
 }
 
-function updateButtonRight() {
-    var buttonRight = document.getElementById("button_right");
-
-    // Check if this is the last page. If so, disable next button.
-    // TODO: 
-    //<!--<?php-->        
-    //    <!--PrettyPrint("var NrOfItems = ".GetNumberOfItems($id).";");-->
-    //<!--?>-->
-    var nrOfItems = 0;
-    buttonRight.disabled = (nrOfItems < 101) ? true : false;
-    buttonRight.className = ((nrOfItems < 101) ? "off_" : "") + "button_" + session_settings["theme"];
-
+async function updateButtonRight() {
+    
+    await getAmountFromDatabase(session_settings["table"], 
+                                "", 
+                                session_settings["page"]).then(function(nrOfItems) {
+                                    var buttonRight = document.getElementById("button_right");
+                                    
+                                    buttonRight.disabled = (parseInt(nrOfItems, 10) < 101) ? true : false;
+                                    buttonRight.className = ((parseInt(nrOfItems, 10) < 101) ? "off_" : "") + "button_" + session_settings["theme"];
+                                }, console.log);
 }
