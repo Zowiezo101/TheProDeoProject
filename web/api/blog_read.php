@@ -28,12 +28,7 @@ if ($conn->connect_error) {
     
     $results = $conn->query($sql);
     
-    if (!$results) {
-        // If the table for the blogs does not exist or cannot be created
-        // Give an error message to the user
-        $result->error = $dict_Search["NoResults"];
-    } else {
-    
+    if ($results) {    
         // No ID given means we want all results of that table
         $value = filter_input(INPUT_GET, 'value') !== null ? filter_input(INPUT_GET, 'value') : "";
         if ($value !== "") {
@@ -57,9 +52,6 @@ if ($conn->connect_error) {
             for ($i = 0; $i < mysqli_num_rows($results); $i++) {
                 $result->data[] = mysqli_fetch_object($results);
             }
-        } elseif (!$result->error) {
-            // No results
-            $result->data[] = $dict_Search["NoResults"];
         }
     }
     
