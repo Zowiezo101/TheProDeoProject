@@ -33,7 +33,7 @@
 <script>
     var session_settings = {
         <?php foreach($_SESSION as $key => $value) {
-           echo "'".$key."': '".$value."',\n";
+           echo "'".$key."': '".$value."',\n\t\t";
         }?>
     };
     var get_settings = {
@@ -41,7 +41,7 @@
         $input_get = filter_input_array(INPUT_GET);
         if ($input_get) {
             foreach($input_get as $key => $value) {
-               echo "'".$key."': '".$value."',\n";
+               echo "'".$key."': '".$value."',\n\t\t";
             }
         }?>
     };
@@ -50,7 +50,7 @@
         $input_post = filter_input_array(INPUT_POST);
         if ($input_post) {
             foreach($input_post as $key => $value) {
-               echo "'".$key."': '".$value."',\n";
+               echo "'".$key."': '".$value."',\n\t\t";
             }
         }?>
     };
@@ -59,7 +59,7 @@
         <?php 
         $lang_list = get_available_langs();
         foreach($lang_list as $lang) {
-            echo "'".$lang."',\n";
+            echo "'".$lang."',\n\t\t";
         }
         ?>
     ];
@@ -159,12 +159,12 @@
         }
     }
     
-    async function goToPage(url="") {
+    async function goToPage(url="", page="", id="", sort="") {
         // Clear the id, page and sort selections
         // Then go to the new page (only if one is given)
-        await updateSessionSettings("page", "").then(async function () {
-            await updateSessionSettings("id", "").then(async function () {
-                await updateSessionSettings("sort", "").then(function () {
+        await updateSessionSettings("page", page).then(async function () {
+            await updateSessionSettings("id", id).then(async function () {
+                await updateSessionSettings("sort", sort).then(function () {
                     if (url !== "") {
                         window.location.href = url;
                     }

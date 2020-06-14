@@ -1,5 +1,5 @@
 /* global session_settings, getItemFromDatabase
- * , dict_PeoplesParams, dict_Peoples */
+ * , dict_PeoplesParams, dict_Peoples, updateSessionSettings, dict_NavBar, dict_Search */
 
 var dict_params = null;
 var dict = null;
@@ -10,17 +10,19 @@ switch(session_settings["table"]) {
         dict_params = dict_PeoplesParams;
         dict = dict_Peoples;
         item_links = [
-            {table: "people_to_activity", column: "people_id"},
-            {table: "people_to_location", column: "people_id"},
-            {table: "people_to_parent", column: "people_id"},
-            {table: "people_to_people", column: "people1_id"},
-            {table: "people_to_people", column: "people2_id"}
+            {table: "people_to_activity", column: "people_id", data: "activity_id", descr: "Verwante gebeurtenissen"},
+            {table: "people_to_location", column: "people_id", data: "loaction_id", descr: "Verwante locaties"},
+            {table: "people_to_parent", column: "people_id", data: "parent_id", descr: "Ouders"},
+            {table: "people_to_people", column: "people1_id", data: "people2_id", descr: "Ook bekend als"},
+            {table: "people_to_people", column: "people2_id", data: "people1_id", descr: "Ook bekend als"}
         ];
         break;
         
 }
 
 async function showItemInfo(information) {
+    information = information[0];
+    
     // Grab the right part of the information window
     var contentEl = document.getElementById("item_info");
 
@@ -34,6 +36,7 @@ async function showItemInfo(information) {
 
     // Create a Table
     var table = document.createElement("table");
+    contentEl.appendChild(table);
 
     // For all the available information
     for (var key in information)
@@ -77,6 +80,8 @@ async function showItemInfo(information) {
 
             if (key === "book_start_vers") {
                 await getItemFromDatabase("books", information["book_start_id"]).then(function (bookInfo) { 
+                    bookInfo = bookInfo[0];
+                    
                     // When the information is retreived:
                     TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
                                                                 information["book_start_chap"],
@@ -88,6 +93,9 @@ async function showItemInfo(information) {
                 }, console.log);
             } else {
                 await getItemFromDatabase("books", information["book_end_id"]).then(function (bookInfo) { 
+                    bookInfo = bookInfo[0];
+                    
+                    // When the information is retreived:
                     TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
                                                                 information["book_end_chap"], 
                                                                 value);
@@ -129,172 +137,115 @@ async function showItemInfo(information) {
         }
     }
 
-//        
-//        
-//        foreach ($peopleLinks as $table => $column) {
-//            // TODO:
-//            $information = GetItemInfo($table, filter_input(INPUT_GET, 'id'), $column);
-//            
-//            $names = "";
-//            $values = "";
-//            $types = "";
-//            
-//            if ($information == null) {
-//                continue;
-//            }
-//            
-//            // For all the available information
-//            foreach ($information as $key => $value)
-//            {
-//                // If a value is set as -1 (unknown), 
-//                // set it to an emtpty string for human readability
-//                if ($value == -1) {
-//                    $value = " ";
-//                } 
-//
-//                // Column is who we are, we just want to show the linking information
-//                if ($key == $column) {
-//                    continue;
-//                } else if ($key == "type") {
-//                    $types += ($value + ",");
-//                } else {
-//                    switch($key) {
-//                        case "activity_id":
-//                            $object = GetItemInfo("activitys", $value);
-//                            break;
-//                        
-//                        case "location_id":
-//                            $object = GetItemInfo("locations", $value);
-//                            break;
-//                        
-//                        case "parent_id":
-//                        case "people1_id":
-//                        case "people2_id":
-//                            $object = GetItemInfo("peoples", $value);
-//                            break;
-//                    }
-//                            
-//                    $names = ($names.",".$object["name"]);
-//                    $values = ($values.",".$value);
-//                }
-//            }
-//            
-//                            // Add a new table row
-//            PrettyPrint('    var TableKey = document.createElement("td"); ');
-//            PrettyPrint('    TableKey.innerHTML = "'.$table.'"; ');
-//            PrettyPrint('');
-//            PrettyPrint('    var TableData = document.createElement("td"); ');
-//            PrettyPrint('    TableData.innerHTML = "'.$value.'"; ');
-//            PrettyPrint('');
-//
-//                            // Left is key names
-//                            // right is value names
-//            PrettyPrint('    var TableRow = document.createElement("tr"); ');
-//            PrettyPrint('    TableRow.appendChild(TableKey); ');
-//            PrettyPrint('    TableRow.appendChild(TableData); ');
-//            PrettyPrint('');
-//            PrettyPrint('    table.appendChild(TableRow); ');
-//            PrettyPrint('');
-//            PrettyPrint('');
-//
-//            // Only if the value of this key is actually set, 
-//            // otherwise we might run into some errors..
-//            if ($names != "") {
-//                PrettyPrint('   var value = "'.$values.'"');
-//                PrettyPrint('   var names = "'.$names.'"');
-//
-//                // There might be multiple IDs linked to this item.
-//                // The different IDs are separated by comma's
-//                PrettyPrint('    var linkParts = value.split(","); ');
-//                PrettyPrint('');    
-//                        // Get the names they refer to
-//                PrettyPrint('    var nameParts = names.split(","); ');
-//                PrettyPrint('');
-//                        // Create a table with the different names
-//                PrettyPrint('    Table2 = document.createElement("table"); ');
-//                PrettyPrint('');
-//                        // And for each name, create the amount of rows needed to show
-//                        // all the different linked names
-//                PrettyPrint('    for (var types = 0; types < nameParts.length; types++) { ');
-//
-//                            // Table data
-//                PrettyPrint('        TableData2 = document.createElement("td"); ');
-//                PrettyPrint('');
-//                            // Not every linked name has an ID given..
-//                            // When the ID is given, refer to the item with the same ID.
-//                            // If not, just place the name
-//                PrettyPrint('        if (types < linkParts.length) { ');
-//                                // Table links, the name is the name of the item
-//                PrettyPrint('            TableLink2 = document.createElement("a"); ');
-//                PrettyPrint('            TableLink2.innerHTML = nameParts[types]; ');
-//                PrettyPrint('');        
-//                                // The link itself is linked to the item it is referring to
-//                PrettyPrint('            currentHref = window.location.href; ');
-//                PrettyPrint('            TableLink2.href = updateURLParameter("peoples.php", "id", linkParts[types]); ');
-//                PrettyPrint('');            
-//                                // Add it to the table with linked items
-//                PrettyPrint('            TableData2.appendChild(TableLink2); ');
-//                PrettyPrint('        } else { ');
-//                                // When the ID is not given, just give the name..
-//                PrettyPrint('            TableData2.innerHTML = nameParts[types]; ');
-//                PrettyPrint('        } ');
-//                PrettyPrint('');        
-//                            // Table row
-//                PrettyPrint('        TableRow2 = document.createElement("tr"); ');
-//                PrettyPrint('        TableRow2.appendChild(TableData2); ');
-//                PrettyPrint('');        
-//                            // Little table inside of table
-//                PrettyPrint('        Table2.appendChild(TableRow2); ');                    
-//                PrettyPrint('    } ');
-//                PrettyPrint('');
-//                        // Update the previous table cell with links to the IDs
-//                PrettyPrint('    TableData.innerHTML = ""; ');
-//                PrettyPrint('    TableData.appendChild(Table2); ');
-//                PrettyPrint('');
-//                PrettyPrint('');
-//
-//            }
-//
-//        }
+    for (var idx in item_links) {
+        var item_link = item_links[idx];
+        
+        await getItemFromDatabase(item_link.table, session_settings["id"], item_link.column).then(async function(information2) {
+            var names = [];
+            var values = [];
+            var types = [];
 
-    contentEl.appendChild(table);
+            if (information2 === null) {
+                return;
+            }
 
-//        PrettyPrint('');
-//        PrettyPrint('    // Show a list of maps where this item is included in');
-//        PrettyPrint('    var ItemText = document.createElement("p"); ');
-//        PrettyPrint('    ItemText.innerHTML = "'.$dict_Peoples["map_people"].'"; ');
-//        PrettyPrint('    contentEl.appendChild(ItemText); ');
-//        PrettyPrint('');
-//        PrettyPrint('    // The actual list to be created');
-//        PrettyPrint('    var ItemList = document.createElement("ul"); ');
-//        PrettyPrint('');
-//        PrettyPrint('    // The contents of the list');
-//        PrettyPrint('    var ItemListIDs = getMaps('.filter_input(INPUT_GET, 'id').'); ');
-//        PrettyPrint('');
-//        PrettyPrint('    if (ItemListIDs.length > 0) { ');
-//        PrettyPrint('        // For every map that this item is included in');
-//        PrettyPrint('        for (var i = 0; i < ItemListIDs.length; i++) { ');
-//        PrettyPrint('            // Create a link to the map');
-//        PrettyPrint('            var ItemListLink = document.createElement("a"); ');
-//        PrettyPrint('            ItemListLink.innerHTML = "'.$dict_NavBar["Familytree"].' " + (Number(ItemListIDs[i]) + 1); ');
-//        PrettyPrint('            ItemListLink.href = updateURLParameter("familytree.php", "id", "" + ItemListIDs[i] + "," + '.filter_input(INPUT_GET, 'id').'); ');
-//        PrettyPrint('');
-//        PrettyPrint('            // Put the link in a list item');
-//        PrettyPrint('            var ItemListItem = document.createElement("li"); ');
-//        PrettyPrint('            ItemListItem.appendChild(ItemListLink); ');
-//        PrettyPrint('');
-//        PrettyPrint('            // Put the list item in the list of maps');
-//        PrettyPrint('            ItemList.appendChild(ItemListItem); ');
-//        PrettyPrint('        } ');
-//        PrettyPrint('    } else { ');
-//        PrettyPrint('        // If this item is not in a known map');
-//        PrettyPrint('        // Show a message');
-//        PrettyPrint('        var ItemListItem = document.createElement("li"); ');
-//        PrettyPrint('        ItemListItem.innerHTML = "'.$dict_Search["NoResults"].'"; ');
-//        PrettyPrint('        ItemList.appendChild(ItemListItem); ');
-//        PrettyPrint('    } ');
-//        PrettyPrint('');
-//        PrettyPrint('    contentEl.appendChild(ItemList); ');
+            // For all the available information
+            for (var idx2 in information2)
+            {
+                var item = information2[idx2];
+                
+                // If a value is set as -1 (unknown), 
+                // set it to an emtpty string for human readability
+                if (item === null) {
+                    continue;
+                }
+                
+                // Column is who we are, we just want to show the linking information
+                if (item.hasOwnProperty("type")) {
+                    types.push(item["type"]);
+                } 
+                
+                switch(item_link.data) {
+                    case "activity_id":
+                        var table_name = "activitys";
+                        break;
+
+                    case "location_id":
+                        table_name = "locations";
+                        break;
+
+                    case "parent_id":
+                    case "people1_id":
+                    case "people2_id":
+                        table_name = "peoples";
+                        break;
+                }
+                
+                await getItemFromDatabase(table_name, item[item_link.data]).then(function(object) {
+                    object = object[0];
+                    
+                    names.push(object["name"]);
+                    values.push(item[item_link.data]);
+                } , console.log);
+            }
+
+            // Add a new table row
+            var TableRow = document.createElement("tr");
+            table.appendChild(TableRow);
+
+            // Description of the information shown
+            var TableKey = document.createElement("td");
+            TableKey.innerHTML = item_link.descr;
+            TableRow.appendChild(TableKey);
+
+            // Actual data
+            var TableData = document.createElement("td");
+            TableRow.appendChild(TableData);
+            
+            // Create a table with the different names
+            var Table2 = document.createElement("table");
+            TableData.appendChild(Table2);
+
+            // And for each name, create the amount of rows needed to show
+            // all the different linked names    
+            for (var idx3 in names) {
+                var value = values[idx3];
+                var name = names[idx3];
+                
+                // Table row
+                var TableRow2 = document.createElement("tr");
+                Table2.appendChild(TableRow2);
+
+                // Table data
+                var TableData2 = document.createElement("td");
+                TableRow2.appendChild(TableData2);
+                
+                if (value !== null) {
+                    // Table links, the name is the name of the item
+                    var TableLink2 = document.createElement("a");
+                    TableData2.appendChild(TableLink2);
+                    
+                    // Set its attributes
+                    TableLink2.innerHTML = name;
+                    TableLink2.value = value;
+                    TableLink2.table_name = table_name;
+                    TableLink2.onclick = function() {
+                        goToPage(this.table_name + ".php", "", this.value);
+                    };
+
+                } else {
+                    // When the ID is not given, just give the name..
+                    TableData2.innerHTML = name;
+                }
+                
+            }
+        }, console.log);
+
+    }
+
+    if (typeof setMaps === "function") {
+        setMaps(contentEl);
+    }
 }
 
 

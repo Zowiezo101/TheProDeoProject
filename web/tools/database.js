@@ -1,3 +1,5 @@
+/* global dict_Search */
+
 function getItemFromDatabase(table="", value="", column="", page="", sort="") {
 
    var promiseObj = new Promise(function(resolve, reject) {
@@ -43,11 +45,12 @@ function getItemFromDatabase(table="", value="", column="", page="", sort="") {
                 var result = JSON.parse(request.responseText);
 
                 if (!result.error) {
-                    if (result.data.length > 1) {
-
+                    if (result.hasOwnProperty("data") && (result.data !== null)) {
                         resolve(result.data);
                     } else {
-                        resolve(result.data[0]);
+                        // TODO: This need to be handled elsewhere
+                        //resolve(dict_Search["NoResults"]);
+                        resolve(result.data);
                     }
                 } else {
                     reject(result.error);
