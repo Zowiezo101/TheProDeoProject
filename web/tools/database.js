@@ -18,8 +18,11 @@ function getItemFromDatabase(table="", value="", column="", page="", sort="") {
             params = '?table=' + table;
         }
 
-        if (value !== "") {
+        if ((value !== "") && (typeof value === "string")) {
             params += (params !== "" ? '&' : '?') + 'value=' + value;
+        } else if (value !== "") {
+            var link = 'http://localhost/web/api/items_read.php';
+            params += (params !== "" ? '&' : '?') + 'value=' + "(" + value.join(',') + ")";
         }
 
         if (column !== "") {

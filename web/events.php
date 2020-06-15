@@ -1,9 +1,30 @@
 <?php 
     // Make it easier to copy/paste code or make a new file
     $id = "events";
-    require_once "layout/layout.php"; 
+    require 'layout/template.php';
 ?>
 
 <script>    
-window.onload = _Database_Helper_onLoad;
+    function onLoadEvents() {
+        
+        // Actual content of the page itself 
+        // This is defined in the corresponding php page
+        var content = document.getElementById("content");
+        
+        // This div is used to separate item_choice and item_info in two columns.
+        // But resume with one column under these two columns.
+        var clearFix = document.createElement("div");
+        content.appendChild(clearFix);
+        
+        // Set the class name
+        clearFix.className = "clearfix";
+
+        // Set left and right sides of the content div
+        var left = setLeftSide(clearFix);
+        var right = setRightSide(clearFix);
+
+        // Set the height of the left div, to the height of the right div
+        left.setAttribute("style", "height: " + right.offsetHeight + "px");
+        content.setAttribute("style", "height: " + right.offsetHeight + "px");
+    }
 </script>

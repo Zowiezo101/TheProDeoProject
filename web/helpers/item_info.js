@@ -1,5 +1,9 @@
 /* global session_settings, getItemFromDatabase
- * , dict_PeoplesParams, dict_Peoples, updateSessionSettings, dict_NavBar, dict_Search */
+ * , updateSessionSettings, dict_NavBar, dict_Search, setMaps
+ * , dict_PeoplesParams, dict_Peoples
+ * , dict_LocationsParams, dict_Locations
+ * , dict_SpecialsParams, dict_Specials
+ * , dict_Books, dict_BooksParams, dict_Events, dict_EventsParams */
 
 var dict_params = null;
 var dict = null;
@@ -11,13 +15,48 @@ switch(session_settings["table"]) {
         dict = dict_Peoples;
         item_links = [
             {table: "people_to_activity", column: "people_id", data: "activity_id", descr: "Verwante gebeurtenissen"},
-            {table: "people_to_location", column: "people_id", data: "loaction_id", descr: "Verwante locaties"},
+            {table: "people_to_location", column: "people_id", data: "location_id", descr: "Verwante locaties"},
             {table: "people_to_parent", column: "people_id", data: "parent_id", descr: "Ouders"},
+            {table: "people_to_parent", column: "parent_id", data: "people_id", descr: "Kinderen"},
             {table: "people_to_people", column: "people1_id", data: "people2_id", descr: "Ook bekend als"},
             {table: "people_to_people", column: "people2_id", data: "people1_id", descr: "Ook bekend als"}
         ];
         break;
         
+    case "locations":
+        dict_params = dict_LocationsParams;
+        dict = dict_Locations;
+        item_links = [
+            {table: "location_to_activity", column: "location_id", data: "activity_id", descr: "Verwachte gebeurtenissen"},
+            {table: "people_to_location", column: "location_id", data: "people_id", descr: "Verwante personen"},
+            {table: "location_to_location", column: "location1_id", data: "location2_id", descr: "Ook bekend als"},
+            {table: "location_to_location", column: "location2_id", data: "location1_id", descr: "Ook bekend als"}
+        ];
+        break;
+        
+    case "specials":
+        dict_params = dict_SpecialsParams;
+        dict = dict_Specials;
+        item_links = [
+            {table: "special_to_activity", column: "special_id", data: "activity_id", descr: "Verwachte gebeurtenissen"}
+        ];
+        break;
+        
+    case "books":
+        dict_params = dict_BooksParams;
+        dict = dict_Books;
+        item_links = [];
+        break;
+        
+    case "events":
+        dict_params = dict_EventsParams;
+        dict = dict_Events;
+        item_links = [
+            {table: "people_to_activity", column: "activity_id", data: "people_id", descr: "Verwachte personen"},
+            {table: "location_to_activity", column: "activity_id", data: "location_id", descr: "Verwante locaties"},
+            {table: "special_to_activity", column: "activity_id", data: "special_id", descr: "Verwante specials"}
+        ];
+        break;
 }
 
 async function showItemInfo(information) {
@@ -45,13 +84,14 @@ async function showItemInfo(information) {
 
         // If a value is set as -1 (unknown), 
         // set it to an emtpty string for human readability
-        if (value === -1) {
+        if ((value === -1) || (value === "-1")) {
             value = " ";
         } 
 
         // Name is already shown. 
         // ID number might just confuse the reader, so hide it.
-        if ((key === "name") || (key === "people_id") || (key === "order_id")) {
+        var main_key = session_settings["table"].substr(0, session_settings["table"].length - 1) + "_id";
+        if ((key === "name") || (key === main_key) || (key === "order_id")) {
             continue;
         }
 
@@ -140,18 +180,37 @@ async function showItemInfo(information) {
     for (var idx in item_links) {
         var item_link = item_links[idx];
         
-        await getItemFromDatabase(item_link.table, session_settings["id"], item_link.column).then(async function(information2) {
+        if (item_link.column === "activity_id") {
+            // TODO: Convert this event_id to all activity IDs
+            // Get all the linked activity IDs
+            var id = "";
+            
+            await getItemFromDatabase("activity_to_event", session_settings["id"], "event_id").then(function (information2) {
+                var ids = [];
+                
+                for (var idx2 in information2) {
+                    var item = information2[idx2];
+                    ids.push(item.activity_id);
+                }
+                
+                id = ids;
+            });
+        } else {
+            id = session_settings["id"];
+        }
+        
+        await getItemFromDatabase(item_link.table, id, item_link.column).then(async function(information2) {
             var names = [];
             var values = [];
             var types = [];
+            var genders = [];
 
             if (information2 === null) {
                 return;
             }
 
             // For all the available information
-            for (var idx2 in information2)
-            {
+            for (var idx2 in information2) {
                 var item = information2[idx2];
                 
                 // If a value is set as -1 (unknown), 
@@ -175,6 +234,7 @@ async function showItemInfo(information) {
                         break;
 
                     case "parent_id":
+                    case "people_id":
                     case "people1_id":
                     case "people2_id":
                         table_name = "peoples";
@@ -182,10 +242,14 @@ async function showItemInfo(information) {
                 }
                 
                 await getItemFromDatabase(table_name, item[item_link.data]).then(function(object) {
+                    if (item_link.data === "activity_id") {
+                        // Turn this into event ID
+                    }
                     object = object[0];
                     
                     names.push(object["name"]);
                     values.push(item[item_link.data]);
+                    genders.push(getGenderNoun(object["gender"], 1));
                 } , console.log);
             }
 
@@ -211,6 +275,7 @@ async function showItemInfo(information) {
             for (var idx3 in names) {
                 var value = values[idx3];
                 var name = names[idx3];
+                var gender = genders[idx3];
                 
                 // Table row
                 var TableRow2 = document.createElement("tr");
@@ -226,11 +291,15 @@ async function showItemInfo(information) {
                     TableData2.appendChild(TableLink2);
                     
                     // Set its attributes
-                    TableLink2.innerHTML = name;
+                    TableLink2.innerHTML = name + gender;
                     TableLink2.value = value;
                     TableLink2.table_name = table_name;
                     TableLink2.onclick = function() {
-                        goToPage(this.table_name + ".php", "", this.value);
+                        if (this.table_name !== session_settings["table"]) {
+                            goToPage(this.table_name + ".php", "", this.value);
+                        } else { 
+                            updateSessionSettings("id", this.value).then(getItemFromDatabase(this.table_name, this.value).then(showItemInfo, console.log), console.log);
+                        }
                     };
 
                 } else {
@@ -243,7 +312,7 @@ async function showItemInfo(information) {
 
     }
 
-    if (typeof setMaps === "function") {
+    if ((session_settings["table"] === "peoples") || (session_settings["table"] === "events")) {
         setMaps(contentEl);
     }
 }

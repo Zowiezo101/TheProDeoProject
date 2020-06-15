@@ -7,6 +7,8 @@
         <script src="tools/database.js"></script>
         
         <!-- Helpers for layout of pages -->
+        <?php if (in_array($_SESSION["table"], ["peoples", "locations", "specials", "books", "events"])) { ?>
         <script src="helpers/item_info.js"></script>
         <script src="helpers/item_list.js"></script>
+        <?php } ?>
         <script src="helpers/<?php echo $id; ?>.js"></script>

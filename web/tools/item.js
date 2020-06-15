@@ -1,4 +1,4 @@
-/* global dict_Footer */
+/* global dict_Footer, select_Search_gender, dict_PeoplesParams, session_settings */
 
 // TODO: When more than one language is available, 
 // use convertBibleVerseLinkDEF, convertBibleVerseLinkEN functions 
@@ -70,15 +70,58 @@ function getSortSql(sortStr) {
             break;
 
         case 'r-app':
-            // Get new SQL array of items
-            sortSql = 'book_start_id desc, book_start_chap desc, book_start_vers desc';
+            if (session_settings["table"] !== "books") {
+                // Get new SQL array of items
+                sortSql = 'book_start_id desc, book_start_chap desc, book_start_vers desc';
+            } else {
+                sortSql = 'book_id desc';
+            }
             break;
 
         default:
-            // Get new SQL array of items
-            sortSql = 'book_start_id asc, book_start_chap asc, book_start_vers asc';
+            if (session_settings["table"] !== "books") {
+                // Get new SQL array of items
+                sortSql = 'book_start_id asc, book_start_chap asc, book_start_vers asc';
+            } else {
+                sortSql = 'book_id asc';
+            }
             break;
     }
 
     return sortSql;
+}
+
+function getGenderNoun(genderInt, parentNoun) {
+    var genderStr = "";
+    
+    switch(genderInt) {
+        case "-1":
+        case -1:
+            if (parentNoun) {
+                genderStr = "";
+            } else {
+                genderStr = select_Search_gender.unknown;
+            }
+            break;
+            
+        case "0":
+        case 0:
+            if (parentNoun) {
+                genderStr = " (" + dict_PeoplesParams.father_id + ")";
+            } else {
+                genderStr = select_Search_gender.male;
+            }
+            break;
+            
+        case "1":
+        case 1:
+            if (parentNoun) {
+                genderStr = " (" + dict_PeoplesParams.mother_id + ")";
+            } else {
+                genderStr = select_Search_gender.female;
+            }
+            break;
+    }
+    
+    return genderStr;
 }
