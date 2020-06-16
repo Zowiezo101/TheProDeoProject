@@ -159,15 +159,17 @@
         }
     }
     
-    async function goToPage(url="", page="", id="", sort="") {
+    async function goToPage(url="", page="", id="", sort="", map="") {
         // Clear the id, page and sort selections
         // Then go to the new page (only if one is given)
         await updateSessionSettings("page", page).then(async function () {
             await updateSessionSettings("id", id).then(async function () {
-                await updateSessionSettings("sort", sort).then(function () {
-                    if (url !== "") {
-                        window.location.href = url;
-                    }
+                await updateSessionSettings("sort", sort).then(async function () {
+                    await updateSessionSettings("map", map).then(function () {
+                        if (url !== "") {
+                            window.location.href = url;
+                        }
+                    }, console.log);
                 }, console.log);
             }, console.log);
         }, console.log);

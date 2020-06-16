@@ -28,12 +28,12 @@ var MULTS = [
 
 
 function CreateItem(item) {
-    this.id = item["id"];
+    this.id = Number(item["id"]);
     this.name = item["name"];
     this.descr = item["descr"];
     this.length = item["length"];
     this.data = item["data"];
-    this.parents = item["parent_id"] ? [item["parent_id"]] : [];
+    this.parents = item["parent_id"] ? [Number(item["parent_id"])] : [];
 
     // Own loop counter to prevent the counters messing each other up
     this.counter = 0;
@@ -70,9 +70,10 @@ function CreateItem(item) {
             // We can easily see if we already handled this item and are
             // currently looking at a duplicate
             if (firstItem.parents.length === 1) {
-                for (var i = 0; i < matchingItems.length; i++) {
+                for (var i = 0; i < matchingItems.length; i++) {                    
                     // Link all the previous values to the first of this event
                     firstItem.parents.push(matchingItems[i].parents[0]);
+                    firstItem.parents = uniq(firstItem.parents);
                 }
             }
         }
@@ -115,7 +116,7 @@ function CreateItem(item) {
         // coordinate
         if (this.parents.length !== 0) {    
             var TotalYCoord = 0;
-            var Parent = {level: 0};
+            var Parent = getItemById(this.parents[0]);
             
             for (var i = 0; i < this.parents.length; i++) {
                 var tempParent = getItemById(this.parents[i]);
@@ -127,7 +128,7 @@ function CreateItem(item) {
                 }
             }
 
-            var AvgYCoord = TotalYCoord / this.multPrevs.length;
+            var AvgYCoord = TotalYCoord / this.parents.length;
             var Location_1 = AvgYCoord;
             
             console.log("Used parent for " + this.name + " is " + Parent.name + " with " + Parent.ChildIDs.length + " children.");
@@ -139,7 +140,7 @@ function CreateItem(item) {
             var odd = numChildren % 2;
 
             // And which index do we have?
-            var Index = Parent.ChildIDs.indexOf(this.ID);
+            var Index = Parent.ChildIDs.indexOf(this.id);
 
             // Now calculate where our position should be
             if (odd) {
@@ -180,8 +181,8 @@ function CreateItem(item) {
         }
 
         // This value is used, in case someone is overlapping with someone else
-        this.Location[0] = X;
-        this.Location[1] = Y + this.offset;
+        this.Location[0] = Math.round(X);
+        this.Location[1] = Math.round(Y + this.offset);
 
         console.log("The calculated height to use for " + this.name + " is " + this.Location[1]);
 
@@ -621,8 +622,8 @@ function CreateItem(item) {
         var y = this.Location[1] + globalOffset;
 
         // This object has multiple parents, draw them all
-        if(this.multPrevs.length > 0) {
-            for (var i = 0; i < this.multPrevs.length; i++) {
+        if(this.parents.length > 0) {
+            for (var i = 0; i < this.parents.length; i++) {
                 // Draw the lines to the mother, to the middle of the bottom
                     var Parent = getItemById(this.parents[i]);
 
@@ -708,9 +709,10 @@ function CreateItem(item) {
         this.convertText(Text, this.name);
         Text.RectID = this.ID;
 
-        var newHref = updateURLParameter("events.php", "id", thisidID);
         var Link = document.createElementNS(svgns, "a");
-        Link.setAttributeNS(hrefns, 'xlink:href', newHref);
+        Link.setAttributeNS(hrefns, 'xlink:onclick', function() {
+            goToPage("events.php", "", session_settings["id"], "", this.id);
+        });
         Link.setAttributeNS(hrefns, 'xlink:title', dict_Timeline["link_event"]);
         Link.setAttributeNS(hrefns, 'target', "_top");
 
@@ -1021,15 +1023,6 @@ function drawMap(SVG) {
     }
     
     return;
-}
-
-/***/
-function panItem(item) {
-    var TimeLine = document.getElementById("timeline_div");
-    var scrollTop = (item.Location[1] + globalOffset + 50) - (TimeLine.offsetHeight / 2);
-    var scrollLeft = (item.Location[0] + 75) - (TimeLine.offsetWidth / 2);
-    
-    updateViewbox(-scrollLeft, -scrollTop, -1);
 }
 
 function prep_DrawLegenda() {

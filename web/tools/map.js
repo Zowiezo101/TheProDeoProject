@@ -46,6 +46,7 @@ function setItems() {
 function setLevels(id) {            
     // The set of people that will be updated 
     // in the iteration of the while loop
+    // TODO: Get the activity IDs without parents here in case of 'global_id'
     var IDset = [id];
 
     // This breaks the while loop
@@ -393,8 +394,27 @@ GetDelta = function (event) {
     }
 };
 
-function UpdateProgress(value) {    
+function UpdateProgress(value) {
     var ProgressBar = document.getElementById("progress");
+    if (!ProgressBar) {
+        var defaultText = document.getElementById("default");
+        defaultText.innerHTML = dict["loading"];
+    
+        // The progress bar
+        var progressBar = document.createElement("div");
+        defaultText.appendChild(progressBar);
+
+        // Set its attributes
+        progressBar.id = "progress_bar";
+
+        // The progress in the progress bar
+        var progress = document.createElement("div");
+        progressBar.appendChild(progress);
+
+        // Set its attributes
+        progress.id = "progress";
+        progress.innerHTML = "1%";
+    }
 
     ProgressBar.style.width = value + "%";
     ProgressBar.innerHTML = value + "%";
@@ -439,10 +459,10 @@ function prep_CalcAllLocations() {
 
 function prep_appendSVG() {
     var svgns = "http://www.w3.org/2000/svg";
-    var ItemMap = document.getElementById(session_settings["table"] + "_div");
+    var ItemMap = document.getElementById("item_info");
 
     // Create this element
-    SVG = document.createElementNS(svgns, "svg");
+    var SVG = document.createElementNS(svgns, "svg");
     SVG.id = "svg";
 
     SVG.setAttributeNS(null, "transform", "matrix(1 0 0 1 0 0)");
@@ -470,7 +490,7 @@ function prep_appendGroup() {
 
 
 function prep_AddControlButtons() {
-    var ItemMap = document.getElementById(session_settings["table"] + "_div");
+    var ItemMap = document.getElementById("item_info");
 
     // Show the controls to move around in the SVG
     var svgns = "http://www.w3.org/2000/svg";
@@ -541,7 +561,7 @@ function prep_AddControlButtons() {
     ZoomOutButton.setAttributeNS(null, 'fill', 'white');
     ZoomOutButton.id = "ZoomOut";
     ZoomOutButton.ID = "ZoomOut";
-    ZoomOutButton.className.baseVal = "svg_<?php echo $$id; ?>";
+    ZoomOutButton.className.baseVal = "svg_" + session_settings["theme"];
 
     // Horizontal line of the minus sign
     var ZoomOutMinus = document.createElementNS(svgns, "line");
@@ -575,7 +595,7 @@ function prep_AddControlButtons() {
     ZoomFitButton.setAttributeNS(null, 'fill', 'white');
     ZoomFitButton.id = "ZoomFit";
     ZoomFitButton.ID = "ZoomFit";
-    ZoomFitButton.className.baseVal = "svg_<?php echo $$id; ?>";
+    ZoomFitButton.className.baseVal = "svg_" + session_settings["theme"];
 
     var ZoomFitTitle = document.createElementNS(svgns, "text");
     ZoomFitTitle.setAttributeNS(null, 'x', ItemMap.offsetWidth - 220);
@@ -604,7 +624,7 @@ function prep_AddControlButtons() {
     ZoomResetButton.setAttributeNS(null, 'fill', 'white');
     ZoomResetButton.id = "ZoomReset";
     ZoomResetButton.ID = "ZoomReset";
-    ZoomResetButton.className.baseVal = "svg_<?php echo $$id; ?>";
+    ZoomResetButton.className.baseVal = "svg_" + session_settings["theme"];
 
     var ZoomResetTitle = document.createElementNS(svgns, "text");
     ZoomResetTitle.setAttributeNS(null, 'x', ItemMap.offsetWidth - 220);
@@ -633,7 +653,7 @@ function prep_AddControlButtons() {
     DownloadButton.setAttributeNS(null, 'fill', 'white');
     DownloadButton.id = "Download";
     DownloadButton.ID = "Download";
-    DownloadButton.className.baseVal = "svg_<?php echo $$id; ?>";
+    DownloadButton.className.baseVal = "svg_" + session_settings["theme"];
 
     var DownloadTitle = document.createElementNS(svgns, "text");
     DownloadTitle.setAttributeNS(null, 'x', ItemMap.offsetWidth - 220);
@@ -657,7 +677,7 @@ function prep_AddControlButtons() {
 
 function prep_DrawMap() {
     // The TimeLine div
-    var Map = document.getElementById(session_settings["table"] + "_div");
+    var Map = document.getElementById("item_info");
     var SVG = document.getElementById("svg");
     var Group = document.getElementById("timeline_svg");
     
@@ -718,7 +738,7 @@ function prep_SetView() {
 
 function prep_MakeVisible() {
     // The Map div
-    var ItemMap = document.getElementById(session_settings["table"] + "_div");
+    var ItemMap = document.getElementById("item_info");
 
     // Remove the default text
     var defaultText = document.getElementById("default");
@@ -762,6 +782,15 @@ function updateViewbox(x, y, zoom) {
     return;
 }
 
+/***/
+function panItem(item) {
+    var ItemMap = document.getElementById("item_info");
+    var scrollTop = (item.Location[1] + globalOffset + 50) - (ItemMap.offsetHeight / 2);
+    var scrollLeft = (item.Location[0] + 75) - (ItemMap.offsetWidth / 2);
+    
+    updateViewbox(-scrollLeft, -scrollTop, -1);
+}
+
 function panTo(x, y) {    
     var newX = viewX + x;
     var newY = viewY + y;    
@@ -770,7 +799,7 @@ function panTo(x, y) {
 }
 
 function ZoomIn(factor) {
-    var ItemMap = document.getElementById(session_settings["table"] + "_div");
+    var ItemMap = document.getElementById("item_info");
 
     var newZoom = ZoomFactor * factor;
 
@@ -780,7 +809,7 @@ function ZoomIn(factor) {
 }
 
 function ZoomOut(factor) {
-    var ItemMap = document.getElementById(session_settings["table"] + "_div");
+    var ItemMap = document.getElementById("item_info");
 
     newZoom = ZoomFactor / factor;
 
@@ -790,7 +819,7 @@ function ZoomOut(factor) {
 }
 
 function ZoomFit() {
-    var ItemMap = document.getElementById(session_settings["table"] + "_div");
+    var ItemMap = document.getElementById("item_info");
 
     // To zoom out, we need to increase the size of the viewHeight and viewWidth
     // Keep the ratio between X and Y axis aligned
@@ -814,12 +843,12 @@ function ZoomFit() {
 function ZoomReset() {
     // Get the ID number
     // Could also be map id
-    var ItemId = session_settings["id"] ? session_settings["id"] : session_settings["map"];
+    var ItemId = session_settings["id"] ? session_settings["id"] : (session_settings["map"] !== "global_id" ? session_settings["map"] : 1);
 
     var newZoom = 1;
 
     // Now pan to this item
-    var Item = getItemById(ItemId);
+    var Item = getItemById(Number(ItemId));
     panItem(Item);
 
     // And zoom to the default zoom level (1)
