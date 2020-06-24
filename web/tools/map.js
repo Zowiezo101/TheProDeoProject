@@ -43,11 +43,11 @@ function setItems() {
 }
     
 // setLevels function
-function setLevels() {            
+function setLevels(id) {            
     // The set of people that will be updated 
     // in the iteration of the while loop
     // TODO: Get the activity IDs without parents here in case of 'global_id'
-    var IDset = [-999];
+    var IDset = [id];
 
     // This breaks the while loop
     var lastSet = 0;
@@ -98,10 +98,10 @@ function resetLevels() {
 }
 
 
-function setIndexes( highestLevel) {
+function setIndexes(id, highestLevel) {
     // The set of people that will be updated 
     // in the iteration of the while loop
-    var IDset = [-999];
+    var IDset = [id];
 
     // This breaks the while loop
     var lastSet = 0;
@@ -238,7 +238,7 @@ function download_png () {
         newURL = newURL.replace(">>", ">");
 
         // Get the link and download the file
-        var topItem = getItemById(-999);
+        var topItem = getItemById(globalMapId);
         var blobObject = new Blob([newURL]);
         window.navigator.msSaveOrOpenBlob(blobObject, topItem.name + ".svg");
 
@@ -275,7 +275,7 @@ function download_png () {
         SVG.appendChild(Controls);
 
         // Get the link and download the file
-        var topItem = getItemById(-999);
+        var topItem = getItemById(globalMapId);
         var link = document.getElementById('hidden_a');
         link.href = URL;
         link.download = topItem.name + ".svg";
@@ -429,7 +429,7 @@ function showMap() {
 function prep_SetAllLevels() {
     // Set all the generation levels of all people. Start out clean
     resetLevels();
-    highestLevel = setLevels();
+    highestLevel = setLevels(globalMapId);
     UpdateProgress(5);
 
     // Get all the information of the peoples included
@@ -439,7 +439,7 @@ function prep_SetAllLevels() {
 function prep_SetAllIndexes() {
     // And all the indexes of all people
     resetIndexes();
-    setIndexes(highestLevel);
+    setIndexes(globalMapId, highestLevel);
     UpdateProgress(15);
 
     // Make the calculations to see where everyone should be placed
@@ -451,7 +451,7 @@ function prep_CalcAllLocations() {
     globalOffset = 0;
     globalHeight = 0;
 
-    calcLocations(highestLevel);
+    calcLocations(globalMapId, highestLevel);
     UpdateProgress(35);
 
     setTimeout(prep_appendSVG, 1);
@@ -843,7 +843,7 @@ function ZoomFit() {
 function ZoomReset() {
     // Get the ID number
     // Could also be map id
-    var ItemId = session_settings["id"] ? session_settings["id"] : (session_settings["map"] !== "global_id" ? session_settings["map"] : 1);
+    var ItemId = session_settings["id"] ? session_settings["id"] : session_settings["map"];
 
     var newZoom = 1;
 

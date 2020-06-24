@@ -70,8 +70,12 @@ async function showMapInfo(information) {
     if (Items.length > 0) {
 
         // Get the Map and the ID numbers
-        globalMapId = (session_settings["map"] === "global_id") ? 1 : Number(session_settings["map"]);
-        globalItemId = session_settings["id"] ? Number(session_settings["id"]) : -999;
+        if (session_settings["table"] === "timeline") {
+            globalMapId = -999;
+        } else {
+            globalMapId = Number(session_settings["map"]);
+        }
+        globalItemId = session_settings["id"] ? Number(session_settings["id"]) : globalMapId;
 
         showMap();
     }

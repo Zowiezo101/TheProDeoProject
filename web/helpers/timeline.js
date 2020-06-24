@@ -1028,7 +1028,7 @@ function prep_DrawLegenda() {
     var svgns = "http://www.w3.org/2000/svg";
     var SVG = document.getElementById("svg");
     
-    var Item = getItemById(-999);
+    var Item = getItemById(globalMapId);
     
     var Group = document.createElementNS(svgns, "g");    
     Group.id = "Legenda";
