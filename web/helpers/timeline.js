@@ -707,21 +707,27 @@ function CreateItem(item) {
         Text.setAttributeNS(null, 'y', y);
 
         this.convertText(Text, this.name);
-        Text.RectID = this.ID;
+        Text.RectID = this.id;
 
-        var Link = document.createElementNS(svgns, "a");
-        Link.setAttributeNS(hrefns, 'xlink:title', dict_Timeline["link_event"]);
-        Link.setAttributeNS(hrefns, 'target', "_top");
+        if (this.id !== -999) {
+            var Link = document.createElementNS(svgns, "a");
+            Link.setAttributeNS(hrefns, 'xlink:title', dict_Timeline["link_event"]);
+            Link.setAttributeNS(hrefns, 'target', "_top");
 
-        Link.appendChild(Rect);
-        Link.appendChild(Text);
+            Link.appendChild(Rect);
+            Link.appendChild(Text);
 
-        Link.RectID = this.id;
-        Link.setAttributeNS(null, 'onclick', 'updateSessionSettings("keep", true).then(goToPage("events.php", "", session_settings["map"]), console.log)');
-        Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
-        Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
+            Link.RectID = this.id;
+            Link.setAttributeNS(null, 'onclick', 'updateSessionSettings("keep", true).then(goToPage("events.php", "", session_settings["map"] === "global_id" ? event.target.RectID : session_settings["map"]), console.log)');
+            Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
+            Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
 
-        Group.appendChild(Link);        
+            Group.appendChild(Link);      
+        } else {
+            // This ID doens't exist, it's just the global activity item
+            Group.appendChild(Rect);
+            Group.appendChild(Text);
+        }
         return Group;
     };
 
