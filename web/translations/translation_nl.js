@@ -181,6 +181,16 @@ var select_Search_tribes = {
 	"benjamin": "Benjamin",
 };
 
+var dict_Links = {
+	"to_activity": "Verwante gebeurtenissen",
+	"to_location": "Verwante locaties",
+	"to_people": "Verwante personen",
+	"to_special": "Verwante specials",
+	"to_parent": "Ouder(s)",
+	"to_child": "Kind(eren)",
+	"a.k.a": "Ook bekend als",
+};
+
 var dict_Timeline = {
 	"unknown": "Onbekend",
 	"second": "Seconde",
@@ -211,38 +221,7 @@ var dict_Timeline = {
 	"download": "Download tijdslijn",
 	"download_extra": "SVG bestand. Kan worden ",
 	"download_extra2": "bekeken in web browser.",
-};
-
-var dict_Timeline_ext = {
-	"unknown": "Onbekend",
-	"second": "Seconde",
-	"seconds": "Secondes",
-	"minute": "Minuut",
-	"minutes": "Minuten",
-	"hour": "Uur",
-	"hours": "Uren",
-	"day": "Dag",
-	"days": "Dagen",
-	"week": "Week",
-	"weeks": "Weken",
-	"month": "Maand",
-	"months": "Maanden",
-	"year": "Jaar",
-	"years": "Jaren",
-	"decade": "Decennium",
-	"decades": "Decennia",
-	"century": "Eeuw",
-	"centuries": "Eeuwen",
-	"millennium": "Millennium",
-	"millennia": "Millennia",
-	"default": "<h1>Tijdslijn</h1>Klik op een naam in de lijst om meer informatie te zien<br><br>Zodra je een tijdslijn hebt aangeklikt en deze is geladen, heb je een aantal opties om te navigeren:<br>- <b>Passend maken</b>: Deze optie vergroot de tijdslijn in zodanige wijze, dat deze volledig te zien is.<br>- <b>Ware grootte</b>: Dit zet het zoom niveau en de positie van de tijdslijn terug naar de standaard waardes.<br>- <b>Download tijdslijn</b>: Download de tijdslijn als een '.svg' bestand. Dit bestand kan geopend worden met een browser.<br>- <b>Zoom knoppen</b>: De plus en de min knop, deze kunnen gebruikt worden om in te zoomen en uit te zoomen.<br>- <b>Verplaatsen</b>: Door de tijdslijn rond te slepen.<br>- <b>Scrollen om te zoomen</b>: Werkt niet in alle browsers!<br>",
-	"loading": "<h1>Tijdslijn aan het laden..</h1>",
-	"link_event": "Klik om informatie te bekijken over dit event",
-	"zoomfit": "Passend maken",
-	"zoomreset": "Ware grootte",
-	"download": "Download tijdslijn",
-	"download_extra": "SVG bestand. Kan worden ",
-	"download_extra2": "bekeken in web browser.",
+	"global": "Globale tijdslijn",
 };
 
 var dict_Familytree = {

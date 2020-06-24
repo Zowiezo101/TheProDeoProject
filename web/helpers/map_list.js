@@ -1,4 +1,4 @@
-/* global session_settings, showMapInfo, updateSessionSettings, getMapFromDatabase */
+/* global session_settings, showMapInfo, updateSessionSettings, getMapFromDatabase, dict_Timeline */
 
 function showMapList(information) {
 
@@ -22,7 +22,7 @@ function showMapList(information) {
         tableRow.appendChild(tableData);
         
         var button = document.createElement('button');
-        button.innerHTML = "Global item"; // TODO
+        button.innerHTML = dict_Timeline["global"];
 
         button.id = "global_id";
         button.addEventListener("click", function() {

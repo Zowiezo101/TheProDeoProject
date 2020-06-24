@@ -3,7 +3,7 @@
  * , dict_PeoplesParams, dict_Peoples
  * , dict_LocationsParams, dict_Locations
  * , dict_SpecialsParams, dict_Specials
- * , dict_Books, dict_BooksParams, dict_Events, dict_EventsParams */
+ * , dict_Books, dict_BooksParams, dict_Events, dict_EventsParams, dict_Links */
 
 var dict_params = null;
 var dict = null;
@@ -14,12 +14,12 @@ switch(session_settings["table"]) {
         dict_params = dict_PeoplesParams;
         dict = dict_Peoples;
         item_links = [
-            {table: "people_to_activity", column: "people_id", data: "activity_id", descr: "Verwante gebeurtenissen"},
-            {table: "people_to_location", column: "people_id", data: "location_id", descr: "Verwante locaties"},
-            {table: "people_to_parent", column: "people_id", data: "parent_id", descr: "Ouders"},
-            {table: "people_to_parent", column: "parent_id", data: "people_id", descr: "Kinderen"},
-            {table: "people_to_people", column: "people1_id", data: "people2_id", descr: "Ook bekend als"},
-            {table: "people_to_people", column: "people2_id", data: "people1_id", descr: "Ook bekend als"}
+            {table: "people_to_activity", column: "people_id", data: "activity_id", descr: dict_Links["to_activity"]},
+            {table: "people_to_location", column: "people_id", data: "location_id", descr: dict_Links["to_location"]},
+            {table: "people_to_parent", column: "people_id", data: "parent_id", descr: dict_Links["to_parent"]},
+            {table: "people_to_parent", column: "parent_id", data: "people_id", descr: dict_Links["to_child"]},
+            {table: "people_to_people", column: "people1_id", data: "people2_id", descr: dict_Links["a.k.a"]},
+            {table: "people_to_people", column: "people2_id", data: "people1_id", descr: dict_Links["a.k.a"]}
         ];
         break;
         
@@ -27,10 +27,10 @@ switch(session_settings["table"]) {
         dict_params = dict_LocationsParams;
         dict = dict_Locations;
         item_links = [
-            {table: "location_to_activity", column: "location_id", data: "activity_id", descr: "Verwante gebeurtenissen"},
-            {table: "people_to_location", column: "location_id", data: "people_id", descr: "Verwante personen"},
-            {table: "location_to_location", column: "location1_id", data: "location2_id", descr: "Ook bekend als"},
-            {table: "location_to_location", column: "location2_id", data: "location1_id", descr: "Ook bekend als"}
+            {table: "location_to_activity", column: "location_id", data: "activity_id", descr: dict_Links["to_activity"]},
+            {table: "people_to_location", column: "location_id", data: "people_id", descr: dict_Links["to_people"]},
+            {table: "location_to_location", column: "location1_id", data: "location2_id", descr: dict_Links["a.k.a"]},
+            {table: "location_to_location", column: "location2_id", data: "location1_id", descr: dict_Links["a.k.a"]}
         ];
         break;
         
@@ -38,7 +38,7 @@ switch(session_settings["table"]) {
         dict_params = dict_SpecialsParams;
         dict = dict_Specials;
         item_links = [
-            {table: "special_to_activity", column: "special_id", data: "activity_id", descr: "Verwante gebeurtenissen"}
+            {table: "special_to_activity", column: "special_id", data: "activity_id", descr: dict_Links["to_activity"]}
         ];
         break;
         
@@ -52,9 +52,9 @@ switch(session_settings["table"]) {
         dict_params = dict_EventsParams;
         dict = dict_Events;
         item_links = [
-            {table: "people_to_activity", column: "activity_id", data: "people_id", descr: "Verwante personen"},
-            {table: "location_to_activity", column: "activity_id", data: "location_id", descr: "Verwante locaties"},
-            {table: "special_to_activity", column: "activity_id", data: "special_id", descr: "Verwante specials"}
+            {table: "people_to_activity", column: "activity_id", data: "people_id", descr: dict_Links["to_people"]},
+            {table: "location_to_activity", column: "activity_id", data: "location_id", descr: dict_Links["to_location"]},
+            {table: "special_to_activity", column: "activity_id", data: "special_id", descr: dict_Links["to_special"]}
         ];
         break;
 }
