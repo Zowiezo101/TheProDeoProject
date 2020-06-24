@@ -20,7 +20,7 @@ function getItemFromDatabase(table="", value="", column="", page="", sort="") {
 
         if ((value !== "") && (typeof value === "string")) {
             params += (params !== "" ? '&' : '?') + 'value=' + value;
-        } else if (value !== "") {
+        } else if ((value !== "") && (value !== null)) {
             var link = 'http://localhost/web/api/items_read.php';
             params += (params !== "" ? '&' : '?') + 'value=' + "(" + value.join(',') + ")";
         }
