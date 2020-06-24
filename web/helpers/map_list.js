@@ -12,21 +12,24 @@ function showMapList(information) {
     var table = document.createElement("table");
     itemBar.appendChild(table);
     
-    // First item is the global item
-    var tableRow = document.createElement('tr');
-    table.appendChild(tableRow);
 
-    var tableData = document.createElement('td');
-    tableRow.appendChild(tableData);
+    if (session_settings["table"] === "timeline") {
+        // First item is the global item
+        var tableRow = document.createElement('tr');
+        table.appendChild(tableRow);
 
-    var button = document.createElement('button');
-    button.innerHTML = "Global item"; // TODO
+        var tableData = document.createElement('td');
+        tableRow.appendChild(tableData);
+        
+        var button = document.createElement('button');
+        button.innerHTML = "Global item"; // TODO
 
-    button.id = "global_id";
-    button.addEventListener("click", function() {
-        updateSessionSettings("map", this.id).then(getMapFromDatabase(session_settings["table"], this.id).then(showMapInfo, console.log), console.log);
-    });
-    tableData.appendChild(button);
+        button.id = "global_id";
+        button.addEventListener("click", function() {
+            updateSessionSettings("map", this.id).then(getMapFromDatabase(session_settings["table"], this.id).then(showMapInfo, console.log), console.log);
+        });
+        tableData.appendChild(button);
+    }
         
     // nNow add all the other items
     for (var itemIdx in information) {
@@ -40,21 +43,7 @@ function showMapList(information) {
 
         var button = document.createElement('button');
         button.innerHTML = item["name"];
-
-        switch(session_settings["table"]) {
-            case "timeline":
-                var item_type = "event";
-                break;
-                
-            case "familytree":
-                item_type = "people";
-                break;
-                
-            case "worldmap":
-                item_type = "location";
-                break;
-        }
-        button.id = item[item_type + "_id"];
+        button.id = item["id"];
         button.addEventListener("click", function() {
             updateSessionSettings("map", this.id).then(getMapFromDatabase(session_settings["table"], this.id).then(showMapInfo, console.log), console.log);
         });

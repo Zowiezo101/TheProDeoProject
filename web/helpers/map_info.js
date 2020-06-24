@@ -1,5 +1,5 @@
 
-/* global session_settings, dict_EventsParams, dict_Timeline, dict_PeoplesParams, dict_Familytree, dict_LocationsParams, dict_Worldmap, getMapFromDatabase, dict_Search */
+/* global session_settings, dict_EventsParams, dict_Timeline, dict_PeoplesParams, dict_Familytree, dict_LocationsParams, dict_Worldmap, getMapFromDatabase, dict_Search, Items */
 
 var dict_params = null;
 var dict = null;
@@ -23,34 +23,57 @@ switch(session_settings["table"]) {
 }
 
 async function showMapInfo(information) {
-    // The map info
-    var right = document.getElementById("item_info");
-    right.innerHTML = "";
+    // Google JS API has loaded a worldmap div, so do not delete that
+    if (session_settings["table"] !== "worldmap") {
+        // The map info
+        var right = document.getElementById("item_info");
+        right.innerHTML = "";
 
-    // The default text
-    var defaultText = document.createElement("div");
-    right.appendChild(defaultText);        
+        // The default text
+        var defaultText = document.createElement("div");
+        right.appendChild(defaultText);        
 
-    // Set its attributes
-    defaultText.id = "default";
-    defaultText.innerHTML = dict_Search["NoResults"];
+        // Set its attributes
+        defaultText.id = "default";
+        defaultText.innerHTML = dict_Search["NoResults"];
+    }
     
-    Items = [];
-    for (var idx in information) {
-        var item = information[idx];
+    if ((Items.length === 0) || (session_settings["table"] !== "worldmap")) {
+        Items = [];
+
+        if (session_settings["table"] === "timeline") {
+            // Global item
+            var item = {
+                "id": "-999",
+                "name": "Global item",
+                "descr": "Global descr",
+                "length": "",
+                "data": "",
+                "parent_id": ""
+            };
+            Items.push(new CreateItem(item));
+        }
         
-        Items.push(new CreateItem(item));
+        // This is done for each new map
+        // The worldmap only uses one global map
+        for (var idx in information) {
+            var item = information[idx];
+
+            Items.push(new CreateItem(item));
+        }
+    
+        // Create all the connections between parents and children
+        // Or in case of worldmap, get all the coordinates
+        setItems();
     }
     
     if (Items.length > 0) {
-        // Create all the connections between parents and children
-        setItems();
 
         // Get the Map and the ID numbers
         globalMapId = (session_settings["map"] === "global_id") ? 1 : Number(session_settings["map"]);
-        globalItemId = session_settings["id"] ? Number(session_settings["id"]) : globalMapId;
+        globalItemId = session_settings["id"] ? Number(session_settings["id"]) : -999;
 
-        prep_SetSVG();
+        showMap();
     }
 }
     
@@ -80,25 +103,27 @@ function setRightSide(parent) {
         defaultText.innerHTML = dict["default"];
     }
 
-    // A SVG canvas to save the SVG
-    var hidden_div = document.createElement("div");
-    right.appendChild(hidden_div);
+    if (session_settings["table"] !== "worldmap") {
+        // A SVG canvas to save the SVG
+        var hidden_div = document.createElement("div");
+        right.appendChild(hidden_div);
 
-    hidden_div.id = "hidden_div";
-    hidden_div.style = "display: none";
+        hidden_div.id = "hidden_div";
+        hidden_div.style = "display: none";
 
-    // The SVG, canvas and link inside it
-    var hidden_svg = document.createElement("svg");
-    var hidden_canvas = document.createElement("canvas");
-    var hidden_a = document.createElement("a");
+        // The SVG, canvas and link inside it
+        var hidden_svg = document.createElement("svg");
+        var hidden_canvas = document.createElement("canvas");
+        var hidden_a = document.createElement("a");
 
-    hidden_div.appendChild(hidden_svg);
-    hidden_div.appendChild(hidden_canvas);
-    hidden_div.appendChild(hidden_a);
+        hidden_div.appendChild(hidden_svg);
+        hidden_div.appendChild(hidden_canvas);
+        hidden_div.appendChild(hidden_a);
 
-    hidden_svg.id = "hidden_svg";
-    hidden_canvas.id = "hidden_canvas";
-    hidden_a.id = "hidden_a";
+        hidden_svg.id = "hidden_svg";
+        hidden_canvas.id = "hidden_canvas";
+        hidden_a.id = "hidden_a";
+    }
 
     return right;
 }

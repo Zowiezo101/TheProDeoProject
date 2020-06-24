@@ -185,10 +185,13 @@
         // Are we in a different main page?
         var main_page_new = session_settings["table"];
         var main_page_old = session_settings["table_old"];
+        var keep = session_settings["keep"];
         
-        if (main_page_new !== main_page_old) {
+        if ((main_page_new !== main_page_old) && !keep) {
             // Just remove the session settings for the old page
             goToPage();
+        } else if (keep) {
+            updateSessionSettings("keep", "");
         }
         
         var body = document.getElementsByTagName("body")[0];

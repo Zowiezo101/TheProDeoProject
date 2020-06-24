@@ -43,11 +43,11 @@ function setItems() {
 }
     
 // setLevels function
-function setLevels(id) {            
+function setLevels() {            
     // The set of people that will be updated 
     // in the iteration of the while loop
     // TODO: Get the activity IDs without parents here in case of 'global_id'
-    var IDset = [id];
+    var IDset = [-999];
 
     // This breaks the while loop
     var lastSet = 0;
@@ -98,10 +98,10 @@ function resetLevels() {
 }
 
 
-function setIndexes(id, highestLevel) {
+function setIndexes( highestLevel) {
     // The set of people that will be updated 
     // in the iteration of the while loop
-    var IDset = [id];
+    var IDset = [-999];
 
     // This breaks the while loop
     var lastSet = 0;
@@ -238,7 +238,7 @@ function download_png () {
         newURL = newURL.replace(">>", ">");
 
         // Get the link and download the file
-        var topItem = getItemById(globalMapId);
+        var topItem = getItemById(-999);
         var blobObject = new Blob([newURL]);
         window.navigator.msSaveOrOpenBlob(blobObject, topItem.name + ".svg");
 
@@ -275,7 +275,7 @@ function download_png () {
         SVG.appendChild(Controls);
 
         // Get the link and download the file
-        var topItem = getItemById(globalMapId);
+        var topItem = getItemById(-999);
         var link = document.getElementById('hidden_a');
         link.href = URL;
         link.download = topItem.name + ".svg";
@@ -401,15 +401,15 @@ function UpdateProgress(value) {
         defaultText.innerHTML = dict["loading"];
     
         // The progress bar
-        var progressBar = document.createElement("div");
-        defaultText.appendChild(progressBar);
+        ProgressBar = document.createElement("div");
+        defaultText.appendChild(ProgressBar);
 
         // Set its attributes
-        progressBar.id = "progress_bar";
+        ProgressBar.id = "progress_bar";
 
         // The progress in the progress bar
         var progress = document.createElement("div");
-        progressBar.appendChild(progress);
+        ProgressBar.appendChild(progress);
 
         // Set its attributes
         progress.id = "progress";
@@ -422,14 +422,14 @@ function UpdateProgress(value) {
 
 
 // Preparing the map
-function prep_SetSVG() {    
+function showMap() {    
     setTimeout(prep_SetAllLevels, 1);
 }
 
 function prep_SetAllLevels() {
     // Set all the generation levels of all people. Start out clean
     resetLevels();
-    highestLevel = setLevels(globalMapId);
+    highestLevel = setLevels();
     UpdateProgress(5);
 
     // Get all the information of the peoples included
@@ -439,7 +439,7 @@ function prep_SetAllLevels() {
 function prep_SetAllIndexes() {
     // And all the indexes of all people
     resetIndexes();
-    setIndexes(globalMapId, highestLevel);
+    setIndexes(highestLevel);
     UpdateProgress(15);
 
     // Make the calculations to see where everyone should be placed
@@ -451,7 +451,7 @@ function prep_CalcAllLocations() {
     globalOffset = 0;
     globalHeight = 0;
 
-    calcLocations(globalMapId, highestLevel);
+    calcLocations(highestLevel);
     UpdateProgress(35);
 
     setTimeout(prep_appendSVG, 1);

@@ -1,4 +1,4 @@
-/* global dict_Timeline, Items, prep_AddControlButtons, globalItemId, highestLevel, MapList, levelCounter, levelIDs */
+/* global dict_Timeline, Items, prep_AddControlButtons, globalItemId, highestLevel, MapList, levelCounter, levelIDs, updateSessionSettings, session_settings */
 
 // Small list of enums:
 var ENUM_UNDEFINED = -1;
@@ -33,7 +33,7 @@ function CreateItem(item) {
     this.descr = item["descr"];
     this.length = item["length"];
     this.data = item["data"];
-    this.parents = item["parent_id"] ? [Number(item["parent_id"])] : [];
+    this.parents = item["parent_id"] ? [Number(item["parent_id"])] : ((this.id === -999) ? [] : [-999]);
 
     // Own loop counter to prevent the counters messing each other up
     this.counter = 0;
@@ -710,9 +710,6 @@ function CreateItem(item) {
         Text.RectID = this.ID;
 
         var Link = document.createElementNS(svgns, "a");
-        Link.setAttributeNS(hrefns, 'xlink:onclick', function() {
-            goToPage("events.php", "", session_settings["id"], "", this.id);
-        });
         Link.setAttributeNS(hrefns, 'xlink:title', dict_Timeline["link_event"]);
         Link.setAttributeNS(hrefns, 'target', "_top");
 
@@ -720,6 +717,7 @@ function CreateItem(item) {
         Link.appendChild(Text);
 
         Link.RectID = this.id;
+        Link.setAttributeNS(null, 'onclick', 'updateSessionSettings("keep", true).then(goToPage("events.php", "", session_settings["map"]), console.log)');
         Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
         Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
 
@@ -1030,7 +1028,7 @@ function prep_DrawLegenda() {
     var svgns = "http://www.w3.org/2000/svg";
     var SVG = document.getElementById("svg");
     
-    var Item = getItemById(globalItemId);
+    var Item = getItemById(-999);
     
     var Group = document.createElementNS(svgns, "g");    
     Group.id = "Legenda";

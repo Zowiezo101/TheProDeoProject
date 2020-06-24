@@ -21,7 +21,7 @@ if ($conn->connect_error) {
         
         switch($table) {
             case "timeline":
-                $sql = "select * from events";
+                $sql = "select event_id as id, name from events";
         
                 if (filter_input(INPUT_GET, 'value') !== null) {
                     $value = filter_input(INPUT_GET, 'value');
@@ -45,6 +45,9 @@ if ($conn->connect_error) {
                 break;
             
             case "worldmap":
+                // Always all
+                $sql = "select location_id as id, name, coordinates from locations
+                            where coordinates is not null and coordinates != ''";
                 break;
             
             default:
