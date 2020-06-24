@@ -27,7 +27,7 @@ switch(session_settings["table"]) {
         dict_params = dict_LocationsParams;
         dict = dict_Locations;
         item_links = [
-            {table: "location_to_activity", column: "location_id", data: "activity_id", descr: "Verwachte gebeurtenissen"},
+            {table: "location_to_activity", column: "location_id", data: "activity_id", descr: "Verwante gebeurtenissen"},
             {table: "people_to_location", column: "location_id", data: "people_id", descr: "Verwante personen"},
             {table: "location_to_location", column: "location1_id", data: "location2_id", descr: "Ook bekend als"},
             {table: "location_to_location", column: "location2_id", data: "location1_id", descr: "Ook bekend als"}
@@ -38,7 +38,7 @@ switch(session_settings["table"]) {
         dict_params = dict_SpecialsParams;
         dict = dict_Specials;
         item_links = [
-            {table: "special_to_activity", column: "special_id", data: "activity_id", descr: "Verwachte gebeurtenissen"}
+            {table: "special_to_activity", column: "special_id", data: "activity_id", descr: "Verwante gebeurtenissen"}
         ];
         break;
         
@@ -52,7 +52,7 @@ switch(session_settings["table"]) {
         dict_params = dict_EventsParams;
         dict = dict_Events;
         item_links = [
-            {table: "people_to_activity", column: "activity_id", data: "people_id", descr: "Verwachte personen"},
+            {table: "people_to_activity", column: "activity_id", data: "people_id", descr: "Verwante personen"},
             {table: "location_to_activity", column: "activity_id", data: "location_id", descr: "Verwante locaties"},
             {table: "special_to_activity", column: "activity_id", data: "special_id", descr: "Verwante specials"}
         ];

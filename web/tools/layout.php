@@ -80,7 +80,7 @@
         prodeo: "<?php echo $prodeo; ?>",
         aboutus: "<?php echo $aboutus; ?>",
         contact: "<?php echo $contact; ?>",
-        settings: "<?php echo $settings; ?>",
+        settings: "<?php echo $settings; ?>"
     };
 
     /* When the user clicks on the button, 
@@ -97,7 +97,8 @@
         // Clear it
         div.innerHTML = "";
         
-        for (var lang in lang_list) {
+        for (var idx in lang_list) {
+            var lang = lang_list[idx];
             if (lang !== session_settings["lang"]) {
                 var input = document.createElement("input");
                 div.appendChild(input);
@@ -109,6 +110,11 @@
                 input.type = "submit";
                 input.name = "lang";
                 input.value = lang;
+                input.onclick = function() {
+                    updateSessionSettings("lang", this.value).then(async function () {
+                        location.reload();
+                    });
+                };
             }
         }
     }
