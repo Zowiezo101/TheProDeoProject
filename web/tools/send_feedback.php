@@ -18,7 +18,7 @@ require "../phpmailer/POP3.php";
 use PHPMailer\PHPMailer\PHPMailer;
 //use PHPMailer\PHPMailer\Exception;
     
-if (isset(filter_input(INPUT_GET, 'sendFeedback'))) {
+if (filter_input(INPUT_GET, 'sendFeedback') !== null) {
 
     // require '../vendor/autoload.php';
 
@@ -52,7 +52,7 @@ if (isset(filter_input(INPUT_GET, 'sendFeedback'))) {
     $mail->Port = 587;
 
     //Set the encryption system to use - ssl (deprecated) or tls
-    $mail->SMTPSecure = 'tls';
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
     //Whether to use SMTP authentication
     $mail->SMTPAuth = true;
