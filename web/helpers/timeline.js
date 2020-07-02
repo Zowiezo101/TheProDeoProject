@@ -492,7 +492,7 @@ function CreateItem(item) {
         // The second tSpan gets an additional offset
         var firstTSPAN = 0;
 
-        if (this.length !== "-1") {
+        if ((this.length !== "-1") && (this.length !== "")) {
             // The tspan containing the time length
             var tSpan = document.createElementNS(svgns, "tspan");    
             tSpan.RectID = this.id;
