@@ -1,4 +1,4 @@
-/* global session_settings, dict, prep_DrawLegenda */
+/* global session_settings, dict, prep_DrawLegenda, prep_appendGroup */
 
 // This is the list of items that will be used to create a map with
 var Items = [];
@@ -36,7 +36,12 @@ function setItems() {
         if (Item.parents.length > 0) {
             for (var j = 0; j < Item.parents.length; j++) {
                 var Parent = getItemById(Item.parents[j]);
-                Parent.ChildIDs.push(Item.id);
+                
+                if (Parent) {
+                    // If not an object, it's excluded from this family tree
+                    Parent.ChildIDs.push(Item.id);
+                    Parent.ChildIDs = uniq(Parent.ChildIDs);
+                }
             }
         }
     }
@@ -64,6 +69,9 @@ function setLevels(id) {
 
             // Create the ID set of the next generation
             newIDset = newIDset.concat(childSet);
+            
+            // This is only needed for family trees
+            Item.current_map = 1;
         }
         levelCount++;
 
@@ -73,7 +81,18 @@ function setLevels(id) {
             lastSet = 1;
         }
     }
-
+    
+    // Remove everything that is not needed for this map
+    Items = Items.filter(function (Item) {
+        if (Item.current_map === 0) {
+            // Get all the children and remove the parent from it
+            for (var idx in Item.ChildIDs) {
+                var Child = getItemById(Item.ChildIDs[idx]);
+                Child.parents.splice(Child.parents.indexOf(Item.id), 1);
+            }
+        }
+        return Item.current_map === 1;
+    });
 
     // Use minus one, since the levelcount was incremented on the last iteration
     return levelCount - 1;
@@ -210,7 +229,7 @@ function download_png () {
         var svgParent = svg.parentNode;
 
         // The child group of SVG
-        var group = document.getElementById("<?php echo $id; ?>_svg");
+        var group = document.getElementById($id);
 
         // Get the group of SVG
         SVG.removeChild(group);
@@ -475,20 +494,6 @@ function prep_appendSVG() {
     setTimeout(prep_appendGroup, 1);
 }
 
-function prep_appendGroup() {
-    var svgns = "http://www.w3.org/2000/svg";
-    var SVG = document.getElementById("svg");
-    
-    var Group = document.createElementNS(svgns, "g");    
-    Group.id = session_settings["table"] + "_svg";
-    
-    SVG.appendChild(Group);
-    UpdateProgress(45);
-    
-    setTimeout(prep_DrawLegenda, 1);
-}
-
-
 function prep_AddControlButtons() {
     var ItemMap = document.getElementById("item_info");
 
@@ -675,26 +680,6 @@ function prep_AddControlButtons() {
     return;
 }
 
-function prep_DrawMap() {
-    // The TimeLine div
-    var Map = document.getElementById("item_info");
-    var SVG = document.getElementById("svg");
-    var Group = document.getElementById("timeline_svg");
-    
-    // Set the height and the width Plus x pixel border
-    ActualWidth = globalWidth + (highestLevel + 1)*50;
-    ActualHeight = globalHeight + globalOffset + 75;
-    
-    SVG.setAttribute('width', Map.offsetWidth);
-    SVG.setAttribute('height', Map.offsetHeight);
-    
-    // Draw the current timeline
-    drawMap(Group);
-    UpdateProgress(75);
-        
-    setTimeout(prep_SetInterrupts, 1);
-}
-
 function prep_SetInterrupts() {
     // The FamilyTree div
     var SVG = document.getElementById("svg");
@@ -780,15 +765,6 @@ function updateViewbox(x, y, zoom) {
     SVG.setAttributeNS(null, "OTransform", newMatrix);
 
     return;
-}
-
-/***/
-function panItem(item) {
-    var ItemMap = document.getElementById("item_info");
-    var scrollTop = (item.Location[1] + globalOffset + 50) - (ItemMap.offsetHeight / 2);
-    var scrollLeft = (item.Location[0] + 75) - (ItemMap.offsetWidth / 2);
-    
-    updateViewbox(-scrollLeft, -scrollTop, -1);
 }
 
 function panTo(x, y) {    

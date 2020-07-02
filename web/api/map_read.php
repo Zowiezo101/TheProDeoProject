@@ -42,6 +42,19 @@ if ($conn->connect_error) {
                 break;
             
             case "familytree":
+                $sql = "select distinct peoples.people_id as id, name from peoples
+                            left join people_to_parent as p1 on peoples.people_id = p1.people_id
+                            left join people_to_parent as p2 on peoples.people_id = p2.parent_id
+                            where p1.parent_id is null and p2.people_id is not null";
+                if (filter_input(INPUT_GET, 'value') !== null) {
+                    $value = filter_input(INPUT_GET, 'value');
+                    $sql = "select peoples.people_id as id, name, null as parent_id, gender as data from peoples
+                                where people_id = '".$value."'
+                                union
+                            select peoples.people_id as id, name, people_to_parent.parent_id as parent_id, gender as data from peoples
+                                left join people_to_parent on peoples.people_id = people_to_parent.people_id
+                                where parent_id is not null";
+                }
                 break;
             
             case "worldmap":

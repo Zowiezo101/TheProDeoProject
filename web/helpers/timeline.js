@@ -1,4 +1,4 @@
-/* global dict_Timeline, Items, prep_AddControlButtons, globalItemId, highestLevel, MapList, levelCounter, levelIDs, updateSessionSettings, session_settings */
+/* global dict_Timeline, Items, prep_AddControlButtons, globalItemId, highestLevel, MapList, levelCounter, levelIDs, updateSessionSettings, session_settings, globalMapId, prep_SetInterrupts */
 
 // Small list of enums:
 var ENUM_UNDEFINED = -1;
@@ -56,6 +56,9 @@ function CreateItem(item) {
 
     // Make sure this person isn't duplicated
     this.drawn = 0;
+    
+    // We want to work with everything
+    this.current_map = 1;
 
     this.checkForDuplicates = function () { 
         var matchingItems = getItemsById(this.id);
@@ -80,7 +83,7 @@ function CreateItem(item) {
     };
 
     /** 
-     * @param {Integer} level - TODO */
+     * @param {Integer} level */
     this.setLevel = function (level) {
         var IDset = [];
 
@@ -214,7 +217,6 @@ function CreateItem(item) {
                     var Item = getItemById(IDset[i]);
 
                     // Create the ID set of the next generation
-                        
                     if (Item.parents.length !== 0) {
                         for (j = 0; j < Item.parents.length; j++) {
                             newIDset.push(Item.parents[j]);
@@ -625,7 +627,7 @@ function CreateItem(item) {
         if(this.parents.length > 0) {
             for (var i = 0; i < this.parents.length; i++) {
                 // Draw the lines to the mother, to the middle of the bottom
-                    var Parent = getItemById(this.parents[i]);
+                var Parent = getItemById(this.parents[i]);
 
                 // And only if the parents are drawn as well
                 if ((Parent.Location[0] !== -1) && (Parent.Location[1] !== -1)) {
@@ -732,8 +734,8 @@ function CreateItem(item) {
     };
 
     /**
-     * @param {SVGElement} SVG - TODO */
-    this.drawTimeLine = function(SVG) {    
+     * @param {SVGElement} SVG */
+    this.drawTimeLine = function(SVG) {
         var IDset = [];
 
         var Group = this.drawEvent();
@@ -754,21 +756,21 @@ function CreateItem(item) {
 }
     
 /** 
-* @param {Integer} firstID - TODO
-* @param {Integer} highestLevel - TODO */
+* @param {Integer} firstID
+* @param {Integer} highestLevel */
 function calcLocations(firstID, highestLevel) {
     
     // This breaks the while loop
     var done = 0;
     var MaxLevel = levelCounter.length;
-    // var MaxLevel = 38;
-    var debugFrom = 900;
     
     while (done === 0)
     {
         var collision = 0;
+        
+        // The offset that is needed to get all people of that tree in the SVG.
+        //  We need to move the SVG up with this value
         globalWidth = 0;
-        // alert("Start while loop");
         
         // Draw the tree per level
         for (var level = 0; level < MaxLevel; level++) {
@@ -776,7 +778,7 @@ function calcLocations(firstID, highestLevel) {
             // The IDs of the people of the current level
             var IDset = levelIDs[level];
             
-            for (i = 0; i < IDset.length; i++) {
+            for (var i = 0; i < IDset.length; i++) {
                 var Item = getItemById(IDset[i]);
                 Item.calcLocation();
                 
@@ -798,27 +800,15 @@ function calcLocations(firstID, highestLevel) {
                 }
                 
                 if ((Item.level > 0) && (Item.levelIndex > 0)) {
-                    // alert("Name: " + Person.name + "\nIndex: " + Person.ID + "\nLevel: " + Person.level + "\nLevelIndex: " + Person.levelIndex);
-                    // alert("set of IDs of level " + Person.level + " :" + IDset);
-                    
                     // Find the neighbour.
                     // This is the person who has the same level, but levelIndex - 1
                     var idNeighbour = IDset[Item.levelIndex - 1];
-                    // alert("ID of Neighbour: " + idNeighbour);
                     var Neighbour = getItemById(idNeighbour);
-                    
-                    // alert("Neighbour Name: " + Neighbour.name + "\nLevel: " + Neighbour.level + "\nLevelIndex: " + Neighbour.levelIndex);
                     
                     // If we get in the if function, these two people are overlapping.
                     // Or the lower person is too far up and needs to move down
                     if (Item.Location[1] < (Neighbour.Location[1] + 100)) {
-                        // alert("set of IDs of level " + Person.level + " :" + IDset);
-                        if (Item.level >= debugFrom) {
-                        // alert("Is people " + Item.name + " on location (" + Item.Location[0] + ", " + Item.Location[1] + ") overlapping with neighbour " + Neighbour.name + " on location (" + Neighbour.Location[0] + ", " + Neighbour.Location[1] + ")?");
-                        // alert("Idx of " + Item.name + " :" + Item.levelIndex);
-                        // alert("Idx of " + Neighbour.name + " :" + Neighbour.levelIndex);
-                        }
-                        
+                        // Searching for the shared ancestor that these two people have
                         var found = 0;
                         var FoundID = -1;
                         
@@ -831,29 +821,16 @@ function calcLocations(firstID, highestLevel) {
                         // Our starting level
                         var currentLevel = Item.level;
                         
-                        // found = 1;
                         while (found === 0) {
                             // Get a list with people that are a generation level lower (placed higher)
-                            if (Item.level >= debugFrom) {
-                            // alert("Trying level: " + currentLevel);
-                            }
-                            var currentIDset = levelIDs[currentLevel];
-                            if (Item.level >= debugFrom) {
-                            // alert("Set of people: " + currentIDset);
-                            }
                             var currentIDset = levelIDs[currentLevel - 1];
-                            if (Item.level >= debugFrom) {
-                            // alert("Set of people: " + currentIDset);
-                            }
+                            
                             var newAncestorsR = [];
                             var newAncestorsL = [];
                             
                             // Find all the possible ancestors for the right person
                             for (var j = 0; j < currentAncestorsR.length; j++) {
                                 var ItemR = getItemById(currentAncestorsR[j]);
-                                if (Item.level >= debugFrom) {
-                                // alert("Working with " + ItemR.name);
-                                }
                                 
                                 for (var k = 0; k < currentIDset.length; k++) {
                                     var ID = currentIDset[k];
@@ -870,9 +847,6 @@ function calcLocations(firstID, highestLevel) {
                                     for (var l = 0; l < previousIDs.length; l++) {
                                         if (ID === previousIDs[l]) {
                                             newAncestorsR.push(ID);
-                                            if (Item.level >= debugFrom) {
-                                            // alert("Found parentR with ID: " + ID);
-                                            }
                                         }
                                     }
                                 }
@@ -881,9 +855,6 @@ function calcLocations(firstID, highestLevel) {
                             // Find all the possible ancestors for the left person
                             for (var j = 0; j < currentAncestorsL.length; j++) {
                                 var ItemL = getItemById(currentAncestorsL[j]);
-                                if (Item.level >= debugFrom) {
-                                // alert("Working with " + ItemL.name);
-                                }
                                 
                                 for (var k = 0; k < currentIDset.length; k++) {
                                     var ID = currentIDset[k];
@@ -901,9 +872,6 @@ function calcLocations(firstID, highestLevel) {
                                         // Remember the list of ancestors that we find for this person
                                         if (ID === previousIDs[l]) {
                                             newAncestorsL.push(ID);
-                                            if (Item.level >= debugFrom) {
-                                            // alert("Found parentL with ID: " + ID);
-                                            }
                                         }
                                     }
                                 }
@@ -926,11 +894,6 @@ function calcLocations(firstID, highestLevel) {
                                 }
                             }
                             
-                            if (Item.level >= debugFrom) {
-                            // alert("Count is equal to: " + count);
-                            }
-                            
-                            // collision = 1;
                             if (found === 0) {
                                 // Keep the current data if we have a match
                                 currentAncestorsR = newAncestorsR;
@@ -946,10 +909,7 @@ function calcLocations(firstID, highestLevel) {
                         }
                         
                         var Parent = getItemById(FoundID);
-                        var Child = null;
-                        if (Item.level >= debugFrom) {
-                        // alert("The connecting parent is: " + Parent.name + " with ID: " + Parent.ID);
-                        }                            
+                        var Child = null;                          
                         
                         // This is just a normal clash, fix in the normal way
                         for (var k = currentAncestorsR.length; k > 0; k--) {
@@ -966,9 +926,6 @@ function calcLocations(firstID, highestLevel) {
                         }
                             
                         Child.offset += (Neighbour.Location[1] + 100) - Item.Location[1];
-                        if (Item.level >= debugFrom) {
-                        // alert("The child is: " + Child.name + " with ID: " + Child.ID + " and moved with: " + Child.offset);
-                        }
                         collision = 1;
                         
                         if (collision === 1) {
@@ -998,9 +955,18 @@ function calcLocations(firstID, highestLevel) {
     
     return;
 }
+
+/***/
+function panItem(item) {
+    var ItemMap = document.getElementById("item_info");
+    var scrollTop = (item.Location[1] + globalOffset + 50) - (ItemMap.offsetHeight / 2);
+    var scrollLeft = (item.Location[0] + 75) - (ItemMap.offsetWidth / 2);
+    
+    updateViewbox(-scrollLeft, -scrollTop, -1);
+}
     
 /** 
-* @param {SVGElement} SVG - TODO */
+* @param {SVGElement} SVG */
 function drawMap(SVG) {    
     
     // This breaks the while loop
@@ -1027,6 +993,19 @@ function drawMap(SVG) {
     }
     
     return;
+}
+
+function prep_appendGroup() {
+    var svgns = "http://www.w3.org/2000/svg";
+    var SVG = document.getElementById("svg");
+    
+    var Group = document.createElementNS(svgns, "g");    
+    Group.id = session_settings["table"] + "_svg";
+    
+    SVG.appendChild(Group);
+    UpdateProgress(45);
+    
+    setTimeout(prep_DrawLegenda, 1);
 }
 
 function prep_DrawLegenda() {
@@ -1061,4 +1040,24 @@ function prep_DrawLegenda() {
     UpdateProgress(55);
     
     setTimeout(prep_AddControlButtons, 1);
+}
+
+function prep_DrawMap() {
+    // The TimeLine div
+    var Map = document.getElementById("item_info");
+    var SVG = document.getElementById("svg");
+    var Group = document.getElementById("timeline_svg");
+    
+    // Set the height and the width Plus x pixel border
+    ActualWidth = globalWidth + (highestLevel + 1)*50;
+    ActualHeight = globalHeight + globalOffset + 75;
+    
+    SVG.setAttribute('width', Map.offsetWidth);
+    SVG.setAttribute('height', Map.offsetHeight);
+    
+    // Draw the current timeline
+    drawMap(Group);
+    UpdateProgress(75);
+        
+    setTimeout(prep_SetInterrupts, 1);
 }
