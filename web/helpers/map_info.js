@@ -1,5 +1,5 @@
 
-/* global session_settings, dict_EventsParams, dict_Timeline, dict_PeoplesParams, dict_Familytree, dict_LocationsParams, dict_Worldmap, getMapFromDatabase, dict_Search, Items */
+/* global session_settings, dict_EventsParams, dict_Timeline, dict_PeoplesParams, dict_Familytree, dict_LocationsParams, dict_Worldmap, getMapFromDatabase, dict_Search, Items, getItemFromDatabase */
 
 var dict_params = null;
 var dict = null;
@@ -41,12 +41,26 @@ async function showMapInfo(information) {
     if ((Items.length === 0) || (session_settings["table"] !== "worldmap")) {
         Items = [];
 
-        if (session_settings["table"] === "timeline") {
+        if ((session_settings["table"] === "timeline") && (session_settings["map"] !== "global_id")) {
+            
+            await getItemFromDatabase("events", session_settings["map"]).then(function(event) {
+                // Global item
+                var item = {
+                    "id": "-999",
+                    "name": event[0]["name"],
+                    "descr": event[0]["descr"],
+                    "length": event[0]["length"],
+                    "data": event[0]["data"],
+                    "parent_id": ""
+                };
+                Items.push(new CreateItem(item));
+            }, console.log);
+        } else if (session_settings["table"] === "timeline") {
             // Global item
             var item = {
                 "id": "-999",
-                "name": "Global item",
-                "descr": "Global descr",
+                "name": dict_Timeline["global"],
+                "descr": "",
                 "length": "",
                 "data": "",
                 "parent_id": ""
