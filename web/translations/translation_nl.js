@@ -215,7 +215,7 @@ var dict_Timeline = {
 	"millennia": "Millennia",
 	"default": "<h1>Tijdslijn</h1>Klik op een naam in de lijst om meer informatie te zien<br><br>Zodra je een tijdslijn hebt aangeklikt en deze is geladen, heb je een aantal opties om te navigeren:<br>- <b>Passend maken</b>: Deze optie vergroot de tijdslijn in zodanige wijze, dat deze volledig te zien is.<br>- <b>Ware grootte</b>: Dit zet het zoom niveau en de positie van de tijdslijn terug naar de standaard waardes.<br>- <b>Download tijdslijn</b>: Download de tijdslijn als een '.svg' bestand. Dit bestand kan geopend worden met een browser.<br>- <b>Zoom knoppen</b>: De plus en de min knop, deze kunnen gebruikt worden om in te zoomen en uit te zoomen.<br>- <b>Verplaatsen</b>: Door de tijdslijn rond te slepen.<br>- <b>Scrollen om te zoomen</b>: Werkt niet in alle browsers!<br>",
 	"loading": "<h1>Tijdslijn aan het laden..</h1>",
-	"link_event": "Klik om informatie te bekijken over dit event",
+	"link": "Klik om informatie te bekijken over dit event",
 	"zoomfit": "Passend maken",
 	"zoomreset": "Ware grootte",
 	"download": "Download tijdslijn",
@@ -227,7 +227,7 @@ var dict_Timeline = {
 var dict_Familytree = {
 	"default": "<h1>Stamboom</h1>Klik op een naam in de lijst om meer informatie te zien<br><br>Zodra je een stamboom hebt aangeklikt en deze is geladen, heb je een aantal opties om te navigeren:<br>- <b>Passend maken</b>: Deze optie vergroot de stamboom in zodanige wijze, dat deze volledig te zien is.<br>- <b>Ware grootte</b>: Dit zet het zoom niveau en de positie van de stamboom terug naar de standaard waardes.<br>- <b>Download stamboom</b>: Download de stamboom als een '.svg' bestand. Dit bestand kan geopend worden met een browser.<br>- <b>Zoom knoppen</b>: De plus en de min knop, deze kunnen gebruikt worden om in te zoomen en uit te zoomen.<br>- <b>Verplaatsen</b>: Door de stamboom rond te slepen.<br>- <b>Scrollen om te zoomen</b>: Werkt niet in alle browsers!<br>",
 	"loading": "<h1>Stamboom aan het laden..</h1>",
-	"link_people": "Klik om informatie te bekijken over deze persoon",
+	"link": "Klik om informatie te bekijken over deze persoon",
 	"zoomfit": "Passend maken",
 	"zoomreset": "Ware grootte",
 	"download": "Download stamboom",

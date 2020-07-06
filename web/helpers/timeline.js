@@ -13,6 +13,19 @@ var ENUM_DEC = 7;
 var ENUM_CEN = 8;
 var ENUM_MIL = 9;
 
+var ENUM_LETTERS = {
+    "s": ENUM_SEC,
+    "i": ENUM_MIN,
+    "h": ENUM_HRS,
+    "d": ENUM_DAY,
+    "w": ENUM_WKS,
+    "m": ENUM_MTH,
+    "y": ENUM_YRS,
+    "D": ENUM_DEC,
+    "C": ENUM_CEN,
+    "M": ENUM_MIL
+};
+
 // The amount needed to go to the "next level"
 var MULTS = [
     60,         // Seconds
@@ -60,53 +73,10 @@ function CreateItem(item) {
     // We want to work with everything
     this.current_map = 1;
 
-    this.checkForDuplicates = function () { 
-        var matchingItems = getItemsById(this.id);
-        if (matchingItems.length > 1) {
-            // This event has multiple objects, meaning that multiple events
-            // are linking to this event as their next event
-            // When searching for a single event with this ID, it will always
-            // return the first match in it's array
-            var firstItem = getItemById(this.id);
-            
-            // Since we always get the same first item when looking with the ID
-            // We can easily see if we already handled this item and are
-            // currently looking at a duplicate
-            if (firstItem.parents.length === 1) {
-                for (var i = 0; i < matchingItems.length; i++) {                    
-                    // Link all the previous values to the first of this event
-                    firstItem.parents.push(matchingItems[i].parents[0]);
-                    firstItem.parents = uniq(firstItem.parents);
-                }
-            }
-        }
-    };
-
-    /** 
-     * @param {Integer} level */
-    this.setLevel = function (level) {
-        var IDset = [];
-
-        console.log("setLevel! Level " + level + " for child " + this.name);
-        if (level > this.level) {
-            // Take the highest level possible
-            this.level = level;
-        }
-
-        if (this.ChildIDs.length !== 0)
-        {
-            IDset = this.ChildIDs;
-        }
-
-        // This would have been much easier using recursive functions
-        // But there is too much recursion for the browser to handle..
-        return IDset;
-    };
-
     /** CalcLocation function */
     this.calcLocation = function () {
 
-        this.calcTime();
+        calcTime(this.id);
 
         // Calculate the Y coordinate
         var X = 25;
@@ -192,303 +162,7 @@ function CreateItem(item) {
         return;
     };
 
-    this.getAncestors = function () {
-        var ListOfIDs = [];
-
-        if (this.previousID === -1) {
-            if (this.ChildIDs.length === 0) {
-                // We do not have a family tree for this person..
-            } else {
-                // We are ancestors
-                ListOfIDs = [MapList.indexOf(this.id)];
-            }
-        } else {
-            // We must have ancestors
-            // The set of people to work with
-            var IDset = [this.id];
-
-            // This breaks the while loop
-            var done = 0;
-
-            while (done === 0)
-            {                
-                var newIDset = [];
-                for (i = 0; i < IDset.length; i++) {
-                    var Item = getItemById(IDset[i]);
-
-                    // Create the ID set of the next generation
-                    if (Item.parents.length !== 0) {
-                        for (j = 0; j < Item.parents.length; j++) {
-                            newIDset.push(Item.parents[j]);
-                        }
-                    } else {
-                        // This is an ancestor
-                        var AncestorID = MapList.indexOf(Item.ID);
-                        ListOfIDs.push(AncestorID);
-                    }
-                }
-
-                // There are no more children to update
-                IDset = uniq(newIDset);
-                if (IDset.length === 0) {
-                    done = 1;
-                }
-            }
-        }
-
-        return uniq(ListOfIDs);
-    };
-
-    /**
-     * @param {Integer} lengthType - Numerical value to define the color used for the event-item */
-    this.getTimeColor = function (lengthType) {
-        var color = '';
-        switch(lengthType) {
-            case ENUM_SEC:
-            color = "Green";
-            break;
-
-            case ENUM_MIN:
-            color = "LightBlue";
-            break;
-
-            case ENUM_HRS:
-            color = "Yellow";
-            break;
-
-            case ENUM_DAY:
-            color = "Red";
-            break;
-
-            case ENUM_WKS:
-            color = "Purple";
-            break;
-
-            case ENUM_MTH:
-            color = "White";
-            break;
-
-            case ENUM_YRS:
-            color = "LightGrey";
-            break;
-
-            case ENUM_DEC:
-            color = "Violet";
-            break;
-
-            case ENUM_CEN:
-            color = "Orange";
-            break;
-
-            case ENUM_MIL:
-            color = "DarkBlue";
-            break;
-
-            default:
-            color = "grey";
-            break;
-        }
-        return color;
-    };
-
-    this.StringToValue = function (lengthTypeStr) {
-
-        switch(lengthTypeStr) {
-            case 's':
-            lengthType = ENUM_SEC;
-            break;
-
-            case 'i':
-            lengthType = ENUM_MIN;
-            break;
-
-            case 'h':
-            lengthType = ENUM_HRS;
-            break;
-
-            case 'd':
-            lengthType = ENUM_DAY;
-            break;
-
-            case 'w':
-            lengthType = ENUM_WKS;
-            break;
-
-            case 'm':
-            lengthType = ENUM_MTH;
-            break;
-
-            case 'y':
-            lengthType = ENUM_YRS;
-            break;
-
-            case 'D':
-            lengthType = ENUM_DEC;
-            break;
-
-            case 'C':
-            lengthType = ENUM_CEN;
-            break;
-
-            case 'M':
-            lengthType = ENUM_MIL;
-            break;
-
-            default:
-            lengthType = ENUM_UNDEFINED;
-            break;
-        }
-
-        return lengthType;
-    };
-
-    this.StringToType = function (lengthTypeStr, Length) {
-
-        switch(lengthTypeStr) {
-            case 's':
-            lengthType = dict_Timeline["second"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["seconds"];
-            }
-            break;
-
-            case 'i':
-            lengthType = dict_Timeline["minute"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["minutes"];
-            }
-            break;
-
-            case 'h':
-            lengthType = dict_Timeline["hour"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["hours"];
-            }
-            break;
-
-            case 'd':
-            lengthType = dict_Timeline["day"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["days"];
-            }
-            break;
-
-            case 'w':
-            lengthType = dict_Timeline["week"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["weeks"];
-            }
-            break;
-
-            case 'm':
-            lengthType = dict_Timeline["month"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["months"];
-            }
-            break;
-
-            case 'y':
-            lengthType = dict_Timeline["year"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["years"];
-            }
-            break;
-
-            case 'D':
-            lengthType = dict_Timeline["decade"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["decades"];
-            }
-            break;
-
-            case 'C':
-            lengthType = dict_Timeline["century"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["centuries"];
-            }
-            break;
-
-            case 'M':
-            lengthType = dict_Timeline["millennium"];
-            if (Length !== 1) {
-                lengthType = dict_Timeline["millennia"];
-            }
-            break;
-
-            default:
-            lengthType = dict_Timeline["unknown"];
-            break;
-        }
-
-        return lengthType;
-    };
-
-    this.convertType = function (value, fromType, toType) {
-        // This function assumes that the value input, 
-        // do not cause a value that is smaller than 1
-        var typeLoop = 0;
-        var newValue = value;
-        if (fromType > toType) {
-            typeLoop = fromType - toType;
-
-            // Convert from bigger type to a smaller type
-            for (var loop = 0; loop < typeLoop; loop++) {
-                newValue = value*MULTS[toType + loop];
-            }
-        } else if (fromType < toType) {
-            typeLoop = toType - fromType;
-
-            // Convert from smaller type to a bigger type
-            for (var loop = 0; loop < typeLoop; loop++) {
-                newValue = (value / MULTS[fromType + loop]);
-            }
-        }
-
-        return newValue;
-    };
-
-    this.convertLength = function (value, Type) {
-        // This function calculates what the length of a block should be
-        // This is from 0+ to 10, 0+ for the shortest length and 10 for the longest
-        var newValue = 2;
-        if ((Type < ENUM_MIL) && (Type > ENUM_UNDEFINED)) {
-            newValue = (value / MULTS[Type])*10;
-        } else if (Type === ENUM_MIL) {
-            newValue = value;
-        }
-
-        return newValue;
-    };
-
-    this.convertString = function (value) {
-        // This function converts the cryptic values to a readable string
-        var newValue = "";
-        if (value === "") {
-            newValue = dict_Timeline["unknown"];
-        } else {
-            // Convert every time type
-            var timeParts = this.length.split(" ");
-
-            for (var types = 0; types < timeParts.length; types++) {
-                var currentTypeStr = timeParts[types];
-                var currentTypeStrLen = currentTypeStr.length;
-
-                var currentStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
-                var currentLen = parseInt(currentTypeStr.slice(0, currentTypeStrLen - 1));
-
-                var currentType = this.StringToType(currentStr, currentLen);
-
-                newValue += currentLen + " " + currentType;
-                if (types < (timeParts.length - 1)) {
-                    newValue += ", ";
-                }
-            }
-        }
-
-        return newValue;
-    };
-
-    this.convertText = function (Text, value) {
+    this.getText = function (Text, value) {
         var svgns = "http://www.w3.org/2000/svg";
 
         // The second tSpan gets an additional offset
@@ -539,220 +213,6 @@ function CreateItem(item) {
 
         return;
     };
-
-    this.calcTime = function () {
-        var timeParts = this.length.split(" ");
-
-        // Default defines
-        var lengthTypeStr = "";
-        var lengthType = ENUM_UNDEFINED;
-        var Length = this.Length;
-
-        if ((timeParts.length > 0) && (timeParts[0] !== "")) {
-            // Clear before we start calculating
-            Length = 0;
-
-            // Find the smallest timepart and convert the bigger timeparts to the same level
-            // The code down here will try to find the biggest possible level of the sum 
-            var minType = ENUM_MIL;
-            for (var types = 0; types < timeParts.length; types++) {
-                // Get the time type (last char of the string)
-                var currentTypeStr = timeParts[types];
-                var currentTypeStrLen = currentTypeStr.length;
-
-                var TypeStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
-                var Type = this.StringToValue(TypeStr);
-
-                // Looping for the smallest type
-                if (Type < minType) {
-                    minType = Type;
-                    // alert("Minimum type: " + minType);
-                }
-            }
-
-
-            // Now that we have the smallest type, we can start converting!
-            for (var types = 0; types < timeParts.length; types++) {
-                var currentTypeStr = timeParts[types];
-                var currentTypeStrLen = currentTypeStr.length;
-
-                var currentStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
-                var currentType = this.StringToValue(currentStr);
-
-                var currentLen = parseInt(currentTypeStr.slice(0, currentTypeStrLen - 1));
-                // alert("Type: " + currentType + "\nMin type: " + minType);
-                var addLength = this.convertType(currentLen, currentType, minType);
-                Length += addLength;
-                // alert("Length: " + Length + " and added Length: " + addLength);
-            }
-
-            lengthType = minType;
-
-            // Can we get a higher level length type?
-            if (lengthType !== ENUM_UNDEFINED) {
-                // While loop here, getting a higher level untill a value is smaller than zero
-                var newLength = 0;
-                while (true) {
-                    newLength = this.convertType(Length, lengthType, lengthType + 1);
-                    // alert("Old length: " + Length + "\nNew length: " + newLength + "\nType: " + lengthType);
-
-                    if ((newLength < 1) || (lengthType === ENUM_MIL)){
-                        break;
-                    }
-
-                    lengthType++;
-                    Length = newLength;
-                }
-            }
-        }
-
-        this.lengthIndex = this.convertLength(Length, lengthType);
-        this.lengthType = lengthType;
-
-        // Update the global width value
-        globalWidth += (this.lengthIndex*100);
-    };
-
-    /** */
-    this.drawEvent = function() {
-        var svgns = "http://www.w3.org/2000/svg";
-        var hrefns = "http://www.w3.org/1999/xlink";
-        var Group = document.createElementNS(svgns, "g");
-
-        // Move everything away from the upper border
-        var x = this.Location[0];
-        var y = this.Location[1] + globalOffset;
-
-        // This object has multiple parents, draw them all
-        if(this.parents.length > 0) {
-            for (var i = 0; i < this.parents.length; i++) {
-                // Draw the lines to the mother, to the middle of the bottom
-                var Parent = getItemById(this.parents[i]);
-
-                // And only if the parents are drawn as well
-                if ((Parent.Location[0] !== -1) && (Parent.Location[1] !== -1)) {
-                    var x_parent = Parent.Location[0] + Parent.lengthIndex*100;
-                    var y_parent = Parent.Location[1] + 25 + globalOffset;
-
-                    // Make three lines, to get nice 90 degree angles
-                    var LineMother1 = document.createElementNS(svgns, "line");
-                    var LineMother2 = document.createElementNS(svgns, "line");
-                    var LineMother3 = document.createElementNS(svgns, "line");
-
-                        var x_halfway1 = x_parent + (50 / 2) - 10;
-                        var x_halfway2 = x - (50 / 2) + 10;
-
-                    // The first line goes only vertical, and halfway
-                    LineMother1.setAttributeNS(null, 'x1', x_parent);
-                    LineMother1.setAttributeNS(null, 'y1', y_parent);
-                    LineMother1.setAttributeNS(null, 'x2', x_halfway1);
-                    LineMother1.setAttributeNS(null, 'y2', y_parent);
-
-                    // The second line goes only horizontal, or diagonal
-                    LineMother2.setAttributeNS(null, 'x1', x_halfway1);
-                    LineMother2.setAttributeNS(null, 'y1', y_parent);
-                    LineMother2.setAttributeNS(null, 'x2', x_halfway2);
-                    LineMother2.setAttributeNS(null, 'y2', y + 25);
-
-                    // The last line goes only vertical, the second half
-                    LineMother3.setAttributeNS(null, 'x1', x_halfway2);
-                    LineMother3.setAttributeNS(null, 'y1', y + 25);
-                    LineMother3.setAttributeNS(null, 'x2', x);
-                    LineMother3.setAttributeNS(null, 'y2', y + 25);
-
-                    if (this.level === (Parent.level + 1)) {
-                        LineMother1.setAttributeNS(null, 'stroke', 'pink');
-                        LineMother2.setAttributeNS(null, 'stroke', 'pink');
-                        LineMother3.setAttributeNS(null, 'stroke', 'pink');
-
-                        LineMother1.setAttributeNS(null, 'stroke-width', '5');
-                        LineMother2.setAttributeNS(null, 'stroke-width', '5');
-                        LineMother3.setAttributeNS(null, 'stroke-width', '5');
-                    } else {
-                        LineMother1.setAttributeNS(null, 'stroke', 'deeppink');
-                        LineMother2.setAttributeNS(null, 'stroke', 'deeppink');
-                        LineMother3.setAttributeNS(null, 'stroke', 'deeppink');
-
-                        LineMother1.setAttributeNS(null, 'stroke-width', '2');
-                        LineMother2.setAttributeNS(null, 'stroke-width', '2');
-                        LineMother3.setAttributeNS(null, 'stroke-width', '2');
-                    }
-
-                    Group.appendChild(LineMother1);
-                    Group.appendChild(LineMother2);
-                    Group.appendChild(LineMother3);
-                }
-            }
-        }
-
-        var Rect = document.createElementNS(svgns, "rect");        
-        Rect.setAttributeNS(null, 'width', this.lengthIndex*100);
-        Rect.setAttributeNS(null, 'height', 50);
-
-        Rect.setAttributeNS(null, 'x', x);
-        Rect.setAttributeNS(null, 'y', y);
-
-        Rect.setAttributeNS(null, 'rx', 5);
-        Rect.setAttributeNS(null, 'ry', 5);
-
-        Rect.setAttributeNS(null, 'stroke', 'black');
-        Rect.setAttributeNS(null, 'fill', this.getTimeColor(this.lengthType));
-
-        Rect.id = "Rect" + this.id;        
-        Rect.RectID = this.id;
-
-        var Text = document.createElementNS(svgns, "text");        
-        Text.setAttributeNS(null, 'width', this.lengthIndex*100);
-        Text.setAttributeNS(null, 'height', 50);
-
-        Text.setAttributeNS(null, 'x', x);
-        Text.setAttributeNS(null, 'y', y);
-
-        this.convertText(Text, this.name);
-        Text.RectID = this.id;
-
-        if (this.id !== -999) {
-            var Link = document.createElementNS(svgns, "a");
-            Link.setAttributeNS(hrefns, 'xlink:title', dict_Timeline["link_event"]);
-            Link.setAttributeNS(hrefns, 'target', "_top");
-
-            Link.appendChild(Rect);
-            Link.appendChild(Text);
-
-            Link.RectID = this.id;
-            Link.setAttributeNS(null, 'onclick', 'updateSessionSettings("keep", true).then(goToPage("events.php", "", session_settings["map"] === "global_id" ? event.target.RectID : session_settings["map"]), console.log)');
-            Link.setAttributeNS(null, 'onmouseover', 'setBorder(evt)');
-            Link.setAttributeNS(null, 'onmouseout',  'clearBorder(evt)');
-
-            Group.appendChild(Link);      
-        } else {
-            // This ID doens't exist, it's just the global activity item
-            Group.appendChild(Rect);
-            Group.appendChild(Text);
-        }
-        return Group;
-    };
-
-    /**
-     * @param {SVGElement} SVG */
-    this.drawTimeLine = function(SVG) {
-        var IDset = [];
-
-        var Group = this.drawEvent();
-        if ((Group !== null) && (this.drawn === 0)) {
-            SVG.appendChild(Group);
-            this.drawn = 1;
-        }
-
-        if (this.ChildIDs.length !== 0)
-        {
-            IDset = this.ChildIDs;
-        }
-
-        // This would have been much easier using recursive functions
-        // But there is too much recursion for the browser to handle..
-        return IDset;
-    };
 }
     
 /** 
@@ -766,6 +226,7 @@ function calcLocations(firstID, highestLevel) {
     
     while (done === 0)
     {
+        // Is there any collision between two people?
         var collision = 0;
         
         // The offset that is needed to get all people of that tree in the SVG.
@@ -885,7 +346,7 @@ function calcLocations(firstID, highestLevel) {
                                     var LeftID = newAncestorsL[k];
                                     
                                     // We have found a match!
-                                    // This is the ancestor that connects to two colliding people
+                                    // This is the ancestor that connects the two colliding people
                                     if (RightID === LeftID) {
                                         FoundID = RightID;
                                         found = 1;
@@ -956,108 +417,292 @@ function calcLocations(firstID, highestLevel) {
     return;
 }
 
-/***/
-function panItem(item) {
-    var ItemMap = document.getElementById("item_info");
-    var scrollTop = (item.Location[1] + globalOffset + 50) - (ItemMap.offsetHeight / 2);
-    var scrollLeft = (item.Location[0] + 75) - (ItemMap.offsetWidth / 2);
+/**
+ * @param {Integer} id */
+function getItemColor (id, lengthType) {
+    if (typeof lengthType === "undefined") {
+        var item = getItemById(id);
+        lengthType = item.lengthType;
+    }
     
-    updateViewbox(-scrollLeft, -scrollTop, -1);
-}
+    var color = '';
+    switch(lengthType) {
+        case ENUM_SEC:
+        color = "Green";
+        break;
+
+        case ENUM_MIN:
+        color = "LightBlue";
+        break;
+
+        case ENUM_HRS:
+        color = "Yellow";
+        break;
+
+        case ENUM_DAY:
+        color = "Red";
+        break;
+
+        case ENUM_WKS:
+        color = "Purple";
+        break;
+
+        case ENUM_MTH:
+        color = "White";
+        break;
+
+        case ENUM_YRS:
+        color = "LightGrey";
+        break;
+
+        case ENUM_DEC:
+        color = "Violet";
+        break;
+
+        case ENUM_CEN:
+        color = "Orange";
+        break;
+
+        case ENUM_MIL:
+        color = "DarkBlue";
+        break;
+
+        default:
+        color = "grey";
+        break;
+    }
+    return color;
+};
+
+function StringToValue (lengthStr) {
     
-/** 
-* @param {SVGElement} SVG */
-function drawMap(SVG) {    
+    if (ENUM_LETTERS.hasOwnProperty(lengthStr)) {
+        var lengthType = ENUM_LETTERS[lengthStr];
+    } else {
+        var lengthType = ENUM_UNDEFINED;
+    }
+
+    return lengthType;
+};
+
+function StringToType (lengthStr, Length) {
+
+    switch(lengthStr) {
+        case 's':
+        lengthType = dict_Timeline["second"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["seconds"];
+        }
+        break;
+
+        case 'i':
+        lengthType = dict_Timeline["minute"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["minutes"];
+        }
+        break;
+
+        case 'h':
+        lengthType = dict_Timeline["hour"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["hours"];
+        }
+        break;
+
+        case 'd':
+        lengthType = dict_Timeline["day"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["days"];
+        }
+        break;
+
+        case 'w':
+        lengthType = dict_Timeline["week"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["weeks"];
+        }
+        break;
+
+        case 'm':
+        lengthType = dict_Timeline["month"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["months"];
+        }
+        break;
+
+        case 'y':
+        lengthType = dict_Timeline["year"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["years"];
+        }
+        break;
+
+        case 'D':
+        lengthType = dict_Timeline["decade"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["decades"];
+        }
+        break;
+
+        case 'C':
+        lengthType = dict_Timeline["century"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["centuries"];
+        }
+        break;
+
+        case 'M':
+        lengthType = dict_Timeline["millennium"];
+        if (Length !== 1) {
+            lengthType = dict_Timeline["millennia"];
+        }
+        break;
+
+        default:
+        lengthType = dict_Timeline["unknown"];
+        break;
+    }
+
+    return lengthType;
+};
+
+function convertType (value, fromType, toType) {
+    // This function assumes that the value input, 
+    // do not cause a value that is smaller than 1
+    var typeLoop = 0;
+    var newValue = value;
+    if (fromType > toType) {
+        typeLoop = fromType - toType;
+
+        // Convert from bigger type to a smaller type
+        for (var loop = 0; loop < typeLoop; loop++) {
+            newValue = value*MULTS[toType + loop];
+        }
+    } else if (fromType < toType) {
+        typeLoop = toType - fromType;
+
+        // Convert from smaller type to a bigger type
+        for (var loop = 0; loop < typeLoop; loop++) {
+            newValue = (value / MULTS[fromType + loop]);
+        }
+    }
+
+    return newValue;
+};
+
+function convertLength (value, Type) {
+    // This function calculates what the length of a block should be
+    // This is from 0+ to 10, 0+ for the shortest length and 10 for the longest
+    var newValue = 2;
+    if ((Type < ENUM_MIL) && (Type > ENUM_UNDEFINED)) {
+        newValue = (value / MULTS[Type])*10;
+    } else if (Type === ENUM_MIL) {
+        newValue = value;
+    }
+
+    return newValue;
+};
+
+function convertString (id, value) {
+    var Item = getItemById(id);
     
-    // This breaks the while loop
-    var done = 0;
-    var MaxLevel = levelCounter.length;
-    
-    while (done === 0)
-    {        
-        // Draw the timeline per level
-        for (var level = 0; level < MaxLevel; level++) {
-            
-            var IDset = levelIDs[level];
-            
-            for (var i = 0; i < IDset.length; i++) {
-                var Item = getItemById(IDset[i]);
-                Item.drawTimeLine(SVG);
+    // This function converts the cryptic values to a readable string
+    var newValue = "";
+    if (value === "") {
+        newValue = dict_Timeline["unknown"];
+    } else {
+        // Convert every time type
+        var timeParts = Item.length.split(" ");
+
+        for (var types = 0; types < timeParts.length; types++) {
+            var currentTypeStr = timeParts[types];
+            var currentTypeStrLen = currentTypeStr.length;
+
+            var currentStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
+            var currentLen = parseInt(currentTypeStr.slice(0, currentTypeStrLen - 1));
+
+            var currentType = StringToType(currentStr, currentLen);
+
+            newValue += currentLen + " " + currentType;
+            if (types < (timeParts.length - 1)) {
+                newValue += ", ";
             }
         }
-        
-        // There are no more children to update
-        if (level === MaxLevel) {
-            done = 1;
+    }
+
+    return newValue;
+};
+
+function calcTime (id) {
+    var Item = getItemById(id);
+    var timeParts = Item.length.split(" ");
+
+    // Default defines
+    var lengthTypeStr = "";
+    var lengthType = ENUM_UNDEFINED;
+    var Length = this.Length;
+
+    if ((timeParts.length > 0) && (timeParts[0] !== "")) {
+        // Clear before we start calculating
+        Length = 0;
+
+        // Find the smallest timepart and convert the bigger timeparts to the same level
+        // The code down here will try to find the biggest possible level of the sum 
+        var minType = ENUM_MIL;
+        for (var types = 0; types < timeParts.length; types++) {
+            // Get the time type (last char of the string)
+            var currentTypeStr = timeParts[types];
+            var currentTypeStrLen = currentTypeStr.length;
+
+            var TypeStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
+            var Type = StringToValue(TypeStr);
+
+            // Looping for the smallest type
+            if (Type < minType) {
+                minType = Type;
+                // alert("Minimum type: " + minType);
+            }
+        }
+
+
+        // Now that we have the smallest type, we can start converting!
+        for (var types = 0; types < timeParts.length; types++) {
+            var currentTypeStr = timeParts[types];
+            var currentTypeStrLen = currentTypeStr.length;
+
+            var currentStr = currentTypeStr.slice(currentTypeStrLen - 1, currentTypeStrLen);
+            var currentType = StringToValue(currentStr);
+
+            var currentLen = parseInt(currentTypeStr.slice(0, currentTypeStrLen - 1));
+            // alert("Type: " + currentType + "\nMin type: " + minType);
+            var addLength = convertType(currentLen, currentType, minType);
+            Length += addLength;
+            // alert("Length: " + Length + " and added Length: " + addLength);
+        }
+
+        lengthType = minType;
+
+        // Can we get a higher level length type?
+        if (lengthType !== ENUM_UNDEFINED) {
+            // While loop here, getting a higher level untill a value is smaller than zero
+            var newLength = 0;
+            while (true) {
+                newLength = convertType(Length, lengthType, lengthType + 1);
+                // alert("Old length: " + Length + "\nNew length: " + newLength + "\nType: " + lengthType);
+
+                if ((newLength < 1) || (lengthType === ENUM_MIL)){
+                    break;
+                }
+
+                lengthType++;
+                Length = newLength;
+            }
         }
     }
-    
-    return;
-}
 
-function prep_appendGroup() {
-    var svgns = "http://www.w3.org/2000/svg";
-    var SVG = document.getElementById("svg");
-    
-    var Group = document.createElementNS(svgns, "g");    
-    Group.id = session_settings["table"] + "_svg";
-    
-    SVG.appendChild(Group);
-    UpdateProgress(45);
-    
-    setTimeout(prep_DrawLegenda, 1);
-}
+    Item.lengthIndex = convertLength(Length, lengthType);
+    Item.lengthType = lengthType;
 
-function prep_DrawLegenda() {
-    //Legenda
-    var svgns = "http://www.w3.org/2000/svg";
-    var SVG = document.getElementById("svg");
-    
-    var Item = getItemById(globalMapId);
-    
-    var Group = document.createElementNS(svgns, "g");    
-    Group.id = "Legenda";
-    
-    var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
-    for (var i = 0; i < (MULTS.length + 2); i++) {
-        var Rect = document.createElementNS(svgns, "rect");        
-        Rect.setAttributeNS(null, 'width', 10);
-        Rect.setAttributeNS(null, 'height', 10);
-        Rect.setAttributeNS(null, 'x', 15 + (100*Math.floor(i / 5)));
-        Rect.setAttributeNS(null, 'y', 15*((i % 5) + 1));
-        Rect.setAttributeNS(null, 'stroke', 'black');
-        Rect.setAttributeNS(null, 'fill', Item.getTimeColor(i));
-        
-        var Text = document.createElementNS(svgns, "text");        
-        Text.setAttributeNS(null, 'x', 30 + (100*Math.floor(i / 5)));
-        Text.setAttributeNS(null, 'y', 15*((i % 5) + 1) + 10);
-        Text.textContent = Item.StringToType(LegendaStr[i], 0);
-        
-        Group.appendChild(Rect);
-        Group.appendChild(Text);
-    }
-    SVG.appendChild(Group);
-    UpdateProgress(55);
-    
-    setTimeout(prep_AddControlButtons, 1);
-}
-
-function prep_DrawMap() {
-    // The TimeLine div
-    var Map = document.getElementById("item_info");
-    var SVG = document.getElementById("svg");
-    var Group = document.getElementById("timeline_svg");
-    
-    // Set the height and the width Plus x pixel border
-    ActualWidth = globalWidth + (highestLevel + 1)*50;
-    ActualHeight = globalHeight + globalOffset + 75;
-    
-    SVG.setAttribute('width', Map.offsetWidth);
-    SVG.setAttribute('height', Map.offsetHeight);
-    
-    // Draw the current timeline
-    drawMap(Group);
-    UpdateProgress(75);
-        
-    setTimeout(prep_SetInterrupts, 1);
-}
+    // Update the global width value
+    globalWidth += (Item.lengthIndex*100);
+};

@@ -7,6 +7,11 @@
         <script src="tools/item.js"></script>
         <?php } elseif (in_array($_SESSION["table"], ["timeline", "familytree", "worldmap"])) { ?>
         <script src="tools/map.js"></script>
+        <script src="map/map_draw.js"></script>
+        <script src="map/map_view.js"></script>
+        <script src="map/map_prep.js"></script>
+        <script src="map/map_mouse.js"></script>
+        <script src="map/map_set.js"></script>
         <?php } ?>
         <script src="tools/database.js"></script>
         
