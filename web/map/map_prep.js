@@ -129,23 +129,23 @@ function prep_DrawLegenda() {
     Group.id = "Legenda";
     
     var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
-    for (var i = 0; i < (MULTS.length + 2); i++) {
+    LegendaStr.forEach(function(str, idx) {
         var Rect = document.createElementNS(svgns, "rect");        
         Rect.setAttributeNS(null, 'width', 10);
         Rect.setAttributeNS(null, 'height', 10);
-        Rect.setAttributeNS(null, 'x', 15 + (100*Math.floor(i / 5)));
-        Rect.setAttributeNS(null, 'y', 15*((i % 5) + 1));
+        Rect.setAttributeNS(null, 'x', 15 + (100*Math.floor(idx / 5)));
+        Rect.setAttributeNS(null, 'y', 15*((idx % 5) + 1));
         Rect.setAttributeNS(null, 'stroke', 'black');
-        Rect.setAttributeNS(null, 'fill', getItemColor(null, i));
+        Rect.setAttributeNS(null, 'fill', getItemColor(null, idx));
         
         var Text = document.createElementNS(svgns, "text");        
-        Text.setAttributeNS(null, 'x', 30 + (100*Math.floor(i / 5)));
-        Text.setAttributeNS(null, 'y', 15*((i % 5) + 1) + 10);
-        Text.textContent = StringToType(LegendaStr[i], 0);
+        Text.setAttributeNS(null, 'x', 30 + (100*Math.floor(idx / 5)));
+        Text.setAttributeNS(null, 'y', 15*((idx % 5) + 1) + 10);
+        Text.textContent = StringToType(str, 0);
         
         Group.appendChild(Rect);
         Group.appendChild(Text);
-    }
+    });
     
     // Now add it to the screen
     SVG.appendChild(Group);

@@ -26,6 +26,19 @@ var ENUM_LETTERS = {
     "M": ENUM_MIL
 };
 
+var ENUM_STRINGS = {
+    "s": [dict_Timeline["second"], dict_Timeline["seconds"]],
+    "i": [dict_Timeline["minute"], dict_Timeline["minutes"]],
+    "h": [dict_Timeline["hour"], dict_Timeline["hours"]],
+    "d": [dict_Timeline["day"], dict_Timeline["days"]],
+    "w": [dict_Timeline["week"], dict_Timeline["weeks"]],
+    "m": [dict_Timeline["month"], dict_Timeline["months"]],
+    "y": [dict_Timeline["year"], dict_Timeline["years"]],
+    "D": [dict_Timeline["decade"], dict_Timeline["decades"]],
+    "C": [dict_Timeline["century"], dict_Timeline["centuries"]],
+    "M": [dict_Timeline["millennium"], dict_Timeline["millennia"]]
+};
+
 // The amount needed to go to the "next level"
 var MULTS = [
     60,         // Seconds
@@ -371,81 +384,13 @@ function StringToValue (lengthStr) {
 };
 
 function StringToType (lengthStr, Length) {
-
-    switch(lengthStr) {
-        case 's':
-        lengthType = dict_Timeline["second"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["seconds"];
-        }
-        break;
-
-        case 'i':
-        lengthType = dict_Timeline["minute"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["minutes"];
-        }
-        break;
-
-        case 'h':
-        lengthType = dict_Timeline["hour"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["hours"];
-        }
-        break;
-
-        case 'd':
-        lengthType = dict_Timeline["day"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["days"];
-        }
-        break;
-
-        case 'w':
-        lengthType = dict_Timeline["week"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["weeks"];
-        }
-        break;
-
-        case 'm':
-        lengthType = dict_Timeline["month"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["months"];
-        }
-        break;
-
-        case 'y':
-        lengthType = dict_Timeline["year"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["years"];
-        }
-        break;
-
-        case 'D':
-        lengthType = dict_Timeline["decade"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["decades"];
-        }
-        break;
-
-        case 'C':
-        lengthType = dict_Timeline["century"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["centuries"];
-        }
-        break;
-
-        case 'M':
-        lengthType = dict_Timeline["millennium"];
-        if (Length !== 1) {
-            lengthType = dict_Timeline["millennia"];
-        }
-        break;
-
-        default:
-        lengthType = dict_Timeline["unknown"];
-        break;
+    // 0 (Single) or 1 (Mult)
+    Length = (Length > 1) ? 1 : 0;
+    
+    if (ENUM_STRINGS.hasOwnProperty(lengthStr)) {
+        var lengthType = ENUM_STRINGS[lengthStr][Length];
+    } else {
+        var lengthType = dict_Timeline["unknown"];
     }
 
     return lengthType;
