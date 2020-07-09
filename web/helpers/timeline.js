@@ -39,181 +39,66 @@ var MULTS = [
     10          // Centuries
 ];
 
+var DEPTH = 0;
+var WIDTH = 1;
 
-function CreateItem(item) {
-    this.id = Number(item["id"]);
-    this.name = item["name"];
-    this.descr = item["descr"];
-    this.length = item["length"];
-    this.data = item["data"];
-    this.parents = item["parent_id"] ? [Number(item["parent_id"])] : ((this.id === -999) ? [] : [-999]);
+var DEPTH_SIZE = 100;
+var WIDTH_SIZE = 50;
 
-    // Own loop counter to prevent the counters messing each other up
-    this.counter = 0;
+var DEPTH_OFFSET = 50;
+var WIDTH_OFFSET = 50;
 
-    // Children of this event
-    this.ChildIDs = [];
+getText = function (Text, value) {
+    var svgns = "http://www.w3.org/2000/svg";
 
-    // Generations from the first ancestor
-    this.level = -1;
-    // Which event on this level is this
-    this.levelIndex = -1;
+    // The second tSpan gets an additional offset
+    var firstTSPAN = 0;
 
-    // The length variables and types
-    this.lengthIndex = -1;
-    this.lengthType = -1;
+    if ((this.length !== "-1") && (this.length !== "")) {
+        // The tspan containing the time length
+        var tSpan = document.createElementNS(svgns, "tspan");    
+        tSpan.RectID = this.id;
 
-    // Location of this event
-    this.Location = [-1, -1];
-    this.offset = 0;
+        // Update the contents of the current tspan object
+        tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
+        tSpan.setAttributeNS(null, "dy", -10);
+        tSpan.textContent = this.convertString(this.length);
 
-    // Make sure this person isn't duplicated
-    this.drawn = 0;
-    
-    // We want to work with everything
-    this.current_map = 1;
-
-    /** CalcLocation function */
-    this.calcLocation = function () {
-
-        calcTime(this.id);
-
-        // Calculate the Y coordinate
-        var X = 25;
-
-        // Calculate the X coordinate
-        var Y = 50 + 75;
-
-        // If this event has parents, get the average height..
-        // Also, get the parent with the heighest level to use for the X
-        // coordinate
-        if (this.parents.length !== 0) {    
-            var TotalYCoord = 0;
-            var Parent = getItemById(this.parents[0]);
-            
-            for (var i = 0; i < this.parents.length; i++) {
-                var tempParent = getItemById(this.parents[i]);
-                TotalYCoord += tempParent.Location[1];
-
-                // Take the parent with the heighest level
-                if (tempParent.level > Parent.level) {
-                    var Parent = tempParent;
-                }
-            }
-
-            var AvgYCoord = TotalYCoord / this.parents.length;
-            var Location_1 = AvgYCoord;
-            
-            console.log("Used parent for " + this.name + " is " + Parent.name + " with " + Parent.ChildIDs.length + " children.");
-            console.log("Parent height for " + this.name + " is " + Parent.Location[1] + " with a used height of " + Location_1);
-            
-            var numChildren = Parent.ChildIDs.length;
-
-            // Is it odd or even?
-            var odd = numChildren % 2;
-
-            // And which index do we have?
-            var Index = Parent.ChildIDs.indexOf(this.id);
-
-            // Now calculate where our position should be
-            if (odd) {
-                var middle = ((numChildren + 1) / 2) - 1;
-
-                if (Index === middle) {
-                    // Are we in the middle? 
-                    // Then just use parents X coordinate
-                    Y = Location_1;
-                } else if (Index > middle) {
-                    // Are we on the right side of the middle?
-                    // Place the block on the right side of parents X coordinate
-                    var offset = Index - middle;
-                    Y = Location_1 + offset*100;
-                } else {
-                    // Are we on the left side of the middle?
-                    // Place the block on the left side of parents X coordinate
-                    var offset = middle - Index;
-                    Y = Location_1 - offset*100;
-                }
-            } else {
-                var middle = numChildren / 2;
-                if (Index >= middle) {
-                    // Are we on the right side of the middle?
-                    // Place the block on the right side of parents X coordinate
-                    var offset = Index - middle;
-                    Y = (Location_1 + (100 / 2)) + offset*100;
-                } else {
-                    // Are we on the left side of the middle?
-                    // Place the block on the left side of parents X coordinate
-                    var offset = middle - Index;
-                    Y = (Location_1 + (100 / 2)) - offset*100;
-                }
-                console.log(this.name + ": Even number of children. Index is " + Index);
-            }
-
-            X = Parent.Location[0] + Parent.lengthIndex*100 + 50;
-        }
-
-        // This value is used, in case someone is overlapping with someone else
-        this.Location[0] = Math.round(X);
-        this.Location[1] = Math.round(Y + this.offset);
-
-        console.log("The calculated height to use for " + this.name + " is " + this.Location[1]);
-
-        return;
-    };
-
-    this.getText = function (Text, value) {
-        var svgns = "http://www.w3.org/2000/svg";
-
+        Text.appendChild(tSpan);
         // The second tSpan gets an additional offset
-        var firstTSPAN = 0;
+        firstTSPAN = 1;
+    }
 
-        if ((this.length !== "-1") && (this.length !== "")) {
-            // The tspan containing the time length
-            var tSpan = document.createElementNS(svgns, "tspan");    
-            tSpan.RectID = this.id;
+    var subLength = Math.round(11 * this.lengthIndex);
+    var subStart = 0;
+    var subString = "";
 
-            // Update the contents of the current tspan object
-            tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
-            tSpan.setAttributeNS(null, "dy", -10);
-            tSpan.textContent = this.convertString(this.length);
+    do {
+        var tSpan = document.createElementNS(svgns, "tspan");    
+        tSpan.RectID = this.id;
 
-            Text.appendChild(tSpan);
-            // The second tSpan gets an additional offset
-            firstTSPAN = 1;
+        // Get the string that we put into the tspan object
+        subString = value.substr(subStart, subLength);
+
+        // Increment our string offset
+        subStart += subLength;
+
+        // Update the contents of the current tspan object
+        tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
+        tSpan.setAttributeNS(null, "dy", 15 + 10*firstTSPAN);
+        firstTSPAN = 0;
+
+        if ((subString.length === subLength) && (value[subStart] !== " ") && (value[subStart - 1] !== " ") && (value.length !== subStart) ){
+            tSpan.textContent = (subString + "-");
+        } else {
+            tSpan.textContent = (subString);
         }
 
-        var subLength = Math.round(11 * this.lengthIndex);
-        var subStart = 0;
-        var subString = "";
+        Text.appendChild(tSpan);
+    } while (subString.length === subLength);
 
-        do {
-            var tSpan = document.createElementNS(svgns, "tspan");    
-            tSpan.RectID = this.id;
-
-            // Get the string that we put into the tspan object
-            subString = value.substr(subStart, subLength);
-
-            // Increment our string offset
-            subStart += subLength;
-
-            // Update the contents of the current tspan object
-            tSpan.setAttributeNS(null,  "x", this.Location[0] + 5);
-            tSpan.setAttributeNS(null, "dy", 15 + 10*firstTSPAN);
-            firstTSPAN = 0;
-
-            if ((subString.length === subLength) && (value[subStart] !== " ") && (value[subStart - 1] !== " ") && (value.length !== subStart) ){
-                tSpan.textContent = (subString + "-");
-            } else {
-                tSpan.textContent = (subString);
-            }
-
-            Text.appendChild(tSpan);
-        } while (subString.length === subLength);
-
-        return;
-    };
-}
+    return;
+};
     
 /** 
 * @param {Integer} firstID

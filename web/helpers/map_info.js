@@ -72,6 +72,7 @@ async function showMapInfo(information) {
         // The worldmap only uses one global map
         for (var idx in information) {
             var item = information[idx];
+            item.parent_id  = session_settings["table"] === "timeline" ? ((item.parent_id === "" || (item.parent_id === null)) ? -999 : item.parent_id) : item.parent_id;
 
             Items.push(new CreateItem(item));
         }
