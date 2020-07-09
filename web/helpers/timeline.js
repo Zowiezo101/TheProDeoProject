@@ -129,7 +129,7 @@ function calcLocations(firstID, highestLevel) {
         
         // The offset that is needed to get all people of that tree in the SVG.
         //  We need to move the SVG up with this value
-        globalWidth = 0;
+        globalOffset = 0;
         
         // Draw the tree per level
         for (var level = 0; level < MaxLevel; level++) {
