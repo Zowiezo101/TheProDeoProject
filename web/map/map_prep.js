@@ -1,6 +1,16 @@
-
 /* global globalMapId, session_settings, MULTS, dict, globalWidth, GetDelta, GetMouseMov, GetMouseOut, GetTouchMov, globalItemId */
 
+var PREP_SETLEVEL = 1;
+var PREP_SETINDEX = 2;
+var PREP_CALCLOC = 3;
+var PREP_APPSVG = 4;
+var PREP_APPGROUP = 5;
+var PREP_DRAWLEGENDA = 6;
+var PREP_ADDCONTROL = 7;
+var PREP_DRAWMAP = 8;
+var PREP_SETINTER = 9;
+var PREP_SETVIEW = 10;
+var PREP_MAKEVISIBLE = 11;
 
 function UpdateProgress(value) {
     var ProgressBar = document.getElementById("progress");
@@ -29,62 +39,92 @@ function UpdateProgress(value) {
 }
 
 
-function showMap() {
-    // Preparing the map
-    prep_SetAllLevels();
-    UpdateProgress(5);
-
-    // Get all the information of the peoples included
-    prep_SetAllIndexes();
-    UpdateProgress(15);
-
-    // Make the calculations to see where everyone should be placed
-    prep_CalcAllLocations();
-    UpdateProgress(35);
-
-    // The SVG that will contain all drawn elements
-    prep_appendSVG();
-    UpdateProgress(40);
-
-    // The actual map itself
-    prep_appendGroup();
-    UpdateProgress(45);
+/** @param {Integer} [State] */
+function showMap(State) {
     
-  
-    if (session_settings["table"] === "timeline") {
-        // The legenda for the timeline
-        prep_DrawLegenda();
-        UpdateProgress(55);
-    } 
-    
-    // The buttons for viewing the map
-    prep_AddControlButtons();
-    UpdateProgress(65);
+    switch(State) {
+        default:
+            // Preparing the map
+            setTimeout(prep_SetAllLevels, 1);
+            UpdateProgress(5);
+            break;
 
-    // Draw the map
-    prep_DrawMap();
-    UpdateProgress(75);
-    
-    // All clicky things
-    prep_SetInterrupts();
-    UpdateProgress(85);
+        case PREP_SETLEVEL:
+            // Get all the information of the peoples included
+            setTimeout(prep_SetAllIndexes, 1);
+            UpdateProgress(15);
+            break;
 
-    // Update the width and the height of the viewbox and move to the person
-    prep_SetView();
-    UpdateProgress(95);
+        case PREP_SETINDEX:
+            // Make the calculations to see where everyone should be placed
+            setTimeout(prep_CalcAllLocations, 1);
+            UpdateProgress(35);
+            break;
 
-    // Show the map
-    prep_MakeVisible();
+        case PREP_CALCLOC:
+            // The SVG that will contain all drawn elements
+            setTimeout(prep_appendSVG, 1);
+            UpdateProgress(40);
+            break;
+
+        case PREP_APPSVG:
+            // The actual map itself
+            setTimeout(prep_appendGroup, 1);
+            UpdateProgress(45);
+            break;
+
+        case PREP_APPGROUP:
+            if (session_settings["table"] === "timeline") {
+                // The legenda for the timeline
+                setTimeout(prep_DrawLegenda, 1);
+                UpdateProgress(55);
+                break;
+            }
+        case PREP_DRAWLEGENDA:
+            // The buttons for viewing the map
+            setTimeout(prep_AddControlButtons, 1);
+            UpdateProgress(65);
+            break;
+
+        case PREP_ADDCONTROL:
+            // Draw the map
+            setTimeout(prep_DrawMap, 1);
+            UpdateProgress(75);
+            break;
+
+        case PREP_DRAWMAP:
+            // All clicky things
+            setTimeout(prep_SetInterrupts, 1);
+            UpdateProgress(85);
+            break;
+
+        case PREP_SETINTER:
+            // Update the width and the height of the viewbox and move to the person
+            setTimeout(prep_SetView, 1);
+            UpdateProgress(95);
+            break;
+
+        case PREP_SETVIEW:
+            // Show the map
+            setTimeout(prep_MakeVisible, 1);
+            break;
+            
+        case PREP_MAKEVISIBLE:
+            // Done
+            break;
+    }
 }
 
 function prep_SetAllLevels() {
     // Set all the generation levels of all people.
     highestLevel = setLevels(globalMapId);
+    showMap(PREP_SETLEVEL);
 }
 
 function prep_SetAllIndexes() {
     // And all the indexes of all people
     setIndexes(globalMapId, highestLevel);
+    showMap(PREP_SETINDEX);
 }
 
 function prep_CalcAllLocations() {    
@@ -93,6 +133,7 @@ function prep_CalcAllLocations() {
     globalHeight = 0;
 
     calcLocations(globalMapId, highestLevel);
+    showMap(PREP_CALCLOC);
 }
 
 function prep_appendSVG() {
@@ -108,6 +149,7 @@ function prep_appendSVG() {
 
     // Now add it to the screen
     ItemMap.appendChild(SVG);
+    showMap(PREP_APPSVG);
 }
 
 function prep_appendGroup() {
@@ -118,6 +160,7 @@ function prep_appendGroup() {
     Group.id = session_settings["table"] + "_svg";
     
     SVG.appendChild(Group);
+    showMap(PREP_APPGROUP);
 }
 
 function prep_DrawLegenda() {
@@ -149,6 +192,7 @@ function prep_DrawLegenda() {
     
     // Now add it to the screen
     SVG.appendChild(Group);
+    showMap(PREP_DRAWLEGENDA);
 }
 
 function prep_AddControlButtons() {
@@ -330,7 +374,7 @@ function prep_AddControlButtons() {
 
     // Add everything to the SVG
     SVG.appendChild(Controls);
-    return;
+    showMap(PREP_ADDCONTROL);
 }
 
 function prep_DrawMap() {
@@ -354,6 +398,7 @@ function prep_DrawMap() {
     
     // Draw the current family tree
     drawMap(Group);
+    showMap(PREP_DRAWMAP);
 }
 
 function prep_SetInterrupts() {
@@ -379,6 +424,7 @@ function prep_SetInterrupts() {
 
     window.onmouseup = GetMouseOut;
     window.ontouchend = GetMouseOut;
+    showMap(PREP_SETINTER);
 }
 
 function prep_SetView() {
@@ -388,6 +434,7 @@ function prep_SetView() {
     // Move to the event
     var Item = getItemById(globalItemId);
     panItem(Item);
+    showMap(PREP_SETVIEW);
 }
 
 function prep_MakeVisible() {
@@ -404,5 +451,6 @@ function prep_MakeVisible() {
         var SVG = document.getElementById("svg");
         SVG.setAttributeNS(null, "display", "inline");
     }
+    showMap(PREP_MAKEVISIBLE);
 }
 
