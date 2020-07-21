@@ -3,7 +3,7 @@
     require "../../login_data.php";
     
     // The login page
-    if (isset(filter_input(INPUT_POST, 'submitLogin'))) {
+    if (filter_input(INPUT_POST, 'submitLogin') != null) {
         
         // Check if username and password are correct
         $username = filter_input(INPUT_POST, "user");

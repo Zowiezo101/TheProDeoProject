@@ -1,7 +1,7 @@
 <?php 
     // Make it easier to copy/paste code or make a new file
     $id = "settings";
-    require "layout/layout.php"; 
+    require "layout/template.php"; 
 ?>
 <?php 
 
@@ -152,201 +152,153 @@ function GetListOfBlogs() {
         }    
     }
 }
-
-function settings_Helper_Layout() {
-    global $dict_Settings;
-    global $id;
-    global $$id;
-    
-    if (isset($_SESSION['login'])) {
-        // A login is found
-        PrettyPrint('<div class="clearfix"> ', 1);
-        PrettyPrint('    <div class="contents_left" id="settings_bar"> ');
-        PrettyPrint('        <button class="button_'.$$id.'" onclick="ShowNew()">'.$dict_Settings["new_blog"].'</button> ');
-        PrettyPrint('        <button class="button_'.$$id.'" onclick="ShowDelete()">'.$dict_Settings["delete_blog"].'</button> ');
-        PrettyPrint('        <button class="button_'.$$id.'" onclick="ShowEdit()">'.$dict_Settings["edit_blog"].'</button> ');
-        PrettyPrint('        <button class="button_'.$$id.'" onclick="location.href=\'tools/logout.php\'">'.$dict_Settings["logout"].'</button> ');
-        PrettyPrint('    </div> ');
-        PrettyPrint('');    
-        PrettyPrint('    <div class="contents_right" id="settings_content"> ');
-        PrettyPrint('        '.$dict_Settings["welcome"]);
-        PrettyPrint('        - '.$dict_Settings["new_blog"].'<br>');
-        PrettyPrint('        - '.$dict_Settings["delete_blog"].'<br>');
-        PrettyPrint('        - '.$dict_Settings["edit_blog"].'<br>');
-        PrettyPrint('    </div> ');
-        PrettyPrint('</div> ');
-    } else {
-        // Log in page, in case no login is found yet
-        PrettyPrint('<div id="settings_login"> ');
-        PrettyPrint('    <form method="post" action="tools/login.php"> ');
-                    // User name
-        PrettyPrint('        <p>'.$dict_Settings["user"].'</p> ');
-        PrettyPrint('        <input type="text" name="user" placeholder="'.$dict_Settings["user"].'"> ');
-        PrettyPrint('');        
-                    // Password
-        PrettyPrint('        <p>'.$dict_Settings["password"].'</p> ');
-        PrettyPrint('        <input type="password" name="password" placeholder="'.$dict_Settings["password"].'"> ');
-        PrettyPrint('');        
-                    // Submit button
-        PrettyPrint('        <br> ');
-        PrettyPrint('        <input id="submit_form_button" class="button_'.$$id.'" type="submit" name="submitLogin" value="'.$dict_Settings["login"].'"> ');
-        PrettyPrint('        <br> ');
-        PrettyPrint('    </form> ');
-        PrettyPrint('');    
-        
-        // When the entered data is incorrect
-        if (isset($_SESSION["error"])) {
-            if ($_SESSION["error"] == true) {
-                PrettyPrint("<p>".$dict_Settings["incorrect"]."</p>");
-                $_SESSION["error"] = false;
-            }
-        }
-        PrettyPrint('</div> ');
-    }
-} 
 ?>
 
 <script>
-<!-- This part is only available, when the user is logged in -->
-<?php if (isset($_SESSION['login'])) { ?>
     // Add a new blog to the database
     function ShowNew() {
-        // This is the title of the right side of the page
-        Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<h1><?php echo $dict_Settings["new_blog"]; ?></h1>";
+        if (session_settings.hasOwnProperty("login")) {
+            // This is the title of the right side of the page
+            Settings = document.getElementById("settings_content");
+            Settings.innerHTML = "<h1>" + dict_Settings["new_blog"] + "</h1>";
 
-        // A little textbox for the title of a new blog
-        titleForm = document.createElement("textarea");
-        titleForm.name = "title";
-        titleForm.placeholder = "<?php echo $dict_Settings["title"]; ?>";
-        titleForm.rows = 1;
-        titleForm.required = true;
-        
-        // Contents of the new blok
-        textForm = document.createElement("textarea");
-        textForm.name = "text";
-        textForm.placeholder = "<?php echo $dict_Settings["text"]; ?>";
-        textForm.rows = 10;
-        textForm.required = true;
-        
-        // The submit button
-        submitForm = document.createElement("input");
-        submitForm.type = "submit";
-        submitForm.name = "submitAdd";
-        submitForm.value = "<?php echo $dict_Settings["new_blog"]; ?>";
-        submitForm.id = "submit_form_button";
-        submitForm.className = "button_<?php echo $$id; ?>";
-        
-        // Add all these things to the form
-        newForm = document.createElement("form");
-        newForm.method = "post";
-        newForm.action = "";
-        
-        newForm.appendChild(titleForm);
-        newForm.appendChild(textForm);
-        newForm.appendChild(submitForm);
-        
-        // Add the form to the page
-        Settings.appendChild(newForm);
+            // A little textbox for the title of a new blog
+            titleForm = document.createElement("textarea");
+            titleForm.name = "title";
+            titleForm.placeholder = dict_Settings["title"];
+            titleForm.rows = 1;
+            titleForm.required = true;
+
+            // Contents of the new blok
+            textForm = document.createElement("textarea");
+            textForm.name = "text";
+            textForm.placeholder = dict_Settings["text"];
+            textForm.rows = 10;
+            textForm.required = true;
+
+            // The submit button
+            submitForm = document.createElement("input");
+            submitForm.type = "submit";
+            submitForm.name = "submitAdd";
+            submitForm.value = dict_Settings["new_blog"];
+            submitForm.id = "submit_form_button";
+            submitForm.className = "button_" + session_settings["theme"];
+
+            // Add all these things to the form
+            newForm = document.createElement("form");
+            newForm.method = "post";
+            newForm.action = "";
+
+            newForm.appendChild(titleForm);
+            newForm.appendChild(textForm);
+            newForm.appendChild(submitForm);
+
+            // Add the form to the page
+            Settings.appendChild(newForm);
+        }
     }
     
     function ShowDelete() {
-        // This is the title of the right side of the page
-        Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<h1><?php echo $dict_Settings["delete_blog"]; ?></h1>";
+        if (session_settings.hasOwnProperty("login")) {
+            // This is the title of the right side of the page
+            Settings = document.getElementById("settings_content");
+            Settings.innerHTML = "<h1>" + dict_Settings["delete_blog"] + "</h1>";
 
-        // Make a selection bar
-        selectForm = document.createElement("select");
-        selectForm.name = "select";
-        selectForm.onchange = PreviewRemove;
-        selectForm.id = "select";
+            // Make a selection bar
+            selectForm = document.createElement("select");
+            selectForm.name = "select";
+            selectForm.onchange = PreviewRemove;
+            selectForm.id = "select";
 
-        // Add all the options to select
-        <?php GetListOfBlogs(); ?>
+            // Add all the options to select
+            <?php GetListOfBlogs(); ?>
 
-        // Place holder for the text that will be deleted
-        textForm = document.createElement("textarea");
-        textForm.name = "text";
-        textForm.placeholder = "<?php echo $dict_Settings["text"]; ?>";
-        textForm.rows = 10;
-        textForm.disabled = true;
-        textForm.id = "text";
-        
-        // Submit button, disabled until a blog is chosen
-        submitForm = document.createElement("input");
-        submitForm.type = "submit";
-        submitForm.name = "submitDelete";
-        submitForm.value = "<?php echo $dict_Settings["delete_blog"]; ?>";
-        submitForm.id = "submit_form_button";
-        submitForm.className = "off_button_<?php echo $$id; ?>";
-        submitForm.disabled = true;
-        
-        // Add all these things to a form
-        newForm = document.createElement("form");
-        newForm.method = "post";
-        newForm.action = "";
-        
-        newForm.appendChild(selectForm);
-        newForm.appendChild(textForm);
-        newForm.appendChild(submitForm);
-        
-        // Add the form to the page
-        Settings.appendChild(newForm);
+            // Place holder for the text that will be deleted
+            textForm = document.createElement("textarea");
+            textForm.name = "text";
+            textForm.placeholder = dict_Settings["text"];
+            textForm.rows = 10;
+            textForm.disabled = true;
+            textForm.id = "text";
+
+            // Submit button, disabled until a blog is chosen
+            submitForm = document.createElement("input");
+            submitForm.type = "submit";
+            submitForm.name = "submitDelete";
+            submitForm.value = dict_Settings["delete_blog"];
+            submitForm.id = "submit_form_button";
+            submitForm.className = "off_button_" + session_settings["theme"];
+            submitForm.disabled = true;
+
+            // Add all these things to a form
+            newForm = document.createElement("form");
+            newForm.method = "post";
+            newForm.action = "";
+
+            newForm.appendChild(selectForm);
+            newForm.appendChild(textForm);
+            newForm.appendChild(submitForm);
+
+            // Add the form to the page
+            Settings.appendChild(newForm);
+        }
     }
     
     function ShowEdit() {
-        // The title of the right side of the page
-        Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<h1><?php echo $dict_Settings["edit_blog"]; ?></h1>";
+        if (session_settings.hasOwnProperty("login")) {
+            // The title of the right side of the page
+            Settings = document.getElementById("settings_content");
+            Settings.innerHTML = "<h1>" + dict_Settings["edit_blog"] + "</h1>";
 
-        // Add a selection bar
-        selectForm = document.createElement("select");
-        selectForm.name = "select";
-        selectForm.onchange = PreviewEdit;
-        selectForm.id = "select";
+            // Add a selection bar
+            selectForm = document.createElement("select");
+            selectForm.name = "select";
+            selectForm.onchange = PreviewEdit;
+            selectForm.id = "select";
 
-        // The options of the selection bar
-        <?php GetListOfBlogs(); ?>
+            // The options of the selection bar
+            <?php GetListOfBlogs(); ?>
 
-        // Place holder for the title that will be edited
-        titleForm = document.createElement("textarea");
-        titleForm.name = "title";
-        titleForm.placeholder = "<?php echo $dict_Settings["title"]; ?>";
-        titleForm.rows = 1;
-        titleForm.required = true;
-        titleForm.disabled = true;
-        titleForm.id = "title";
-        
-        // Place holder for the text that will be edited
-        textForm = document.createElement("textarea");
-        textForm.name = "text";
-        textForm.placeholder = "<?php echo $dict_Settings["text"]; ?>";
-        textForm.rows = 10;
-        textForm.required = true;
-        textForm.disabled = true;
-        textForm.id = "text";
-        
-        // Submit button, disabled until a blog is chosen
-        submitForm = document.createElement("input");
-        submitForm.type = "submit";
-        submitForm.name = "submitEdit";
-        submitForm.value = "<?php echo $dict_Settings["edit_blog"]; ?>";
-        submitForm.id = "submit_form_button";
-        submitForm.className = "off_button_<?php echo $$id; ?>";
-        submitForm.disabled = true;
-        
-        // Add all these things to a form
-        newForm = document.createElement("form");
-        newForm.method = "post";
-        newForm.action = "";
-        
-        newForm.appendChild(selectForm);
-        newForm.appendChild(titleForm);
-        newForm.appendChild(textForm);
-        newForm.appendChild(submitForm);
-        
-        // Add the form to the page
-        Settings.appendChild(newForm);
+            // Place holder for the title that will be edited
+            titleForm = document.createElement("textarea");
+            titleForm.name = "title";
+            titleForm.placeholder = dict_Settings["title"];
+            titleForm.rows = 1;
+            titleForm.required = true;
+            titleForm.disabled = true;
+            titleForm.id = "title";
+
+            // Place holder for the text that will be edited
+            textForm = document.createElement("textarea");
+            textForm.name = "text";
+            textForm.placeholder = dict_Settings["text"];
+            textForm.rows = 10;
+            textForm.required = true;
+            textForm.disabled = true;
+            textForm.id = "text";
+
+            // Submit button, disabled until a blog is chosen
+            submitForm = document.createElement("input");
+            submitForm.type = "submit";
+            submitForm.name = "submitEdit";
+            submitForm.value = dict_Settings["edit_blog"];
+            submitForm.id = "submit_form_button";
+            submitForm.className = "off_button_" + session_settings["theme"];
+            submitForm.disabled = true;
+
+            // Add all these things to a form
+            newForm = document.createElement("form");
+            newForm.method = "post";
+            newForm.action = "";
+
+            newForm.appendChild(selectForm);
+            newForm.appendChild(titleForm);
+            newForm.appendChild(textForm);
+            newForm.appendChild(submitForm);
+
+            // Add the form to the page
+            Settings.appendChild(newForm);
+        }
     }
     
     function PreviewRemove() {
@@ -361,7 +313,7 @@ function settings_Helper_Layout() {
         
         // Now enable the submit button
         var submitForm = document.getElementById("submit_form_button");
-        submitForm.className = "button_<?php echo $$id; ?>";
+        submitForm.className = "button_" + session_settings["theme"];
         submitForm.disabled = false;
     }
     
@@ -381,37 +333,130 @@ function settings_Helper_Layout() {
         
         // Now enable the submit button and the textareas
         var submitForm = document.getElementById("submit_form_button");
-        submitForm.className = "button_<?php echo $$id; ?>";
+        submitForm.className = "button_" + session_settings["theme"];
         submitForm.disabled = false;
         titleForm.disabled = false;
         textForm.disabled = false;
     }
-<?php } ?>
 
-function Helper_onLoad() {
-    <?php if (null !== filter_input(INPUT_POST, 'submitAdd')) { ?>
-        Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<?php AddBlog(filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text"), $_SESSION['login']); ?>";
-        
-        // Reload without resending the action
-        oldHref = window.location.href;
-        window.location.href = oldHref;
-    <?php } if (null !== filter_input(INPUT_POST, 'submitDelete')) { ?>
-        Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<?php DeleteBlog(filter_input(INPUT_POST, "select")); ?>";
-        
-        // Reload without resending the action
-        oldHref = window.location.href;
-        window.location.href = oldHref;
-    <?php } if (null !== filter_input(INPUT_POST, 'submitEdit')) { ?>
-        Settings = document.getElementById("settings_content");
-        Settings.innerHTML = "<?php EditBlog(filter_input(INPUT_POST, "select"), filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text")); ?>";
-        
-        // Reload without resending the action
-        oldHref = window.location.href;
-        window.location.href = oldHref;
-    <?php } ?>
-}
-    
-window.onload = Helper_onLoad;
+    function onLoadSettings() {
+        if (session_settings.hasOwnProperty('login')) {
+            // A login is found
+    //        PrettyPrint('<div class="clearfix"> ', 1);
+    //        PrettyPrint('    <div class="contents_left" id="settings_bar"> ');
+    //        PrettyPrint('        <button class="button_'.$$id.'" onclick="ShowNew()">'.$dict_Settings["new_blog"].'</button> ');
+    //        PrettyPrint('        <button class="button_'.$$id.'" onclick="ShowDelete()">'.$dict_Settings["delete_blog"].'</button> ');
+    //        PrettyPrint('        <button class="button_'.$$id.'" onclick="ShowEdit()">'.$dict_Settings["edit_blog"].'</button> ');
+    //        PrettyPrint('        <button class="button_'.$$id.'" onclick="location.href=\'tools/logout.php\'">'.$dict_Settings["logout"].'</button> ');
+    //        PrettyPrint('    </div> ');
+    //        PrettyPrint('');    
+    //        PrettyPrint('    <div class="contents_right" id="settings_content"> ');
+    //        PrettyPrint('        '.$dict_Settings["welcome"]);
+    //        PrettyPrint('        - '.$dict_Settings["new_blog"].'<br>');
+    //        PrettyPrint('        - '.$dict_Settings["delete_blog"].'<br>');
+    //        PrettyPrint('        - '.$dict_Settings["edit_blog"].'<br>');
+    //        PrettyPrint('    </div> ');
+    //        PrettyPrint('</div> ');
+        } else {
+            // Log in page, in case no login is found yet
+            // The div to put everything in
+            var content = document.getElementById('content');
+
+            // The div that has the log in screen
+            var login_div = document.createElement('div');
+            content.appendChild(login_div);
+
+            // Set the attributes
+            login_div.id = "settings_login";
+
+            // The log in form
+            var login_form = document.createElement('form');
+            login_div.appendChild(login_form);
+
+            // Set the attributes
+            login_form.method = "post";
+            login_form.action = "tools/login.php";
+
+            // User name
+            var user_text = document.createElement("p");
+            login_form.appendChild(user_text);
+
+            // Set the attributes
+            user_text.innerHTML = dict_Settings["user"];
+
+            var user_input = document.createElement("input");
+            login_form.appendChild(user_input);
+
+            // Set the attributes
+            user_input.type = "text";
+            user_input.name = "user";
+            user_input.placeholder = dict_Settings["user"];
+
+            // Password
+            var pass_text = document.createElement("p");
+            login_form.appendChild(pass_text);
+
+            // Set the attributes
+            pass_text.innerHTML = dict_Settings["password"];
+
+            var pass_input = document.createElement("input");
+            login_form.appendChild(pass_input);
+
+            // Set the attributes
+            pass_input.type = "password";
+            pass_input.name = "password";
+            pass_input.placeholder = dict_Settings["password"];
+
+            login_form.appendChild(document.createElement("br"));
+
+            // Submit button
+            var submit_input = document.createElement("input");
+            login_form.appendChild(submit_input);
+
+            // Set the attributes
+            submit_input.id = "submit_form_button";
+            submit_input.className = "button_" + session_settings["theme"];
+            submit_input.type = "submit";
+            submit_input.name = "submitLogin";
+            submit_input.value = dict_Settings["login"];
+
+            login_form.appendChild(document.createElement("br"));
+
+            // When the entered data is incorrect
+            if (session_settings.hasOwnProperty("error") && (session_settings["error"] === "1")) {
+                // Show an error
+                var error = document.createElement("p");
+                login_div.appendChild(error);
+
+                // Set the attributes
+                error.innerHTML = dict_Settings["incorrect"];
+
+                // Error has been shown, no need to show it twice
+                updateSessionSettings("error", false);
+            }
+        }
+
+        <?php if (null !== filter_input(INPUT_POST, 'submitAdd')) { ?>
+    //        Settings = document.getElementById("settings_content");
+    //        Settings.innerHTML = "<?php AddBlog(filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text"), $_SESSION['login']); ?>";
+    //        
+    //        // Reload without resending the action
+    //        oldHref = window.location.href;
+    //        window.location.href = oldHref;
+        <?php } if (null !== filter_input(INPUT_POST, 'submitDelete')) { ?>
+    //        Settings = document.getElementById("settings_content");
+    //        Settings.innerHTML = "<?php DeleteBlog(filter_input(INPUT_POST, "select")); ?>";
+    //        
+    //        // Reload without resending the action
+    //        oldHref = window.location.href;
+    //        window.location.href = oldHref;
+        <?php } if (null !== filter_input(INPUT_POST, 'submitEdit')) { ?>
+    //        Settings = document.getElementById("settings_content");
+    //        Settings.innerHTML = "<?php EditBlog(filter_input(INPUT_POST, "select"), filter_input(INPUT_POST, "title"), filter_input(INPUT_POST, "text")); ?>";
+    //        
+    //        // Reload without resending the action
+    //        oldHref = window.location.href;
+    //        window.location.href = oldHref;
+        <?php } ?>
+    }
 </script>
