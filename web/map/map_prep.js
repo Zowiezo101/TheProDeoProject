@@ -132,7 +132,12 @@ function prep_CalcAllLocations() {
     globalOffset = 0;
     globalHeight = 0;
 
-    calcLocations(globalMapId, highestLevel);
+    if (session_settings["table"] === "timeline") {
+        calcLocations(globalMapId, highestLevel);
+    } else {
+        calcLocations();
+        calcOffsets(globalMapId);
+    }
     showMap(PREP_CALCLOC);
 }
 
