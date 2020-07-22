@@ -56,6 +56,49 @@ function uniq(a) {
     });
 }
 
+function createChild(parent, tag, options) {
+    // In case the parent is an ID name
+    if (typeof parent === "string") {
+        parent = document.getElementById(parent);
+    }
+    
+    var element = document.createElement(tag);
+    for (var option in options) {
+        if (option === "class") {
+            option = "className";
+            options[option] = options["class"];
+        }
+        element[option] = options[option];
+    }
+    
+    parent.appendChild(element);
+    
+    return element;
+}
+
+function createChildren(parent, tag_and_options) {
+    // In case the parent is an ID name
+    if (typeof parent === "string") {
+        parent = document.getElementById(parent);
+    }
+    
+    for (var idx in tag_and_options) {
+        var tag = tag_and_options[idx][0];
+        var options = tag_and_options[idx][1];
+        
+        var element = document.createElement(tag);
+        for (var option in options) {
+            if (option === "class") {
+                option = "className";
+                options[option] = options["class"];
+            }
+            element[option] = options[option];
+        }
+
+        parent.appendChild(element);
+    }
+}
+
 window.onerror = function(msg, url, linenumber) {
     alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
     return true;
