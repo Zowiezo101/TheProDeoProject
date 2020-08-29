@@ -1,98 +1,106 @@
 <?php 
+require "../../login_data.php";
 
-function CleanText($text) {
-    // The newlines in the string cause problems..
-    $text1 = str_replace(array("\r\n","\r","\n","\\r\\n","\\r","\\n"), "<br/>", $text);
-    
-    // Escape slashes
-    $text2 = str_replace("\\", "\\\\", $text1);
-    
-    // Escape apastrophs
-    $text3 = str_replace("'", "\\'", $text2);
-    
-    // Escape quotes
-    $text4 = str_replace('"', '\\"', $text3);
-    
-    return $text4;
-}
+class result {
+    public $data;
+    public $error;
+    public $sql;
+};
 
-function AddBlog($title, $text, $user) {
-    global $dict_Settings;
-    global $conn;
-    
-    // The query to run
-    $sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
-    $result = $conn->query($sql);
+$result = new result();
 
-    if (!$result) {
-        // Display an error if anything failed
-        echo "<h1>SQL: ".$conn->error."</h1>";
-    } else {        
-        // Get the current date
-        date_default_timezone_set('Europe/Amsterdam');
-        $date = date("Y-m-d H:i:s a"); 
-        
-        // Insert the new added blog into the database
-        $sql = "INSERT INTO blog (title, text, user, date) VALUES ('".CleanText($title)."','".CleanText($text)."','".$user."','".$date."')";
-        $result = $conn->query($sql);    
-        
-        // Give some indication of the result
-        if (!$result) {
-            echo "<h1>SQL: ".$conn->error."</h1>";
-        } else {
-            echo "<h1>".$dict_Settings["blog_added"]."</h1>";
+$conn = new mysqli($servername, $username, $password, $database);
+
+// Check connection
+if ($conn->connect_error) {
+    $result->error = "Connection failed: " . $conn->connect_error;
+} else {
+    
+    // Make sure there is a table to work with
+    $sql = "CREATE TABLE IF NOT EXISTS 
+                blog (
+                    id INT AUTO_INCREMENT, 
+                    title VARCHAR(255), 
+                    text TEXT, 
+                    user VARCHAR(255), 
+                    date VARCHAR(255), 
+                    PRIMARY KEY(id)
+                )";
+    
+    $results = $conn->query($sql);
+    
+    if ($results) {
+            
+        $action = filter_input(INPUT_GET, 'type');
+
+        switch($action) {
+            case 'add':
+                
+                $title = filter_input(INPUT_GET, 'title');
+                $text = filter_input(INPUT_GET, 'text');
+                $user = filter_input(INPUT_GET, 'user');
+
+                // Get the current date
+                date_default_timezone_set('Europe/Amsterdam');
+                $date = date("Y-m-d H:i:s a"); 
+
+                // Insert the new added blog into the database
+                $sql = "INSERT INTO blog (title, text, user, date) VALUES ('".$title."','".$text."','".$user."','".$date."')";
+                $results = $conn->query($sql);    
+
+                // die if SQL statement failed
+                if (!$results) {
+                    $result->error = "<h1>SQL: ".mysqli_error($conn)."</h1>";
+                } else {
+                    $result->data = true;
+                    $result->sql = $sql;
+                }
+                break;
+
+            case 'delete':
+                $id = filter_input(INPUT_GET, 'id');
+                
+                // Delete the corresponding blog
+                $sql = "DELETE FROM blog WHERE id=".$id;
+                $results = $conn->query($sql);
+
+                // Show the results
+                if (!$results) {
+                    $result->error = "<h1>SQL: ".mysqli_error($conn)."</h1>";
+                } else {        
+                    $result->data = true;
+                    $result->sql = $sql;
+                }
+                break;
+
+            case 'edit':
+                $title = filter_input(INPUT_GET, 'title');
+                $text = filter_input(INPUT_GET, 'text');
+                $id = filter_input(INPUT_GET, 'id');
+                
+                // Update the corresponding blog in the database
+                $sql = "UPDATE blog SET title='".$title."', text='".$text."' WHERE id=".$id;
+                $results = $conn->query($sql);
+
+                // Show an indication of the results
+                if (!$results) {
+                    $result->error = "<h1>SQL: ".$conn->error."</h1>";
+                } else {        
+                    $result->data = true;
+                    $result->sql = $sql;
+                }
+                break;
+
+            default:
+                break;
         }
-    }    
-}
-
-function DeleteBlog($id) {
-    global $dict_Settings;
-    global $conn;
+    }
     
-    // The query to run
-    $sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
-    $result = $conn->query($sql);
+    // close mysql connection
+    mysqli_close($conn);
 
-    if (!$result) {
-        // Display an error if anything went wrong
-        echo "<h1>SQL: ".$conn->error."</h1>";
-    } else {        
-        // Delete the corresponding blog
-        $sql = "DELETE FROM blog WHERE id=".$id;
-        $result = $conn->query($sql);
-        
-        // Show the results
-        if (!$result) {
-            echo "<h1>SQL: ".$conn->error."</h1>";
-        } else {        
-            echo "<h1>".$dict_Settings["blog_removed"]."</h1>";
-        }
-    }    
-}
-
-function EditBlog($id, $title, $text) {
-    global $dict_Settings;
-    global $conn;
-    
-    // The query to run
-    $sql = "CREATE TABLE IF NOT EXISTS blog (id INT AUTO_INCREMENT, title VARCHAR(255), text TEXT, user VARCHAR(255), date VARCHAR(255), PRIMARY KEY(id))";
-    $result = $conn->query($sql);
-
-    if (!$result) {
-        // Show an error if the query failed
-        echo "<h1>SQL: ".$conn->error."</h1>";
-    } else {        
-        // Update the corresponding blog in the database
-        $sql = "UPDATE blog SET title='".CleanText($title)."', text='".CleanText($text)."' WHERE id=".$id;
-        $result = $conn->query($sql);
-    
-        // Show an indication of the results
-        if (!$result) {
-            echo "<h1>SQL: ".$conn->error."</h1>";
-        } else {        
-            echo "<h1>".$dict_Settings["blog_edited"]."</h1>";
-        }
-    }    
+    // Sent back result
+    echo json_encode($result);
 }
 
 ?>

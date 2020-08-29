@@ -14,10 +14,13 @@ function CleanText(text) {
     // Escape quotes
     text4 = text3.replace('"', '\\"');
     
-    // Put the \n chars back
-    text5 = text4.replace('<br/>', '\n');
+    // Escape quotes
+    text5 = text4.replace('`', '\\`');
     
-    return text5;
+    // Put the \n chars back
+    text6 = text5.replace('<br/>', '\n');
+    
+    return text6;
 }
 
 function GetListOfBlogs(parent) {
@@ -72,7 +75,7 @@ function ShowNew() {
         // The submit button
         submitForm = document.createElement("input");
         submitForm.type = "submit";
-        submitForm.name = "submitAdd";
+        submitForm.name = "submit_add";
         submitForm.value = dict_Settings["new_blog"];
         submitForm.id = "submit_form_button";
         submitForm.className = "button_" + session_settings["theme"];
@@ -117,7 +120,7 @@ function ShowDelete() {
         // Submit button, disabled until a blog is chosen
         submitForm = document.createElement("input");
         submitForm.type = "submit";
-        submitForm.name = "submitDelete";
+        submitForm.name = "submit_delete";
         submitForm.value = dict_Settings["delete_blog"];
         submitForm.id = "submit_form_button";
         submitForm.className = "off_button_" + session_settings["theme"];
@@ -173,7 +176,7 @@ function ShowEdit() {
         // Submit button, disabled until a blog is chosen
         submitForm = document.createElement("input");
         submitForm.type = "submit";
-        submitForm.name = "submitEdit";
+        submitForm.name = "submit_edit";
         submitForm.value = dict_Settings["edit_blog"];
         submitForm.id = "submit_form_button";
         submitForm.className = "off_button_" + session_settings["theme"];

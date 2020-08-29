@@ -111,26 +111,36 @@
             }
         }
 
-        if (session_settings.hasOwnProperty("submitAdd")) {
+        if (post_settings.hasOwnProperty("submit_add")) {
             Settings = document.getElementById("settings_content");
-            Settings.innerHTML = AddBlog(session_settings["title"], session_settings["text"], session_settings["login"]).then();
+            addBlogToDatabase(post_settings["title"], 
+                              post_settings["text"], 
+                              post_settings["login"]).then(function(result) {
+                Settings.innerHTML = result;
             
-            // Reload without resending the action
-            goToPage("settings.php");
+                // Reload without resending the action
+                goToPage("settings.php");
+            });
             
-        } if (session_settings.hasOwnProperty("submitDelete")) {
+        } if (post_settings.hasOwnProperty("submit_delete")) {
             Settings = document.getElementById("settings_content");
-            Settings.innerHTML = DeleteBlog(session_settings["selecet"]).then();
+            deleteBlogFromDatabase(post_settings["select"]).then(function(result) {
+                Settings.innerHTML = result;
             
-            // Reload without resending the action
-            goToPage("settings.php");
+                // Reload without resending the action
+                goToPage("settings.php");
+            });
             
-        } if (session_settings.hasOwnProperty("submitEdit")) {
+        } if (post_settings.hasOwnProperty("submit_edit")) {
             Settings = document.getElementById("settings_content");
-            Settings.innerHTML = EditBlog(session_settings["selecet"], session_settings["title"], session_settings["text"]).then();
+            editBlogFromDatabase(post_settings["select"], 
+                                 post_settings["title"], 
+                                 post_settings["text"]).then(function(result) {
+                Settings.innerHTML = result;
             
-            // Reload without resending the action
-            goToPage("settings.php");
+                // Reload without resending the action
+                goToPage("settings.php");
+            });
         }
     }
 </script>
