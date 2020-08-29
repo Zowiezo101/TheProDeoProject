@@ -21,7 +21,7 @@ function CleanText(text) {
 
 function getItemFromDatabase(table="", value="", column="", page="", sort="") {
 
-   var promiseObj = new Promise(function(resolve, reject) {
+    var promiseObj = new Promise(function(resolve, reject) {
 
         // Create a request variable and assign a new XMLHttpRequest object to it.
         var request = new XMLHttpRequest();
@@ -87,7 +87,7 @@ function getItemFromDatabase(table="", value="", column="", page="", sort="") {
 
 function getAmountFromDatabase(table, column="", page="") {
 
-   var promiseObj = new Promise(function(resolve, reject) {
+    var promiseObj = new Promise(function(resolve, reject) {
 
         // Create a request variable and assign a new XMLHttpRequest object to it.
         var request = new XMLHttpRequest();
@@ -132,7 +132,7 @@ function getAmountFromDatabase(table, column="", page="") {
 
 function getMapFromDatabase(table="", value="") {
 
-   var promiseObj = new Promise(function(resolve, reject) {
+    var promiseObj = new Promise(function(resolve, reject) {
 
         // Create a request variable and assign a new XMLHttpRequest object to it.
         var request = new XMLHttpRequest();

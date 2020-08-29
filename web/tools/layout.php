@@ -33,7 +33,7 @@
 <script>
     var session_settings = {
         <?php foreach($_SESSION as $key => $value) {
-           echo "'".$key."': '".$value."',\n\t\t";
+            echo "'".$key."': '".$value."',\n\t\t";
         }?>
     };
     var get_settings = {
@@ -41,7 +41,7 @@
         $input_get = filter_input_array(INPUT_GET);
         if ($input_get) {
             foreach($input_get as $key => $value) {
-               echo "'".$key."': '".$value."',\n\t\t";
+                echo "'".$key."': `".$value."`,\n\t\t";
             }
         }?>
     };
@@ -50,7 +50,7 @@
         $input_post = filter_input_array(INPUT_POST);
         if ($input_post) {
             foreach($input_post as $key => $value) {
-               echo "'".$key."': '".$value."',\n\t\t";
+                echo "'".$key."': `".$value."`,\n\t\t";
             }
         }?>
     };
