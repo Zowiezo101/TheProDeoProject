@@ -57,8 +57,8 @@ var dict_EventsParams = {
 };
 
 var dict_Home = {
-	"link_blog": "Click to show the rest of this blog",
-	"unlink_blog": "Click to read less",
+	"link_blog": "Click to show the rest of this blog...",
+	"unlink_blog": "Click to read less...",
 	"user_blog": "by",
 };
 

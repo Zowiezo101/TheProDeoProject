@@ -10,7 +10,8 @@
         await getItemFromDatabase("blog").then(function(blogs) {
             
             // Put the table in the div
-            var blogTable = $("<table></table>").appendTo("#content");
+            var blogTable = $("<table></table>")        // New table
+                                .appendTo("#content");  // Parent
             
             for (var blogIdx in blogs) {
                 var blogObject = blogs[blogIdx];
@@ -18,9 +19,9 @@
                 // Add a table row to the table
                 // Add table data to the row
                 // The blog will be inserted in this element
-                var TableData = $("<td></td>")
-                                    .appendTo($("<tr></tr>")
-                                        .appendTo(blogTable));
+                var TableData = $("<td></td>")                  // The new element
+                                    .appendTo($("<tr></tr>")    // Parent
+                                        .appendTo(blogTable));  // Parent of the parent
                 
                 // Title of the blog
                 $("<h1></h1>")
@@ -45,18 +46,18 @@
                     // This function will show the rest of the blog that is currently
                     // hidden by default.
                     $("<a></a>")
-                            .appendTo(TableData)
-                            .attr("id", "link" + blogText.attr("id"))
-                            .attr("href", "javascript:_expandBlog('" + blogText.attr("id") + "')")
-                            .addClass("blog_link")
-                            .html(dict_Home["link_blog"] + "...");
+                            .appendTo(TableData)                        // Parent
+                            .attr("id", "link" + blogText.attr("id"))   // ID
+                            .attr("href", "javascript:_expandBlog('" + blogText.attr("id") + "')")  // Href
+                            .addClass("blog_link")                      // Class
+                            .html(dict_Home["link_blog"]);              // Text
                 }
                 
                 // The blog date and user
                 $("<p></p>")
-                        .appendTo(TableData)
-                        .addClass("blog_date")
-                        .html([blogObject["date"], 
+                        .appendTo(TableData)                    // Parent
+                        .addClass("blog_date")                  // Class
+                        .html([blogObject["date"],              // Text
                                dict_Home['user_blog'], 
                                blogObject["user"]].join(" "));
             }

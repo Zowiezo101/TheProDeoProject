@@ -53,8 +53,8 @@ $dict_EventsParams = array(
 	"book_end_vers"=>"Eind vers",);
 
 $dict_Home = array(
-	"link_blog"=>"Klik om de rest van dit blog te laten zien",
-	"unlink_blog"=>"Klik om minder te lezen",
+	"link_blog"=>"Klik om de rest van dit blog te laten zien...",
+	"unlink_blog"=>"Klik om minder te lezen...",
 	"user_blog"=>"door",);
 
 $dict_Settings = array(
