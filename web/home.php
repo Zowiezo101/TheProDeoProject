@@ -9,35 +9,32 @@
         
         await getItemFromDatabase("blog").then(function(blogs) {
             
-            var content = document.getElementById('content');
-            
             // Put the table in the div
-            var blogTable = document.createElement('table');
-            content.appendChild(blogTable);
+            var blogTable = $("<table></table>").appendTo("#content");
             
             for (var blogIdx in blogs) {
                 var blogObject = blogs[blogIdx];
                 
                 // Add a table row to the table
-                var TableRow = document.createElement('tr');
-                blogTable.appendChild(TableRow);
-                
                 // Add table data to the row
                 // The blog will be inserted in this element
-                var TableData = document.createElement('td');
-                TableRow.appendChild(TableData);
+                var TableData = $("<td></td>")
+                                    .appendTo($("<tr></tr>")
+                                        .appendTo(blogTable));
                 
-                var blogTitle = document.createElement('h1');
-                blogTitle.innerHTML = blogObject["title"];
-                TableData.appendChild(blogTitle);
+                // Title of the blog
+                $("<h1></h1>")
+                        .appendTo(TableData)        // Parent
+                        .html(blogObject["title"]); // Text
                 
-                var blogText = document.createElement('pre');
-                blogText.id = "blog" + blogObject["id"];
-                blogText.className = "blog_pre";
-                blogText.innerHTML = blogObject["text"];
-                TableData.appendChild(blogText);
+                // Text of the blog
+                var blogText = $("<pre></pre>")
+                        .appendTo(TableData)                    // Parent
+                        .attr("id", "blog" + blogObject["id"])  // ID
+                        .addClass("blog_pre")                   // Class
+                        .html(blogObject["text"]);              // Text
                 
-                if (blogText.offsetHeight > 75) {
+                if (blogText.outerHeight() > 75) {
                     // If the length of this blog text exceeds the maximum allowed,
                     // which means that it has more than 5 lines of text, the lines
                     // after those 5 allowed lines will be hidden. To prevent
@@ -47,18 +44,21 @@
                     // If the link is clicked, the function _expandBlog will be executed.
                     // This function will show the rest of the blog that is currently
                     // hidden by default.
-                    var blogLink = document.createElement("a");
-                    blogLink.innerHTML = dict_Home["link_blog"] + "...";
-                    blogLink.href = "javascript:_expandBlog('" + blogText.id + "')";
-                    blogLink.id = "link" + blogText.id;
-                    blogLink.className = "blog_link";
-                    TableData.appendChild(blogLink);
+                    $("<a></a>")
+                            .appendTo(TableData)
+                            .attr("id", "link" + blogText.attr("id"))
+                            .attr("href", "javascript:_expandBlog('" + blogText.attr("id") + "')")
+                            .addClass("blog_link")
+                            .html(dict_Home["link_blog"] + "...");
                 }
                 
-                var blogDate = document.createElement('p');
-                blogDate.className = "blog_date";
-                blogDate.innerHTML = blogObject["date"] + " " + dict_Home['user_blog'] + " " + blogObject["user"];
-                TableData.appendChild(blogDate);
+                // The blog date and user
+                $("<p></p>")
+                        .appendTo(TableData)
+                        .addClass("blog_date")
+                        .html([blogObject["date"], 
+                               dict_Home['user_blog'], 
+                               blogObject["user"]].join(" "));
             }
 
         }, console.log);

@@ -1,3 +1,6 @@
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
         <!-- The translation files -->
         <script src="translations/translation_<?php echo $_SESSION["lang"]; ?>.js"></script>
         
