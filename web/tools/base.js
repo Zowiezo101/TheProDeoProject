@@ -86,16 +86,7 @@ function createChildren(parent, tag_and_options) {
         var tag = tag_and_options[idx][0];
         var options = tag_and_options[idx][1];
         
-        var element = document.createElement(tag);
-        for (var option in options) {
-            if (option === "class") {
-                option = "className";
-                options[option] = options["class"];
-            }
-            element[option] = options[option];
-        }
-
-        parent.appendChild(element);
+        createChild(parent, tag, options);
     }
 }
 
