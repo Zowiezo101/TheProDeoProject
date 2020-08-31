@@ -37,6 +37,7 @@
     /* Font size */
     text-align: Center;
     font-size: 24px;
+    font-weight: bold;
 }
 
 /* The div that contains the language options and settings button */
@@ -156,69 +157,70 @@
  * Home parts
  */
 
-#home {
-    /* Take the entire width, get the text in the middle */
-    text-align: center;
-}
-
-#home table {
+#home #content table {
     /* Table takes 80% of the width, but stays in the middle using margin: auto */
     width: 80%;
     margin: auto;
     
     /* Get some room al around the table */
-    padding: 10px;
     border-spacing: 50px;
     border-collapse: separate;
-    
-    /* Font to use title, date & name */
-    font-size: 20px;
+}
+
+#home #content td, pre {
+    /* Font to use for text */
+    font-size: 16px;
     font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
-pre {
-    /* Font to use for text */
+#home #content h1 {
+    /* Font to use title, date & name */
+    font-size: 32px;
+    font-weight: bold;
     font-family: "Comic Sans MS", cursive, sans-serif;
+    
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 /* Use different colors for each 5 blogs
    The border on the top, makes it look like a sticky note */
-#home tr:nth-child(5n) td {
+#home #content tr:nth-child(5n) td {
     background-color: Yellow;
     border-top-width: 25px;
     border-top-color: Gold;
     border-top-style: solid;
 }
 
-#home tr:nth-child(5n + 1) td {
+#home #content tr:nth-child(5n + 1) td {
     background-color: LightGreen;
     border-top-width: 25px;
     border-top-color: Green;
     border-top-style: solid;
 }
 
-#home tr:nth-child(5n + 2) td {
+#home #content tr:nth-child(5n + 2) td {
     background-color: Pink;
     border-top-width: 25px;
     border-top-color: HotPink;
     border-top-style: solid;
 }
 
-#home tr:nth-child(5n + 3) td {
+#home #content tr:nth-child(5n + 3) td {
     background-color: LightBlue;
     border-top-width: 25px;
     border-top-color: Blue;
     border-top-style: solid;
 }
 
-#home tr:nth-child(5n + 4) td {
+#home #content tr:nth-child(5n + 4) td {
     background-color: Orange;
     border-top-width: 25px;
     border-top-color: DarkOrange;
     border-top-style: solid;
 }
 
-#home td {
+#home #content td {
     text-align: center;
 }
 
@@ -246,4 +248,5 @@ pre {
    it is longer than 5 lines. */
 .blog_link {
     color: black;
+    text-decoration: underline;
 }
