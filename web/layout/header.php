@@ -1,13 +1,13 @@
 
         <!-- Header, with logo, banner and options -->
-        <div id="header" class="row">
+        <div id="header" class="row mx-0">
             <!-- Logo -->
-            <div class="col-auto">
+            <div class="col-auto px-0">
                 <a id="logo_link" href="home.php" ></a>
             </div>
                 
             <!-- Banner, in the corresponding language -->
-            <div class="col banner_<?php echo $_SESSION["theme"]; ?>">
+            <div class="banner_<?php echo $_SESSION["theme"]; ?> col px-0">
                 <h1 id="banner_text">
                     <?php 
                         global $dict_Footer;
@@ -17,11 +17,11 @@
             </div>
                 
             <!-- Options -->
-            <div id="options" class="col-auto">
+            <div id="options" class="col-auto px-0">
                 
-                <div class="row">
+                <div class="row mx-0">
                     <!-- Dropdown list for available languages -->
-                    <div id="dropdown_lang_div">
+                    <div id="dropdown_lang_div" class="col-auto px-0">
 
                         <!-- The button to make the drop down list of options appear -->
                         <button 
@@ -42,7 +42,7 @@
                     </div>
 
                     <!-- Settings -->
-                    <div class="settings" >
+                    <div class="settings col-auto px-0" >
                         <a class="settings" href="settings.php" ></a>
                     </div>
                 </div>

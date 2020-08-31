@@ -21,7 +21,7 @@
         <?php require "layout/import.php"; ?>
     </head>
     
-    <body>
+    <body class="container-fluid">
         <?php require "layout/header.php"; ?>
         <?php require "layout/navigation.php"; ?>
         

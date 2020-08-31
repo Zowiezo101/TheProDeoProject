@@ -1,4 +1,137 @@
 
+/* When a box is NOT selected */
+.nav_purple {
+    background-color: Purple;
+    border: 0;
+    color: White;
+    font-weight: bold;
+}
+.nav_orange {
+    background-color: Orange;
+    border: 0;
+    color: Black;
+    font-weight: bold;
+}
+.nav_red {
+    background-color: Tomato;
+    border: 0;
+    color: Black;
+    font-weight: bold;
+}
+.nav_yellow {
+    background-color: Gold;
+    border: 0;
+    color: Black;
+    font-weight: bold;
+}
+.nav_green {
+    background-color: LightGreen;
+    border: 0;
+    color: Black;
+    font-weight: bold;
+}
+.nav_blue {
+    background-color: Blue;
+    border: 0;
+    color: White;
+    font-weight: bold;
+}
+.nav_black {
+    background-color: Black;
+    border: 0;
+    color: White;
+    font-weight: bold;
+}
+
+
+/* When a box is selected */
+.select_purple {
+    background-color: White;
+    color: Black;
+    font-weight: bold;
+    
+    border-color: Purple;
+    border-style: solid;
+    border-width: 3px;
+}
+.select_purple:hover {
+    background-color: Purple;
+    color: White;
+}
+.select_red {
+    background-color: White;
+    color: Black;
+    font-weight: bold;
+    
+    border-color: Tomato;
+    border-style: solid;
+    border-width: 3px;
+}
+.select_red:hover {
+    background-color: Tomato;
+}
+.select_yellow {
+    background-color: White;
+    color: Black;
+    font-weight: bold;
+    
+    border-color: Gold;
+    border-style: solid;
+    border-width: 3px;
+}
+.select_yellow:hover {
+    background-color: Gold;
+}
+.select_green {
+    background-color: White;
+    color: Black;
+    font-weight: bold;
+    
+    border-color: LightGreen;
+    border-style: solid;
+    border-width: 3px;
+}
+.select_green:hover {
+    background-color: LightGreen;
+}
+.select_blue {
+    background-color: White;
+    color: Black;
+    font-weight: bold;
+    
+    border-color: Blue;
+    border-style: solid;
+    border-width: 3px;
+}
+.select_blue:hover {
+    background-color: Blue;
+    color: White;
+}
+.select_black {
+    background-color: White;
+    color: Black;
+    font-weight: bold;
+    
+    border-color: Black;
+    border-style: solid;
+    border-width: 3px;
+}
+.select_black:hover {
+    background-color: Black;
+    color: White;
+}
+.select_orange {
+    background-color: White;
+    color: Black;
+    font-weight: bold;
+    
+    border-color: Orange;
+    border-style: solid;
+    border-width: 3px;
+}
+.select_orange:hover {
+    background-color: Orange;
+}
 
 /* Text over the banner image, 
    done separate so it could be displayed in multiple languages */
@@ -22,4 +155,86 @@
 }
 .banner_orange {    
     background-image: url("../img/banner/banner_orange.svg");
+}
+
+
+/* Background colors of the banners */
+.purple #header {
+    background-image: linear-gradient(to right, Lavender, Thistle, LightGrey, Grey);
+    background-color: Thistle;
+}
+.black #header {
+    background-image: linear-gradient(to right, Silver, Snow, LightGrey, Grey);
+    background-color: Snow;
+}
+.red #header  {
+    background-image: linear-gradient(to right, Pink, LightPink, LightGrey, Grey);
+    background-color: LightPink;
+}
+.yellow #header {
+    background-image: linear-gradient(to right, LemonChiffon, Beige, LightGrey, Grey);
+    background-color: Beige;
+}
+.green #header {
+    background-image: linear-gradient(to right, MediumAquaMarine, DarkSeaGreen, LightGrey, Grey);
+    background-color: DarkSeaGreen;
+}
+.blue #header {
+    background-image: linear-gradient(to right, LightCyan, LightBlue, LightGrey, Grey);
+    background-color: LightBlue;
+}
+.orange #header {
+    background-image: linear-gradient(to right, BurlyWood, LightSalmon, LightGrey, Grey);
+    background-color: LightBlue;
+}
+
+
+/* Text colors of the banners */
+.purple #banner_text {
+    color: Yellow;
+}
+.black #banner_text {
+    color: Black;
+}
+.red #banner_text  {
+    color: SeaGreen;
+}
+.yellow #banner_text {
+    color: Purple;
+}
+.green #banner_text {
+    color: Red;
+}
+.blue #banner_text {
+    color: Orange;
+}
+.orange #banner_text {
+    color: Blue;
+}
+
+
+/* Color of the footers */
+.purple #footer {
+    background-color: Purple;
+    color: White;
+}
+.black #footer {
+    background-color: Black;
+    color: White;
+}
+.red #footer {
+    background-color: Tomato;
+}
+.yellow #footer {
+    background-color: Gold;
+}
+.green #footer {
+    background-color: LightGreen;
+}
+.blue #footer {
+    background-color: Blue;
+    color: White;
+}
+.orange #footer {
+    background-color: Orange;
 }

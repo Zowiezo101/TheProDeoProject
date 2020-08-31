@@ -4,23 +4,18 @@
 #header {
     /* Height of the header */
     height: 75px;
-    height: var(--header-height);
 }
 
 #header #logo_link {
     /* Simple square */
     width: 75px;
-    width: var(--header-height);
     height: 75px;
-    height: var(--header-height);
     
     display: block;
 
     /* Background image of the home link */
     background-image: url("../img/logo.bmp");
     background-size: 75px 75px;
-    background-size: var(--header-height) 
-                     var(--header-height);
     background-repeat: no-repeat;
 }
 
@@ -48,9 +43,7 @@
 /* Language button */
 #header #options #dropdown_lang_div {
     height: 50px;
-    height: var(--options-height);
     width: 100px;
-    width: var(--lang-width);
     
     /* No spaces around it */
     margin: 0;
@@ -60,9 +53,7 @@
 
 #header #options #dropdown_lang_menu {
     height: 50px;
-    height: var(--options-height);
     width: 100px;
-    width: var(--lang-width);
     
     /* Menu is invisible, until it is clicked by the user */
     display: none;
@@ -75,9 +66,7 @@
 #header #options #dropdown_lang_button,
 #header #options .dropdown_lang_option {
     height: 50px;
-    height: var(--options-height);
     width: 100px;
-    width: var(--lang-width);
     
     /* No space around it */
     border: 0;
@@ -106,9 +95,7 @@
 /* Settings button */
 #header #options .settings {
     height: 50px;
-    height: var(--options-height);
     width: 50px;
-    width: var(--options-height);
     
     /* No space around it or anything */
     margin: 0;
@@ -118,7 +105,6 @@
     /* The settings icon */
     background-image: url("../img/icon/settings.svg");
     background-size: 50px 50px;
-    background-size: var(--options-height) var(--options-height);
 }
 
 #header #options .settings:hover {
@@ -129,16 +115,45 @@
 
 
 /************************************************
- * The root element (gives an error in netbeans, so at the bottom for now)
+ * Navigation parts
  */
+#navigation {
+    height: 50px;
+}
 
-/* Store some variables in here */
-:root {
-    --header-height: 75px;
-    --options-height: 50px;
-    --nav-height: 50px;
-    --footer-height: 50px;
-    --button-height: 25px;
-    --banner-width: 500px;
-    --lang-width: 100px;
+/* Add a white border on hover */
+#navigation button:hover, 
+#navigation button:focus {
+    border-color: White;
+    border-style: solid;
+    border-width: 3px;
+}
+
+/* The button itself */
+#navigation button {
+    height: 50px;
+    width: 100%;
+}
+
+/* The menu that will be visible when clicked on the dropdown button */
+#navigation #dropdown_db_menu,
+#navigation #dropdown_prodeo_menu {   
+    width: 100%;
+    
+    /* Not visible until clicked */
+    display: none;
+    
+    /* Display it on top over the button */
+    position: absolute;
+    z-index: 1;
+}
+
+
+/************************************************
+ * Footer parts
+ */
+#footer {    
+    /* The text that is displayed inside of the footer */
+    text-align: center;
+    font-weight: bold;
 }
