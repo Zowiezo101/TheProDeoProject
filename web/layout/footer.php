@@ -1,6 +1,6 @@
 
         <!-- And the footer of every page -->
-        <div id="footer" class="row fixed-bottom">
+        <div id="footer" class="row">
             <div class="col-md-12">
                 <?php 
                     // Get the name of the file that has currently included this file
