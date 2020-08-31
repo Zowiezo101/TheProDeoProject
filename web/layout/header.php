@@ -42,7 +42,7 @@
                     </div>
 
                     <!-- Settings -->
-                    <div class="settings col-auto px-0" >
+                    <div class="settings col-auto px-0 fas fa-cog" >
                         <a class="settings" href="settings.php" ></a>
                     </div>
                 </div>
