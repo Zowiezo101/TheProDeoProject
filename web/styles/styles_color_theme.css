@@ -238,3 +238,44 @@
 .orange #footer {
     background-color: Orange;
 }
+
+
+/* Backgrounds of the different pages */
+#home {
+    /* White background, in case the image fails to load
+       The background looks like a noteblock, every line 
+       is about 32 pixels apart, and repeating on the y-axis
+       (up to down). Do use the entire width of the screen. */
+    background-color: White;
+    background-image: url("../img/background/background_home.svg");
+    background-repeat: repeat, repeat-y;
+    background-size: 100% 32px;
+}
+
+.blue {
+    background-color: rgb(230, 247, 255);
+}
+
+.red {
+    background-color: rgb(255, 230, 230);
+}
+
+.yellow {
+    background-color: rgb(255, 255, 230);
+}
+
+.purple {
+    background-color: rgb(230, 230, 255);
+}
+
+.green {
+    background-color: rgb(230, 255, 230);
+}
+
+.black {
+    background-color: rgb(242, 242, 242);
+}
+
+.orange {
+    background-color: rgb(255, 243, 230);
+}

@@ -157,3 +157,100 @@
     text-align: center;
     font-weight: bold;
 }
+
+
+/************************************************
+ * Home parts
+ */
+
+#home {
+    /* Take the entire width, get the text in the middle */
+    text-align: center;
+}
+
+#home table {
+    /* Table takes 80% of the width, but stays in the middle using margin: auto */
+    width: 80%;
+    margin: auto;
+    
+    /* Get some room al around the table */
+    padding: 10px;
+    border-spacing: 50px;
+    border-collapse: separate;
+    
+    /* Font to use title, date & name */
+    font-size: 20px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+pre {
+    /* Font to use for text */
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+/* Use different colors for each 5 blogs
+   The border on the top, makes it look like a sticky note */
+#home tr:nth-child(5n) td {
+    background-color: Yellow;
+    border-top-width: 25px;
+    border-top-color: Gold;
+    border-top-style: solid;
+}
+
+#home tr:nth-child(5n + 1) td {
+    background-color: LightGreen;
+    border-top-width: 25px;
+    border-top-color: Green;
+    border-top-style: solid;
+}
+
+#home tr:nth-child(5n + 2) td {
+    background-color: Pink;
+    border-top-width: 25px;
+    border-top-color: HotPink;
+    border-top-style: solid;
+}
+
+#home tr:nth-child(5n + 3) td {
+    background-color: LightBlue;
+    border-top-width: 25px;
+    border-top-color: Blue;
+    border-top-style: solid;
+}
+
+#home tr:nth-child(5n + 4) td {
+    background-color: Orange;
+    border-top-width: 25px;
+    border-top-color: DarkOrange;
+    border-top-style: solid;
+}
+
+#home td {
+    text-align: center;
+}
+
+/* This class is used when text in a blog is longer than 5 lines.
+   It breaks the line and hides the other lines */
+.blog_pre {
+    width: 100%;
+    word-wrap: break-all;
+    white-space: pre-wrap;
+    
+    /* Height limit: 5 lines */
+    max-height: 90px;
+    overflow: hidden;
+}
+
+/* This class is used when text in a blog is longer than 5 lines,
+   and the 'show more' button is clicked. */
+.blog_pre_expand {
+    width: 100%;
+    word-wrap: break-all;
+    white-space: pre-wrap;
+}
+
+/* The link to show more/less text in a blog, when 
+   it is longer than 5 lines. */
+.blog_link {
+    color: black;
+}
