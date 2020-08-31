@@ -250,3 +250,50 @@
     color: black;
     text-decoration: underline;
 }
+
+
+/************************************************
+ * Body parts
+ */
+
+#default {
+    text-align: center;
+}/************************************************
+ * Contact parts
+ */
+#aboutus #content,
+#contact #content {
+    /* Use 80 percent of the width of the screen, 
+       Using margin: auto, the div is placed in the middle 
+       of the screen. */
+    width: 80%;
+    margin: auto;
+    
+    /* Put the text in the middle of the screen */
+    text-align: center;
+}
+
+/* The area's that can be filled in, previewed or edited */
+#contact #content textarea {
+    /* Don't take up the entire width of the content div */
+    display: block;
+    width: 50%;
+    
+    /* Some space between the borders and the letters. Make the borders rounded */
+    margin: 10px auto 10px auto;
+    padding: 10px;
+    border: 0px;
+    border-radius: 8px;
+}
+
+/* The button to add, edit or delete a blog */
+#contact #content input {
+    /* Smooth edges, space between the text and the border of the button */
+    border: 0px;
+    border-radius: 8px;
+    padding: 10px;
+    
+    /* Clear letters in the center of the button */
+    text-align: center;
+    font-weight: bold;
+}
