@@ -62,20 +62,15 @@ switch(session_settings["table"]) {
 async function showItemInfo(information) {
     information = information[0];
     
-    // Grab the right part of the information window
-    var contentEl = document.getElementById("item_info");
-
-    // Clean it
-    contentEl.innerHTML = "";
-
-    // Add the name of the current person as a header
-    var Name = document.createElement("h1");
-    Name.innerHTML = information["name"];
-    contentEl.appendChild(Name);
+    
+    var contentEl = $("#item_info")
+            // Grab the right part of the information window and clean it
+            .html("")
+            // Add the name of the current person as a header
+            .append($("<h1/>").html(information["name"]));
 
     // Create a Table
-    var table = document.createElement("table");
-    contentEl.appendChild(table);
+    var table = $("<table>").appendTo(contentEl);
 
     // For all the available information
     for (var key in information)
@@ -88,20 +83,16 @@ async function showItemInfo(information) {
             value = " ";
         } 
 
-        // Name is already shown. 
-        // ID number might just confuse the reader, so hide it.
         var main_key = session_settings["table"].substr(0, session_settings["table"].length - 1) + "_id";
-        if ((key === "name") || (key === main_key) || (key === "order_id")) {
-            continue;
-        }
-
-        // We'll use these when we get to book_start_vers
-        if ((key === "book_start_id") || (key === "book_start_chap")) {
-            continue;
-        }
-
-        // We'll use these when we get to book_end_vers
-        if ((key === "book_end_id") || (key === "book_end_chap")) {
+        
+        // Name is already shown. 
+        if ((key === "name") || 
+                // ID number might just confuse the reader, so hide it.
+                (key === main_key) || (key === "order_id") ||
+                // We'll use these when we get to book_start_vers
+                (key === "book_start_id") || (key === "book_start_chap") ||
+                // We'll use these when we get to book_end_vers
+                (key === "book_end_id") || (key === "book_end_chap")) {
             continue;
         }
 
@@ -109,71 +100,57 @@ async function showItemInfo(information) {
              (key === "book_end_vers")) && (value !== "")) {
             // Create a link to the EO jongerenbijbel website or an english bible website!
             // This website should correspond to the translation used for the database!
-
-            var TableKey = document.createElement("td");
-            // TODO: We need javascript dicts
-            TableKey.innerHTML = dict_params[key];
-
-            // Only show two decimals after the comma
-            var TableLink = document.createElement("a");
-            TableLink.innerHTML = "";
+            var TableLink = $("<a/>").html("").attr("target", "_blank");
 
             if (key === "book_start_vers") {
                 await getItemFromDatabase("books", information["book_start_id"]).then(function (bookInfo) { 
                     bookInfo = bookInfo[0];
                     
                     // When the information is retreived:
-                    TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
-                                                                information["book_start_chap"],
-                                                                value);
-                    TableLink.href = convertBibleVerseLink(bookInfo["name"],
-                                                           information["book_start_id"], 
-                                                           information["book_start_chap"], 
-                                                           value);
+                    TableLink
+                            .html(convertBibleVerseText(bookInfo["name"],
+                                                         information["book_start_chap"],
+                                                         value))
+                            .attr(convertBibleVerseLink(bookInfo["name"],
+                                                        information["book_start_id"], 
+                                                        information["book_start_chap"], 
+                                                        value));
                 }, console.log);
             } else {
                 await getItemFromDatabase("books", information["book_end_id"]).then(function (bookInfo) { 
                     bookInfo = bookInfo[0];
                     
                     // When the information is retreived:
-                    TableLink.innerHTML = convertBibleVerseText(bookInfo["name"],
-                                                                information["book_end_chap"], 
-                                                                value);
-                    TableLink.href = convertBibleVerseLink(bookInfo["name"],
-                                                           information["book_end_id"],
-                                                           information["book_end_chap"],
-                                                           value);
+                    TableLink
+                            .html(convertBibleVerseText(bookInfo["name"],
+                                                         information["book_end_chap"],
+                                                         value))
+                            .attr(convertBibleVerseLink(bookInfo["name"],
+                                                        information["book_end_id"], 
+                                                        information["book_end_chap"], 
+                                                        value));
                 }, console.log);
             }
-            TableLink.target = "_blank";
-
-            var TableData = document.createElement("td");
-            TableData.appendChild(TableLink);
-
-
-            // Left is key names
-            // right is value names
-            var TableRow = document.createElement("tr");
-            TableRow.appendChild(TableKey);
-            TableRow.appendChild(TableData);
-
-            table.appendChild(TableRow);
+            
+            table.append(
+                $("<tr/>").append(
+                    // Left is key names
+                    $("<td/>").html(dict_params[key])
+                ).append(
+                    // right is value names
+                    $("<td/>").append(TableLink)
+                )
+            );
         } else {
-            // Add a new table row
-            var TableKey = document.createElement("td");
-            // TODO
-            TableKey.innerHTML = dict_params[key];
-
-            var TableData = document.createElement("td");
-            TableData.innerHTML = value;
-
-            // Left is key names
-            // right is value names
-            var TableRow = document.createElement("tr");
-            TableRow.appendChild(TableKey);
-            TableRow.appendChild(TableData);
-
-            table.appendChild(TableRow);
+            table.append(
+                $("<tr/>").append(
+                    // Left is key names
+                    $("<td/>").html(dict_params[key])
+                ).append(
+                    // right is value names
+                    $("<td/>").html(value)
+                )
+            );
         }
     }
 
@@ -322,19 +299,16 @@ function setRightSide(parent) {
     /* Right column. This is where the item info will be displayed
        when an item is clicked from the item bar. When no item is
        clicked yet, show default text with instructions. */
-    var right = document.createElement("div");
-    parent.appendChild(right);
-
-    // Set its attributes
-    right.id = "item_info";
-    right.className = "contents_right";
-
-    var defaultText = document.createElement("div");
-    right.appendChild(defaultText);
-
-    // Set its attributes
-    defaultText.id = "default";
-    defaultText.innerHTML = dict["default"];
+    var right = $("<div/>")
+            .appendTo(parent)
+            .attr("id", "item_info")
+            .addClass("contents_right col-md-9 px-0");
+    
+    // The default text to display when nothing is selected yet
+    $("<div/>")
+            .appendTo(right)
+            .attr("id", "default")
+            .html(dict["default"]);
 
     // Show the selected person, when someone is selected
     if (session_settings.hasOwnProperty("id")) {

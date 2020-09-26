@@ -1,69 +1,83 @@
 /* global session_settings, updateSessionSettings, getItemFromDatabase, showItemInfo, getAmountFromDatabase */
 
 function showItemList(information) {
-
-    // The item bar, where all items are shown
-    var itemBar = document.getElementById("item_bar");
-
-    // Clean it
-    itemBar.innerHTML = "";
+    
+    $("#item_bar").children().remove();
 
     // If there are results, create the table with the results
-    var table = document.createElement("table");
-    itemBar.appendChild(table);
+    var table = $("<table/>").appendTo("#item_bar");
 
     for (var itemIdx in information) {
         var item = information[itemIdx];
-
-        var tableRow = document.createElement('tr');
-        table.appendChild(tableRow);
-
-        var tableData = document.createElement('td');
-        tableRow.appendChild(tableData);
-
-        var button = document.createElement('button');
-        button.innerHTML = item["name"];
-
         var item_type = session_settings["table"].substr(0, session_settings["table"].length - 1);
-        button.id = item[item_type + "_id"];
-        button.addEventListener("click", function() {
-            updateSessionSettings("id", this.id).then(getItemFromDatabase(session_settings["table"], this.id).then(showItemInfo, console.log), console.log);
-        });
-        tableData.appendChild(button);
-
+        
+        $("<button/>")
+                .appendTo(       
+                    // Add this button to a TD
+                    $("<td/>").addClass("col px-0").appendTo(
+                        // The TD to a TR
+                        $("<tr/>").addClass("row mx-0").appendTo(
+                            // And the TR to the table
+                            table)))    
+                .attr("id", item[item_type + "_id"])    // Set the ID
+                .click(function() {                     // Set the onclick function
+                    updateSessionSettings("id", this.id).then(
+                        getItemFromDatabase(session_settings["table"], this.id).then(
+                            showItemInfo, console.log), console.log);
+                })
+                .html(item["name"]);                    // Set the text
     }
 }
 
 function setLeftSide(parent) {
     // Left column
-    var left = document.createElement("div");
-    parent.appendChild(left);
-
-    // Set its attributes
-    left.id = "item_choice";
-    left.className = "contents_left";
+    var left = $("<div/>")
+                    .appendTo(parent)
+                    .attr("id", "item_choice")
+                    .addClass("contents_left col-md-3 px-0");
 
     // Div with all the buttons for the item bar
-    var buttonBar = document.createElement("div");
-    left.appendChild(buttonBar);
+    $("<div/>")
+            .appendTo(left)
+            .attr("id", "button_bar")
+            .addClass("row mx-0")
+            .append(
+                // Previous page
+                $("<button/>")
+                    .attr("id", "button_left")
+                    .addClass("col fas fa-arrow-left")
+                    .click(PrevPage))
+            .append(
+                // Sort on Apperance
+                $("<button/>")
+                    .attr("id", "button_app")
+                    .addClass("col fas fa-sort-numeric-down button_" + session_settings["theme"])
+                    .click(SortOnAppearance))
+            .append(
+                // Sort on Alphabet
+                $("<button/>")
+                    .attr("id", "button_alp")
+                    .addClass("col fas fa-sort-alpha-down button_" + session_settings["theme"])
+                    .click(SortOnAlphabet))
+            .append(
+                // Sort on Alphabet
+                $("<button/>")
+                    .attr("id", "button_right")
+                    .addClass("col fas fa-arrow-right")
+                    .click(NextPage));
 
-    // Set its attributes
-    buttonBar.id = "button_bar";
-
-    // Add all the buttons to it
-    setButtonLeft(buttonBar);
-    setButtonApp(buttonBar);
-    setButtonAlp(buttonBar);
-    setButtonRight(buttonBar);
+    // Initial settings
+    updateButtonLeft();
+    updateButtonApp();
+    updateButtonAlp();
+    updateButtonRight();
 
     /* Show a list of the available items in the item bar
        When clicked, it will show information about this item. */
-    var itemBar = document.createElement("div");
-    left.appendChild(itemBar);
-
-    // Set its attributes
-    itemBar.id = "item_bar";
-    itemBar.className = "item_" + session_settings["theme"];
+    $("<div/>")
+            .appendTo(left)
+            .attr("id", "item_bar")
+            .addClass("item_" + session_settings["theme"]);
 
     // Show the current page
     var page = session_settings["page"] ? session_settings["page"] : 0;
@@ -172,101 +186,42 @@ async function SortOnAlphabet() {
     }, console.log);
 }
 
-function setButtonLeft(parent) {
-    // Previous page
-    var buttonLeft = document.createElement("button");
-    parent.appendChild(buttonLeft);
-
-    // Set its attributes
-    buttonLeft.id = "button_left";
-    buttonLeft.onclick = PrevPage;
-    buttonLeft.innerHTML = "←";
-
-    updateButtonLeft();
-}
-
 function updateButtonLeft() {
-    var buttonLeft = document.getElementById("button_left");
 
-    if (session_settings.hasOwnProperty("page")) {
-        var page = session_settings["page"];
-    } else {
-        page = 0;
-    }
-
-    buttonLeft.disabled = (page === 0) ? true : false;
-    buttonLeft.className = ((page === 0) ? "off_" : "") + "button_" + session_settings["theme"];
-}
-
-function setButtonApp(parent) {
-    // Sort on Apperance
-    var buttonApp = document.createElement("button");
-    parent.appendChild(buttonApp);
-
-    // Set its attributes
-    buttonApp.id = "button_app";
-    buttonApp.onclick = SortOnAppearance;
-
-    updateButtonApp();
+    var page = session_settings.hasOwnProperty("page") ? session_settings["page"] : 0;
+    
+    $("#button_left")
+            .attr("disabled", (page === 0) ? true : false)
+            .removeClass(((page === 0) ? "" : "off_") + "button_" + session_settings["theme"])
+            .addClass(((page !== 0) ? "" : "off_") + "button_" + session_settings["theme"]);
 }
 
 function updateButtonApp() {
-    var buttonApp = document.getElementById("button_app");
-
-    if (session_settings.hasOwnProperty("sort")) {
-        var sort = session_settings["sort"];
-    } else {
-        sort = "app";
-    }
-
-    buttonApp.className = (sort === "app") ? "sort_9_1" : "sort_1_9";   
-}
-
-function setButtonAlp(parent) {
-    // Sort on Alphabet
-    var buttonAlp = document.createElement("button");
-    parent.appendChild(buttonAlp);
-
-    // Set its attributes
-    buttonAlp.id = "button_alp";
-    buttonAlp.onclick = SortOnAlphabet;
-
-    updateButtonAlp();
+    var sort = session_settings.hasOwnProperty("sort") ? session_settings["sort"] : "app";
+    
+    $("#button_app")
+            .removeClass((sort === "app") ? "fas fa-sort-numeric-down" : "fas fa-sort-numeric-down-alt")
+            .addClass((sort !== "app") ? "fas fa-sort-numeric-down" : "fas fa-sort-numeric-down-alt");
 }
 
 function updateButtonAlp() {
-    var buttonAlp = document.getElementById("button_alp");
-
-    if (session_settings.hasOwnProperty("sort")) {
-        var sort = session_settings["sort"];
-    } else {
-        sort = "app";
-    }
-
-    buttonAlp.className = (sort === "alp") ? "sort_z_a" : "sort_a_z";   
-}
-
-function setButtonRight(parent) {
-    // Next page
-    var buttonRight = document.createElement("button");
-    parent.appendChild(buttonRight);
-
-    // Set its attributes
-    buttonRight.id = "button_right";
-    buttonRight.onclick = NextPage;
-    buttonRight.innerHTML = "→";
-
-    updateButtonRight();
+    var sort = session_settings.hasOwnProperty("sort") ? session_settings["sort"] : "app";
+    
+    $("#button_alp")
+            .removeClass((sort === "alp") ? "fas fa-sort-alpha-down" : "fas fa-sort-alpha-down-alt")
+            .addClass((sort !== "alp") ? "fas fa-sort-alpha-down" : "fas fa-sort-alpha-down-alt");
 }
 
 async function updateButtonRight() {
     
     await getAmountFromDatabase(session_settings["table"], 
                                 "", 
-                                session_settings["page"]).then(function(nrOfItems) {
-                                    var buttonRight = document.getElementById("button_right");
-                                    
-                                    buttonRight.disabled = (parseInt(nrOfItems, 10) < 101) ? true : false;
-                                    buttonRight.className = ((parseInt(nrOfItems, 10) < 101) ? "off_" : "") + "button_" + session_settings["theme"];
+                                session_settings["page"]).then(
+                                    function(nrOfItems) {
+    
+                                        $("#button_right")
+                                                .attr("disabled", (parseInt(nrOfItems, 10) < 101) ? true : false)
+                                                .removeClass(((parseInt(nrOfItems, 10) < 101) ? "off_" : "") + "button_" + session_settings["theme"])
+                                                .addClass(((parseInt(nrOfItems, 10) < 101) ? "off_" : "") + "button_" + session_settings["theme"]);
                                 }, console.log);
 }
