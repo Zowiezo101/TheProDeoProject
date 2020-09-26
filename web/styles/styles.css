@@ -258,7 +258,124 @@
 
 #default {
     text-align: center;
-}/************************************************
+}
+
+/************************************************
+ * Database parts
+ */
+
+/* These are the left and right buttons */
+#button_bar button {
+    height: 25px;
+    
+    /* No spaces around it */
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+
+/* These are the items that can be picked */
+#item_bar table, #item_bar tr
+{
+    /* Take the size you can get */
+    width: 100%;
+}
+
+/* These table data cells contain the buttons to get the information */
+#item_bar td
+{    
+    /* Grey clear border between the cells */
+    border-width: 2px;
+    border-style: solid;
+    border-color: DarkGrey;
+}
+
+/* These are the clickable buttons for the different items */
+#item_bar button
+{
+    /* Same size as the cells they are in */
+    width: 100%;
+    display: block;
+    
+    /* No space around it */
+    margin: 0;
+    padding: 0;
+    border: 0;
+    
+    /* Text in the middle of the button, nice and bold */
+    text-align: center;
+    font-weight: bold;
+    color: black;
+}
+
+
+/************************************************
+ * Results from database
+ */
+ 
+/* The right side of the screen, that will display information
+   about the chosen item */
+#item_info {
+    /* In the middle */
+    text-align: center;
+}
+
+#item_info h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#item_info table
+{
+    /* Place the table in the middle as well */
+    margin: auto;
+    width: 80%;
+    text-align: center;
+    
+    /* Get some space all around. So it isn't right under the title
+       and right above the maps */
+    padding: 10px;
+    
+    /* This way you only see one border between two cells, 
+       instead of two. */
+    border-collapse: collapse;
+}
+
+#item_info td {
+    /* No borders on the sides */
+    border-bottom: 1px black solid;
+    border-top: 1px black solid;
+    
+    /* Some space between the cells */
+    padding: 5px;
+}
+
+/* Tiny tables inside the main table, for lists of locations, peoples etc.. */
+#item_info td td {
+    /* Don't show their borders */
+    border-width: 0px;
+}
+
+/* First cell is the name of the field that is being shown */
+#item_info td:first-child
+{
+    font-weight: bold;
+}
+
+/* But not for the tiny tables */
+#item_info td td:first-child {
+    font-weight: normal;
+}
+
+/* The links inside the tiny table */
+#item_info td td a {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+/************************************************
  * Contact parts
  */
 #aboutus #content,

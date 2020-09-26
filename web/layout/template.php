@@ -27,7 +27,7 @@
         
         <!-- Actual content of the page itself 
             This is defined in the corresponding php page -->
-        <div id="content" class="container-fluid">
+        <div id="content" class="row mx-0">
         </div>
         
         <?php require "layout/footer.php"; ?>

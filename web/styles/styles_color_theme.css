@@ -279,3 +279,93 @@
 .orange {
     background-color: rgb(255, 243, 230);
 }
+
+
+/* Colors of the different buttons */
+/* This includes the disabled buttons */
+.off_button_blue, 
+.button_blue {
+    background-color: Blue;
+    color: White;
+}
+.off_button_red, 
+.button_red {
+    background-color: Tomato;
+    color: Black;
+}
+.off_button_yellow, 
+.button_yellow {
+    background-color: Gold;
+    color: Black;
+}
+.off_button_purple, 
+.button_purple {
+    background-color: Purple;
+    color: White;
+}
+.off_button_green, 
+.button_green {
+    background-color: LightGreen;
+    color: Black;
+}
+.off_button_black, 
+.button_black {
+    background-color: Black;
+    color: White;
+}
+.off_button_orange, 
+.button_orange {
+    background-color: Orange;
+    color: Black;
+}
+
+
+/* Hovering over buttons */
+/* Or when a button is disabled */
+.off_button_orange, 
+.off_button_black, 
+.off_button_blue, 
+.off_button_green, 
+.off_button_red, 
+.off_button_yellow, 
+.off_button_purple, 
+.button_orange:hover, 
+.button_black:hover, 
+.button_blue:hover, 
+.button_green:hover, 
+.button_red:hover, 
+.button_yellow:hover, 
+.button_purple:hover, 
+.button_orange:focus,
+.button_black:focus,
+.button_blue:focus,
+.button_green:focus,
+.button_red:focus,
+.button_yellow:focus,
+.button_purple:focus {
+    opacity: 0.5;
+}
+
+
+/* Item bar buttons */
+.item_blue button {
+    background-color: rgb(204, 239, 255);
+}
+.item_red button {
+    background-color: rgb(255, 204, 204);
+}
+.item_yellow button {
+    background-color: rgb(255, 255, 204);
+}
+.item_purple button {
+    background-color: rgb(204, 204, 255);
+}
+.item_green button {
+    background-color: rgb(204, 255, 204);
+}
+.item_black button {
+    background-color: rgb(230, 230, 230);
+}
+.item_orange button {
+    background-color: rgb(255, 230, 204);
+}
