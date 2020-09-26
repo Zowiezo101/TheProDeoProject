@@ -14,11 +14,11 @@
 
                 <!-- The actual drop down menu, hidden at first -->
                 <div id="dropdown_db_menu" class="dropdown_nav_menu">
+                    <div class="row"><script>makeButton("books", "dropdown_db_menu");</script></div>
+                    <div class="row"><script>makeButton("events", "dropdown_db_menu");</script></div>
                     <div class="row"><script>makeButton("peoples", "dropdown_db_menu");</script></div>
                     <div class="row"><script>makeButton("locations", "dropdown_db_menu");</script></div>
                     <div class="row"><script>makeButton("specials", "dropdown_db_menu");</script></div>
-                    <div class="row"><script>makeButton("books", "dropdown_db_menu");</script></div>
-                    <div class="row"><script>makeButton("events", "dropdown_db_menu");</script></div>
                     <div class="row"><script>makeButton("search", "dropdown_db_menu");</script></div>
                 </div>
             </div>
