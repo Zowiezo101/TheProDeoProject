@@ -10,7 +10,7 @@
         await getItemFromDatabase("blog").then(function(blogs) {
             
             // Put the table in the div
-            var blogTable = $("<table></table>")        // New table
+            var blogTable = $("<table/>")               // New table
                                 .appendTo("#content");  // Parent
             
             for (var blogIdx in blogs) {
@@ -19,17 +19,17 @@
                 // Add a table row to the table
                 // Add table data to the row
                 // The blog will be inserted in this element
-                var TableData = $("<td></td>")                  // The new element
-                                    .appendTo($("<tr></tr>")    // Parent
+                var TableData = $("<td/>")                  // The new element
+                                    .appendTo($("<tr/>")    // Parent
                                         .appendTo(blogTable));  // Parent of the parent
                 
                 // Title of the blog
-                $("<h1></h1>")
+                $("<h1/>")
                         .appendTo(TableData)        // Parent
                         .html(blogObject["title"]); // Text
                 
                 // Text of the blog
-                var blogText = $("<pre></pre>")
+                var blogText = $("<pre/>")
                         .appendTo(TableData)                    // Parent
                         .attr("id", "blog" + blogObject["id"])  // ID
                         .addClass("blog_pre")                   // Class
@@ -45,7 +45,7 @@
                     // If the link is clicked, the function _expandBlog will be executed.
                     // This function will show the rest of the blog that is currently
                     // hidden by default.
-                    $("<a></a>")
+                    $("<a/>")
                             .appendTo(TableData)                        // Parent
                             .attr("id", "link" + blogText.attr("id"))   // ID
                             .attr("href", "javascript:_expandBlog('" + blogText.attr("id") + "')")  // Href
@@ -54,7 +54,7 @@
                 }
                 
                 // The blog date and user
-                $("<p></p>")
+                $("<p/>")
                         .appendTo(TableData)                    // Parent
                         .addClass("blog_date")                  // Class
                         .html([blogObject["date"],              // Text
