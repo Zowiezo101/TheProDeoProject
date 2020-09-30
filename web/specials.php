@@ -9,22 +9,14 @@
         
         // Actual content of the page itself 
         // This is defined in the corresponding php page
-        var content = document.getElementById("content");
-        
-        // This div is used to separate item_choice and item_info in two columns.
-        // But resume with one column under these two columns.
-        var clearFix = document.createElement("div");
-        content.appendChild(clearFix);
-        
-        // Set the class name
-        clearFix.className = "clearfix";
+        var content = $("#content");
 
         // Set left and right sides of the content div
-        var left = setLeftSide(clearFix);
-        var right = setRightSide(clearFix);
+        var left = setLeftSide(content);
+        var right = setRightSide(content);
 
         // Set the height of the left div, to the height of the right div
-        left.setAttribute("style", "height: " + right.offsetHeight + "px");
-        content.setAttribute("style", "height: " + right.offsetHeight + "px");
+        left.css("height", right.offsetHeight + "px");
+        content.css("height", right.offsetHeight + "px");
     }
 </script>

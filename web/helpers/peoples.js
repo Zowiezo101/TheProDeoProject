@@ -1,18 +1,15 @@
 /* global dict_PeoplesParams, dict_Peoples, dict_NavBar, session_settings, dict_Search */
 
 function setMaps (parent) {
-    // Show a list of maps where this item is included in
-    var ItemText = document.createElement("p");
-    parent.appendChild(ItemText);
     
-    // Set its attributes
-    ItemText.innerHTML = dict_Peoples["map_people"];
-    
-    // The actual list to be created
-    var ItemList = document.createElement("ul");
-    parent.appendChild(ItemList); 
+    // The title of the list
+    $("#item_info").append(
+        $("<p/>").html(dict_Peoples["map_people"])
+    );
     
     // The contents of the list
+    var ItemList = $("<ul/>").appendTo($("#item_info"));
+    
     // TODO:
 //    var ItemListIDs = getMaps(session_settings["id"]);
     var ItemListIDs = [];
@@ -22,28 +19,21 @@ function setMaps (parent) {
         for (var i = 0; i < ItemListIDs.length; i++) {
 
             // Put the list item in the list of maps
-            var ItemListItem = document.createElement("li");
-            ItemList.appendChild(ItemListItem);
-
-            // Put the link in a list item
-            var ItemListLink = document.createElement("a");
-            ItemListItem.appendChild(ItemListLink);
-            
-            // Create a link to the map
-            ItemListLink.innerHTML = dict_NavBar["Familytree"] + (Number(ItemListIDs[i]) + 1);
-            ItemListLink.id = ItemListIDs[i] + "," + session_settings["id"];
-            ItemListLink.onclick = function() {
-                goToPage("familytree.php", "", this.id);
-            };
+            ItemList.append(
+                $("<li/>").append(
+                    // Put the link in a list item
+                    $("<a/>").html(dict_NavBar["Familytree"] + (Number(ItemListIDs[i]) + 1))
+                        .attr("id", ItemListIDs[i] + "," + session_settings["id"])
+                        .click(function() {
+                            goToPage("familytree.php", "", this.id);
+                        })
+                )
+            );
         }
     } else {
         // If this item is not in a known map
         // Show a message
-        var ItemListItem = document.createElement("li");
-        ItemList.appendChild(ItemListItem);
-        
-        // Set its attributes
-        ItemListItem.innerHTML = dict_Search["NoResults"];
+        ItemList.append($("<li/>").html(dict_Search["NoResults"]));
     }
 }
 

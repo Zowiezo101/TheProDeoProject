@@ -14,7 +14,7 @@ switch(session_settings["table"]) {
         dict_params = dict_PeoplesParams;
         dict = dict_Peoples;
         item_links = [
-            {table: "people_to_activity", column: "people_id", data: "activity_id", descr: dict_Links["to_activity"]},
+            {table: "people_to_activity", column: "people_id", data: "activity_id", name: "people_name", descr: dict_Links["to_activity"]},
             {table: "people_to_location", column: "people_id", data: "location_id", descr: dict_Links["to_location"]},
             {table: "people_to_parent", column: "people_id", data: "parent_id", descr: dict_Links["to_parent"]},
             {table: "people_to_parent", column: "parent_id", data: "people_id", descr: dict_Links["to_child"]},
@@ -27,7 +27,7 @@ switch(session_settings["table"]) {
         dict_params = dict_LocationsParams;
         dict = dict_Locations;
         item_links = [
-            {table: "location_to_activity", column: "location_id", data: "activity_id", descr: dict_Links["to_activity"]},
+            {table: "location_to_activity", column: "location_id", data: "activity_id", name: "location_name", descr: dict_Links["to_activity"]},
             {table: "people_to_location", column: "location_id", data: "people_id", descr: dict_Links["to_people"]},
             {table: "location_to_location", column: "location1_id", data: "location2_id", descr: dict_Links["a.k.a"]},
             {table: "location_to_location", column: "location2_id", data: "location1_id", descr: dict_Links["a.k.a"]}
@@ -38,7 +38,7 @@ switch(session_settings["table"]) {
         dict_params = dict_SpecialsParams;
         dict = dict_Specials;
         item_links = [
-            {table: "special_to_activity", column: "special_id", data: "activity_id", descr: dict_Links["to_activity"]}
+            {table: "special_to_activity", column: "special_id", data: "activity_id", name: "special_name", descr: dict_Links["to_activity"]}
         ];
         break;
         
@@ -52,25 +52,24 @@ switch(session_settings["table"]) {
         dict_params = dict_EventsParams;
         dict = dict_Events;
         item_links = [
-            {table: "people_to_activity", column: "activity_id", data: "people_id", descr: dict_Links["to_people"]},
-            {table: "location_to_activity", column: "activity_id", data: "location_id", descr: dict_Links["to_location"]},
-            {table: "special_to_activity", column: "activity_id", data: "special_id", descr: dict_Links["to_special"]}
+            {table: "people_to_activity", column: "activity_id", data: "people_id", name: "people_name", descr: dict_Links["to_people"]},
+            {table: "location_to_activity", column: "activity_id", data: "location_id", name: "location_name", descr: dict_Links["to_location"]},
+            {table: "special_to_activity", column: "activity_id", data: "special_id", name: "special_name", descr: dict_Links["to_special"]}
         ];
         break;
 }
 
 async function showItemInfo(information) {
     information = information[0];
-    
-    
-    var contentEl = $("#item_info")
+
+    // Create a Table
+    var table = $("<table>").appendTo(
+            $("#item_info")
             // Grab the right part of the information window and clean it
             .html("")
             // Add the name of the current person as a header
-            .append($("<h1/>").html(information["name"]));
-
-    // Create a Table
-    var table = $("<table>").appendTo(contentEl);
+            .append($("<h1/>").html(information["name"]))
+        );
 
     // For all the available information
     for (var key in information)
@@ -111,7 +110,7 @@ async function showItemInfo(information) {
                             .html(convertBibleVerseText(bookInfo["name"],
                                                          information["book_start_chap"],
                                                          value))
-                            .attr(convertBibleVerseLink(bookInfo["name"],
+                            .attr("href", convertBibleVerseLink(bookInfo["name"],
                                                         information["book_start_id"], 
                                                         information["book_start_chap"], 
                                                         value));
@@ -125,7 +124,7 @@ async function showItemInfo(information) {
                             .html(convertBibleVerseText(bookInfo["name"],
                                                          information["book_end_chap"],
                                                          value))
-                            .attr(convertBibleVerseLink(bookInfo["name"],
+                            .attr("href", convertBibleVerseLink(bookInfo["name"],
                                                         information["book_end_id"], 
                                                         information["book_end_chap"], 
                                                         value));
@@ -153,12 +152,21 @@ async function showItemInfo(information) {
             );
         }
     }
+    
+    showLinkInfo(table);
+
+    if ((session_settings["table"] === "peoples") || (session_settings["table"] === "events")) {
+        setMaps();
+    }
+}
+
+async function showLinkInfo(table) {
 
     for (var idx in item_links) {
         var item_link = item_links[idx];
         
         if (item_link.column === "activity_id") {
-            // TODO: Convert this event_id to all activity IDs
+            // Convert this event_id to all activity IDs
             // Get all the linked activity IDs
             var id = "";
             
@@ -196,11 +204,12 @@ async function showItemInfo(information) {
                     continue;
                 }
                 
-                // Column is who we are, we just want to show the linking information
+                // Only if we have a type
                 if (item.hasOwnProperty("type")) {
                     types.push(item["type"]);
                 } 
                 
+                // Column is who we are, we just want to show the linking information
                 switch(item_link.data) {
                     case "activity_id":
                         var table_name = "activitys";
@@ -218,34 +227,42 @@ async function showItemInfo(information) {
                         break;
                 }
                 
-                await getItemFromDatabase(table_name, item[item_link.data]).then(function(object) {
-                    if (item_link.data === "activity_id") {
-                        // Turn this into event ID
+                // If the ID is given, use that, otherwise use the given name
+                if (item[item_link.data] !== null) {
+                    await getItemFromDatabase(table_name, item[item_link.data]).then(function(object) {
+                        if (item_link.data === "activity_id") {
+                            // Turn this into event ID
+                        }
+                        object = object[0];
+
+                        // Only is this person isn't already shown
+                        if (values.indexOf(item[item_link.data]) < 0) {
+                            names.push(object["name"]);
+                            values.push(item[item_link.data]);
+                            genders.push(getGenderNoun(object["gender"], 1));
+                        }
+                    } , console.log);
+                } else if (item_link.hasOwnProperty("name")) {
+                    // Only is this person isn't already shown
+                    if (names.indexOf(item[item_link.name]) < 0) {
+                        names.push(item[item_link.name]);
+                        values.push(item[item_link.data]);
+                        genders.push(getGenderNoun(-1, 1));
                     }
-                    object = object[0];
-                    
-                    names.push(object["name"]);
-                    values.push(item[item_link.data]);
-                    genders.push(getGenderNoun(object["gender"], 1));
-                } , console.log);
+                }
             }
 
-            // Add a new table row
-            var TableRow = document.createElement("tr");
-            table.appendChild(TableRow);
-
-            // Description of the information shown
-            var TableKey = document.createElement("td");
-            TableKey.innerHTML = item_link.descr;
-            TableRow.appendChild(TableKey);
-
-            // Actual data
-            var TableData = document.createElement("td");
-            TableRow.appendChild(TableData);
-            
-            // Create a table with the different names
-            var Table2 = document.createElement("table");
-            TableData.appendChild(Table2);
+            table.append(
+                $("<tr/>").append(
+                    // Description of the information shown
+                    $("<td/>").html(item_link.descr)
+                ).append(
+                    // Actual data
+                    $("<td/>").append(
+                        $("<table/>").attr("id", "table2_" + item_link.data)
+                    )
+                )
+            );
 
             // And for each name, create the amount of rows needed to show
             // all the different linked names    
@@ -254,46 +271,44 @@ async function showItemInfo(information) {
                 var name = names[idx3];
                 var gender = genders[idx3];
                 
-                // Table row
-                var TableRow2 = document.createElement("tr");
-                Table2.appendChild(TableRow2);
-
-                // Table data
-                var TableData2 = document.createElement("td");
-                TableRow2.appendChild(TableData2);
+                var TableData2 = $("<td/>").appendTo(
+                        $("<tr/>").appendTo(
+                            $("#table2_" + item_link.data)
+                        )
+                    );
                 
                 if (value !== null) {
                     // Table links, the name is the name of the item
-                    var TableLink2 = document.createElement("a");
-                    TableData2.appendChild(TableLink2);
-                    
-                    // Set its attributes
-                    TableLink2.innerHTML = name + gender;
-                    TableLink2.value = value;
-                    TableLink2.table_name = table_name;
-                    TableLink2.onclick = function() {
-                        if (this.table_name !== session_settings["table"]) {
-                            goToPage(this.table_name + ".php", "", this.value);
-                        } else { 
-                            updateSessionSettings("id", this.value).then(getItemFromDatabase(this.table_name, this.value).then(showItemInfo, console.log), console.log);
-                        }
-                    };
-
+                    $("<a/>").appendTo(TableData2)
+                            .html(name + gender)
+                            .data("value", value)
+                            .data("table_name", table_name)
+                            .click(function() {
+                                if ($(this).data("table_name") !== session_settings["table"]) {
+                                    goToPage($(this).data("table_name") + ".php", 
+                                             "", 
+                                             $(this).data("value"));
+                                } else { 
+                                    updateSessionSettings("id", $(this).data("value")).then(
+                                        getItemFromDatabase($(this).data("table_name"), 
+                                                            $(this).data("value")).then(
+                                            showItemInfo, 
+                                            console.log
+                                        ), 
+                                        console.log
+                                    );
+                                }
+                            });
                 } else {
                     // When the ID is not given, just give the name..
-                    TableData2.innerHTML = name;
+                    TableData2.html(name);
                 }
                 
             }
         }, console.log);
 
     }
-
-    if ((session_settings["table"] === "peoples") || (session_settings["table"] === "events")) {
-        setMaps(contentEl);
-    }
 }
-
 
 function setRightSide(parent) {
     /* Right column. This is where the item info will be displayed
