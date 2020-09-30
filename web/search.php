@@ -1,8 +1,14 @@
 <?php 
     // Make it easier to copy/paste code or make a new file
     $id = "search";
-    require "tools/layout.php"; 
+    require 'layout/template.php'; 
 ?>
+
+<script>
+    function onLoadSearch() {
+        
+    }
+</script>
 
 <?php 
     // This is for all the select elements
