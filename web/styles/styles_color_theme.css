@@ -335,14 +335,7 @@
 .button_green:hover, 
 .button_red:hover, 
 .button_yellow:hover, 
-.button_purple:hover, 
-.button_orange:focus,
-.button_black:focus,
-.button_blue:focus,
-.button_green:focus,
-.button_red:focus,
-.button_yellow:focus,
-.button_purple:focus {
+.button_purple:hover {
     opacity: 0.5;
 }
 
