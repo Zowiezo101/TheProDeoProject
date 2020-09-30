@@ -7,39 +7,22 @@
 <script>
     function onLoadSearch() {
         
-    }
-</script>
-
-<?php 
-    // This is for all the select elements
-    // Made easy, and manageble in one single place
-    $arrays = [
-            "tribe" => $select_Search_tribes, 
-            "gender" => $select_Search_gender, 
-            "locations" => $select_Search_locations,
-            "specials" => $select_Search_specials,
-    ];
-    
-    foreach($arrays as $name=>$array){
-        // Making the enumeration and the naming in these strings
-        ${$name."_select_values"} = "0";
-        ${$name."_select_names"} = "'".$dict_Search["all"]."'";
-        $loopIdx = 0;
+        // Actual content of the page itself 
+        // This is defined in the corresponding php page
+        $("#content").append(
+                $("<div/>").addClass("contents_left").attr("id", "search_bar").append(
+                    $("<h1/>").html(dict_Search["Options"])
+                ).append(
+                    $("<form/>").attr("method", "get").attr("action", "search.php").append(
+                        $("<select/>").attr().attr().attr().change().append(
+                        
+                        )
+                    )
+                )
+            ).append(
+                $("<div/>")
+            );
         
-        foreach($array as $key=>$value) {
-            $loopIdx = $loopIdx + 1;
-            ${$name."_select_values"} = ${$name."_select_values"}.", ".$loopIdx;
-            ${$name."_select_names"} = ${$name."_select_names"}.", '".$value."'";
-        }
-    }
-    
-function search_Helper_layout() {
-    global $dict_NavBar;
-    global $dict_Search;
-
-    // Contents of the div between the footer and the navigation bar
-    PrettyPrint('<div class="clearfix"> ', 1);
-    PrettyPrint('');
     // The bar on the left side, that contains the various options for searching
     // Options will be added or removed, depending on the type of search chosen (books, peoples, etc)
     PrettyPrint('    <div class="contents_left" id="search_bar">     ');
@@ -213,7 +196,31 @@ function search_Helper_layout() {
     }
     PrettyPrint('    </div> ');
     PrettyPrint('</div> ');
-}
+    }
+</script>
+
+<?php 
+    // This is for all the select elements
+    // Made easy, and manageble in one single place
+    $arrays = [
+            "tribe" => $select_Search_tribes, 
+            "gender" => $select_Search_gender, 
+            "locations" => $select_Search_locations,
+            "specials" => $select_Search_specials,
+    ];
+    
+    foreach($arrays as $name=>$array){
+        // Making the enumeration and the naming in these strings
+        ${$name."_select_values"} = "0";
+        ${$name."_select_names"} = "'".$dict_Search["all"]."'";
+        $loopIdx = 0;
+        
+        foreach($array as $key=>$value) {
+            $loopIdx = $loopIdx + 1;
+            ${$name."_select_values"} = ${$name."_select_values"}.", ".$loopIdx;
+            ${$name."_select_names"} = ${$name."_select_names"}.", '".$value."'";
+        }
+    }
 
 // The function that executes the search, and returns the results
 function SearchItems($text, $table, $options) {
