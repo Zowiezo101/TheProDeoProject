@@ -150,6 +150,7 @@
     /* The text that is displayed inside of the footer */
     text-align: center;
     font-weight: bold;
+    height: 50px;
 }
 
 
@@ -255,6 +256,11 @@
 /************************************************
  * Body parts
  */
+ 
+/* This is to make sure that we can use the entire height of the page */
+#content {
+    margin-bottom: 50px;
+}
 
 #default {
     text-align: center;
