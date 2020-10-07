@@ -381,6 +381,136 @@
     text-decoration: underline;
 }
 
+
+/************************************************
+ * Search results parts
+ */
+
+ /* The bar on the left side of the screen, containing all the search options */
+#search_bar {
+    /* Use a height of 600px. That's plenty of space! */
+    /*height: 600px;*/
+    
+    /* Text in the middle of the search bar */
+    text-align: center;
+}
+
+#search_bar h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* This element is called the table, because it selects the type of item (table) to be searched.
+   It is a select element. */
+#search_bar #table {
+    /* Some space on the sides */
+    display: block;
+    width: 80%;
+    
+    /* Give it a small border, and rounded corners */
+    border: 1px solid black;
+    border-radius: 4px;
+    
+    /* The space between the borders and the text in the select element */
+    padding: 3px;
+    
+    /* The space between this element, and elements after it */
+    margin: 5px auto 20px auto;
+}
+
+/* These are the elements added, when the select element has a different value.
+   This class is used, to get all the items with this class and remove them, when
+   the select element gets a new value. So we can start clean. */
+.added {
+    /* Same width as the select item */
+    display: block;
+    width: 80%;
+    
+    /* Again, a small border and rounded corners */
+    border: 1px solid black;
+    border-radius: 4px;
+    
+    /* Space between the borders and the text in the elements */
+    padding: 3px;
+    
+    /* Space between this element, and the elements after it. */
+    margin: 5px auto 5px auto;
+}
+
+
+/* This div, contains two select elements. One for bible books, and one for chapters. */
+.added_app_div {
+    /* Same width as other elements */
+    display: block;
+    width: 80%;
+    
+    /* Space between the borders and the text in the elements */
+    padding: 3px;
+    
+    /* Space between this element, and the elements after it. */
+    margin: 5px auto 5px auto;
+}
+
+/* These texts are used to describe the select elements */
+.added_app_text {
+    /* Same width as other elements */
+    display: block;
+    width: 80%;
+    
+    /* Bold letters, easier to read */
+    font-weight: bold;
+    
+    /* Space between the borders and the text in the elements */
+    padding: 1px;
+    
+    /* Space between this element, and the elements after it. */
+    margin: 0px auto 0px auto;
+}
+
+/* These are the select elements, that contain a bible book name or a chapter value */
+.added_app_select {    
+    /* A small border and rounded corners */
+    border: 1px solid black;
+    border-radius: 4px;
+    
+    /* Space between the borders and the text in the elements */
+    padding: 3px;
+    
+    /* Space between this element, and the elements after it. */
+    margin: 5px auto 5px auto;
+}
+
+/* The results on the right side of the screen */
+#search_results {
+    /* All text in the center */
+    text-align: center;
+}
+
+#search_results h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Table containing the search results */
+#search_results table { 
+    /* Rounded edges and a black border */
+    border-style: solid;
+    border-color: black;
+    border-width: 3px;
+    
+    /* In the middle of the screen, with some extra room under it */
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+/* The rows with information */
+#search_results td,
+#search_results tr {
+    border-width: 1.5px;
+    border-style: solid;
+    border-color: black;
+}
+
 /************************************************
  * Contact parts
  */
