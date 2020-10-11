@@ -104,39 +104,12 @@
                     addInput("mother", dict_PeoplesParams["mother_id"], value)
                 ).append(
                     // Gender
-//                    $("<input/>")
-//                        .attr("type", "text")
-//                        .attr("name", "mother")
-//                        .attr("placeholder", dict_PeoplesParams["mother_id"])
-//                        .attr("value", get_settings.hasOwnProperty("mother") && get_settings["table"] === "peoples" ? 
-//                                            get_settings["mother"] : 
-//                                            "")
-//                        .addClass("added")
-                );
-//            // Gender
-//            Input = addSelect("gender", 
-//                                [<?php // echo $gender_select_values; ?>], 
-//                                [<?php // echo $gender_select_names; ?>], 
-//                                "<?php // echo $dict_PeoplesParams["gender"]; ?>");
-//            <?php // if ((filter_input(INPUT_GET, 'gender') !== null) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'gender');?>";
-//            <?php // } ?>
-//            form.appendChild(Input);
-//
-//            // Tribe
-//            Input = addSelect("tribe", 
-//                                [<?php // echo $tribe_select_values; ?>], 
-//                                [<?php // echo $tribe_select_names; ?>], 
-//                                "<?php // echo $dict_PeoplesParams["tribe"]; ?>");
-//            <?php // if ((filter_input(INPUT_GET, 'tribe') !== null) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'tribe');?>";
-//            <?php // } ?>
-//            form.appendChild(Input);
-//
+                    addSelect("gender", dict_PeoplesParams["gender"], value)
+                ).append(
+                    // Tribe
+                    addSelect("tribe", dict_PeoplesParams["tribe"], value)
+                )
+
 //            // First appearance
 //            Input = addAppearance("book_start", "<?php // echo $dict_PeoplesParams["book_start_vers"]; ?>");
 //            form.appendChild(Input);
@@ -174,10 +147,10 @@
 
             case "locations":
 //            // Meaning name
-                    addInput("meaning_name", dict_LocationsParams["meaning_name"], value)
+//                    addInput("meaning_name", dict_LocationsParams["meaning_name"], value)
 
 //            // TODO: Linking tables
-                    addInput("name_changes", dict_Links["a.k.a"], value)
+//                    addInput("name_changes", dict_Links["a.k.a"], value)
 //
 //            // Type of Location
 //            Input = addSelect("type", 
@@ -193,10 +166,10 @@
 //
 //            // TODO: Linking tables
 //            // Founder
-                    addInput("founder", dict_Links["to_people"], value)
+//                    addInput("founder", dict_Links["to_people"], value)
 //
 //            // Destroyer
-                    addInput("founder", dict_Links["to_people"], value)
+//                    addInput("founder", dict_Links["to_people"], value)
 //
 //            // First appearance
 //            Input = addAppearance("book_start", "<?php // echo $dict_LocationsParams["book_start_vers"]; ?>");
@@ -235,7 +208,7 @@
 
             case "specials":
 //            // Meaning Name
-                    addInput("meaning_name", $dict_SpecialsParams["meaning_name"], value)
+//                    addInput("meaning_name", $dict_SpecialsParams["meaning_name"], value)
 //
 //            // Type of Special
 //            Input = addSelect("type", 
@@ -538,176 +511,177 @@
                     .attr("value", get_settings.hasOwnProperty(name) && get_settings["table"] === table ? 
                                         get_settings[name] : 
                                         "")
-                    .addClass("added")
+                    .addClass("added");
     }
 
     // Function to speed up the process of adding Form elements
-    function addSelect(name, values, strings, placeholder) {
+    function addSelect(name, placeholder, table) {
+
+        // Made easy, and manageble in one single place
+        switch(name) {
+            case "tribe":
+                var array = select_Search_tribes;
+                break;
+            case "gender":
+                array = select_Search_gender;
+                break;
+            case "locations":
+                array = select_Search_locations;
+                break;
+            case "specials":
+                array = select_Search_specials;
+                break;
+        }
+        
         var element = $("<select/>")
                 .attr("name", name)
                 .addClass("added")
                 .append(
                     $("<option/>")
-                        .attr("value", "")
+                        .attr("value", get_settings.hasOwnProperty(name) && get_settings["table"] === table ? 
+                                            get_settings[name] : 
+                                            "")
                         .attr("disabled", "true")
                         .attr("selected", "true")
                         .html(dict_Settings["default"] + " voor " + placeholder)
                 );
-
-        for (var i = 0; i < values.length; i++) {
-            element.append($("<option/>").attr("value", values[i]).html(strings[i]));
+        
+        // First option is to choose all
+        element.append($("<option/>").attr("value", 0).html(dict_Search["all"]));        
+        for (var i = 0; i < Object.keys(array).length; i++) {
+            element.append($("<option/>").attr("value", i + 1).html(array[Object.keys(array)[i]]));
         }
 
         return element;
     }
 
-//function addAppearance(name, placeholder) {
-//    // The entire div that contains the drop downs and text bar
-//    // These are used to create the number that corresponds to
-//    // a bible verse
-//    var appearance = document.createElement("div");
-//    appearance.className = "added_app_div";
-//    
-//    // The title, to let the user know whether
-//    // it's the first or last appearance we are
-//    // filling in
-//    var elementTitle = document.createElement("p");
-//    elementTitle.innerHTML = placeholder;
-//    elementTitle.className = "added_app_text";
-//    appearance.appendChild(elementTitle);
-//    
-//    // The dropdown list containing all the books
-//    var elementBook = document.createElement("select");
-//    elementBook.name = name + "_book";
-//    elementBook.id = name + "_book";
-//    elementBook.app = name;
-//    elementBook.setAttribute("onchange", "selectBookOptions(this)");
-//    elementBook.className = "added_app_select";
-//    
-//    // Bible book that can be chosen
-//    var option = document.createElement("option");
-//    option.value = "";
-//    option.disabled = "true";
-//    option.selected = "true";
-//    option.innerHTML = "<?php // echo $dict_Search["bible_book"]; ?>";
-//    elementBook.appendChild(option);
-//    
-//    // List of options from the database, to get names in correct language.
-//    <?php 
-//        $listLength = GetNumberOfItems("books"); 
-//        
-//        // The different numbers
-//        echo "var values = [";
-//        for ($id = 0; $id < $listLength; $id++) {
-//            echo $id.", ";
-//        }
-//        echo "];\r\n";
-//        
-//        // The different names
-//        echo "var strings = [";
-//        for ($id = 0; $id < $listLength; $id++) {
-//            $item = GetItemInfo("books", $id);
-//            echo "'".$item['name']."', ";
-//        }
-//        echo "];\r\n";
-//        
-//        // The different amount of chapters
-//        echo "var chapters = [";
-//        for ($id = 0; $id < $listLength; $id++) {
-//            $item = GetItemInfo("books", $id);
-//            echo $item['num_chapters'].", ";
-//        }
-//        echo "];\r\n";
+function addAppearance(name, placeholder, table) {
     
-    ?>//
-//    
-//    // Creating the dropdown list
-//    for (var i = 0; i < values.length; i++) {
-//        var option = document.createElement("option");
-//        option.value = values[i];
-//        option.chapters = chapters[i];
-//        option.innerHTML = strings[i];
-//        
-//        elementBook.appendChild(option);
-//    }
-//    appearance.appendChild(elementBook);
-//    
-//    
-//    // The dropdown list containing all the chapters of a book
-//    var elementChap = document.createElement("select");
-//    elementChap.name = name + "_chap";
-//    elementChap.id = name + "_chap";
-//    elementChap.className = "added_app_select";
-//    
-//    // Chapter that can be chosen (currently no available options
-//    // Will be filled in when a book is chosen
-//    var option = document.createElement("option");
-//    option.value = "";
-//    option.disabled = "true";
-//    option.selected = "true";
-//    option.innerHTML = "<?php // echo $dict_Search["bible_chap"]; ?>";
-//    elementChap.appendChild(option);
-//    
-//    // The div for the dropdown menus
-//    appearance.appendChild(elementChap);
-//    
-//    return appearance;
-//}
-//
+    // The dropdown list containing all the books
+    var elementBook = $("<select>")
+            .attr("name", name + "_book")
+            .attr("id", name + "_book")
+            .data("app", name)
+            .change(function() {
+                selectBookOptions($(this));
+            })
+            .addClass("added_app_select");
+    
+    // Bible book that can be chosen
+    var option = document.createElement("option");
+    option.value = "";
+    option.disabled = "true";
+    option.selected = "true";
+    option.innerHTML = "<?php // echo $dict_Search["bible_book"]; ?>";
+    elementBook.appendChild(option);
+    
+    // List of options from the database, to get names in correct language.
+    <?php 
+        $listLength = GetNumberOfItems("books"); 
+        
+        // The different numbers
+        echo "var values = [";
+        for ($id = 0; $id < $listLength; $id++) {
+            echo $id.", ";
+        }
+        echo "];\r\n";
+        
+        // The different names
+        echo "var strings = [";
+        for ($id = 0; $id < $listLength; $id++) {
+            $item = GetItemInfo("books", $id);
+            echo "'".$item['name']."', ";
+        }
+        echo "];\r\n";
+        
+        // The different amount of chapters
+        echo "var chapters = [";
+        for ($id = 0; $id < $listLength; $id++) {
+            $item = GetItemInfo("books", $id);
+            echo $item['num_chapters'].", ";
+        }
+        echo "];\r\n";
+    
+    ?>
+    
+    // Creating the dropdown list
+    for (var i = 0; i < values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.chapters = chapters[i];
+        option.innerHTML = strings[i];
+        
+        elementBook.appendChild(option);
+    }
+    
+    
+    // The dropdown list containing all the chapters of a book
+    var elementChap = document.createElement("select");
+    elementChap.name = name + "_chap";
+    elementChap.id = name + "_chap";
+    elementChap.className = "added_app_select";
+    
+    // Chapter that can be chosen (currently no available options
+    // Will be filled in when a book is chosen
+    var option = document.createElement("option");
+    option.value = "";
+    option.disabled = "true";
+    option.selected = "true";
+    option.innerHTML = "<?php // echo $dict_Search["bible_chap"]; ?>";
+    elementChap.appendChild(option);
+    
+    // The title, to let the user know whether
+    // it's the first or last appearance we are
+    // filling in
+    var elementTitle = document.createElement("p");
+    elementTitle.innerHTML = placeholder;
+    elementTitle.className = "added_app_text";
+    appearance.appendChild(elementTitle);
+    
+    // The entire div that contains the drop downs and text bar
+    // These are used to create the number that corresponds to
+    // a bible verse
+    $("<div>").addClass("added_app_div")
+            .append(elementBook)
+            .append(elementChap);
+    
+    return appearance;
+}
+
 // This function is executed when the book for first/last appearance has changed
 // It updates the dropdown with the number of chapters
-//function selectBookOptions(sel) {
+function selectBookOptions(sel) {
     
-//    // Which dropdown are we currently accessing?
-//    var name = sel.app;
-//    
-//    // Which book has been chosen?
-//    var Option = sel.options[sel.selectedIndex];
-//    
-//    // How many chapters does this book have?
-//    var Chapters = Option.chapters;
-//    
-//    // Remove the old chapters of the dropdown menu
-//    ChapDropDown = document.getElementById(name + "_chap");
-//    numChapsPrev = ChapDropDown.childElementCount;
-//    
-//    for (var i = 1; i < numChapsPrev; i++) {
-//        ChapDropDown.removeChild(ChapDropDown.lastChild);
-//    }
-//    
-//    // Creating the dropdown list
-//    for (var i = 0; i < Chapters; i++) {
-//        var option = document.createElement("option");
-//        option.value = i + 1;
-//        option.innerHTML = i + 1;
-//        
-//        ChapDropDown.appendChild(option);
-//    }
-//}
+    // Which dropdown are we currently accessing?
+    var name = sel.app;
+    
+    // Which book has been chosen?
+    var Option = sel.options[sel.selectedIndex];
+    
+    // How many chapters does this book have?
+    var Chapters = Option.chapters;
+    
+    // Remove the old chapters of the dropdown menu
+    ChapDropDown = document.getElementById(name + "_chap");
+    numChapsPrev = ChapDropDown.childElementCount;
+    
+    for (var i = 1; i < numChapsPrev; i++) {
+        ChapDropDown.removeChild(ChapDropDown.lastChild);
+    }
+    
+    // Creating the dropdown list
+    for (var i = 0; i < Chapters; i++) {
+        var option = document.createElement("option");
+        option.value = i + 1;
+        option.innerHTML = i + 1;
+        
+        ChapDropDown.appendChild(option);
+    }
+}
 </script>
 
 <?php 
-//    // This is for all the select elements
-//    // Made easy, and manageble in one single place
-//    $arrays = [
-//            "tribe" => $select_Search_tribes, 
-//            "gender" => $select_Search_gender, 
-//            "locations" => $select_Search_locations,
-//            "specials" => $select_Search_specials,
-//    ];
 //    
-//    foreach($arrays as $name=>$array){
-//        // Making the enumeration and the naming in these strings
-//        ${$name."_select_values"} = "0";
-//        ${$name."_select_names"} = "'".$dict_Search["all"]."'";
-//        $loopIdx = 0;
-//        
-//        foreach($array as $key=>$value) {
-//            $loopIdx = $loopIdx + 1;
-//            ${$name."_select_values"} = ${$name."_select_values"}.", ".$loopIdx;
-//            ${$name."_select_names"} = ${$name."_select_names"}.", '".$value."'";
-//        }
-//    }
 
 // The function that executes the search, and returns the results
 //function SearchItems($text, $table, $options) {
