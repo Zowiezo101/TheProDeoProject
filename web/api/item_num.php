@@ -34,7 +34,7 @@ if ($conn->connect_error) {
         }
         
         if (!$result->error && (mysqli_num_rows($results) > 0)) {
-            // Put the results in the arrau
+            // Put the results in the array
             $result->data = Array();
             for ($i = 0; $i < mysqli_num_rows($results); $i++) {
                 $result->data[] = mysqli_fetch_object($results);
