@@ -94,7 +94,7 @@
                     // Meaning Name
                     addInput("meaning_name", dict_PeoplesParams["meaning_name"], value)
                 ).append(
-                    // TODO: Linking tables
+                    // Linking tables
                     addInput("name_changes", dict_Links["a.k.a"], value)
                 ).append(
                     // Name Father
@@ -114,249 +114,204 @@
                 addAppearance("book_start", dict_PeoplesParams["book_start_vers"], value).then(function(value) {
                     $(form).append(value);
     
-                      // TODO
-//                    if ((filter_input(INPUT_GET, 'book_start_book') !== null) and (filter_input(INPUT_GET, 'table') == "peoples")) {
-//                        // Pre-fill this property when it is set,
-//                        // and when the table is the same of for the previous search
-//                        SelectElement = document.getElementById("book_start_book");
-//                        SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_book');?>";
-//                        SelectElement.onchange();
-//                    } 
-//                    if ((filter_input(INPUT_GET, 'book_start_chap') !== null) and (filter_input(INPUT_GET, 'table') == "peoples")) {
-//                        // Pre-fill this property when it is set,
-//                        // and when the table is the same of for the previous search
-//                        SelectElement = document.getElementById("book_start_chap");
-//                        SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_chap');?>";
-//                    }
+                    if (get_settings.hasOwnProperty("book_start_book") && (get_settings["table"] === "peoples")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        var SelectElement = $("#book_start_book").attr("value", get_settings["book_start_book"])[0];
+                        SelectElement.onchange();
+                    } 
+                    if (get_settings.hasOwnProperty("book_start_chap") && (get_settings["table"] === "peoples")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        SelectElement = $("#book_start_chap").attr("value", get_settings["book_start_chap"]);
+                    }
           
                     // Last appearance
                     addAppearance("book_end", dict_PeoplesParams["book_end_vers"], value).then(function(value) {
                         $(form).append(value);
                         
-                        
-    
-                        <?php // if ((filter_input(INPUT_GET, 'book_start_book') !== null) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>
-                    //      // Pre-fill this property when it is set,
-                    //      // and when the table is the same of for the previous search
-                    //      SelectElement = document.getElementById("book_start_book");
-                    //      SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_book');?>";
-                    //      SelectElement.onchange();
-                    //  <?php // } 
-                    //      if ((filter_input(INPUT_GET, 'book_start_chap') !== null) and (filter_input(INPUT_GET, 'table') == "peoples")) { ?>////
-                    //          // Pre-fill this property when it is set,
-                    //          // and when the table is the same of for the previous search
-                    //          SelectElement = document.getElementById("book_start_chap");
-                    //          SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_chap');?>";
-                      <?php // } ?>
+                        if (get_settings.hasOwnProperty("book_end_book") && (get_settings["table"] === "peoples")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            var SelectElement = $("#book_end_book").attr("value", get_settings["book_end_book"])[0];
+                            SelectElement.onchange();
+                        } 
+                        if (get_settings.hasOwnProperty("book_end_chap") && (get_settings["table"] === "peoples")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            SelectElement = $("#book_end_chap").attr("value", get_settings["book_end_chap"]);
+                        }
                     });
                 });
             break;
 
             case "locations":
-//            // Meaning name
-//                    addInput("meaning_name", dict_LocationsParams["meaning_name"], value)
-
-//            // TODO: Linking tables
-//                    addInput("name_changes", dict_Links["a.k.a"], value)
-//
-//            // Type of Location
-//            Input = addSelect("type", 
-//                                [<?php // echo $locations_select_values; ?>], 
-//                                [<?php // echo $locations_select_names; ?>], 
-//                                "<?php // echo $dict_LocationsParams["type"]; ?>");
-//            <?php // if ((filter_input(INPUT_GET, 'type') !== null) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'type');?>";
-//            <?php // } ?>
-//            form.appendChild(Input);
-//
-//            // TODO: Linking tables
-//            // Founder
-//                    addInput("founder", dict_Links["to_people"], value)
-//
-//            // Destroyer
-//                    addInput("founder", dict_Links["to_people"], value)
-//
-//            // First appearance
-//            Input = addAppearance("book_start", "<?php // echo $dict_LocationsParams["book_start_vers"]; ?>");
-//            form.appendChild(Input);
-//            <?php // if ((filter_input(INPUT_GET, 'book_start_book') !== null) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_start_book");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_book');?>";
-//                SelectElement.onchange();
-//            <?php // } 
-//            if ((filter_input(INPUT_GET, 'book_start_chap') !== null) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>////
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_start_chap");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_chap');?>";
-//            <?php // } ?>
-//
-//            // Last appearance
-//            Input = addAppearance("book_end", "<?php // echo $dict_LocationsParams["book_end_vers"]; ?>");
-//            form.appendChild(Input);
-//            <?php // if ((filter_input(INPUT_GET, 'book_end_book') !== null) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_end_book");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_end_book');?>";
-//                SelectElement.onchange();
-//            <?php // } 
-//            if ((filter_input(INPUT_GET, 'book_end_chap') !== null) and (filter_input(INPUT_GET, 'table') == "locations")) { ?>////
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_end_chap");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_end_chap');?>";
-//            <?php // } ?>
+                
+                $(form).append(    
+                    // Meaning Name
+                    addInput("meaning_name", dict_LocationsParams["meaning_name"], value)
+                ).append(
+                    // Linking tables
+                    addInput("name_changes", dict_Links["a.k.a"], value)
+                ).append(
+                    // Name Founder & Destroyer
+                    addInput("people", dict_Links["to_people"], value)
+                ).append(
+                    // Type of Location
+                    addSelect("locations", dict_LocationsParams["type"], value)
+                );
+        
+                // First appearance
+                addAppearance("book_start", dict_LocationsParams["book_start_vers"], value).then(function(value) {
+                    $(form).append(value);
+    
+                    if (get_settings.hasOwnProperty("book_start_book") && (get_settings["table"] === "locations")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        var SelectElement = $("#book_start_book").attr("value", get_settings["book_start_book"])[0];
+                        SelectElement.onchange();
+                    } 
+                    if (get_settings.hasOwnProperty("book_start_chap") && (get_settings["table"] === "locations")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        SelectElement = $("#book_start_chap").attr("value", get_settings["book_start_chap"]);
+                    }
+          
+                    // Last appearance
+                    addAppearance("book_end", dict_LocationsParams["book_end_vers"], value).then(function(value) {
+                        $(form).append(value);
+                        
+                        if (get_settings.hasOwnProperty("book_end_book") && (get_settings["table"] === "locations")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            var SelectElement = $("#book_end_book").attr("value", get_settings["book_end_book"])[0];
+                            SelectElement.onchange();
+                        } 
+                        if (get_settings.hasOwnProperty("book_end_chap") && (get_settings["table"] === "locations")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            SelectElement = $("#book_end_chap").attr("value", get_settings["book_end_chap"]);
+                        }
+                    });
+                });
             break;
 
             case "specials":
-//            // Meaning Name
-//                    addInput("meaning_name", $dict_SpecialsParams["meaning_name"], value)
-//
-//            // Type of Special
-//            Input = addSelect("type", 
-//                                [<?php // echo $specials_select_values; ?>], 
-//                                [<?php // echo $specials_select_names; ?>], 
-//                                "<?php // echo $dict_SpecialsParams["type"]; ?>");
-//            <?php // if ((filter_input(INPUT_GET, 'type') !== null) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'type');?>";
-//            <?php // } ?>
-//            form.appendChild(Input);
-//
-//            // First appearance
-//            Input = addAppearance("book_start", "<?php // echo $dict_SpecialsParams["book_start_vers"]; ?>");
-//            form.appendChild(Input);
-//            <?php // if ((filter_input(INPUT_GET, 'book_start_book') !== null) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_start_book");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_book');?>";
-//                SelectElement.onchange();
-//            <?php // } 
-//            if ((filter_input(INPUT_GET, 'book_start_chap') !== null) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>////
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_start_chap");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_chap');?>";
-//            <?php // } ?>
-//
-//            // Last appearance
-//            Input = addAppearance("book_end", "<?php // echo $dict_SpecialsParams["book_end_vers"]; ?>");
-//            form.appendChild(Input);
-//            <?php // if ((filter_input(INPUT_GET, 'book_end_book') !== null) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_end_book");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_end_book');?>";
-//                SelectElement.onchange();
-//            <?php // } 
-//            if ((filter_input(INPUT_GET, 'book_end_chap') !== null) and (filter_input(INPUT_GET, 'table') == "specials")) { ?>////
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_end_chap");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_end_chap');?>";
-//            <?php // } ?>
+                $(form).append(    
+                    // Meaning Name
+                    addInput("meaning_name", dict_SpecialsParams["meaning_name"], value)
+                ).append(
+                    // Type of Special
+                    addSelect("specials", dict_SpecialsParams["type"], value)
+                );
+        
+                // First appearance
+                addAppearance("book_start", dict_SpecialsParams["book_start_vers"], value).then(function(value) {
+                    $(form).append(value);
+    
+                    if (get_settings.hasOwnProperty("book_start_book") && (get_settings["table"] === "specials")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        var SelectElement = $("#book_start_book").attr("value", get_settings["book_start_book"])[0];
+                        SelectElement.onchange();
+                    } 
+                    if (get_settings.hasOwnProperty("book_start_chap") && (get_settings["table"] === "specials")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        SelectElement = $("#book_start_chap").attr("value", get_settings["book_start_chap"]);
+                    }
+          
+                    // Last appearance
+                    addAppearance("book_end", dict_SpecialsParams["book_end_vers"], value).then(function(value) {
+                        $(form).append(value);
+                        
+                        if (get_settings.hasOwnProperty("book_end_book") && (get_settings["table"] === "specials")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            var SelectElement = $("#book_end_book").attr("value", get_settings["book_end_book"])[0];
+                            SelectElement.onchange();
+                        } 
+                        if (get_settings.hasOwnProperty("book_end_chap") && (get_settings["table"] === "specials")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            SelectElement = $("#book_end_chap").attr("value", get_settings["book_end_chap"]);
+                        }
+                    });
+                });
             break;
 
             case "events":
-//            // TODO: Linking tables
-//            // Previous
-//    //        Input = addInput("text", "Previous", "<?php // echo $dict_EventsParams["Previous"]; ?>");
-//            <?php // if (isset(filter_input(INPUT_GET, 'Previous')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
-//                 Pre-fill this property when it is set,
-//                 and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'Previous');?>";
-//            <?php // } ?>
-//    //        form.appendChild(Input);
-//
-//            // Location
-//    //        Input = addInput("text", "Locations", "<?php // echo $dict_EventsParams["Locations"]; ?>");
-//            <?php // if (isset(filter_input(INPUT_GET, 'Locations')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
-//                 Pre-fill this property when it is set,
-//                 and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'Locations');?>";
-//            <?php // } ?>
-//    //        form.appendChild(Input);
-//
-//            // People
-//    //        Input = addInput("text", "Peoples", "<?php // echo $dict_EventsParams["Peoples"]; ?>");
-//            <?php // if (isset(filter_input(INPUT_GET, 'Peoples')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
-//                 Pre-fill this property when it is set,
-//                 and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'Peoples');?>";
-//            <?php // } ?>
-//    //        form.appendChild(Input);
-//
-//            // Special
-//    //        Input = addInput("text", "Specials", "<?php // echo $dict_EventsParams["Specials"]; ?>");
-//            <?php // if (isset(filter_input(INPUT_GET, 'Specials')) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
-//                 Pre-fill this property when it is set,
-//                 and when the table is the same of for the previous search
-//                Input.value = "<?php // echo filter_input(INPUT_GET, 'Specials');?>";
-//            <?php // } ?>
-//    //        form.appendChild(Input);
-//
-//            // First appearance
-//            Input = addAppearance("book_start", "<?php // echo $dict_EventsParams["book_start_vers"]; ?>");
-//            form.appendChild(Input);
-//            <?php // if ((filter_input(INPUT_GET, 'book_start_book') !== null) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_start_book");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_book');?>";
-//                SelectElement.onchange();
-//            <?php // } 
-//            if ((filter_input(INPUT_GET, 'book_start_chap') !== null) and (filter_input(INPUT_GET, 'table') == "events")) { ?>////
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_start_chap");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_start_chap');?>";
-//            <?php // } ?>
-//
-//            // Last appearance
-//            Input = addAppearance("book_end", "<?php // echo $dict_EventsParams["book_end_vers"]; ?>");
-//            form.appendChild(Input);
-//            <?php // if ((filter_input(INPUT_GET, 'book_end_book') !== null) and (filter_input(INPUT_GET, 'table') == "events")) { ?>
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_end_book");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_end_book');?>";
-//                SelectElement.onchange();
-//            <?php // } 
-//            if ((filter_input(INPUT_GET, 'book_end_chap') !== null) and (filter_input(INPUT_GET, 'table') == "events")) { ?>////
-//                // Pre-fill this property when it is set,
-//                // and when the table is the same of for the previous search
-//                SelectElement = document.getElementById("book_end_chap");
-//                SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'book_end_chap');?>";
-//            <?php // } ?>
+                $(form).append(    
+                    // Linking events
+                    addInput("previous", dict_Links["to_activity"], value)
+                ).append(    
+                    // Location
+                    addInput("location", dict_Links["to_location"], value)
+                ).append(    
+                    // People
+                    addInput("people", dict_Links["to_people"], value)
+                ).append(
+                    // Special
+                    addInput("special", dict_Links["to_special"], value)
+                );
+        
+                // First appearance
+                addAppearance("book_start", dict_EventsParams["book_start_vers"], value).then(function(value) {
+                    $(form).append(value);
+    
+                    if (get_settings.hasOwnProperty("book_start_book") && (get_settings["table"] === "events")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        var SelectElement = $("#book_start_book").attr("value", get_settings["book_start_book"])[0];
+                        SelectElement.onchange();
+                    } 
+                    if (get_settings.hasOwnProperty("book_start_chap") && (get_settings["table"] === "events")) {
+                        // Pre-fill this property when it is set,
+                        // and when the table is the same of for the previous search
+                        SelectElement = $("#book_start_chap").attr("value", get_settings["book_start_chap"]);
+                    }
+          
+                    // Last appearance
+                    addAppearance("book_end", dict_EventsParams["book_end_vers"], value).then(function(value) {
+                        $(form).append(value);
+                        
+                        if (get_settings.hasOwnProperty("book_end_book") && (get_settings["table"] === "events")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            var SelectElement = $("#book_end_book").attr("value", get_settings["book_end_book"])[0];
+                            SelectElement.onchange();
+                        } 
+                        if (get_settings.hasOwnProperty("book_end_chap") && (get_settings["table"] === "events")) {
+                            // Pre-fill this property when it is set,
+                            // and when the table is the same of for the previous search
+                            SelectElement = $("#book_end_chap").attr("value", get_settings["book_end_chap"]);
+                        }
+                    });
+                });
             break;
         }
-//
-//        // The button to start the actual search
-//        var SubmitButton = document.createElement("input");
-//        SubmitButton.id = "submit";
-//        SubmitButton.name = "submitSearch";
-//        SubmitButton.type = "submit";
-//        SubmitButton.className = "added";
-//        SubmitButton.value = "<?php // echo $dict_Search["Search"]; ?>";
-//        form.appendChild(SubmitButton);
-//
-//        <?php // if ((filter_input(INPUT_GET, 'submitSearch') !== null)) { ?>
-//            // Function to remove all selected search options
-//            var RemoveOptions = document.createElement("a");
-//            RemoveOptions.innerHTML = "<?php // echo $dict_Search["Remove"];?>";
-//            RemoveOptions.href = "search.php";
-//            RemoveOptions.className = "added";
-//            // No border please..
-//            RemoveOptions.style.borderWidth = "0px";
-//            form.appendChild(RemoveOptions);
-        <?php // } ?>
+        
+        $(form).append(
+                $("<input/>")
+                    .attr("id", "submit")
+                    .attr("name", "submitSearch")
+                    .attr("type", "submit")
+                    .attr("value", dict_Search["Search"])
+                    .addClass("added")
+        );
+
+        if (get_settings.hasOwnProperty("submitSearch")) {
+            // Function to remove all selected search options
+            $(form).append(
+                    $("<a/>")
+                        .attr("href", "search.php")
+                        .html(dict_Search["Remove"])
+                        .addClass("added")
+                
+                        // No border please..
+                        .style("borderwidth: 0px")
+            );
+        }
     }
     
     function onSearch() {
