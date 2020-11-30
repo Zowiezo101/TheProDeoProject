@@ -239,8 +239,14 @@ function selectTableOptions(sel) {
 }
 
 async function onSearch() {
+                    
+    // When no search is performed yet
+    $("<div/>")
+            .appendTo($("#search_results"))
+            .attr("id", "default")
+            .html(dict_Search["default_search"]);
     
-    if (get_settings['submitSearch'] !== null) {
+    if (get_settings.hasOwnProperty("submitSearch") && ['submitSearch'] !== null) {
     
         $("#search_results").children().remove();
         
@@ -581,7 +587,7 @@ function selectBookOptions(sel) {
 function SearchItems(result, name, table) {
         
     // Type of search performed
-    $("#search_result").append(
+    $("#search_results").append(
             $("<div/>")
                 .attr("id", "search_" + table)
                 .append(
@@ -591,7 +597,7 @@ function SearchItems(result, name, table) {
         
     if (!result) {
         // If there are no results, show a message
-        $("#search_result").append(dict_Search["no_results"] + "<br />");
+        $("#search_results").append(dict_Search["no_results"] + "<br />");
     }
 //    else {
         // Show the amount of results found. If it is more than one result, use plural forms
@@ -650,5 +656,4 @@ function SearchItems(result, name, table) {
 //            PrettyPrint("            </table>");
 //        }
 //    }
-            PrettyPrint('        </div> ');
 }

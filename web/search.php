@@ -6,18 +6,7 @@
 
 <script>
     function onLoadSearch() {
-        
-        // Change the title text of the select element
-//        $("#default").html(dict_Search["category"]);
-//        $("#table").attr("", "");
-    
-//    // Set back all the data that was entered for searching
-//    <?php // if ((filter_input(INPUT_GET, 'submitSearch') !== null)) { ?>
-//        var SelectElement = document.getElementById("table");
-//        SelectElement.value = "<?php // echo filter_input(INPUT_GET, 'table'); ?>";
-//        SelectElement.onchange();
-//    <?php // } ?>
-        
+                
         // Actual content of the page itself 
         // This is defined in the corresponding php page
         $("#content").append(
@@ -68,10 +57,21 @@
             )
         ).append(
             // This is where the items will be displayed
-            $("<div/>").addClass("contents_right col-md-9 px-0").attr("id", "search_results")
-                // When no search is performed yet
-                .html(dict_Search["default_search"])
+            $("<div/>")
+                    .addClass("contents_right col-md-9 px-0")
+                    .attr("id", "search_results")
         );
+
+        // Change the title text of the select element
+//        $("#default").html(dict_Search["category"]);
+//        $("#table").attr("disabled", "false");
+    
+        // Set back all the data that was entered for searching
+        if (get_settings.hasOwnProperty("submitSearch") && (get_settings["submitSearch"] !== null)) {
+            
+            var value = get_settings.hasOwnProperty("table") ? get_settings["table"] : null;
+            $("#table").attr("value", value).change();
+        }
 
         onSearch();
     }
