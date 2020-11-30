@@ -129,7 +129,7 @@ var dict_Search = {
 	"result": " result found for ",
 	"show": "Show results for ",
 	"all": "All categories",
-	"default_search": "<h1>Search</h1>Use the options on the left to get search results.<br/>Tip: If you don't know the name, but you do know other information, leave the name field empty.<br/>Also, use ; to seperate multiple names (doesn't work for every field).",
+	"default_search": "<h1>Search</h1>Use the options on the left to get search results.<br>Tip: If you don't know the name, but you do know other information, leave the name field empty.<br>Also, use ; to seperate multiple names (doesn't work for every field).",
 	"bible_book": "Book",
 	"bible_chap": "Chapter",
 	"bible_verse": "Verse",

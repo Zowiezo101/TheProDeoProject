@@ -129,7 +129,7 @@ var dict_Search = {
 	"result": " resultaat gevonden voor ",
 	"show": "Laat resultaten zien voor ",
 	"all": "Alle categorieën",
-	"default_search": "<h1>Zoeken</h1>Gebruik de opties aan de linkerkant om zoekresultaten te krijgen.<br/>Tip: Als je de naam niet weet, maar wel andere informatie, laat het veld voor de naam dan leeg.<br/>Verder, gebruik ; om verschillende namen van elkaar te scheiden (werkt niet voor alle zoekvelden).",
+	"default_search": "<h1>Zoeken</h1>Gebruik de opties aan de linkerkant om zoekresultaten te krijgen.<br>Tip: Als je de naam niet weet, maar wel andere informatie, laat het veld voor de naam dan leeg.<br>Verder, gebruik ; om verschillende namen van elkaar te scheiden (werkt niet voor alle zoekvelden).",
 	"bible_book": "Boek",
 	"bible_chap": "Hoofdstuk",
 	"bible_verse": "Vers",
