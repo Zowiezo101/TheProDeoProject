@@ -35,7 +35,7 @@ async function showMapInfo(information) {
 
         // Set its attributes
         defaultText.id = "default";
-        defaultText.innerHTML = dict_Search["NoResults"];
+        defaultText.innerHTML = dict_Search["no_results"];
     }
     
     if ((Items.length === 0) || (session_settings["table"] !== "worldmap")) {

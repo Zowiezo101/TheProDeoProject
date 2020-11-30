@@ -81,21 +81,21 @@ var dict_Settings = {
 };
 
 var dict_NavBar = {
-	"Home": "Home",
-	"Database": "Database",
-	"Peoples": "Peoples",
-	"Locations": "Locations",
-	"Specials": "Specials",
-	"Books": "Books",
-	"Events": "Events",
-	"Search": "Search database",
-	"Timeline": "Timeline",
-	"Timeline_ext": "Timeline",
-	"Worldmap": "Worldmap",
-	"Familytree": "Family tree",
-	"ProDeo": "ProDeo Projects",
-	"Aboutus": "About us",
-	"Contact": "Contact",
+	"home": "Home",
+	"database": "Database",
+	"peoples": "Peoples",
+	"locations": "Locations",
+	"specials": "Specials",
+	"books": "Books",
+	"events": "Events",
+	"search": "Search database",
+	"timeline": "Timeline",
+	"timeline_ext": "Timeline",
+	"worldmap": "Worldmap",
+	"familytree": "Family tree",
+	"prodeo": "ProDeo Projects",
+	"aboutus": "About us",
+	"contact": "Contact",
 };
 
 var dict_Books = {
@@ -121,20 +121,20 @@ var dict_Specials = {
 };
 
 var dict_Search = {
-	"Search": "Search..",
-	"Options": "Search options: <br>",
-	"Category": "Select a category",
-	"NoResults": "Can't find any results..",
-	"Results": " results found for ",
-	"Result": " result found for ",
-	"Show": "Show results for ",
-	"All": "All categories",
+	"search": "Search..",
+	"options": "Search options: <br>",
+	"category": "Select a category",
+	"no_results": "Can't find any results..",
+	"results": " results found for ",
+	"result": " result found for ",
+	"show": "Show results for ",
+	"all": "All categories",
 	"default_search": "<h1>Search</h1>Use the options on the left to get search results.<br/>Tip: If you don't know the name, but you do know other information, leave the name field empty.<br/>Also, use ; to seperate multiple names (doesn't work for every field).",
 	"bible_book": "Book",
 	"bible_chap": "Chapter",
 	"bible_verse": "Verse",
 	"busy": "Still searching..",
-	"Remove": "Remove all search options and results",
+	"remove": "Remove all search options and results",
 	"all": "All",
 };
 
@@ -256,10 +256,10 @@ var dict_Contact = {
 };
 
 var dict_Footer = {
-	"PP_name": "ProDeo Projects",
-	"PP_version": "Current version",
-	"PP_date": "Page was last modified on",
-	"DB_website": "https://bijbel.eo.nl/bijbel/",
+	"pp_name": "ProDeo Projects",
+	"pp_version": "Current version",
+	"pp_date": "Page was last modified on",
+	"db_website": "https://bijbel.eo.nl/bijbel/",
 	"slogan": "Bible database - For God, to you!",
 };
 

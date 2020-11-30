@@ -22,7 +22,7 @@ function setMaps (parent) {
             ItemList.append(
                 $("<li/>").append(
                     // Put the link in a list item
-                    $("<a/>").html(dict_NavBar["Familytree"] + (Number(ItemListIDs[i]) + 1))
+                    $("<a/>").html(dict_NavBar["familytree"] + (Number(ItemListIDs[i]) + 1))
                         .attr("id", ItemListIDs[i] + "," + session_settings["id"])
                         .click(function() {
                             goToPage("familytree.php", "", this.id);
@@ -33,7 +33,7 @@ function setMaps (parent) {
     } else {
         // If this item is not in a known map
         // Show a message
-        ItemList.append($("<li/>").html(dict_Search["NoResults"]));
+        ItemList.append($("<li/>").html(dict_Search["no_results"]));
     }
 }
 

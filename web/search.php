@@ -8,7 +8,7 @@
     function onLoadSearch() {
         
         // Change the title text of the select element
-//        $("#default").html(dict_Search["Category"]);
+//        $("#default").html(dict_Search["category"]);
 //        $("#table").attr("", "");
     
 //    // Set back all the data that was entered for searching
@@ -22,7 +22,7 @@
         // This is defined in the corresponding php page
         $("#content").append(
             $("<div/>").addClass("contents_left col-md-3 px-0").attr("id", "search_bar").append(
-                $("<h1/>").html(dict_Search["Options"])
+                $("<h1/>").html(dict_Search["options"])
             ).append(
                 $("<form/>").attr("method", "get").attr("action", "search.php").append(
                     $("<select/>")
@@ -38,31 +38,31 @@
                                 .attr("value", "")
 //                                    .attr("disabled", "true")
                                 .attr("selected", "true")
-                                .html(dict_Search["Category"]) //dict_Search["busy"])
+                                .html(dict_Search["category"]) //dict_Search["busy"])
                         ).append(
                             $("<option>")
                                 .attr("value", "books")
-                                .html(dict_NavBar["Books"])
+                                .html(dict_NavBar["books"])
                         ).append(
                             $("<option>")
                                 .attr("value", "events")
-                                .html(dict_NavBar["Events"])
+                                .html(dict_NavBar["events"])
                         ).append(
                             $("<option>")
                                 .attr("value", "peoples")
-                                .html(dict_NavBar["Peoples"])
+                                .html(dict_NavBar["peoples"])
                         ).append(
                             $("<option>")
                                 .attr("value", "locations")
-                                .html(dict_NavBar["Locations"])
+                                .html(dict_NavBar["locations"])
                         ).append(
                             $("<option>")
                                 .attr("value", "specials")
-                                .html(dict_NavBar["Specials"])
+                                .html(dict_NavBar["specials"])
                         ).append(
                             $("<option>")
                                 .attr("value", "all")
-                                .html(dict_Search["All"])
+                                .html(dict_Search["all"])
                         )
                 )
             )

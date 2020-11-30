@@ -71,7 +71,7 @@ function getItemFromDatabase(table="", value="", column="", page="", sort="") {
                         resolve(result.data);
                     } else {
                         // TODO: This need to be handled elsewhere
-                        //resolve(dict_Search["NoResults"]);
+                        //resolve(dict_Search["no_results"]);
                         resolve(result.data);
                     }
                 } else {

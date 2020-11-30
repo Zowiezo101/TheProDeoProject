@@ -15,7 +15,7 @@ function convertBibleVerseLink(bookName, bookIdx, chapIdx, verseIdx) {
 //    }
 
     // The first part of the webpage to refer to
-    var weblink = dict_Footer['DB_website'] + bookUTF + "/" + chapIdx;
+    var weblink = dict_Footer['db_website'] + bookUTF + "/" + chapIdx;
 
     var bookAbv = ["GEN", "EXO", "LEV", "NUM", "DEU",
                    "JOS", "JDG", "RUT", "1SA", "2SA",

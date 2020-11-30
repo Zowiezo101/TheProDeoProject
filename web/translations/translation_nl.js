@@ -81,21 +81,21 @@ var dict_Settings = {
 };
 
 var dict_NavBar = {
-	"Home": "Home",
-	"Database": "Database",
-	"Peoples": "Personen",
-	"Locations": "Locaties",
-	"Specials": "Speciaal",
-	"Books": "Boeken",
-	"Events": "Gebeurtenissen",
-	"Search": "Zoek in database",
-	"Timeline": "Tijdslijn",
-	"Timeline_ext": "Tijdslijn",
-	"Worldmap": "Wereldkaart",
-	"Familytree": "Stamboom",
-	"ProDeo": "ProDeo Projects",
-	"Aboutus": "Over ons",
-	"Contact": "Contact",
+	"home": "Home",
+	"database": "Database",
+	"peoples": "Personen",
+	"locations": "Locaties",
+	"specials": "Speciaal",
+	"books": "Boeken",
+	"events": "Gebeurtenissen",
+	"search": "Zoek in database",
+	"timeline": "Tijdslijn",
+	"timeline_ext": "Tijdslijn",
+	"worldmap": "Wereldkaart",
+	"familytree": "Stamboom",
+	"prodeo": "ProDeo Projects",
+	"aboutus": "Over ons",
+	"contact": "Contact",
 };
 
 var dict_Books = {
@@ -121,20 +121,20 @@ var dict_Specials = {
 };
 
 var dict_Search = {
-	"Search": "Zoeken..",
-	"Options": "Zoekopties: <br>",
-	"Category": "Kies een categorie",
-	"NoResults": "Kon geen resultaten vinden..",
-	"Results": " resultaten gevonden voor ",
-	"Result": " resultaat gevonden voor ",
-	"Show": "Laat resultaten zien voor ",
-	"All": "Alle categorieën",
+	"search": "Zoeken..",
+	"options": "Zoekopties: <br>",
+	"category": "Kies een categorie",
+	"no_results": "Kon geen resultaten vinden..",
+	"results": " resultaten gevonden voor ",
+	"result": " resultaat gevonden voor ",
+	"show": "Laat resultaten zien voor ",
+	"all": "Alle categorieën",
 	"default_search": "<h1>Zoeken</h1>Gebruik de opties aan de linkerkant om zoekresultaten te krijgen.<br/>Tip: Als je de naam niet weet, maar wel andere informatie, laat het veld voor de naam dan leeg.<br/>Verder, gebruik ; om verschillende namen van elkaar te scheiden (werkt niet voor alle zoekvelden).",
 	"bible_book": "Boek",
 	"bible_chap": "Hoofdstuk",
 	"bible_verse": "Vers",
 	"busy": "Bezig met zoeken..",
-	"Remove": "Verwijder alle zoek opties en resultaten",
+	"remove": "Verwijder alle zoek opties en resultaten",
 	"all": "Alles",
 };
 
@@ -256,10 +256,10 @@ var dict_Contact = {
 };
 
 var dict_Footer = {
-	"PP_name": "ProDeo Projects",
-	"PP_version": "Huidige versie",
-	"PP_date": "Pagina was voor het laatst bijgewerkt op",
-	"DB_website": "https://bijbel.eo.nl/bijbel/",
+	"pp_name": "ProDeo Projects",
+	"pp_version": "Huidige versie",
+	"pp_date": "Pagina was voor het laatst bijgewerkt op",
+	"db_website": "https://bijbel.eo.nl/bijbel/",
 	"slogan": "Bijbel database - Voor God, aan jullie!",
 };
 

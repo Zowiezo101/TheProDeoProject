@@ -6,7 +6,7 @@
 <html>    
     <head id="head">
         <!-- Name shown on the tab -->
-        <title><?php echo $dict_Footer["PP_name"]; ?> Database</title>
+        <title><?php echo $dict_Footer["pp_name"]; ?> Database</title>
         
         <!-- Some extra information used for viewing -->
         <meta charset="UTF-8">

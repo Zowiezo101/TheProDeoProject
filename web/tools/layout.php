@@ -133,17 +133,17 @@
             button.id = "dropdown_db_button";
             button.className = "nav_green";
             button.onclick = function() { ShowDropDown('dropdown_db_menu'); };
-            button.innerHTML = dict_NavBar["Database"];
+            button.innerHTML = dict_NavBar["database"];
         } else if (name === "prodeo") {
             button.id = "dropdown_prodeo_button";
             button.className = "nav_orange";
             button.onclick = function() { ShowDropDown('dropdown_prodeo_menu'); };
-            button.innerHTML = dict_NavBar["ProDeo"];
+            button.innerHTML = dict_NavBar["prodeo"];
         } else {
             button.id = "nav_" + name;
             button.className = "nav_" + theme_list[name];
             button.onclick = function() { goToPage(name + '.php'); };
-            button.innerHTML = dict_NavBar[name.charAt(0).toUpperCase() + name.slice(1)];
+            button.innerHTML = dict_NavBar[name];
         }
         
         if (name === session_settings["table"]) {
