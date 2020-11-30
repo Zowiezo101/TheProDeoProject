@@ -53,7 +53,7 @@ function getItemFromDatabase(table="", value="", column="", page="", sort="") {
         }
 
         if (sort !== "") {
-            params += (sort !== "" ? '&' : '?') + 'sort=' + sort;
+            params += (params !== "" ? '&' : '?') + 'sort=' + sort;
         }
 
         // Open a new connection, using the GET request on the URL endpoint
@@ -163,7 +163,57 @@ function getMapFromDatabase(table="", value="") {
                         resolve(result.data);
                     } else {
                         // TODO: This need to be handled elsewhere
-                        //resolve(dict_Search["NoResults"]);
+                        //resolve(dict_Search["no_results"]);
+                        resolve(result.data);
+                    }
+                } else {
+                    reject(result.error);
+                }
+            }
+        };
+    });
+
+    //https://www.taniarascia.com/how-to-connect-to-an-api-with-javascript/
+    return promiseObj;
+}
+
+function searchDatabase(name, table, options) {
+    var promiseObj = new Promise(function(resolve, reject) {
+
+        // Create a request variable and assign a new XMLHttpRequest object to it.
+        var request = new XMLHttpRequest();
+
+        var link = 'http://localhost/web/api/items_search.php';
+        var params = '';
+
+        if (table !== "") {
+            params = '?table=' + table;
+        }
+
+        if (name !== "") {
+            params += (params !== "" ? '&' : '?') + 'value=' + name;
+        }
+
+        if (options !== "") {
+            params += (params !== "" ? '&' : '?') + 'options=' + options;
+        }
+
+        // Open a new connection, using the GET request on the URL endpoint
+        request.open('GET', link + params, true);
+
+        // Send request
+        request.send();
+
+        request.onreadystatechange = function() {
+            if (request.readyState === 4 && request.status === 200) {
+                var result = JSON.parse(request.responseText);
+
+                if (!result.error) {
+                    if (result.hasOwnProperty("data") && (result.data !== null)) {
+                        resolve(result.data);
+                    } else {
+                        // TODO: This need to be handled elsewhere
+                        //resolve(dict_Search["no_results"]);
                         resolve(result.data);
                     }
                 } else {
