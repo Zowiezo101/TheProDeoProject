@@ -1,4 +1,4 @@
-/* global get_settings, dict_PeoplesParams, dict_Links, dict_LocationsParams, dict_SpecialsParams, dict_EventsParams, dict_Search, dict_NavBar, select_Search_tribes, select_Search_gender, select_Search_locations, select_Search_specials, dict_Settings, getItemFromDatabase, searchDatabase, dict_Books */
+/* global get_settings, dict_PeoplesParams, dict_Links, dict_LocationsParams, dict_SpecialsParams, dict_EventsParams, dict_Search, dict_NavBar, select_Search_tribes, select_Search_gender, select_Search_locations, select_Search_specials, dict_Settings, getItemFromDatabase, searchDatabase, dict_Books, dict_BooksParams */
 
 // The function that is executed, when the select box for the type of item has changed values
 function selectTableOptions(sel) {
@@ -21,11 +21,11 @@ function selectTableOptions(sel) {
                 // Linking tables
                 addInput("name_changes", dict_Links["a.k.a"], value)
             ).append(
-                // Name Father
-                addInput("father", dict_PeoplesParams["father_id"], value)
+                // Name Parents
+                addInput("parent", dict_Links["to_parent"], value)
             ).append(
-                // Name Mother
-                addInput("mother", dict_PeoplesParams["mother_id"], value)
+                // Name Children
+                addInput("child", dict_Links["to_child"], value)
             ).append(
                 // Gender
                 addSelect("gender", dict_PeoplesParams["gender"], value)
@@ -255,45 +255,45 @@ async function onSearch() {
 
         // Generating search results
         var options = "";
+        var joins = "";
 
-//            if ((filter_input(INPUT_GET, 'meaning_name') !== null) and (filter_input(INPUT_GET, "meaning_name") != "")) {
-//                $options = $options." AND meaning_name LIKE '%".filter_input(INPUT_GET, "meaning_name")."%'";
-//            }
-//
-//            // TODO: Linking tables
-//            if (isset(filter_input(INPUT_GET, 'NameChanges']) and (filter_input(INPUT_GET, "NameChanges"] != "")) {
-//                $multoptions = explode(";", filter_input(INPUT_GET, "NameChanges"]);
-//                foreach ($multoptions as $value) {
-//                    $options = $options." AND NameChanges LIKE '%".$value."%'";
-//                }
-//            }
-//
-//            if (isset(filter_input(INPUT_GET, 'Father']) and (filter_input(INPUT_GET, "Father"] != "")) {
-//                $options = $options." AND Father LIKE '%".filter_input(INPUT_GET, "Father"]."%'";
-//            }
-//
-//            if (isset(filter_input(INPUT_GET, 'Mother']) and (filter_input(INPUT_GET, "Mother"] != "")) {
-//                $options = $options." AND Mother LIKE '%".filter_input(INPUT_GET, "Mother"]."%'";
-//            }
-//
-//            if ((filter_input(INPUT_GET, 'gender') !== null) and (filter_input(INPUT_GET, "gender") != "")) {
-//                if (filter_input(INPUT_GET, "gender") != 0) {
-//                    $options = $options." AND gender = '%".filter_input(INPUT_GET, "gender")."%'";
-//                }
-//            }
-//
-//            if ((filter_input(INPUT_GET, 'tribe') !== null) and (filter_input(INPUT_GET, "tribe") != "")) {
-//                if (filter_input(INPUT_GET, "tribe") != 0) {
-//                    $options = $options." AND tribe = '%".filter_input(INPUT_GET, "tribe")."%'";
-//                }
-//            }
+        if (get_settings.hasOwnProperty("meaning_name") && (get_settings["meaning_name"] !== "")) {
+            options = options + " AND meaning_name LIKE '%" + get_settings["meaning_name"] + "%'";
+        }
+
+        // Name changes
+        if (get_settings.hasOwnProperty("name_changes") && (get_settings["name_changes"] !== "")) {
+            var result = getQueryPart("name_changes", search_table);
+            joins += result.join;
+            options += result.option;
+        }
+
+        if (get_settings.hasOwnProperty("parent") && (get_settings["parent"] !== "")) {
+            var result = getQueryPart("parent", search_table);
+            joins += result.join;
+            options += result.option;
+        }
+
+        if (get_settings.hasOwnProperty("child") && (get_settings["child"] !== "")) {
+            var result = getQueryPart("child", search_table);
+            joins += result.join;
+            options += result.option;
+        }
+
+        if (get_settings.hasOwnProperty("gender") && (get_settings["gender"] !== "") && (get_settings["gender"] !== 0)) {
+            options = options + " AND gender = '%" + get_settings["gender"] + "%'";
+        }
+
+        if (get_settings.hasOwnProperty("tribe") && (get_settings["tribe"] !== "") && (get_settings["tribe"] !== 0)) {
+            options = options + " AND tribe = '%" + get_settings["tribe"] + "%'";
+        }
 //
 //            if ((filter_input(INPUT_GET, 'type') !== null) and (filter_input(INPUT_GET, "type") != "")) {
 //                if (filter_input(INPUT_GET, "type") != 0) {
 //                    $options = $options." AND type = '%".filter_input(INPUT_GET, "type")."%'";
 //                }
 //            }
-//
+
 //            // TODO: Linking yable
 //            if (isset(filter_input(INPUT_GET, 'Founder')) and (filter_input(INPUT_GET, "Founder") != "")) {
 //                $options = $options." AND Founder LIKE '%".filter_input(INPUT_GET, "Founder")."%'";
@@ -364,40 +364,40 @@ async function onSearch() {
         if ((search_table === "peoples") ||
             (search_table === "all")) {
             // Search Peoples database
-            await searchDatabase(search_name, "peoples", options).then(function(results) {
-                SearchItems(results, search_name, "peoples");
+            await searchDatabase(search_name, "peoples", joins, options).then(function(results) {
+                showResults(results, search_name, "peoples");
             }, console.log);
         }
 
         if ((search_table === "locations") ||
             (search_table === "all")) {
             // Search Locations database
-            await searchDatabase(search_name, "locations", options).then(function(results) {
-                SearchItems(results, search_name, "locations");
+            await searchDatabase(search_name, "locations", joins, options).then(function(results) {
+                showResults(results, search_name, "locations");
             }, console.log);
         }
 
         if ((search_table === "specials") ||
             (search_table === "all")) {
             // Search Specials database
-            await searchDatabase(search_name, "specials", options).then(function(results) {
-                SearchItems(results, search_name, "specials");
+            await searchDatabase(search_name, "specials", joins, options).then(function(results) {
+                showResults(results, search_name, "specials");
             }, console.log);
         }
 
         if ((search_table === "books") ||
             (search_table === "all")) {
             // Search Books database
-            await searchDatabase(search_name, "books", options).then(function(results) {
-                SearchItems(results, search_name, "books");
+            await searchDatabase(search_name, "books", joins, options).then(function(results) {
+                showResults(results, search_name, "books");
             }, console.log);
         }
 
         if ((search_table === "events") ||
             (search_table === "all")) {
             // Search Events database
-            await searchDatabase(search_name, "events", options).then(function(results) {
-                SearchItems(results, search_name, "events");
+            await searchDatabase(search_name, "events", joins, options).then(function(results) {
+                showResults(results, search_name, "events");
             }, console.log);
         }
         
@@ -619,8 +619,8 @@ function getDict(table) {
     return dict;
 }
 
-// The function that executes the search, and returns the results
-function SearchItems(result, name, table) {
+// The function after the search has been executed
+function showResults(result, name, table) {
         
     // Type of search performed
     $("#search_results").append(

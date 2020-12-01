@@ -1,4 +1,4 @@
-/* global dict_Search, dict_Settings */
+/* global dict_Search, dict_Settings, get_settings */
 
 function CleanText(text) {
     // The newlines in the string cause problems..
@@ -177,7 +177,7 @@ function getMapFromDatabase(table="", value="") {
     return promiseObj;
 }
 
-function searchDatabase(name, table, options) {
+function searchDatabase(name, table, joins, options) {
     var promiseObj = new Promise(function(resolve, reject) {
 
         // Create a request variable and assign a new XMLHttpRequest object to it.
@@ -196,6 +196,10 @@ function searchDatabase(name, table, options) {
 
         if (options !== "") {
             params += (params !== "" ? '&' : '?') + 'options=' + options;
+        }
+
+        if (joins !== "") {
+            params += (params !== "" ? '&' : '?') + 'joins=' + joins;
         }
 
         // Open a new connection, using the GET request on the URL endpoint
@@ -355,4 +359,74 @@ function editBlogFromDatabase(id, title, text) {
 
     //https://www.taniarascia.com/how-to-connect-to-an-api-with-javascript/
     return promiseObj;
+}
+
+function getQueryPart(search_term, search_table) {
+    var result = {
+        join: "",
+        option: ""
+    };
+    
+    switch(search_term) {
+        case "name_changes":
+            var name_changes = get_settings["name_changes"].split(";");
+            name_changes = name_changes.map(s => s.trim());
+
+            if (search_table === "location") {
+
+                result.option = 
+                        " AND location_id IN (" + 
+                        " SELECT l1.location2_id FROM locations" + 
+                        " LEFT JOIN location_to_location AS l1 ON locations.location_id = l1.location1_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND l1.location2_id IS NOT NULL" + 
+
+                        " UNION" + 
+
+                        " SELECT l2.location1_id FROM locations" + 
+                        " LEFT JOIN location_to_location AS l2 ON locations.location_id = l2.location2_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND l2.location1_id IS NOT NULL" + 
+                        ")";
+            } else if (search_table === "peoples") {
+                
+                result.option = 
+                        " AND people_id IN (" + 
+                        " SELECT p1.people2_id FROM peoples" + 
+                        " LEFT JOIN people_to_people AS p1 ON peoples.people_id = p1.people1_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND p1.people2_id IS NOT NULL" + 
+
+                        " UNION" + 
+
+                        " SELECT p2.people1_id FROM peoples" + 
+                        " LEFT JOIN people_to_people AS p2 ON peoples.people_id = p2.people2_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND p2.people1_id IS NOT NULL" + 
+                        ")";
+            }
+            break;
+            
+        case "parent":
+            var parents = get_settings["parent"].split(";");
+            parents = parents.map(s => s.trim());
+            
+            result.option = 
+                    " AND people_id IN (" + 
+                    " SELECT p1.people_id FROM peoples" + 
+                    " LEFT JOIN people_to_parent AS p1 ON peoples.people_id = p1.parent_id" + 
+                    " WHERE name LIKE '" + parents.join("' OR name LIKE '") + "' AND p1.people_id IS NOT NULL" + 
+                    ")";
+            break;
+            
+        case "child":
+            var children = get_settings["child"].split(";");
+            children = children.map(s => s.trim());
+            
+            result.option = 
+                    " AND people_id IN (" + 
+                    " SELECT p1.parent_id FROM peoples" + 
+                    " LEFT JOIN people_to_parent AS p1 ON peoples.people_id = p1.people_id" + 
+                    " WHERE name LIKE '" + children.join("' OR name LIKE '") + "' AND p1.parent_id IS NOT NULL" +
+                    ")";
+            break;
+    }
+    
+    return result;
 }

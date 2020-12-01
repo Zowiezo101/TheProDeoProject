@@ -23,9 +23,9 @@ if ($conn->connect_error) {
         $value_escaped = $conn->real_escape_string($value);
         
         $options = filter_input(INPUT_GET, 'options') !== null ? filter_input(INPUT_GET, 'options') : "";
+        $joins = filter_input(INPUT_GET, 'joins') !== null ? filter_input(INPUT_GET, 'joins') : "";
         
-        // Search the database with the chosen string and options
-        $sql = "SELECT * FROM ".$table." WHERE name LIKE '%".$value_escaped."%'".$options;
+        $sql = "SELECT ".$table.".* FROM ".$table.$joins." WHERE name LIKE '%".$value_escaped."%'".$options;
 
         // excecute SQL statement
         $result->query = $sql;
