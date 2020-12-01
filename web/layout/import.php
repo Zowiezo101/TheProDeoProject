@@ -11,7 +11,7 @@
         
         <!-- Tools for general things -->
         <script src="tools/base.js"></script>
-        <?php if (in_array($_SESSION["table"], ["peoples", "locations", "specials", "books", "events"])) { ?>
+        <?php if (in_array($_SESSION["table"], ["peoples", "locations", "specials", "books", "events", "search"])) { ?>
         <script src="tools/item.js"></script>
         <?php } elseif (in_array($_SESSION["table"], ["timeline", "familytree", "worldmap"])) { ?>
         <script src="tools/map.js"></script>

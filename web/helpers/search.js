@@ -1,4 +1,4 @@
-/* global get_settings, dict_PeoplesParams, dict_Links, dict_LocationsParams, dict_SpecialsParams, dict_EventsParams, dict_Search, dict_NavBar, select_Search_tribes, select_Search_gender, select_Search_locations, select_Search_specials, dict_Settings, getItemFromDatabase, searchDatabase */
+/* global get_settings, dict_PeoplesParams, dict_Links, dict_LocationsParams, dict_SpecialsParams, dict_EventsParams, dict_Search, dict_NavBar, select_Search_tribes, select_Search_gender, select_Search_locations, select_Search_specials, dict_Settings, getItemFromDatabase, searchDatabase, dict_Books */
 
 // The function that is executed, when the select box for the type of item has changed values
 function selectTableOptions(sel) {
@@ -400,7 +400,15 @@ async function onSearch() {
                 SearchItems(results, search_name, "events");
             }, console.log);
         }
+        
+        // Select the search table already chosen
+        $("option[value='" + search_table + "']").attr("selected", true);
+        $("#table").change();
     }
+
+    // Change the title text from "busy" to "select"
+    $("#default").html(dict_Search["category"]);
+    $("#table").attr("disabled", false);
 }
 
 // Function to speed up the process of adding Form elements
@@ -583,6 +591,34 @@ function selectBookOptions(sel) {
     }
 }
 
+function getDict(table) {
+    var dict = null;
+    
+    switch(table) {
+        case "peoples":
+            dict = dict_PeoplesParams;
+            break;
+
+        case "locations":
+            dict = dict_LocationsParams;
+            break;
+
+        case "specials":
+            dict = dict_SpecialsParams;
+            break;
+
+        case "books":
+            dict = dict_BooksParams;
+            break;
+
+        case "events":
+            dict = dict_EventsParams;
+            break;
+    }
+    
+    return dict;
+}
+
 // The function that executes the search, and returns the results
 function SearchItems(result, name, table) {
         
@@ -599,61 +635,56 @@ function SearchItems(result, name, table) {
         // If there are no results, show a message
         $("#search_results").append(dict_Search["no_results"] + "<br />");
     }
-//    else {
+    else {
+        var num_res = result.length;
+        
         // Show the amount of results found. If it is more than one result, use plural forms
-//        // If there are results..
-//        $num_res = $result->num_rows;
-//        
-//        // Type of search performed
-//        // Show the amount of results found. If it is more than one result, use plural forms
-//        PrettyPrint("            <a name='".$table."'><h1>".$dict_NavBar[table].":</h1><br /></a>");
-//        if ($num_res == 1) {
-//            PrettyPrint('            '.$num_res.$dict_Search['result']."\"".$text_escaped."\":<br />");
-//        } else {
-//            PrettyPrint('            '.$num_res.$dict_Search['results']."\"".$text_escaped."\":<br />");
-//        }
-//        
-//        // If there are results, draw a table with all the results found
-//        if ($num_res > 0) {
-//            PrettyPrint("            <table>");
-//            if (in_array($table, Array("peoples", "locations", "specials", "events"))) {
-//                PrettyPrint("                <tr>");
-//                PrettyPrint("                    <td>");
-//                PrettyPrint('                        '.$dict['name']);
-//                PrettyPrint("                    </td>");
-//                PrettyPrint("                    <td>");
-//                PrettyPrint('                        '.$dict['book_start_vers']);
-//                PrettyPrint("                    </td>");
-//                PrettyPrint("                    <td>");
-//                PrettyPrint("                        ".$dict['book_end_vers']);
-//                PrettyPrint("                    </td>");
-//                PrettyPrint("                </tr>");
-//            } else {
-//                PrettyPrint("                <tr>");
-//                PrettyPrint("                    <td>");
-//                PrettyPrint("                        ".$dict['name']);
-//                PrettyPrint("                    </td>");
-//                PrettyPrint("                </tr>");
-//            }
-//            
-//            while ($item = $result->fetch_array()) {
-//                PrettyPrint("                <tr>");
-//                PrettyPrint("                    <td>");
-//                PrettyPrint("                        <a href='".$table.".php".AddParams(-1, $item[substr($table, 0, -1).'_id'], -2)."'>".$item['name']."</a>");
-//                PrettyPrint("                    </td>");
-//                
-//                if (in_array($table, Array("peoples", "locations", "specials", "events"))) {
-//                    PrettyPrint("                    <td>");
-//                    PrettyPrint("                        ".convertBibleVerseText($item['book_start_id'], $item['book_start_chap'], $item['book_start_vers']));
-//                    PrettyPrint("                    </td>");
-//                    PrettyPrint("                    <td>");
-//                    PrettyPrint("                        ".convertBibleVerseText($item['book_end_id'], $item['book_end_chap'], $item['book_end_vers']));
-//                    PrettyPrint("                    </td>");
-//                }
-//                
-//                PrettyPrint("                </tr>");
-//            }
-//            PrettyPrint("            </table>");
-//        }
-//    }
+        $("#search_results").append(
+               num_res + dict_Search[num_res > 1 ? 'results' : 'result'] + "\"" + name + "\":<br />"
+        );
+
+        // If there are results, draw a table with all the results found
+        if (num_res > 0) {
+            var dict = getDict(table);
+            var table_element = $("<table/>").appendTo($("#search_results"));
+            
+            if (table !== "books") {
+                table_element.append(
+                        $("<tr/>")
+                            .append($("<td/>").html(dict['name']))
+                            .append($("<td/>").html(dict['book_start_vers']))
+                            .append($("<td/>").html(dict['book_end_vers']))
+                    );
+            } else {
+                table_element.append(
+                        $("<tr/>")
+                            .append($("<td/>").html(dict['name']))
+                    );
+            }
+            
+            for (var idx in result) {
+                var item = result[idx];
+                
+                var row = $("<tr/>")
+                            .appendTo(table_element)
+                            .append($("<td/>").html(item['name']));
+                
+                if (table !== "books") {
+                    row.append(
+                            $("<td/>").html(
+                                convertBibleVerseText(dict_Books[item["book_start_id"]],
+                                                      item["book_start_chap"],
+                                                      item["book_start_vers"]))
+                    );
+                    
+                    row.append(
+                            $("<td/>").html(
+                                convertBibleVerseText(dict_Books[item["book_end_id"]],
+                                                      item["book_end_chap"],
+                                                      item["book_end_vers"]))
+                    );
+                }
+            }
+        }
+    }
 }

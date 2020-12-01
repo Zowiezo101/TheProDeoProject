@@ -17,7 +17,7 @@
                     $("<select/>")
                         .attr("id", "table")
                         .attr("name", "table")
-//                            .attr("disabled", "false") //"true")
+                        .attr("disabled", true)
                         .change(function() {
                             selectTableOptions($(this));
                         })
@@ -25,9 +25,9 @@
                             $("<option>")
                                 .attr("id", "default")
                                 .attr("value", "")
-//                                    .attr("disabled", "true")
-                                .attr("selected", "true")
-                                .html(dict_Search["category"]) //dict_Search["busy"])
+                                .attr("disabled", true)
+                                .attr("selected", true)
+                                .html(dict_Search["busy"])
                         ).append(
                             $("<option>")
                                 .attr("value", "books")
@@ -61,17 +61,6 @@
                     .addClass("contents_right col-md-9 px-0")
                     .attr("id", "search_results")
         );
-
-        // Change the title text of the select element
-//        $("#default").html(dict_Search["category"]);
-//        $("#table").attr("disabled", "false");
-    
-        // Set back all the data that was entered for searching
-        if (get_settings.hasOwnProperty("submitSearch") && (get_settings["submitSearch"] !== null)) {
-            
-            var value = get_settings.hasOwnProperty("table") ? get_settings["table"] : null;
-            $("#table").attr("value", value).change();
-        }
 
         onSearch();
     }

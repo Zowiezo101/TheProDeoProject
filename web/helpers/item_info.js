@@ -59,7 +59,7 @@ switch(session_settings["table"]) {
         break;
 }
 
-async function showItemInfo(information) {
+function showItemInfo(information) {
     information = information[0];
 
     // Create a Table
@@ -102,33 +102,26 @@ async function showItemInfo(information) {
             var TableLink = $("<a/>").html("").attr("target", "_blank");
 
             if (key === "book_start_vers") {
-                await getItemFromDatabase("books", information["book_start_id"]).then(function (bookInfo) { 
-                    bookInfo = bookInfo[0];
-                    
-                    // When the information is retreived:
-                    TableLink
-                            .html(convertBibleVerseText(bookInfo["name"],
-                                                         information["book_start_chap"],
-                                                         value))
-                            .attr("href", convertBibleVerseLink(bookInfo["name"],
-                                                        information["book_start_id"], 
-                                                        information["book_start_chap"], 
-                                                        value));
-                }, console.log);
+                // When the information is retreived:
+                TableLink
+                        .html(convertBibleVerseText(dict_Books[information["book_start_id"]],
+                                                     information["book_start_chap"],
+                                                     value))
+                        .attr("href", convertBibleVerseLink(dict_Books[information["book_start_id"]],
+                                                    information["book_start_id"], 
+                                                    information["book_start_chap"], 
+                                                    value));
             } else {
-                await getItemFromDatabase("books", information["book_end_id"]).then(function (bookInfo) { 
-                    bookInfo = bookInfo[0];
                     
-                    // When the information is retreived:
-                    TableLink
-                            .html(convertBibleVerseText(bookInfo["name"],
-                                                         information["book_end_chap"],
-                                                         value))
-                            .attr("href", convertBibleVerseLink(bookInfo["name"],
-                                                        information["book_end_id"], 
-                                                        information["book_end_chap"], 
-                                                        value));
-                }, console.log);
+                // When the information is retreived:
+                TableLink
+                        .html(convertBibleVerseText(dict_Books[information["book_end_id"]],
+                                                     information["book_end_chap"],
+                                                     value))
+                        .attr("href", convertBibleVerseLink(dict_Books[information["book_end_id"]],
+                                                    information["book_end_id"], 
+                                                    information["book_end_chap"], 
+                                                    value));
             }
             
             table.append(
