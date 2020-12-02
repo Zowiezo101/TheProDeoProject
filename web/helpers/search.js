@@ -27,6 +27,12 @@ function selectTableOptions(sel) {
                 // Name Children
                 addInput("child", dict_Links["to_child"], value)
             ).append(
+                // Related locations
+                addInput("location", dict_Links["to_location"], value)
+            ).append(
+                // Related events
+                addInput("event", dict_Links["to_activity"], value)
+            ).append(
                 // Gender
                 addSelect("gender", dict_PeoplesParams["gender"], value)
             ).append(
@@ -280,14 +286,38 @@ async function onSearch() {
             options += result.option;
         }
 
-        if (get_settings.hasOwnProperty("gender") && (get_settings["gender"] !== "") && (get_settings["gender"] !== 0)) {
-            options = options + " AND gender = '%" + get_settings["gender"] + "%'";
+        if (get_settings.hasOwnProperty("gender") && (get_settings["gender"] !== "") && (get_settings["gender"] !== "0")) {
+            options = options + " AND gender = '" + (get_settings["gender"] - 1) + "'";
         }
 
-        if (get_settings.hasOwnProperty("tribe") && (get_settings["tribe"] !== "") && (get_settings["tribe"] !== 0)) {
-            options = options + " AND tribe = '%" + get_settings["tribe"] + "%'";
+        if (get_settings.hasOwnProperty("tribe") && (get_settings["tribe"] !== "") && (get_settings["tribe"] !== "0")) {
+            options = options + " AND tribe = '" + (get_settings["tribe"] - 1) + "'";
         }
-//
+        
+        if (get_settings.hasOwnProperty("people") && (get_settings["people"] !== "")) {
+            var result = getQueryPart("people", search_table);
+            joins += result.join;
+            options += result.option;
+        }
+        
+        if (get_settings.hasOwnProperty("location") && (get_settings["location"] !== "")) {
+            var result = getQueryPart("location", search_table);
+            joins += result.join;
+            options += result.option;
+        }
+        
+        if (get_settings.hasOwnProperty("special") && (get_settings["special"] !== "")) {
+            var result = getQueryPart("special", search_table);
+            joins += result.join;
+            options += result.option;
+        }
+        
+        if (get_settings.hasOwnProperty("event") && (get_settings["event"] !== "")) {
+            var result = getQueryPart("event", search_table);
+            joins += result.join;
+            options += result.option;
+        }
+
 //            if ((filter_input(INPUT_GET, 'type') !== null) and (filter_input(INPUT_GET, "type") != "")) {
 //                if (filter_input(INPUT_GET, "type") != 0) {
 //                    $options = $options." AND type = '%".filter_input(INPUT_GET, "type")."%'";
@@ -450,27 +480,24 @@ function addSelect(name, placeholder, table) {
                 $("<option/>")
                     .attr("value", "")
                     .attr("disabled", "true")
-                    .attr("selected",  selected ? "false" : "true")
+                    .attr("selected",  selected ? false : true)
                     .html(dict_Settings["default"] + " voor " + placeholder)
             );
 
     // First option is to choose all
-    element.append($("<option/>").attr("value", 0).html(dict_Search["all"]));        
-    for (var i = 0; i < Object.keys(array).length; i++) {
-        if (selected && get_settings[name] === i + 1) {
-            element.append(
-                    $("<option/>")
-                        .attr("value", i + 1)
-                        .attr("selected", "true")
-                        .html(array[Object.keys(array)[i]])
-            );
-        } else {
-            element.append(
-                    $("<option/>")
-                        .attr("value", i + 1)
-                        .html(array[Object.keys(array)[i]])
-            );
-        }
+    element.append(
+            $("<option/>")
+                .attr("value", 0)
+                .attr("selected", selected && get_settings[name] === "0")
+                .html(dict_Search["all"])
+    );        
+    for (var i = 1; i < Object.keys(array).length + 1; i++) {
+        element.append(
+                $("<option/>")
+                    .attr("value", i)
+                    .attr("selected", selected && get_settings[name] === i.toString())
+                    .html(array[Object.keys(array)[i - 1]])
+        );
     }
 
     return element;

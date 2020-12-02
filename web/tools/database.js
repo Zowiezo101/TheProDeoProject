@@ -426,6 +426,41 @@ function getQueryPart(search_term, search_table) {
                     " WHERE name LIKE '" + children.join("' OR name LIKE '") + "' AND p1.parent_id IS NOT NULL" +
                     ")";
             break;
+            
+        case "people":
+            var peoples = get_settings["people"].split(";");
+            peoples = peoples.map(s => s.trim());
+
+            if (search_table === "location") {
+
+                result.option = 
+                        " AND location_id IN (" + 
+                        " SELECT l1.location2_id FROM locations" + 
+                        " LEFT JOIN location_to_location AS l1 ON locations.location_id = l1.location1_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND l1.location2_id IS NOT NULL" + 
+
+                        " UNION" + 
+
+                        " SELECT l2.location1_id FROM locations" + 
+                        " LEFT JOIN location_to_location AS l2 ON locations.location_id = l2.location2_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND l2.location1_id IS NOT NULL" + 
+                        ")";
+            } else if (search_table === "events") {
+                
+                result.option = 
+                        " AND people_id IN (" + 
+                        " SELECT p1.people2_id FROM peoples" + 
+                        " LEFT JOIN people_to_people AS p1 ON peoples.people_id = p1.people1_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND p1.people2_id IS NOT NULL" + 
+
+                        " UNION" + 
+
+                        " SELECT p2.people1_id FROM peoples" + 
+                        " LEFT JOIN people_to_people AS p2 ON peoples.people_id = p2.people2_id" + 
+                        " WHERE name LIKE '" + name_changes.join("' OR name LIKE '") + "' AND p2.people1_id IS NOT NULL" + 
+                        ")";
+            }
+            break;
     }
     
     return result;
