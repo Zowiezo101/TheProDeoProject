@@ -197,11 +197,6 @@ async function showLinkInfo(table) {
                     continue;
                 }
                 
-                // Only if we have a type
-                if (item.hasOwnProperty("type")) {
-                    types.push(item["type"]);
-                } 
-                
                 // Column is who we are, we just want to show the linking information
                 switch(item_link.data) {
                     case "activity_id":
@@ -228,11 +223,21 @@ async function showLinkInfo(table) {
                         }
                         object = object[0];
 
-                        // Only is this person isn't already shown
-                        if (values.indexOf(item[item_link.data]) < 0) {
+                        // Only is this person isn't already shown with the same type
+                        var double_name = values.indexOf(item[item_link.data]);
+                        var double_type = types.indexOf(getTypeNoun(item["type"]));
+                        
+                        if ((double_name < 0) || (double_type < 0)) {
                             names.push(object["name"]);
                             values.push(item[item_link.data]);
-                            genders.push(getGenderNoun(object["gender"], 1));
+                            genders.push(getGenderNoun(object["gender"], item_link.data));
+                
+                            // Only if we have a type
+                            if (item.hasOwnProperty("type")) {
+                                types.push(getTypeNoun(item["type"]));
+                            } else {
+                                types.push("");
+                            }
                         }
                     } , console.log);
                 } else if (item_link.hasOwnProperty("name")) {
@@ -263,6 +268,7 @@ async function showLinkInfo(table) {
                 var value = values[idx3];
                 var name = names[idx3];
                 var gender = genders[idx3];
+                var type = types[idx3];
                 
                 var TableData2 = $("<td/>").appendTo(
                         $("<tr/>").appendTo(
@@ -273,7 +279,7 @@ async function showLinkInfo(table) {
                 if (value !== null) {
                     // Table links, the name is the name of the item
                     $("<a/>").appendTo(TableData2)
-                            .html(name + gender)
+                            .html(name + gender + type)
                             .data("value", value)
                             .data("table_name", table_name)
                             .click(function() {

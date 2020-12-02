@@ -1,4 +1,4 @@
-/* global dict_Footer, select_Search_gender, dict_PeoplesParams, session_settings */
+/* global dict_Footer, select_Search_gender, dict_PeoplesParams, session_settings, select_Search_location */
 
 // TODO: When more than one language is available, 
 // use convertBibleVerseLinkDEF, convertBibleVerseLinkEN functions 
@@ -97,26 +97,37 @@ function getGenderNoun(genderInt, parentNoun) {
     switch(genderInt) {
         case "-1":
         case -1:
-            if (parentNoun) {
+        case "0":
+        case 0:
+            if ((parentNoun === "parent_id") || (parentNoun === "people_id") || 
+                    (parentNoun === "people1_id") || (parentNoun === "people2_id")) {
                 genderStr = "";
             } else {
                 genderStr = select_Search_gender.unknown;
             }
             break;
             
-        case "0":
-        case 0:
-            if (parentNoun) {
+        case "1":
+        case 1:
+            if (parentNoun === "parent_id") {
                 genderStr = " (" + dict_PeoplesParams.father_id + ")";
+            } else if (parentNoun === "people_id") {
+                genderStr = " (" + dict_PeoplesParams.son + ")";
+            } else if ((parentNoun === "people1_id") || (parentNoun === "people2_id")) {
+                genderStr = "";
             } else {
                 genderStr = select_Search_gender.male;
             }
             break;
             
-        case "1":
-        case 1:
-            if (parentNoun) {
+        case "2":
+        case 2:
+            if (parentNoun === "parent_id") {
                 genderStr = " (" + dict_PeoplesParams.mother_id + ")";
+            } else if (parentNoun === "people_id") {
+                genderStr = " (" + dict_PeoplesParams.daughter + ")";
+            } else if ((parentNoun === "people1_id") || (parentNoun === "people2_id")) {
+                genderStr = "";
             } else {
                 genderStr = select_Search_gender.female;
             }
@@ -124,4 +135,42 @@ function getGenderNoun(genderInt, parentNoun) {
     }
     
     return genderStr;
+}
+
+function getTypeNoun(typeInt) {
+    var typeStr = "";
+    
+    switch(typeInt) {
+        case "-1":
+        case -1:
+            typeStr = "";
+            break;
+            
+        case "0":
+        case 0:
+            typeStr = " (" + select_Search_location.birth + ")";
+            break;
+            
+        case "1":
+        case 1:
+            typeStr = " (" + select_Search_location.living + ")";
+            break;
+    
+        case "2":
+        case 2:
+            typeStr = " (" + select_Search_location.death + ")";
+            break;
+            
+        case "3":
+        case 3:
+            typeStr = " (" + select_Search_location.founder + ")";
+            break;
+            
+        case "4":
+        case 5:
+            typeStr = " (" + select_Search_location.destroyer + ")";
+            break;
+    }
+    
+    return typeStr;
 }
