@@ -7,6 +7,8 @@ var dict_PeoplesParams = {
 	"father_age": "Age father",
 	"mother_id": "Mother",
 	"mother_age": "Age mother",
+	"daughter": "Daughter",
+	"son": "Son",
 	"age": "Age",
 	"gender": "Gender",
 	"tribe": "Tribe",
@@ -245,6 +247,14 @@ var select_Search_tribes = {
 	"zebulon": "Zebulun",
 	"jozef": "Joseph",
 	"benjamin": "Benjamin",
+};
+
+var select_Search_location = {
+	"birth": "Birthplace",
+	"living": "Residence",
+	"death": "Place of death",
+	"founder": "Founder",
+	"destroyer": "Destroyer",
 };
 
 var dict_Links = {

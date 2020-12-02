@@ -8,6 +8,8 @@ $dict_PeoplesParams = array(
 	"father_age"=>"Age father",
 	"mother_id"=>"Mother",
 	"mother_age"=>"Age mother",
+	"daughter"=>"Daughter",
+	"son"=>"Son",
 	"age"=>"Age",
 	"gender"=>"Gender",
 	"tribe"=>"Tribe",
@@ -229,6 +231,13 @@ $select_Search_tribes = array(
 	"zebulon"=>"Zebulun",
 	"jozef"=>"Joseph",
 	"benjamin"=>"Benjamin",);
+
+$select_Search_location = array(
+	"birth"=>"Birthplace",
+	"living"=>"Residence",
+	"death"=>"Place of death",
+	"founder"=>"Founder",
+	"destroyer"=>"Destroyer",);
 
 $dict_Links = array(
 	"to_activity"=>"Related activities",

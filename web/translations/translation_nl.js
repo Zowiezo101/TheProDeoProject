@@ -7,6 +7,8 @@ var dict_PeoplesParams = {
 	"father_age": "Leeftijd vader",
 	"mother_id": "Moeder",
 	"mother_age": "Leeftijd moeder",
+	"daughter": "Dochter",
+	"son": "Zoon",
 	"age": "Leeftijd",
 	"gender": "Geslacht",
 	"tribe": "Stam",
@@ -245,6 +247,14 @@ var select_Search_tribes = {
 	"zebulon": "Zebulon",
 	"jozef": "Jozef",
 	"benjamin": "Benjamin",
+};
+
+var select_Search_location = {
+	"birth": "Geboorteplaats",
+	"living": "Woonplaats",
+	"death": "Sterfplaats",
+	"founder": "Oprichter",
+	"destroyer": "Vernietiger",
 };
 
 var dict_Links = {
