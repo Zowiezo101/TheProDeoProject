@@ -44,7 +44,6 @@
             $theme = "purple";
             break;
     }
-    $imports = "";
 ?>
 
 <!DOCTYPE html>
@@ -62,7 +61,19 @@
         <link rel="stylesheet" href="css/theme_<?php echo $theme; ?>.css">
         
         <!-- External Javascript files -->
-        <?php echo $imports; ?>
+        <?php require "page/import.php"; ?>
+        
+<script>
+    
+    window.onload = function() {
+        // Set some default stuff
+        //onLoadDefault();
+        
+        // Then run the function that is different per page
+        <?php echo "onLoad".ucfirst($id)."()"; ?>;
+    };
+</script>
+
     </head>
     
     <body>
@@ -70,7 +81,8 @@
         
         <!-- Actual content of the page itself 
             This is defined in the corresponding php page -->
-        <?php require ("content/".$id.".php"); ?>
+        <div id="content" class="py-5">
+        </div>
         
         <?php require "page/footer.php"; ?>
     </body>
