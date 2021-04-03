@@ -1,5 +1,50 @@
 <?php 
-    //require 'tools/layout.php';
+    //require 'page/layout.php';
+
+    $dropdown = "";
+    // Get the dropdown menu that needs to have it's button activated
+    if (in_array($id, ['books', 'events', 'persons', 'locations', 'specials', 'search'])) {
+        $dropdown = "database";
+    }
+    
+    // The theme that is used for this page
+    switch($id) {
+        case 'home':
+        case 'search':
+        case 'settings':
+            $theme = "purple";
+            break;
+        
+        case 'books':
+        case 'aboutus':
+            $theme = "orange";
+            break;
+        
+        case 'events':
+        case 'timeline':
+            $theme = "blue";
+            break;
+        
+        case 'persons':
+        case 'familytree':
+            $theme = "red";
+            break;
+        
+        case 'locations':
+        case 'worldmap':
+            $theme = "yellow";
+            break;
+        
+        case 'specials':
+        case 'contact':
+            $theme = "green";
+            break;
+        
+        default:
+            $theme = "purple";
+            break;
+    }
+    $imports = "";
 ?>
 
 <!DOCTYPE html>

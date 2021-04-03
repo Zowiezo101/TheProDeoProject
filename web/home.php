@@ -1,8 +1,7 @@
 <?php 
     // Make it easier to copy/paste code or make a new file
-    $id = "home";
-    $theme = "purple";
-    $imports = "";
-    require_once 'page/template.php';
+    // Less change of errors
+    $id = basename(filter_input(INPUT_SERVER, 'PHP_SELF'), '.php');
+    require 'page/template.php';
 ?>
     
