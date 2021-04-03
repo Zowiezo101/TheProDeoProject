@@ -25,10 +25,10 @@
                             <a class="dropdown-item <?php echo $id == "search" ? "bg-primary" : "" ?>" href="search">Search</a>
                         </div>
                     </li>
-                    <li class="nav-item rounded <?php echo $id == "timeline" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="timeline">Timeline</a> </li>
-                    <li class="nav-item rounded <?php echo $id == "familytree" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="familytree">Familytree</a> </li>
-                    <li class="nav-item rounded <?php echo $id == "worldmap" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="worldmap">Worldmap</a> </li>
-                    <li class="nav-item rounded <?php echo $id == "aboutus" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="aboutus">About us</a> </li>
+                    <li class="nav-item <?php echo $id == "timeline" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="timeline">Timeline</a> </li>
+                    <li class="nav-item <?php echo $id == "familytree" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="familytree">Familytree</a> </li>
+                    <li class="nav-item <?php echo $id == "worldmap" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="worldmap">Worldmap</a> </li>
+                    <li class="nav-item <?php echo $id == "aboutus" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="aboutus">About us</a> </li>
                 </ul> 
                 <a class="btn navbar-btn ml-md-2 btn-secondary text-body" href="contact">Contact us</a>
             </div>
