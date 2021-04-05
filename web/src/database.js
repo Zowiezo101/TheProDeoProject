@@ -6,15 +6,17 @@
 
 /**
  * getData(table, id, options)
- * @param table
- * @param id
+ * @param {String} table
+ * @param {Array|String} ids
  * @param options
  *  - Filter
  *  - Columns to return
  *  - Calculations to return
  *  
+ *  @return {Promise}
+ *  
  *  getBooks()
- *  getPersons()
+ *  getPeoples()
  *  getEvents()
  *  getLocations()
  *  getSpecials()
@@ -22,24 +24,133 @@
  *  getBlogs()
  * 
  */
-function getData(table, id, options) {
+function getData(table, ids, options) {
     var url = "http://localhost/web/api/item_read.php";
-    var params = getParams({"table": table, "id": id, "options": options});
+    var params = getParams({"table": table, "ids": ids, "options": options});
     
-    $.fetch(url + params, {
+    return $.fetch(url, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json; charset=UTF-8'
-            }
-        }
-    ).then(response => response.json()).then (
-        function (response) {		
-            
+            },
+            body: JSON.stringify(params)
         }
     );
 }
 
-function getParams() {
+/**
+ * getBlogs(id, options)
+ * @param {Array|String} ids
+ * @param options
+ *  - Filter
+ *  - Columns to return
+ *  - Calculations to return
+ *  
+ *  @return {Promise}
+ */
+function getBlogs(ids, options) {
+    return getData("blogs", ids, options);
+}
+
+/**
+ * getBooks(id, options)
+ * @param {Array|String} ids
+ * @param options
+ *  - Filter
+ *  - Columns to return
+ *  - Calculations to return
+ *  
+ *  @return {Promise}
+ */
+function getBooks(ids, options) {
+    return getData("books", ids, options);
+}
+
+/**
+ * getEvents(id, options)
+ * @param {Array|String} ids
+ * @param options
+ *  - Filter
+ *  - Columns to return
+ *  - Calculations to return
+ *  
+ *  @return {Promise}
+ */
+function getEvents(ids, options) {
+    return getData("events", ids, options);
+}
+
+/**
+ * getActivities(id, options)
+ * @param {Array|String} ids
+ * @param options
+ *  - Filter
+ *  - Columns to return
+ *  - Calculations to return
+ *  
+ *  @return {Promise}
+ */
+function getActivities(ids, options) {
+    return getData("activitys", ids, options);
+}
+
+/**
+ * getPeoples(id, options)
+ * @param {Array|String} ids
+ * @param options
+ *  - Filter
+ *  - Columns to return
+ *  - Calculations to return
+ *  
+ *  @return {Promise}
+ */
+function getPeoples(ids, options) {
+    return getData("peoples", ids, options);
+}
+
+/**
+ * getLocations(id, options)
+ * @param {Array|String} ids
+ * @param options
+ *  - Filter
+ *  - Columns to return
+ *  - Calculations to return
+ *  
+ *  @return {Promise}
+ */
+function getLocations(ids, options) {
+    return getData("locations", ids, options);
+}
+
+/**
+ * getSpecials(id, options)
+ * @param {Array|String} ids
+ * @param options
+ *  - Filter
+ *  - Columns to return
+ *  - Calculations to return
+ *  
+ *  @return {Promise}
+ */
+function getSpecials(ids, options) {
+    return getData("specials", ids, options);
+}
+
+/**
+ * @param {{table: String, ids: Array|String, options: <*>}} params
+ * */
+function getParams(params) {
+    /**
+     * @type {{table: String, ids: Array|String, columns: Array, filters: Array, calculations: Array}}
+     * */
+    var params_json = {};
     
+    params_json.table = params.table;
+    params_json.ids = params.ids;
+    params.json.columns = params.options.hasOwnProperty('columns') ? params.options.columns : "";
+    params.json.filters = params.options.hasOwnProperty('filters') ? params.options.filters : "";
+    params.json.calculations = params.options.hasOwnProperty('calculations') ? params.options.calculations : "";
+    
+    return params_json;
 }
 		

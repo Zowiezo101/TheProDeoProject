@@ -3,7 +3,7 @@
 
     $dropdown = "";
     // Get the dropdown menu that needs to have it's button activated
-    if (in_array($id, ['books', 'events', 'persons', 'locations', 'specials', 'search'])) {
+    if (in_array($id, ['books', 'events', 'peoples', 'locations', 'specials', 'search'])) {
         $dropdown = "database";
     }
     
@@ -25,7 +25,7 @@
             $theme = "blue";
             break;
         
-        case 'persons':
+        case 'peoples':
         case 'familytree':
             $theme = "red";
             break;

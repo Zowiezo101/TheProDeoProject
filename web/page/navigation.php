@@ -18,7 +18,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item <?php echo $id == "books" ? "bg-primary" : "" ?>" href="books">Books</a>
                             <a class="dropdown-item <?php echo $id == "events" ? "bg-primary" : "" ?>" href="events">Events</a>
-                            <a class="dropdown-item <?php echo $id == "persons" ? "bg-primary" : "" ?>" href="persons">Persons</a>
+                            <a class="dropdown-item <?php echo $id == "peoples" ? "bg-primary" : "" ?>" href="peoples">Peoples</a>
                             <a class="dropdown-item <?php echo $id == "locations" ? "bg-primary" : "" ?>" href="locations">Locations</a>
                             <a class="dropdown-item <?php echo $id == "specials" ? "bg-primary" : "" ?>" href="specials">Specials</a>
                             <div class="dropdown-divider"></div>

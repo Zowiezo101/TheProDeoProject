@@ -28,7 +28,7 @@
                     </div>
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                      <label class="form-check-label" for="dropdownCheck"> Persons </label>
+                      <label class="form-check-label" for="dropdownCheck"> Peoples </label>
                     </div>
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="dropdownCheck">
@@ -81,7 +81,7 @@
                     </div>
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                      <label class="form-check-label" for="dropdownCheck"> Persons </label>
+                      <label class="form-check-label" for="dropdownCheck"> Peoples </label>
                     </div>
                     <div class="form-check">
                       <input type="checkbox" class="form-check-input" id="dropdownCheck">
@@ -150,7 +150,7 @@
               <ul class="nav nav-tabs">
                 <li class="nav-item"> <a class="active nav-link" data-toggle="tab" data-target="#tab-books" href="">Books</a> </li>
                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" data-target="#tabtwo" href="">Events</a> </li>
-                <li class="nav-item"> <a class="nav-link" data-toggle="tab" data-target="#tabthree" href="">Persons</a> </li>
+                <li class="nav-item"> <a class="nav-link" data-toggle="tab" data-target="#tabthree" href="">Peoples</a> </li>
                 <li class="nav-item"> <a class="nav-link" href="" data-target="#tabfour" data-toggle="tab">Locations</a></li>
                 <li class="nav-item"> <a class="nav-link" href="" data-target="#tabfive" data-toggle="tab">Specials</a></li>
               </ul>
