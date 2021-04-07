@@ -28,17 +28,19 @@ if ($conn->connect_error) {
     if ($check_results->error) {
         // Checking returned an error
         $result->error = $check_results->error;
-    } else {        
-        $value = filter_input(INPUT_GET, 'value') !== null ? filter_input(INPUT_GET, 'value') : "";
-        if ($value !== "") {
-            // We just want this specific ID
-            $column = filter_input(INPUT_GET, 'column') !== null ? filter_input(INPUT_GET, 'column') : substr($table, 0, -1)."_id";
-            $sql = "select * from ".$table." where ".$column." = ".$value;
+    } else {
+        $checked_table = $check_results->data->table;
+        $checked_ids = $check_results->data->ids;
+        $checked_columns = $check_results->data->columns;
+        $checked_filters = $check_results->data->filters;
+        $checked_calculations = $check_results->data->calculations;
+        
+        if ($checked_ids) {
+            // We want these rows of this table
+            $sql = "SELECT * FROM ".$checked_table." WHERE ".$checked_columns[0]." in (".implode(",", $checked_ids).")";
         } else {
-            // No ID given means we want all results of that table, or a subset using range
-            $offset = filter_input(INPUT_GET, 'offset') !== null ? " limit ".filter_input(INPUT_GET, 'offset').", 100" : "";
-            $sort = filter_input(INPUT_GET, 'sort') !== null ? " order by ".filter_input(INPUT_GET, 'sort') : "";
-            $sql = "select * from ".$table.$sort.$offset;
+            // All rows of this table
+            $sql = "SELECT * FROM ".$checked_table;
         }
 
         // excecute SQL statement
@@ -86,7 +88,7 @@ function checkAllParams() {
             $result->error = $ids_result->error;
         } else {
             // Check the columns
-            $columns_result = checkColumns($table_result->query, 'columns');
+            $columns_result = checkColumns($table_result->query, $ids_result->data, 'columns');
             if ($columns_result->error) {
                 // No valid columns selected
                 $result->error = $columns_result->error;
@@ -104,7 +106,8 @@ function checkAllParams() {
                         $result->error = $calculations_result->error;
                     } else {
                         // Everything is checked and valid
-                        $result->data->table = $table_result->data;
+                        $result->data = new stdClass();
+                        $result->data->table = $table_result->query;
                         $result->data->ids = $ids_result->data;
                         $result->data->columns = $columns_result->data;
                         $result->data->filters = $filters_result->data;
@@ -129,7 +132,7 @@ function checkSingleParam($name) {
 function checkMultParams($name) {
     // TODO: Check for insertion
     $param = filter_input(INPUT_POST, $name);
-    $params = split(';', $param);
+    $params = $param ? explode(';', $param) : [];
     return $params;
 }
 
@@ -161,7 +164,7 @@ function isTableValid($table) {
         }
     }
     
-    return result;
+    return $result;
 }
 
 /** Return all the valid tables */
@@ -181,7 +184,12 @@ function getValidTables() {
     if (!$results) {
         $result->error = mysqli_error($conn);
     } else {
-        $result->data = mysqli_fetch_all($results, MYSQLI_NUM);
+        // Put the results in the arrau
+        $result->data = Array();
+        for ($i = 0; $i < mysqli_num_rows($results); $i++) {
+            $object = mysqli_fetch_object($results);
+            $result->data[] = $object->TABLE_NAME ? $object->TABLE_NAME : "";
+        }
     }
     
     return $result;
@@ -211,14 +219,10 @@ function checkIDs($ids) {
         }
     }
     
-    if (!$result->error && count($result->data) == 0) {
-        $result->error = "No valid ID is selected";
-    }
-    
     return $result;
 }
 
-function checkColumns($table, $columns) {
+function checkColumns($table, $ids, $columns) {
     // The result object to save the results in
     $result = new result();
     
@@ -229,12 +233,30 @@ function checkColumns($table, $columns) {
     for ($i = 0; $i < count($columns_checked); $i++) {
         $column = $columns_checked[$i];
         $result_column = isColumnValid($table, $column);
+        
+        if ($result_column->error) {
+            $result->error = $result_column->error;
+            break;
+        } else if ($result_column->data == False) {
+            $result->error = "No valid column is selected";
+            break;
+        } else {
+            $result->data[] = $result_column->query;
+        }
     }
+    
+    // There has to be one column, which is the primary ID
+    if ($ids && (!$result->error) && ((!$result->data) || (count($result->data) == 0))) {
+        $result->error = "No primary column is selected";
+    }
+    
+    return $result;
 }
 
 function isColumnValid($table, $column) {
     // The result object to save the results in
     $result = new result();
+    $result->query = $column;
     
     // Get a list of all valid tables
     $valid_columns = getValidColumns($table);
@@ -256,11 +278,11 @@ function isColumnValid($table, $column) {
         }
     }
     
-    return result;
+    return $result;
 }
 
-/** Return all the valid tables */
-function getValidColumns($table, $calculations) {
+/** Return all the valid columns */
+function getValidColumns($table) {
     global $conn;
     
     // The result object to save the results in
@@ -268,7 +290,8 @@ function getValidColumns($table, $calculations) {
     
     $table_names = [];
     switch($table) {
-        case "actvity_to_activity":
+        /*case "actvity_to_activity":
+            $table_names[] = "activitys";
             break;
             
         case "actvity_to_event":
@@ -311,7 +334,7 @@ function getValidColumns($table, $calculations) {
             break;
             
         case "specials":
-            break;
+            break;*/
             
         default:
             $table_names[] = $table;
@@ -328,8 +351,151 @@ function getValidColumns($table, $calculations) {
     if (!$results) {
         $result->error = mysqli_error($conn);
     } else {
-        $result->data = mysqli_fetch_all($results, MYSQLI_NUM);
+        $result->data = Array();
+        for ($i = 0; $i < mysqli_num_rows($results); $i++) {
+            
+            $object = mysqli_fetch_object($results);
+            $result->data[] = $object->COLUMN_NAME ? $object->COLUMN_NAME : "";
+        }
     }
     
     return $result;
+}
+
+function checkFilters($table, $filters) {
+    // The result object to save the results in
+    $result = new result();
+    
+    // First check for insertion
+    $filters_checked = checkMultParams($filters);
+    $result->query = $filters_checked;
+    
+    for ($i = 0; $i < count($filters_checked); $i++) {
+        $filter = $filters_checked[$i];
+        $result_filter = isFilterValid($table, $filter);
+        
+        if ($result_filter->error) {
+            $result->error = $result_filter->error;
+            break;
+        } else if ($result_filter->data == False) {
+            $result->error = "No valid filter is selected";
+            break;
+        } else {
+            $result->data[] = $result_filter->query;
+        }
+    }
+    
+    return $result;
+}
+
+function isFilterValid($table, $filter) {
+    // The result object to save the results in
+    $result = new result();
+    $result->query = $filter;
+    
+    // Get a list of all valid filters
+    $valid_filters = getValidFilters($table, $filter);
+    if ($valid_filters->error) {
+        // Something went wrong
+        $result->error = $valid_filters->error;
+        $result->data = false;
+    } else if (count($valid_filters->data) == 0) {
+        // Something went wrong
+        $result->error = "Database does not return valid filters";
+        $result->data = false;
+    } else {
+        if (($valid_filters !== null) && in_array($filter, $valid_filters->data)) {
+            // The filter is in here
+            $result->data = true;
+        } else {
+            // Not a valid filter
+            $result->data = false;
+        }
+    }
+    
+    return $result;
+}
+
+function getValidFilters($table, $filter) {
+    $filters = [];
+    
+    // Valid filters per table
+    switch($table) {
+        // TODO
+        
+        default:
+            $filters[] = $filter;
+            break;
+    }
+    
+    return $filters;
+}
+
+function checkCalculations($table, $calculations) {
+    // The result object to save the results in
+    $result = new result();
+    
+    // First check for insertion
+    $calculations_checked = checkMultParams($calculations);
+    $result->query = $calculations_checked;
+    
+    for ($i = 0; $i < count($calculations_checked); $i++) {
+        $calculation = $calculations_checked[$i];
+        $result_calculation = isFilterValid($table, $calculation);
+        
+        if ($result_calculation->error) {
+            $result->error = $result_calculation->error;
+            break;
+        } else if ($result_calculation->data == False) {
+            $result->error = "No valid calculation is selected";
+            break;
+        } else {
+            $result->data[] = $result_calculation->query;
+        }
+    }
+    
+    return $result;
+}
+
+function isCalculationValid($table, $calculation) {
+    // The result object to save the results in
+    $result = new result();
+    $result->query = $calculation;
+    
+    // Get a list of all valid calculations
+    $valid_calcs = getValidCalculations($table, $calculation);
+    if ($valid_calcs->error) {
+        // Something went wrong
+        $result->error = $valid_calcs->error;
+        $result->data = false;
+    } else if (count($valid_calcs->data) == 0) {
+        // Something went wrong
+        $result->error = "Database does not return valid calculations";
+        $result->data = false;
+    } else {
+        if (($valid_calcs !== null) && in_array($calculation, $valid_calcs->data)) {
+            // The calculation is in here
+            $result->data = true;
+        } else {
+            // Not a valid calculation
+            $result->data = false;
+        }
+    }
+    
+    return $result;
+}
+
+function getValidCalculations($table, $calculation) {
+    $calculations = [];
+    
+    // Valid calculations per table
+    switch($table) {
+        // TODO
+        
+        default:
+            $calculations[] = $calculation;
+            break;
+    }
+    
+    return $calculations;
 }
