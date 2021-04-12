@@ -33,15 +33,14 @@ if ($conn->connect_error) {
         $checked_ids = $check_results->data->ids;
         $checked_columns = $check_results->data->columns;
         $checked_filters = $check_results->data->filters;
+        $checked_sort = $check_results->data->sort;
         $checked_calculations = $check_results->data->calculations;
         
-        if ($checked_ids) {
-            // We want these rows of this table
-            $sql = "SELECT * FROM ".$checked_table." WHERE ".$checked_columns[0]." in (".implode(",", $checked_ids).")";
-        } else {
-            // All rows of this table
-            $sql = "SELECT * FROM ".$checked_table;
-        }
+        $sql_where = getWhereStatement($check_results->data);
+        $sql_sort = getSortStatement($check_results->data);
+        
+        // The final SQL query
+        $sql = "SELECT * FROM ".$checked_table.$sql_where.$sql_sort;
 
         // excecute SQL statement
         $result->query = $sql;
@@ -83,37 +82,42 @@ function checkAllParams() {
     } else {    
         // Check the IDs
         $ids_result = checkIDs('ids');
+        
         if ($ids_result->error) {
             // No valid ID selected
             $result->error = $ids_result->error;
         } else {
             // Check the columns
             $columns_result = checkColumns($table_result->query, $ids_result->data, 'columns');
+            // Check the filters
+            $filters_result = checkFilters($table_result->query, 'filters');
+            // Check the columns to sort by
+            $sort_result = checkSort($table_result->query, 'sort');
+            // Check the calculations
+            $calculations_result = checkCalculations($table_result->query, 'calculations');
+            
+            
             if ($columns_result->error) {
                 // No valid columns selected
                 $result->error = $columns_result->error;
+            } else if ($filters_result->error) {
+                // No valid filter selected
+                $result->error = $filters_result->error;
+            } else if ($sort_result->error) {
+                // No valid sort selected
+                $result->error = $sort_result->error;
+            } else if ($calculations_result->error) {
+                // No valid calculation selected
+                $result->error = $calculations_result->error;
             } else {
-                // Check the filters
-                $filters_result = checkFilters($table_result->query, 'filters');
-                if ($filters_result->error) {
-                    // No valid filter selected
-                    $result->error = $filters_result->error;
-                } else {
-                    // Check the calculations
-                    $calculations_result = checkCalculations($table_result->query, 'calculations');
-                    if ($calculations_result->error) {
-                        // No valid calculation selected
-                        $result->error = $calculations_result->error;
-                    } else {
-                        // Everything is checked and valid
-                        $result->data = new stdClass();
-                        $result->data->table = $table_result->query;
-                        $result->data->ids = $ids_result->data;
-                        $result->data->columns = $columns_result->data;
-                        $result->data->filters = $filters_result->data;
-                        $result->data->calculations = $calculations_result->data;
-                    }
-                }
+                // Everything is checked and valid
+                $result->data = new stdClass();
+                $result->data->table = $table_result->query;
+                $result->data->ids = $ids_result->data;
+                $result->data->columns = $columns_result->data;
+                $result->data->sort = $sort_result->data;
+                $result->data->filters = $filters_result->data;
+                $result->data->calculations = $calculations_result->data;
             }
         }   
     }
@@ -124,14 +128,14 @@ function checkAllParams() {
 // Check a single paramter
 function checkSingleParam($name) {
     // TODO: Check for insertion
-    $param = filter_input(INPUT_POST, $name);
+    $param = filter_input(INPUT_GET, $name);
     return $param;
 }
 
 // Check multiple parameters
 function checkMultParams($name) {
     // TODO: Check for insertion
-    $param = filter_input(INPUT_POST, $name);
+    $param = filter_input(INPUT_GET, $name);
     $params = $param ? explode(';', $param) : [];
     return $params;
 }
@@ -160,6 +164,7 @@ function isTableValid($table) {
             $result->data = true;
         } else {
             // Not a valid table
+            $result->error = $result->query." is not a valid table";
             $result->data = false;
         }
     }
@@ -431,6 +436,61 @@ function getValidFilters($table, $filter) {
     return $filters;
 }
 
+function checkSort($table, $sorts) {
+    // The result object to save the results in
+    $result = new result();
+    
+    // First check for insertion
+    $sorts_checked = checkMultParams($sorts);
+    $result->query = $sorts_checked;
+    
+    for ($i = 0; $i < count($sorts_checked); $i++) {
+        $calculation = $sorts_checked[$i];
+        $result_sort = isSortValid($table, $calculation);
+        
+        if ($result_sort->error) {
+            $result->error = $result_sort->error;
+            break;
+        } else if ($result_sort->data == False) {
+            $result->error = "No valid sort is selected";
+            break;
+        } else {
+            $result->data[] = $result_sort->query;
+        }
+    }
+    
+    return $result;  
+}
+
+function isSortValid($table, $sort) {
+    // The result object to save the results in
+    $result = new result();
+    $result->query = $sort;
+    
+    // Amount of spaces should be 1
+    if (substr_count($sort, ' ') != 1) {
+        // Something went wrong
+        $result->error = "No valid sort is selected";
+        $result->data = false;
+    } else {
+        // Seperate the column and the order
+        list($column, $order) = explode(' ', $sort);
+        
+        // Column can be checked using the column function
+        $column_valid = isColumnValid($table, $column)->data;
+        // Order is either ASC or DESC
+        $order_valid = in_array(strtoupper($order), ["DESC", "ASC"]);
+        if ($column_valid && $order_valid) {
+            $result->data = true;
+        } else {
+            $result->error = "No valid sort is selected";
+            $result->data = false;
+        }
+    }
+    
+    return $result;
+}
+
 function checkCalculations($table, $calculations) {
     // The result object to save the results in
     $result = new result();
@@ -441,7 +501,7 @@ function checkCalculations($table, $calculations) {
     
     for ($i = 0; $i < count($calculations_checked); $i++) {
         $calculation = $calculations_checked[$i];
-        $result_calculation = isFilterValid($table, $calculation);
+        $result_calculation = isCalculationValid($table, $calculation);
         
         if ($result_calculation->error) {
             $result->error = $result_calculation->error;
@@ -498,4 +558,35 @@ function getValidCalculations($table, $calculation) {
     }
     
     return $calculations;
+}
+
+function getWhereStatement($parameters) {
+    $where_sql = "";
+    
+    
+    if ($parameters->ids) {
+        // We want these rows of this table
+        $where_sql = $parameters->columns[0]." in (".implode(",", $parameters->ids).")";
+    } 
+    
+    if ($where_sql != "") {
+        $where_sql = " WHERE ".$where_sql;
+    }
+    
+    return $where_sql;
+}
+
+function getSortStatement($parameters) {
+    $sort_sql = "";
+    
+    if ($parameters->sort) {
+        // Sort by these columns
+        implode(", ", $parameters->sort);
+    }
+    
+    if ($sort_sql != "") {
+        $sort_sql = " ORDER BY ".$sort_sql;
+    }
+    
+    return $sort_sql;
 }

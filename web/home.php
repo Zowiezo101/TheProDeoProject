@@ -8,7 +8,9 @@
 <script>
     // Function to load the content in the content div
     function onLoadHome() {
-        
+        getBlogs().then(function(blogs) {
+            alert(blogs);
+        });
     }
 </script>
 

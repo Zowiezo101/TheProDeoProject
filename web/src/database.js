@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+/* global fetch */
+
 /**
  * getData(table, id, options)
  * @param {String} table
@@ -26,16 +28,30 @@
  */
 function getData(table, ids, options) {
     var url = "http://localhost/web/api/item_read.php";
+    var query = getQuery({"table": table, "ids": ids, "options": options});
+    
+    return fetch(url + query, {
+            method: 'GET' /*,
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify(params)*/
+        }
+    ).then(response => response.json());
+}
+
+function postData(table, ids, options) {
+    var url = "http://localhost/web/api/item_read.php";
     var params = getParams({"table": table, "ids": ids, "options": options});
     
-    return $.fetch(url, {
+    return fetch(url, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json; charset=UTF-8'
             },
             body: JSON.stringify(params)
         }
-    );
+    ).then(response => response.json());
 }
 
 /**
@@ -49,7 +65,13 @@ function getData(table, ids, options) {
  *  @return {Promise}
  */
 function getBlogs(ids, options) {
-    return getData("blogs", ids, options);
+    if ((typeof(ids) === "undefined") || 
+            (typeof(options) === "undefined")) {
+        options = {
+            columns: ["id desc"]
+        };
+    }
+    return getData("blog", ids, options);
 }
 
 /**
@@ -139,6 +161,37 @@ function getSpecials(ids, options) {
 /**
  * @param {{table: String, ids: Array|String, options: <*>}} params
  * */
+function getQuery(params) {
+    /**
+     * @type {{table: String, ids: Array|String, columns: Array, filters: Array, calculations: Array}}
+     * */
+    var query = "";
+    
+    query = "?table=" + params.table;
+    if (params.ids) {
+        query += ("&ids=" + params.ids.join(';'));
+    } 
+    if (params.options) {
+        if (params.options.hasOwnProperty('columns') && params.options.columns) {
+            query += ("&ids=" + params.options.columns.join(';'));
+        } 
+        if (params.options.hasOwnProperty('filters') && params.options.filters) {
+            query += ("&filters=" + params.options.filters.join(';'));
+        } 
+        if (params.options.hasOwnProperty('sort') && params.options.sort) {
+            query += ("&sort=" + params.options.sort.join(';'));
+        }
+        if (params.options.hasOwnProperty('calculations') && params.options.calculations) {
+            query += ("&calculations=" + params.options.calculations.join(';'));
+        }
+    }
+    
+    return query;
+}
+
+/**
+ * @param {{table: String, ids: Array|String, options: <*>}} params
+ * */
 function getParams(params) {
     /**
      * @type {{table: String, ids: Array|String, columns: Array, filters: Array, calculations: Array}}
@@ -146,10 +199,23 @@ function getParams(params) {
     var params_json = {};
     
     params_json.table = params.table;
-    params_json.ids = params.ids;
-    params.json.columns = params.options.hasOwnProperty('columns') ? params.options.columns : "";
-    params.json.filters = params.options.hasOwnProperty('filters') ? params.options.filters : "";
-    params.json.calculations = params.options.hasOwnProperty('calculations') ? params.options.calculations : "";
+    if (params.ids) {
+        params_json.ids = params.ids;
+    } 
+    if (params.options) {
+        if (params.options.hasOwnProperty('columns') && params.options.columns) {
+            params.json.columns = params.options.hasOwnProperty('columns') ? params.options.columns : "";
+        } 
+        if (params.options.hasOwnProperty('filters') && params.options.filters) {
+            params.json.filters = params.options.hasOwnProperty('filters') ? params.options.filters : "";
+        } 
+        if (params.options.hasOwnProperty('sort') && params.options.sort) {
+            params.json.sort = params.options.hasOwnProperty('sort') ? params.options.sort : "";
+        } 
+        if (params.options.hasOwnProperty('calculations') && params.options.calculations) {
+            params.json.calculations = params.options.hasOwnProperty('calculations') ? params.options.calculations : "";
+        }
+    }
     
     return params_json;
 }
