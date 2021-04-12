@@ -72,7 +72,7 @@
 
         
         <!-- External Javascript files -->
-        <?php require "page/import.php"; ?>
+<?php require "page/import.php"; ?>
         
 <script>
     
@@ -88,13 +88,13 @@
     </head>
     
     <body>
-        <?php require "page/navigation.php"; ?>
+<?php require "page/navigation.php"; ?>
         
         <!-- Actual content of the page itself 
             This is defined in the corresponding php page -->
         <div id="content" class="py-5">
         </div>
         
-        <?php require "page/footer.php"; ?>
+<?php require "page/footer.php"; ?>
     </body>
 </html>
