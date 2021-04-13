@@ -9,7 +9,7 @@
     // Function to load the content in the content div
     function onLoadHome() {
         // Set the background of the home page
-        $("#content").css({
+        var content = $("#content").css({
             "background-image": "url(img/background_home.svg)",
             "background-position": "top left",
             "background-size": "100% 32px",
@@ -17,7 +17,7 @@
         });
         
         // The container to add blogs to
-        var div_container = $("<div/>").addClass("container").appendTo($("#content"));
+        var div_container = $("<div>").addClass("container").appendTo(content);
         
         // Get the blogs from the database
         getBlogs().then(function(blogs) {
