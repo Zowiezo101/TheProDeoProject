@@ -16,7 +16,7 @@ function addBlogToContainer(container, blog) {
     '    <div class="col-md-11 mb-3">' + 
     '        <h1 class="text-center pb-2 pt-2 mb-0" style="background-color: var(--dark-' + blogBgColor + ')">' + blogTitle + '</h1>' + 
     '        <h5 class="text-center pb-2 pt-2 mb-0" style="background-color: var(--light-' + blogBgColor + ')">' + blogText + '<br><br></h5>' + 
-    '        <h6 class="pb-2 text-center font-weight-bold" style="background-color: var(--light-' + blogBgColor + ')">Posted by <a href="settings.html" class="text-decoration-none text-body">' + blogUser + '</a> @ ' + blogDate + ' </h6>' + 
+    '        <h6 class="pb-2 text-center font-weight-bold" style="background-color: var(--light-' + blogBgColor + ')">Posted by <a href="settings" class="text-decoration-none text-body">' + blogUser + '</a> @ ' + blogDate + ' </h6>' + 
     '    </div>' + 
     '</div>');
 }
