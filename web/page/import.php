@@ -6,8 +6,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/20.1.0/i18next.js"></script>
 
         <!-- Extra functionality per page -->
-        <!--<script src="src/template.js"></script>
-        <script src="src/<?php echo $id; ?>.js"></script>-->
+        <!--<script src="src/template.js"></script>-->
+        <script src="src/<?php echo $id; ?>.js"></script>
 
         <!-- Accessing the database -->
         <script src="src/database.js"></script>
