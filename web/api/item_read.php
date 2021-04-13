@@ -445,8 +445,8 @@ function checkSort($table, $sorts) {
     $result->query = $sorts_checked;
     
     for ($i = 0; $i < count($sorts_checked); $i++) {
-        $calculation = $sorts_checked[$i];
-        $result_sort = isSortValid($table, $calculation);
+        $sort = $sorts_checked[$i];
+        $result_sort = isSortValid($table, $sort);
         
         if ($result_sort->error) {
             $result->error = $result_sort->error;
@@ -481,6 +481,7 @@ function isSortValid($table, $sort) {
         // Order is either ASC or DESC
         $order_valid = in_array(strtoupper($order), ["DESC", "ASC"]);
         if ($column_valid && $order_valid) {
+            $result->query = $column." ".strtoupper($order);
             $result->data = true;
         } else {
             $result->error = "No valid sort is selected";
@@ -581,7 +582,7 @@ function getSortStatement($parameters) {
     
     if ($parameters->sort) {
         // Sort by these columns
-        implode(", ", $parameters->sort);
+        $sort_sql = implode(", ", $parameters->sort);
     }
     
     if ($sort_sql != "") {

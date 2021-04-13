@@ -68,7 +68,7 @@ function getBlogs(ids, options) {
     if ((typeof(ids) === "undefined") || 
             (typeof(options) === "undefined")) {
         options = {
-            columns: ["id desc"]
+            sort: ["id desc"]
         };
     }
     return getData("blog", ids, options);
@@ -173,7 +173,7 @@ function getQuery(params) {
     } 
     if (params.options) {
         if (params.options.hasOwnProperty('columns') && params.options.columns) {
-            query += ("&ids=" + params.options.columns.join(';'));
+            query += ("&columns=" + params.options.columns.join(';'));
         } 
         if (params.options.hasOwnProperty('filters') && params.options.filters) {
             query += ("&filters=" + params.options.filters.join(';'));
