@@ -9,7 +9,7 @@
 /**
  * getData(table, id, options)
  * @param {String} table
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -26,23 +26,19 @@
  *  getBlogs()
  * 
  */
-function getData(table, ids, options) {
-    var url = "http://localhost/web/api/item_read.php";
-    var query = getQuery({"table": table, "ids": ids, "options": options});
+function getData(table, id, options) {
+    var url = "http://localhost/web/api/" + table;
+    var query = getQuery({"id": id, "options": options});
     
     return fetch(url + query, {
-            method: 'GET' /*,
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8'
-            },
-            body: JSON.stringify(params)*/
+            method: 'GET'
         }
     ).then(response => response.json());
 }
 
-function postData(table, ids, options) {
-    var url = "http://localhost/web/api/item_read.php";
-    var params = getParams({"table": table, "ids": ids, "options": options});
+function postData(table, data) {
+    var url = "http://localhost/web/api/" + table;
+    var params = getParams({"data": data});
     
     return fetch(url, {
             method: 'POST',
@@ -54,9 +50,37 @@ function postData(table, ids, options) {
     ).then(response => response.json());
 }
 
+function putData(table, id, data) {
+    var url = "http://localhost/web/api/" + table;
+    var params = getParams({"id": id, "data": data});
+    
+    return fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify(params)
+        }
+    ).then(response => response.json());
+}
+
+function deleteData(table, id) {
+    var url = "http://localhost/web/api/" + table;
+    var params = getParams({"id": id});
+    
+    return fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify(params)
+        }
+    ).then(response => response.json());
+}
+
 /**
  * getBlogs(id, options)
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -64,19 +88,36 @@ function postData(table, ids, options) {
  *  
  *  @return {Promise}
  */
-function getBlogs(ids, options) {
-    if ((typeof(ids) === "undefined") || 
+function getBlogs(id, options) {
+    if ((typeof(id) === "undefined") || 
             (typeof(options) === "undefined")) {
         options = {
             sort: ["id desc"]
         };
     }
-    return getData("blog", ids, options);
+    return getData("blog", id, options);
+}
+
+function postBlog(title, text, user, date) {
+    return postData("blog", {
+        "title": title,
+        "text": text,
+        "user": user,
+        "date": date
+    });
+}
+
+function putBlog(id, title, text) {
+    
+}
+
+function deleteBlog(id) {
+    
 }
 
 /**
  * getBooks(id, options)
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -84,13 +125,13 @@ function getBlogs(ids, options) {
  *  
  *  @return {Promise}
  */
-function getBooks(ids, options) {
-    return getData("books", ids, options);
+function getBooks(id, options) {
+    return getData("books", id, options);
 }
 
 /**
  * getEvents(id, options)
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -98,13 +139,13 @@ function getBooks(ids, options) {
  *  
  *  @return {Promise}
  */
-function getEvents(ids, options) {
-    return getData("events", ids, options);
+function getEvents(id, options) {
+    return getData("events", id, options);
 }
 
 /**
  * getActivities(id, options)
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -112,13 +153,13 @@ function getEvents(ids, options) {
  *  
  *  @return {Promise}
  */
-function getActivities(ids, options) {
-    return getData("activitys", ids, options);
+function getActivities(id, options) {
+    return getData("activitys", id, options);
 }
 
 /**
  * getPeoples(id, options)
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -126,13 +167,13 @@ function getActivities(ids, options) {
  *  
  *  @return {Promise}
  */
-function getPeoples(ids, options) {
-    return getData("peoples", ids, options);
+function getPeoples(id, options) {
+    return getData("peoples", id, options);
 }
 
 /**
  * getLocations(id, options)
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -140,13 +181,13 @@ function getPeoples(ids, options) {
  *  
  *  @return {Promise}
  */
-function getLocations(ids, options) {
-    return getData("locations", ids, options);
+function getLocations(id, options) {
+    return getData("locations", id, options);
 }
 
 /**
  * getSpecials(id, options)
- * @param {Array|String} ids
+ * @param {String} id
  * @param options
  *  - Filter
  *  - Columns to return
@@ -154,69 +195,62 @@ function getLocations(ids, options) {
  *  
  *  @return {Promise}
  */
-function getSpecials(ids, options) {
-    return getData("specials", ids, options);
+function getSpecials(id, options) {
+    return getData("specials", id, options);
 }
 
 /**
- * @param {{table: String, ids: Array|String, options: <*>}} params
+ * @param {{id: String, data: <*>, options: <*>}} params
  * */
 function getQuery(params) {
-    /**
-     * @type {{table: String, ids: Array|String, columns: Array, filters: Array, calculations: Array}}
-     * */
+    /** @type String */
     var query = "";
     
-    query = "?table=" + params.table;
-    if (params.ids) {
-        query += ("&ids=" + params.ids.join(';'));
-    } 
+    query = checkAndAddToQuery(query, params, 'id');
     if (params.options) {
-        if (params.options.hasOwnProperty('columns') && params.options.columns) {
-            query += ("&columns=" + params.options.columns.join(';'));
-        } 
-        if (params.options.hasOwnProperty('filters') && params.options.filters) {
-            query += ("&filters=" + params.options.filters.join(';'));
-        } 
-        if (params.options.hasOwnProperty('sort') && params.options.sort) {
-            query += ("&sort=" + params.options.sort.join(';'));
-        }
-        if (params.options.hasOwnProperty('calculations') && params.options.calculations) {
-            query += ("&calculations=" + params.options.calculations.join(';'));
-        }
+        query = checkAndAddToQuery(query, params.options, 'columns');
+        query = checkAndAddToQuery(query, params.options, 'filters');
+        query = checkAndAddToQuery(query, params.options, 'sort');
+        query = checkAndAddToQuery(query, params.options, 'calculations');
     }
     
     return query;
 }
 
 /**
- * @param {{table: String, ids: Array|String, options: <*>}} params
+ * @param {{id: String, data: <*>, options: <*>}} params
  * */
 function getParams(params) {
     /**
-     * @type {{table: String, ids: Array|String, columns: Array, filters: Array, calculations: Array}}
+     * @type {{id: String, data: Object, columns: Array, filters: Array, sort: Array, calculations: Array}}
      * */
     var params_json = {};
     
-    params_json.table = params.table;
-    if (params.ids) {
-        params_json.ids = params.ids;
-    } 
+    params_json = checkAndAddToParams(params_json, params, 'id');
+    params_json = checkAndAddToParams(params_json, params, 'data');
     if (params.options) {
-        if (params.options.hasOwnProperty('columns') && params.options.columns) {
-            params.json.columns = params.options.hasOwnProperty('columns') ? params.options.columns : "";
-        } 
-        if (params.options.hasOwnProperty('filters') && params.options.filters) {
-            params.json.filters = params.options.hasOwnProperty('filters') ? params.options.filters : "";
-        } 
-        if (params.options.hasOwnProperty('sort') && params.options.sort) {
-            params.json.sort = params.options.hasOwnProperty('sort') ? params.options.sort : "";
-        } 
-        if (params.options.hasOwnProperty('calculations') && params.options.calculations) {
-            params.json.calculations = params.options.hasOwnProperty('calculations') ? params.options.calculations : "";
-        }
+        params_json = checkAndAddToParams(params_json, params.options, 'columns');
+        params_json = checkAndAddToParams(params_json, params.options, 'filters');
+        params_json = checkAndAddToParams(params_json, params.options, 'sort');
+        params_json = checkAndAddToParams(params_json, params.options, 'calculations');
     }
     
     return params_json;
+}
+
+function checkAndAddToQuery(query, object, property) {
+    var new_query = "";
+    if (object.hasOwnProperty(property) && object[property]) {
+        new_query = query + ((query ? "&" : "?") + property + "=" + object[property].join(';'));
+    }
+    return new_query;
+}
+
+function checkAndAddToParams(params, object, property) {
+    var new_params = params;
+    if (object.hasOwnProperty(property) && object[property]) {
+        new_params[property] = object[property];
+    }
+    return new_params;
 }
 		

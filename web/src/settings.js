@@ -1,4 +1,6 @@
 
+/* global postBlog */
+
 function getTabsMenu() {
     var menu = $("<div>").addClass("col-3").append(`
         <ul class="nav nav-pills flex-column">
@@ -30,7 +32,7 @@ function getTabsContent() {
                             <label>Text</label> 
                             <textarea id="add_blog_text" class="form-control w-75" placeholder="Blog contents" rows="5" required></textarea> 
                         </div>
-                        <button type="submit" class="btn btn-primary" onclick="addBlog()">Add Blog</button>
+                        <button class="btn btn-primary" onclick="addBlog()">Add Blog</button>
                       </form>
                     </div>`)
             // Tab for editing blogs
@@ -51,7 +53,7 @@ function getTabsContent() {
                         <div class="form-group"> <label>Email address</label> <input type="text" class="form-control" placeholder="Enter email"> </div>
                         <div class="form-group"> <label>Password</label> <textarea class="form-control" placeholder="Password" rows="5"></textarea> </div>
                         <div class="form-group"> <label>Email address</label> <input type="text" class="form-control" placeholder="Enter email"> </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button class="btn btn-primary">Submit</button>
                       </form>
                     </div>`)
             // Tab for deleting blogs
@@ -72,7 +74,7 @@ function getTabsContent() {
                         <div class="form-group"> <label>Email address</label> <input type="text" class="form-control" placeholder="Enter email"> </div>
                         <div class="form-group"> <label>Password</label> <textarea class="form-control" placeholder="Password" rows="5"></textarea> </div>
                         <div class="form-group"> <label>Email address</label> <input type="text" class="form-control" placeholder="Enter email"> </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button class="btn btn-primary">Submit</button>
                       </form>
                     </div>`)
             // Tab for profile settings
@@ -86,17 +88,26 @@ function getTabsContent() {
 }
 
 function addBlog() {
+    /* Title and the contents of a blog */
     var blog_title = $("#add_blog_title").val();
     var blog_text = $("#add_blog_text").val();
+    
+    // The user depends on the logged-in user
     var blog_user = "Zowiezo101";   // TODO
-    var blog_date = "";
+    
+    // Date is the moment the blog was added
+    var blog_date = new Date();
+    
+    // Post the blog to the database
+    postBlog(blog_title, blog_text, blog_user, blog_date).then(function (result) {
+        alert(result);
+    });
 }
 
 function editBlog() {
     var blog_title = $("#edit_blog_title").val();
     var blog_text = $("#edit_blog_text").val();
     var blog_user = "Zowiezo101";   // TODO
-    var blog_date = "";
 }
 
 function deleteBlog() {
