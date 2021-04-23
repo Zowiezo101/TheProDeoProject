@@ -1,70 +1,73 @@
-<?php    
-require "../../login_data.php";
+<?php 
+if (in_array($table, ["blog", "books", "events", "activities", "peoples", "locations", "specials"])) {
+    require "../../login_data.php";
 
-class result {
-    public $data;
-    public $error;
-    public $query;
-};
+    class result {
+        public $data;
+        public $error;
+        public $query;
+    };
 
-$result = new result();
+    $result = new result();
 
-$conn = new mysqli($servername, $username, $password, $database);
+    $conn = new mysqli($servername, $username, $password, $database);
 
-// Check connection
-if ($conn->connect_error) {
-    $result->error = "Connection failed: " . $conn->connect_error;
-} else {
-    /** The data the user can give along with this API
-     * - table
-     * - id
-     * - columns
-     * - filters
-     * - calculations
-     */
-    $check_results = checkAllParams();
-    
-    // Parse the results
-    if ($check_results->error) {
-        // Checking returned an error
-        $result->error = $check_results->error;
+    // Check connection
+    if ($conn->connect_error) {
+        $result->error = "Connection failed: " . $conn->connect_error;
     } else {
-        $checked_table = $check_results->data->table;
-        $checked_ids = $check_results->data->ids;
-        $checked_columns = $check_results->data->columns;
-        $checked_filters = $check_results->data->filters;
-        $checked_sort = $check_results->data->sort;
-        $checked_calculations = $check_results->data->calculations;
-        
-        $sql_where = getWhereStatement($check_results->data);
-        $sql_sort = getSortStatement($check_results->data);
-        
-        // The final SQL query
-        $sql = "SELECT * FROM ".$checked_table.$sql_where.$sql_sort;
+        /** The data the user can give along with this API
+         * - table
+         * - id
+         * - columns
+         * - filters
+         * - calculations
+         */
+        $check_results = checkAllParams();
 
-        // excecute SQL statement
-        $result->query = $sql;
-        $results = mysqli_query($conn, $sql);
+        // Parse the results
+        if ($check_results->error) {
+            // Checking returned an error
+            $result->error = $check_results->error;
+        } else {
+            $checked_table = $check_results->data->table;
+            $checked_id = $check_results->data->id;
+            $checked_columns = $check_results->data->columns;
+            $checked_filters = $check_results->data->filters;
+            $checked_sort = $check_results->data->sort;
+            $checked_calculations = $check_results->data->calculations;
 
-        // die if SQL statement failed
-        if (!$results) {
-            $result->error = mysqli_error($conn);
-        }
-        
-        if (!$result->error && (mysqli_num_rows($results) > 0)) {
-            // Put the results in the arrau
-            $result->data = Array();
-            for ($i = 0; $i < mysqli_num_rows($results); $i++) {
-                $result->data[] = mysqli_fetch_object($results);
+            $sql_where = getWhereStatement($check_results->data);
+            $sql_sort = getSortStatement($check_results->data);
+
+            // The final SQL query
+            $sql = "SELECT * FROM ".$checked_table.$sql_where.$sql_sort;
+
+            // excecute SQL statement
+            $result->query = $sql;
+            $results = mysqli_query($conn, $sql);
+
+            // die if SQL statement failed
+            if (!$results) {
+                $result->error = mysqli_error($conn);
+            }
+
+            if (!$result->error && (mysqli_num_rows($results) > 0)) {
+                // Put the results in the arrau
+                $result->data = Array();
+                for ($i = 0; $i < mysqli_num_rows($results); $i++) {
+                    $result->data[] = mysqli_fetch_object($results);
+                }
             }
         }
+
+        // close mysql connection
+        mysqli_close($conn);
     }
 
-    // close mysql connection
-    mysqli_close($conn);
-}
+    echo json_encode($result);
 
-echo json_encode($result);
+}
 
 // Check all the parameters
 function checkAllParams() {
@@ -80,15 +83,15 @@ function checkAllParams() {
     } else if ($table_result->data == False) {
         $result->error = "No valid table is selected";
     } else {    
-        // Check the IDs
-        $ids_result = checkIDs('ids');
+        // Check the ID
+        $id_result = checkID('id');
         
-        if ($ids_result->error) {
+        if ($id_result->error) {
             // No valid ID selected
-            $result->error = $ids_result->error;
+            $result->error = $id_result->error;
         } else {
             // Check the columns
-            $columns_result = checkColumns($table_result->query, $ids_result->data, 'columns');
+            $columns_result = checkColumns($table_result->query, $id_result->data, 'columns');
             // Check the filters
             $filters_result = checkFilters($table_result->query, 'filters');
             // Check the columns to sort by
@@ -113,7 +116,7 @@ function checkAllParams() {
                 // Everything is checked and valid
                 $result->data = new stdClass();
                 $result->data->table = $table_result->query;
-                $result->data->ids = $ids_result->data;
+                $result->data->id = $id_result->data;
                 $result->data->columns = $columns_result->data;
                 $result->data->sort = $sort_result->data;
                 $result->data->filters = $filters_result->data;
@@ -125,8 +128,8 @@ function checkAllParams() {
     return $result;
 }
 
-// Check a single paramter
-function checkSingleParam($name) {
+// Check multiple parameters
+function checkSingleParams($name) {
     // TODO: Check for insertion
     $param = filter_input(INPUT_GET, $name);
     return $param;
@@ -141,12 +144,11 @@ function checkMultParams($name) {
 }
 
 function isTableValid($table) {
+    global $table;
+    
     // The result object to save the results in
     $result = new result();
-    
-    // First check for insertion
-    $table_checked = checkSingleParam($table);
-    $result->query = $table_checked;
+    $result->query = $table;
     
     // Get a list of all valid tables
     $valid_tables = getValidTables();
@@ -159,7 +161,7 @@ function isTableValid($table) {
         $result->error = "Database does not return valid tables";
         $result->data = false;
     } else {
-        if (($table_checked !== null) && in_array($table_checked, $valid_tables->data)) {
+        if (($table !== null) && in_array($table, $valid_tables->data)) {
             // The table is in here
             $result->data = true;
         } else {
@@ -200,34 +202,25 @@ function getValidTables() {
     return $result;
 }
 
-function checkIDs($ids) {
+function checkID($id) {
     // The result object to save the results in
     $result = new result();
     
     // First check for insertion
-    $ids_checked = checkMultParams($ids);
-    $result->query = $ids_checked;
-    
-    for ($i = 0; $i < count($ids_checked); $i++) {
-        // The ID to check
-        $id = $ids_checked[$i];
-        if ($id == "") {
-            continue;
-        }
+    $id_checked = checkSingleParams($id);
+    $result->query = $id_checked;
 
-        // Make sure it's a number
-        if(!is_numeric($id)) {
-            $result->error = $id." is not a valid ID";
-            break;
-        } else {
-            $result->data[] = $id;
-        }
+    // Make sure it's a number
+    if(($id_checked != null) && !is_numeric($id_checked)) {
+        $result->error = $id_checked." is not a valid ID";
+    } else {
+        $result->data = $id_checked;
     }
     
     return $result;
 }
 
-function checkColumns($table, $ids, $columns) {
+function checkColumns($table, $id, $columns) {
     // The result object to save the results in
     $result = new result();
     
@@ -251,7 +244,7 @@ function checkColumns($table, $ids, $columns) {
     }
     
     // There has to be one column, which is the primary ID
-    if ($ids && (!$result->error) && ((!$result->data) || (count($result->data) == 0))) {
+    if (($id !== null) && (!$result->error) && ((!$result->data) || (count($result->data) == 0))) {
         $result->error = "No primary column is selected";
     }
     
@@ -565,9 +558,9 @@ function getWhereStatement($parameters) {
     $where_sql = "";
     
     
-    if ($parameters->ids) {
+    if ($parameters->id != null) {
         // We want these rows of this table
-        $where_sql = $parameters->columns[0]." in (".implode(",", $parameters->ids).")";
+        $where_sql = $parameters->columns[0]." = ".$parameters->id;
     } 
     
     if ($where_sql != "") {
