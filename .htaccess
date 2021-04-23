@@ -1,4 +1,23 @@
+
 RewriteEngine on
+
+# This is for languages
+RewriteRule ^(en|nl|..)/(.*)$ $2?lang=$1 [QSA]
+
+# Making sure things are redirected to php files
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.*)$ $1.php
+RewriteCond %{DOCUMENT_ROOT}\/web%{REQUEST_URI} -f
+RewriteRule ^(.*)$ /web/$1
+
+# Making sure things are redirected to php files
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}\/web%{REQUEST_URI}\.php -f
+RewriteRule ^(.*)$ /web/$1.php
+
+# This is for the database IDs
+RewriteRule web/api/(.*).php/([0-9]*)/to_(event|activity|people|location|special)$ web/api/$1.php?id=$2&to=$3s [QSA]
+RewriteRule web/api/(.*).php/([0-9]*)$ web/api/$1.php?id=$2 [QSA]
+
+#RewriteRule ^(.*)$ $1/web/test.php
+#RewriteRule . http://www.google.com/
+#RewriteRule ^blog/([^/]+)/?$ blog?id=$1 [L]
