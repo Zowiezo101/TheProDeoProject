@@ -54,15 +54,15 @@ function is_filter_String($conn, $table, $filters) {
     }        
 
     if ($filters && is_string($filters)) {
-        $filter_array = explode(',', $filters);
+        $filter_array = preg_split('/(,|\|)/', $filters, -1, PREG_SPLIT_NO_EMPTY);
         for ($i = 0; $i < count($filter_array); $i++) {
             // We have an array of filters, now check all the filters are valid
             $filter = trim($filter_array[$i]);
 
             // Divide filter into the column, option and the value
-            $column = preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0];
-            $option = preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1];
-            $value = preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2];
+            $column = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0]);
+            $option = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1]);
+            $value = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2]);
 
             // Is this column and direction valid
             $is_column = in_array($column, $valid_columns);
@@ -131,6 +131,45 @@ function is_sort_string($conn, $table, $sorts) {
     }
         
     return $result;  
+}
+
+function is_to_string($table, $to) {
+    // Allowed tables to link to
+    $linking_tables = [];
+    switch($table) {
+        case "events":
+            $linking_tables[] = "events";
+            $linking_tables[] = "activities";
+            break;
+        
+        case "activitys":
+            $linking_tables[] = "activities";
+            $linking_tables[] = "events";
+            $linking_tables[] = "peoples";
+            $linking_tables[] = "locations";
+            $linking_tables[] = "specials";
+            break;
+            
+        case "peoples":
+            $linking_tables[] = "activities";
+            $linking_tables[] = "parents";
+            $linking_tables[] = "children";
+            $linking_tables[] = "peoples";
+            $linking_tables[] = "locations";
+            break;
+        
+        case "locations":
+            $linking_tables[] = "activities";
+            $linking_tables[] = "peoples";
+            $linking_tables[] = "locations";
+            break;
+        
+        case "specials":
+            $linking_tables[] = "activities";
+            break;
+    }
+    
+    return in_array($to, $linking_tables);
 }
 
 /** Return all the valid columns */

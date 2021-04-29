@@ -11,7 +11,12 @@ function checkReadParameters($conn, $table) {
             break;
         
         case "books":
-            $result = checkBooksReadParams($conn);
+        case "events":
+        case "activities":
+        case "peoples":
+        case "locations":
+        case "specials":
+            $result = checkReadParams($conn, $table);
             break;
         
         default:
@@ -33,6 +38,15 @@ function createReadSql($conn, $params) {
             // Identifiers are not allowed in binding, so we need to 
             // create a sql query per table
             $sql = createBlogReadSql($conn, $params);
+            break;
+        
+        case "books":
+        case "events":
+        case "activities":
+        case "peoples":
+        case "locations":
+        case "specials":
+            $sql = createItemReadSql($conn, $params);
             break;
     }
     
@@ -107,7 +121,7 @@ function checkBlogReadParams($conn) {
     return $result;
 }
 
-function checkBooksReadParams($conn) {
+function checkReadParams($conn, $table) {
     // For reading a book, we have the following params:
     // id (number)
     // filters (Must be in the list of columns + option + value)
@@ -124,7 +138,7 @@ function checkBooksReadParams($conn) {
     // The data that will be checked
     $result->query = $data;
     $result->data = new stdClass();
-    $result->data->table = "books";
+    $result->data->table = $table == "activities" ? "activitys" : $table;
     
     // We have no required parameters
     //if (isset($data->title) && isset($data->text) && isset($data->user))
@@ -194,6 +208,16 @@ function checkBooksReadParams($conn) {
                 $result->data->offset = $data->offset;
             }
         }
+    } else {
+        if (isset($data->to)) {
+            $to_check = is_to_string($result->data->table, $data->to);
+            if (!$to_check) {
+                $result->error = "Trying to link to an invalid table";
+            } else {
+                // Copy the offset from the $data variable
+                $result->data->to = $data->to == "activities" ? "activitys" : $data->to;
+            }
+        }
     }
 
     // The rest of $data is ignored
@@ -213,6 +237,23 @@ function createBlogReadSql($conn, $params) {
     return $sql;
 }
 
+function createItemReadSql($conn, $params) {
+    
+    $sql_select = getSelectStatement($params);
+    $sql_where = getWhereStatement($conn, $params);
+    $sql_sort = getSortStatement($params);
+    $sql_limit_offset = getLimitOffsetStatement($params);
+
+    // The currect query if we don't have any linking tables
+    $query = "SELECT ".$sql_select." FROM ".$params->table.$sql_where.$sql_sort.$sql_limit_offset;
+    $query = getToStatement($params, $query);
+    
+    // The final SQL query
+    $sql = mysqli_prepare($conn, $query);
+    
+    return $sql;
+}
+
 function getSelectStatement($parameters) {
     // The default columns to select
     $columns = getDefaultColumns($parameters);
@@ -228,20 +269,69 @@ function getSelectStatement($parameters) {
     return $select_sql;
 }
 
-function getWhereStatement($parameters) {
-    $where_sql = "";
+function getWhereStatement($conn, $parameters) {
+    $where_sql_parts = [];
     
     if (isset($parameters->id)) {
         switch($parameters->table) {
             case "blog":
                 // We want these rows of this table
-                $where_sql = "id = ".$parameters->id;
+                $where_sql_parts[] = "id = ".$parameters->id;
+                break;
+            
+            case "books":
+                $where_sql_parts[] = "book_id = ".$parameters->id;
+                break;
+            
+            case "events":
+                $where_sql_parts[] = "event_id = ".$parameters->id;
+                break;
+            
+            case "activitys":
+                $where_sql_parts[] = "activity_id = ".$parameters->id;
+                break;
+            
+            case "peoples":
+                $where_sql_parts[] = "people_id = ".$parameters->id;
+                break;
+            
+            case "locations":
+                $where_sql_parts[] = "location_id = ".$parameters->id;
+                break;
+            
+            case "specials":
+                $where_sql_parts[] = "special_id = ".$parameters->id;
                 break;
         }
-    } 
+    }
     
-    if ($where_sql != "") {
-        $where_sql = " WHERE ".$where_sql;
+    if (isset($parameters->filters)) {
+        // Get all the ANDed filters
+        $filters_and = explode(',', $parameters->filters);
+        
+        // The ANDed filters are separated by ','
+        // The ORed filters are separated by '||'
+        $sql_and_parts = [];
+        for ($i = 0; $i < count($filters_and); $i++) {
+            $filters_or = explode('||', $filters_and[$i]);
+            
+            if (count($filters_or) > 1) {
+                $sql_or_parts = [];
+                for ($j = 0; $j < count($filters_or); $j++) {
+                    $sql_or_parts[] = convertFilterToSql($conn, $filters_or[$j]);
+                }
+                $sql_and_parts[] = "(".implode(" OR ", $sql_or_parts).")";
+            } else {
+                $sql_and_parts[] = convertFilterToSql($conn, $filters_or[0]);
+            }
+        }
+        $where_sql_parts[] = implode(" AND ", $sql_and_parts);
+    }
+    
+    if (count($where_sql_parts) > 0) {
+        $where_sql = " WHERE ".implode(" AND ", $where_sql_parts);
+    } else {
+        $where_sql = "";
     }
     
     return $where_sql;
@@ -262,19 +352,160 @@ function getSortStatement($parameters) {
     return $sort_sql;
 }
 
+function getLimitOffsetStatement($parameters) {
+    $limit_offset_sql = "";
+    
+    if (isset($parameters->limit)) {
+        $limit_offset_sql = $limit_offset_sql." LIMIT ".$parameters->limit;
+    }
+    
+    if (isset($parameters->offset)) {
+        $limit_offset_sql = $limit_offset_sql." OFFSET ".$parameters->offset;
+    }
+    
+    return $limit_offset_sql;
+}
+
+function getToStatement($parameters, $query) {
+    if (isset($parameters->to)) {
+        // FROM
+        $table1 = substr($parameters->table, 0, -1);
+        // TO
+        $table2 = substr($parameters->to, 0, -1);
+
+        if ($table2 == "parent") {
+            $id1 = $table1."_id";
+            $id2 = $table2."_id";
+            $table = "people_to_parent";
+                
+            $query = "select peoples.people_id, peoples.name from people_to_parent
+                        join peoples on people_to_parent.parent_id = peoples.people_id
+                        where people_to_parent.people_id = ".$parameters->id;
+        } else if ($table2 == "childre") {
+            $query = "select peoples.people_id, peoples.name from people_to_parent
+                        join peoples on people_to_parent.people_id = peoples.people_id
+                        where people_to_parent.parent_id = ".$parameters->id;
+        } else if($table1 == $table2) {
+            $table = $table1."_to_".$table2;
+            $id1 = $table1."1_id";
+            $id2 = $table2."2_id";
+            $id = $table1."_id";
+        
+            // Only asking for the linking table results
+            $query = "select ".$table2."s.".$id.", ".$table2."s.name from ".$table."
+                        join ".$table2."s on ".$table.".".$id1." = ".$table2."s.".$id."
+                        where ".$table.".".$id2." = ".$parameters->id."
+                        union
+                    select ".$table2."s.".$id.", ".$table2."s.name from ".$table."
+                        join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id."
+                        where ".$table.".".$id1." = 2";
+        } else {
+            $linking_tables = [
+                "activity_to_event",
+                "location_to_activity",
+                "people_to_activity",
+                "people_to_location",
+                "special_to_activity"
+            ];
+            
+            if (in_array($table1."_to_".$table2, $linking_tables)) {
+                $table = $table1."_to_".$table2;
+            } else {
+                $table = $table2."_to_".$table1;
+            }
+            $id1 = $table1."_id";
+            $id2 = $table2."_id";
+            $name = "name";
+            if ($table2 == "activity") {
+                $name = "descr";
+            }
+        
+            // Only asking for the linking table results
+            $query = "select ".$table2."s.".$id2.", ".$table2."s.".$name." from ".$table."
+                        join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id2."
+                        where ".$table.".".$id1." = ".$parameters->id;
+        }
+    }
+    
+    return $query;
+}
+
 function getDefaultColumns($parameters) {
     $columns = [];
     
-    switch($parameters->table) {
-        case "blog":
-            if (isset($parameters->id)) {
-                $columns[] = "*";
-            } else {
+    if (isset($parameters->id)) {
+        $columns[] = "*";
+    } else {
+        switch($parameters->table) {
+            case "blog":
                 $columns[] = "title";
                 $columns[] = "date";
-            }
-            break;
+                break;
+
+            case "books":
+                $columns[] = "book_id";
+                $columns[] = "name";
+                break;
+            
+            case "events":
+                $columns[] = "event_id";
+                $columns[] = "name";
+                break;
+            
+            case "activitys":
+                $columns[] = "activity_id";
+                $columns[] = "name";
+                break;
+            
+            case "peoples":
+                $columns[] = "people_id";
+                $columns[] = "name";
+                break;
+            
+            case "locations":
+                $columns[] = "location_id";
+                $columns[] = "name";
+                break;
+            
+            case "specials":
+                $columns[] = "special_id";
+                $columns[] = "name";
+                break;
+        }
     }
     
     return $columns;
+}
+
+function convertFilterToSql($conn, $filter) {
+    $sql = "";
+    
+    // Divide filter into 3 pieces
+    $column = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0]);
+    $option = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1]);
+    $value = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2]);
+    
+    switch($option) {
+        case "=":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<":
+            $sql = $column.$option."'".mysqli_real_escape_string($conn, $value)."'";
+            break;
+        
+        case "!=":
+            $sql = $column."<>'".mysqli_real_escape_string($conn, $value)."'";
+            break;
+        
+        case "%":
+            $sql = $column." LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
+            break;
+        
+        case "%":
+            $sql = $column." NOT LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
+            break;
+    }
+    
+    return $sql;
 }
