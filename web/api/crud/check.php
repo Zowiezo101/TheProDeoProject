@@ -6,49 +6,131 @@ function is_user($user) {
     return is_string($user);
 }
 
-function is_column_array($table, $columns) {
+function is_column_string($conn, $table, $columns) {
     // The result to return
     $result = False;
     
-    // The connection used to get the valid columns for this table
-    $conn = getConnection();
-    if (!$conn->error) {
-        // All the valid columns for this table
-        $valid_columns = get_valid_columns($conn, $table);
-        if (!$valid_columns || count($valid_columns) == 0) {
-            // No valid columns are returned..
-            return $result;
-        }
-        
-        if ($columns && is_array($columns)) {
-            for ($i = 0; $i < count($columns); $i++) {
-                // We have an array of columns, now check all the columns are valid
-                $column = $columns[$i];
-                
-                // Is this column valid
-                $is_column = in_array($column, $valid_columns);
-                if (!$is_column) {
-                    // It is not, break the for loop
-                    $result = False;
-                    break;
-                }
-            }
-            
-            // We ended with is_column being True, 
-            // meaning that all columns were valid
-            if ($is_column) {
-                $result = True;
+    // All the valid columns for this table
+    $valid_columns = get_valid_columns($conn, $table);
+    if (!$valid_columns || count($valid_columns) == 0) {
+        // No valid columns are returned..
+        return $result;
+    }
+
+    if ($columns && is_string($columns)) {
+        $column_array = explode(',', $columns);
+        for ($i = 0; $i < count($column_array); $i++) {
+            // We have an array of columns, now check all the columns are valid
+            $column = trim($column_array[$i]);
+
+            // Is this column valid
+            $is_column = in_array($column, $valid_columns);
+            if (!$is_column) {
+                // It is not, break the for loop
+                $result = False;
+                break;
             }
         }
 
-        // close mysql connection
-        mysqli_close($conn->data);
+        // We ended with is_column being True, 
+        // meaning that all columns were valid
+        if ($is_column) {
+            $result = True;
+        }
     }
+    
     return $result;   
 }
 
-function is_sort_array($table, $sort) {
+function is_filter_String($conn, $table, $filters) {
+    // The result to return
+    $result = False;
     
+    // All the valid columns for this table
+    $valid_columns = get_valid_columns($conn, $table);
+    if (!$valid_columns || count($valid_columns) == 0) {
+        // No valid columns are returned..
+        return $result;
+    }        
+
+    if ($filters && is_string($filters)) {
+        $filter_array = explode(',', $filters);
+        for ($i = 0; $i < count($filter_array); $i++) {
+            // We have an array of filters, now check all the filters are valid
+            $filter = trim($filter_array[$i]);
+
+            // Divide filter into the column, option and the value
+            $column = preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0];
+            $option = preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1];
+            $value = preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2];
+
+            // Is this column and direction valid
+            $is_column = in_array($column, $valid_columns);
+            $is_option = in_array($option, ["=", "!=", ">=", "<=", ">", "<", "%", "!%"]);
+            if (!$is_column) {
+                // It is not, break the for loop
+                $result = False;
+                break;
+            } else if (!$is_option) {
+                // It is not, break the for loop
+                $result = False;
+                break;
+            }
+        }
+
+        // We ended with is_column and direction being True, 
+        // meaning that all sorts were valid
+        if ($is_column && $is_option) {
+            $result = True;
+        }
+    }
+        
+    return $result;  
+}
+
+function is_sort_string($conn, $table, $sorts) {
+    // The result to return
+    $result = False;
+    
+    // All the valid columns for this table
+    $valid_columns = get_valid_columns($conn, $table);
+    if (!$valid_columns || count($valid_columns) == 0) {
+        // No valid columns are returned..
+        return $result;
+    }        
+
+    if ($sorts && is_string($sorts)) {
+        $sort_array = explode(',', $sorts);
+        for ($i = 0; $i < count($sort_array); $i++) {
+            // We have an array of sorts, now check all the sorts are valid
+            $sort = trim($sort_array[$i]);
+
+            // Divide sort into the column and the direction
+            $column = explode(' ', $sort)[0];
+            $direction = explode(' ', $sort)[1];
+
+            // Is this column and direction valid
+            $is_column = in_array($column, $valid_columns);
+            $is_direction = in_array(strtolower($direction), ["asc", "desc"]);
+            if (!$is_column) {
+                // It is not, break the for loop
+                $result = False;
+                break;
+            } else if (!$is_direction) {
+                // It is not, break the for loop
+                $result = False;
+                break;
+            }
+        }
+
+        // We ended with is_column and direction being True, 
+        // meaning that all sorts were valid
+        if ($is_column && $is_direction) {
+            $result = True;
+        }
+    }
+        
+    return $result;  
 }
 
 /** Return all the valid columns */
@@ -265,3 +347,5 @@ function getValidCalculations($table, $calculation) {
     
     return $calculations;
 }
+
+?>

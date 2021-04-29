@@ -123,7 +123,7 @@ function executeReadRequest($table) {
         $result->error = $conn->error;
     } else {
         // Check the parameters
-        $params = checkReadParameters($table);
+        $params = checkReadParameters($conn->data, $table);
         
         if (!$params->error) {
             // Create the SQL statement
@@ -151,7 +151,7 @@ function executeUpdateRequest($table) {
         $result->error = $conn->error;
     } else {
         // Check the parameters
-        $params = checkUpdateParameters($table);
+        $params = checkUpdateParameters($conn->data, $table);
         
         if (!$params->error) {
             // Create the SQL statement
@@ -179,7 +179,7 @@ function executeDeleteRequest($table) {
         $result->error = $conn->error;
     } else {
         // Check the parameters
-        $params = checkDeleteParameters($table);
+        $params = checkDeleteParameters($conn->data, $table);
         
         if (!$params->error) {
             // Create the SQL statement
@@ -226,7 +226,7 @@ function executeQuery($conn, $sql) {
     
     if ($sql->error) {
         $result->error = $sql->error;
-    } else {
+    } else if ($sql->data) {
         $sql->data->execute();
         $results = $sql->data->get_result();
 
@@ -237,7 +237,7 @@ function executeQuery($conn, $sql) {
         }
 
         if (!$result->error && $results && (mysqli_num_rows($results) > 0)) {
-            // Put the results in the arrau
+            // Put the results in the array
             $result->data = Array();
             for ($i = 0; $i < mysqli_num_rows($results); $i++) {
                 $result->data[] = mysqli_fetch_object($results);
