@@ -1,0 +1,6 @@
+
+RewriteEngine on
+
+# This is for the database IDs
+RewriteRule api/(.*)/([0-9]*)/to_(events|activities|peoples|parents|children|locations|specials)$ web/api/$1.php?id=$2&to=$3 [QSA]
+RewriteRule api/(.*)/([0-9]*)$ web/api/$1.php?id=$2 [QSA]

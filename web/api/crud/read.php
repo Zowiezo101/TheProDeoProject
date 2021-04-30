@@ -228,7 +228,7 @@ function checkReadParams($conn, $table) {
 function createBlogReadSql($conn, $params) {
 
     $sql_select = getSelectStatement($params);
-    $sql_where = getWhereStatement($params);
+    $sql_where = getWhereStatement($conn, $params);
     $sql_sort = getSortStatement($params);
 
     // The final SQL query
