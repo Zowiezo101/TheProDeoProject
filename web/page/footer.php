@@ -2,7 +2,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 text-center"> 
-                        <img class="img-fluid d-block mx-auto" src="img/logo.bmp" width="50" height="50">
+                        <img class="img-fluid d-block mx-auto" src="/img/logo.bmp" width="50" height="50">
                     </div>
                 </div>
                 <div class="row">

@@ -1,6 +1,6 @@
         <nav class="navbar navbar-expand-md navbar-light bg-light">
-            <a class="navbar-brand text-primary" href="home">
-                <img src="img/logo.bmp" class="d-inline-block align-top rounded" alt="" width="75" height="75" style="">
+            <a class="navbar-brand text-primary" href="<?php echo setParameters("home")?>">
+                <img src="/img/logo.bmp" class="d-inline-block align-top rounded" alt="" width="75" height="75" style="">
                 <b class="text-secondary" style=""> ProDeo Database</b>
             </a>
             <span class="navbar-text text-secondary">For God, to You</span>
@@ -11,26 +11,26 @@
                 <div class="collapse navbar-collapse" id="navbar4">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item shadow-none <?php echo $id == "home" ? "rounded bg-primary" : "" ?>" style=""> 
-                            <a class="nav-link active" href="home">Home</a> 
+                            <a class="nav-link active" href="<?php echo setParameters("home")?>">Home</a> 
                         </li>
                         <li class="nav-item dropdown <?php echo $dropdown == "database" ? "rounded bg-primary" : "" ?>"> 
                             <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Database </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item <?php echo $id == "books" ? "bg-primary" : "" ?>" href="books">Books</a>
-                                <a class="dropdown-item <?php echo $id == "events" ? "bg-primary" : "" ?>" href="events">Events</a>
-                                <a class="dropdown-item <?php echo $id == "peoples" ? "bg-primary" : "" ?>" href="peoples">Peoples</a>
-                                <a class="dropdown-item <?php echo $id == "locations" ? "bg-primary" : "" ?>" href="locations">Locations</a>
-                                <a class="dropdown-item <?php echo $id == "specials" ? "bg-primary" : "" ?>" href="specials">Specials</a>
+                                <a class="dropdown-item <?php echo $id == "books" ? "bg-primary" : "" ?>" href="<?php echo setParameters("books")?>">Books</a>
+                                <a class="dropdown-item <?php echo $id == "events" ? "bg-primary" : "" ?>" href="<?php echo setParameters("events")?>">Events</a>
+                                <a class="dropdown-item <?php echo $id == "peoples" ? "bg-primary" : "" ?>" href="<?php echo setParameters("peoples")?>">Peoples</a>
+                                <a class="dropdown-item <?php echo $id == "locations" ? "bg-primary" : "" ?>" href="<?php echo setParameters("locations")?>">Locations</a>
+                                <a class="dropdown-item <?php echo $id == "specials" ? "bg-primary" : "" ?>" href="<?php echo setParameters("specials")?>">Specials</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item <?php echo $id == "search" ? "bg-primary" : "" ?>" href="search">Search</a>
+                                <a class="dropdown-item <?php echo $id == "search" ? "bg-primary" : "" ?>" href="<?php echo setParameters("search")?>">Search</a>
                             </div>
                         </li>
-                        <li class="nav-item <?php echo $id == "timeline" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="timeline">Timeline</a> </li>
-                        <li class="nav-item <?php echo $id == "familytree" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="familytree">Familytree</a> </li>
-                        <li class="nav-item <?php echo $id == "worldmap" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="worldmap">Worldmap</a> </li>
-                        <li class="nav-item <?php echo $id == "aboutus" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="aboutus">About us</a> </li>
+                        <li class="nav-item <?php echo $id == "timeline" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="<?php echo setParameters("timeline")?>">Timeline</a> </li>
+                        <li class="nav-item <?php echo $id == "familytree" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="<?php echo setParameters("familytree")?>">Familytree</a> </li>
+                        <li class="nav-item <?php echo $id == "worldmap" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="<?php echo setParameters("worldmap")?>">Worldmap</a> </li>
+                        <li class="nav-item <?php echo $id == "aboutus" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="<?php echo setParameters("aboutus")?>">About us</a> </li>
                     </ul> 
-                    <a class="btn navbar-btn ml-md-2 btn-secondary text-body" href="contact">Contact us</a>
+                    <a class="btn navbar-btn ml-md-2 btn-secondary text-body" href="<?php echo setParameters("contact")?>">Contact us</a>
                 </div>
             </div>
         </nav>

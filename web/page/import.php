@@ -7,7 +7,10 @@
 
         <!-- Extra functionality per page -->
         <!--<script src="src/template.js"></script>-->
-        <script src="src/<?php echo $id; ?>.js"></script>
+        <script src="/src/<?php echo $id; ?>.js"></script>
 
         <!-- Accessing the database -->
-        <script src="src/database.js"></script>
+        <script src="/src/database.js"></script>
+        
+        <!-- Some basic functions we want everywhere -->
+        <script src="/src/base.js"></script>

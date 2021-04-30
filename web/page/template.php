@@ -1,5 +1,5 @@
 <?php 
-    //require 'page/layout.php';
+    require 'src/base.php';
 
     $dropdown = "";
     // Get the dropdown menu that needs to have it's button activated
@@ -58,11 +58,11 @@
         
         <!-- The style sheets -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
-        <link rel="stylesheet" href="css/theme_<?php echo $theme; ?>.css">
+        <link rel="stylesheet" href="/css/theme_<?php echo $theme; ?>.css">
         
         <!-- Fav icons -->
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/../favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/../favicon-16x16.png">
 
         <!-- External Javascript files -->
 <?php require "page/import.php"; ?>
