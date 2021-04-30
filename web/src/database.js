@@ -92,7 +92,8 @@ function getBlogs(id, options) {
     if ((typeof(id) === "undefined") || 
             (typeof(options) === "undefined")) {
         options = {
-            sort: ["id desc"]
+            sort: ["id desc"],
+            columns: ["id", "title", "text", "user", "date"]
         };
     }
     return getData("blog", id, options);
@@ -239,9 +240,9 @@ function getParams(params) {
 }
 
 function checkAndAddToQuery(query, object, property) {
-    var new_query = "";
+    var new_query = query;
     if (object.hasOwnProperty(property) && object[property]) {
-        new_query = query + ((query ? "&" : "?") + property + "=" + object[property].join(';'));
+        new_query += ((query ? "&" : "?") + property + "=" + object[property].join(','));
     }
     return new_query;
 }

@@ -6,17 +6,18 @@
 function addBlogToContainer(container, blog) {
     var blogNumber = container.children().length;
     var blogBgColor = getBgColor(blogNumber);
+    var blogId = "blog_" + blog.id;
     var blogTitle = blog.title;
     var blogText = blog.text;
     var blogUser = blog.user === "undefined" ? "Zowiezo101" : blog.user;
-    var blogDate = blog.date.toUpperCase();
+    var blogDate = blog.date ? " @ " + blog.date.toUpperCase() : "";
         
     container.append(
     '<div class="row">' + 
     '    <div class="col-md-11 mb-3">' + 
     '        <h1 class="text-center pb-2 pt-2 mb-0" style="background-color: var(--dark-' + blogBgColor + ')">' + blogTitle + '</h1>' + 
-    '        <h5 class="text-center pb-2 pt-2 mb-0" style="word-break:break-word; background-color: var(--light-' + blogBgColor + ')">' + blogText + '<br><br></h5>' + 
-    '        <h6 class="pb-2 text-center font-weight-bold" style="background-color: var(--light-' + blogBgColor + ')">Posted by <a href="settings" class="text-decoration-none text-body">' + blogUser + '</a> @ ' + blogDate + ' </h6>' + 
+    '        <h5 class="text-center pb-2 pt-2 mb-0" style="word-break:break-word; background-color: var(--light-' + blogBgColor + ')" id="' + blogId + '">' + blogText + '<br><br></h5>' + 
+    '        <h6 class="pb-2 text-center font-weight-bold" style="background-color: var(--light-' + blogBgColor + ')">Posted by <a href="' + setParameters("settings") + '" class="text-decoration-none text-body">' + blogUser + '</a>' + blogDate + ' </h6>' + 
     '    </div>' + 
     '</div>');
 }

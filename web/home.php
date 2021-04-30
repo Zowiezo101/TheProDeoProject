@@ -17,7 +17,7 @@
         });
         
         // The container to add blogs to
-        var div_container = $("<div>").addClass("container").appendTo(content);
+        var div_container = $("<div>").attr("id", "blogs").addClass("container").appendTo(content);
         
         // Get the blogs from the database
         getBlogs().then(function(blogs) {
