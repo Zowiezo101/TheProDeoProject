@@ -14,3 +14,4 @@
         
         <!-- Some basic functions we want everywhere -->
         <script src="/src/base.js"></script>
+        <script src="/src/session.js"></script>

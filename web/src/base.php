@@ -14,5 +14,36 @@ function setParameters($url) {
         $newUrl = "/".filter_input(INPUT_GET, "lang")."/".$url;
     }
     
-    return $newUrl;
-}
+    return $_SERVER['SERVER_NAME'].$newUrl;
+} 
+
+?>
+
+<script>
+    var session_settings = {
+        <?php 
+        if (isset($_SESSION)) {
+            foreach($_SESSION as $key => $value) {
+                echo "'".$key."': '".$value."',\n\t\t";
+            }
+        }?>
+    };
+    var get_settings = {
+        <?php  
+        $input_get = filter_input_array(INPUT_GET);
+        if ($input_get) {
+            foreach($input_get as $key => $value) {
+                echo "'".$key."': `".$value."`,\n\t\t";
+            }
+        }?>
+    };
+    var post_settings = {
+        <?php 
+        $input_post = filter_input_array(INPUT_POST);
+        if ($input_post) {
+            foreach($input_post as $key => $value) {
+                echo "'".$key."': `".$value."`,\n\t\t";
+            }
+        }?>
+    };
+</script>
