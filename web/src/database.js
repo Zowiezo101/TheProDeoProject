@@ -212,7 +212,8 @@ function getQuery(params) {
         query = checkAndAddToQuery(query, params.options, 'columns');
         query = checkAndAddToQuery(query, params.options, 'filters');
         query = checkAndAddToQuery(query, params.options, 'sort');
-        query = checkAndAddToQuery(query, params.options, 'calculations');
+        query = checkAndAddToQuery(query, params.options, 'limit');
+        query = checkAndAddToQuery(query, params.options, 'offset');
     }
     
     return query;
@@ -223,7 +224,7 @@ function getQuery(params) {
  * */
 function getParams(params) {
     /**
-     * @type {{id: String, data: Object, columns: Array, filters: Array, sort: Array, calculations: Array}}
+     * @type {{id: String, data: Object, columns: Array, filters: Array, sort: Array, limit: Number, offset: Number}}
      * */
     var params_json = {};
     
@@ -233,7 +234,8 @@ function getParams(params) {
         params_json = checkAndAddToParams(params_json, params.options, 'columns');
         params_json = checkAndAddToParams(params_json, params.options, 'filters');
         params_json = checkAndAddToParams(params_json, params.options, 'sort');
-        params_json = checkAndAddToParams(params_json, params.options, 'calculations');
+        params_json = checkAndAddToParams(params_json, params.options, 'limit');
+        params_json = checkAndAddToParams(params_json, params.options, 'offset');
     }
     
     return params_json;
@@ -242,7 +244,7 @@ function getParams(params) {
 function checkAndAddToQuery(query, object, property) {
     var new_query = query;
     if (object.hasOwnProperty(property) && object[property]) {
-        new_query += ((query ? "&" : "?") + property + "=" + object[property].join(','));
+        new_query += ((query ? "&" : "?") + property + "=" + (typeof object[property] === "Array" ? object[property].join(',') : object[property]));
     }
     return new_query;
 }
