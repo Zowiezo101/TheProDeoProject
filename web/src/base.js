@@ -9,7 +9,7 @@ function setParameters(url) {
     
     // TODO: Get languague from window.location.url
     if (true) {
-        newUrl = "/en/" + url;
+        newUrl = "/en" + (url[0] === "/" ? "" : "/") + url;
     }
     
     return newUrl;

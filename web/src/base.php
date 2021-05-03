@@ -11,10 +11,10 @@ function setParameters($url) {
     
     // TODO: Get languague from window.location.url
     if (filter_input(INPUT_GET, "lang")) {
-        $newUrl = "/".filter_input(INPUT_GET, "lang")."/".$url;
+        $newUrl = filter_input(INPUT_GET, "lang")."/".$url;
     }
     
-    return $_SERVER['SERVER_NAME'].$newUrl;
+    return "http://".filter_input(INPUT_SERVER, 'SERVER_NAME')."/".$newUrl;
 } 
 
 ?>
