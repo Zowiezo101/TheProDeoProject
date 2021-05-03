@@ -13,9 +13,15 @@
                 $("<div>").addClass("row")
                     // The column with the menu
                     .append(getBooksMenu())
-                    // The column with the selected content
-                    .append(getBooksContent())
+                    // The column with the selected content 
+                    // (to be filled up)
+                    .append($("<div>").addClass("col-md-8 col-lg-9")
+                                     .attr("id", "book_content"))
             )
         );
+        
+        // Depending on the selected book, 
+        // we need to get information from the database first
+        getBooksContent();
     }
 </script>
