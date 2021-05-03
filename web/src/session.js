@@ -6,30 +6,44 @@
 
 /* global fetch, session_settings */
 
-function updateSession(key, value="") {
+function updateSession(parameters, clear=false) {
     
-    var url = 'http://localhost/web/api/session_write.php';
-    var query = '?key=' + key;
-
-    if (value !== "") {
-        query += '&value=' + value;
+    if (clear === true) {
+        for (var i in session_settings) {
+            // TODO
+        }
+    }
+    
+    // The base URL
+    var url = 'http://localhost/web/src/session.php';
+    
+    var query_arr = [];
+    for (var key in parameters) {
+        query_arr.push(key + "=" + parameters[key]);
+    }
+    
+    var query = "";
+    if (query_arr.length > 0) {
+        query = "?" + query_arr.join("&");
+    }
+    
+    for (var key in parameters) {
+        if (session_settings.hasOwnProperty(key)) {
+            if ((parameters[key] !== "") && (parameters[key] !== "null")) {
+                // Update the value
+                session_settings[key] = parameters[key];
+            } else {
+                // Delete the value
+                delete session_settings[key];
+            }
+        } else if ((parameters[key] !== "") && (parameters[key] !== "null")) {
+            session_settings[key] = parameters[key];
+        }
     }
     
     fetch(url + query, {
             method: 'GET'
         }
-    ).then(response => response.json()).then(function() {
-        if (session_settings.hasOwnProperty(key)) {
-            if (value !== "") {
-                // Update the value
-                session_settings[key] = value;
-            } else {
-                // Delete the value
-                delete session_settings[key];
-            }
-        } else if (value !== "") {
-            session_settings[key] = value;
-        }
-    });
+    );
 }
 
