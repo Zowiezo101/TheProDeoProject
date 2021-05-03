@@ -13,8 +13,6 @@
                 $("<div>").addClass("row")
                     // The column with the menu
                     .append(getBooksMenu())
-                    // A random column to keep the space in between
-                    .append(`<div class="col-md-1"></div>`)
                     // The column with the selected content
                     .append(getBooksContent())
             )
