@@ -15,7 +15,28 @@ function setParameters($url) {
     }
     
     return "http://".filter_input(INPUT_SERVER, 'SERVER_NAME')."/".$newUrl;
-} 
+}
+
+function insertLanguages() {
+    // Get all the currently available languages
+    $languages = ["nl", "en"];
+    
+    // And everything from the base (except the first slash)
+    $uri = substr(filter_input(INPUT_SERVER, 'REQUEST_URI'), 1);
+    
+    // Create a link per language
+    $links = [];
+    for ($i = 0; $i < count($languages); $i++) {
+        // TabIndex is purely to get the style as if href was set
+        $links[] = "<a tabindex='0' class='font-weight-bold' onclick=\"setLanguage(".
+                            "'".$languages[$i]."',".
+                            "'http://".filter_input(INPUT_SERVER, 'SERVER_NAME')."',".
+                            "'".$uri."')\">".strtoupper($languages[$i])."</a>";
+    }
+    
+    // Insert all the links
+    echo implode(" | ", $links);
+}
 
 ?>
 
