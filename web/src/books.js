@@ -1,27 +1,24 @@
 
 function getBooksMenu() {
-    var menu = $("<div>").addClass("col-3").append(`
+    var menu = $("<div>").addClass("col-md-4 col-lg-3").append(`
         <!-- Search bar and sorting -->
         <div class="row mb-2">
-            <div class="col-md-8">
-                <form class="form-inline">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Search">
+            <div class="col-8">
+                    <div class="input-group w-100">
+                        <input type="text" class="form-control" id="book_search" placeholder="Search">
                         <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
+                            <button class="btn btn-primary" type="button" onclick="searchBooks()">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
                     </div>
-                </form>
             </div>
-            <div class="col-md-4 pl-0">
-                <div class="btn-group">
-                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Dropdown </button>
-                    <div class="dropdown-menu"> 
-                        <a class="dropdown-item" href="#">Action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
+    
+            <div class="col-4">
+                <div class="btn-group w-100">
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Order </button>
+                    <div class="dropdown-menu" id="book_sort"> 
+                        <!-- We'll get the list as soon as we know the sort -->
                     </div>
                 </div>
             </div>
@@ -31,27 +28,25 @@ function getBooksMenu() {
         <div class="row">
             <div class="col-md-12">
                 <div class="list-group text-center" id="book_list">
-                    
+                    <!-- We'll get the list as soon as we know the page and sort -->
                 </div>
             </div>
         </div>
     
         <!-- Pagination -->
-        <div class="row">
+        <div class="row mt-2" id="book_pagination">
             <div class="col-md-12">
-                <ul class="pagination mt-2 mb-2">
-                    <li class="page-item font-weight-bold mx-auto bg-light"> <a class="page-link text-primary" href="#">Prev</a> </li>
-                    <li class="page-item font-weight-bold"> <a class="page-link" href="#">1</a> </li>
-                    <li class="page-item font-weight-bold"> <a class="page-link" href="#">2</a> </li>
-                    <li class="page-item font-weight-bold active"> <a class="page-link" href="#">3</a> </li>
-                    <li class="page-item font-weight-bold"> <a class="page-link" href="#">4</a> </li>
-                    <li class="page-item font-weight-bold mx-auto"> <a class="page-link" href="#">Next</a> </li>
+                <ul class="pagination mt-2 mb-2" id="book_pages">
+                    <!-- We'll update pagination as soon as we know the amount of results -->
                 </ul>
             </div>
         </div>
     `);
     
-    insertBookPage();
+    $(function(){
+        //code that needs to be executed when DOM is ready, after manipulation
+        insertAll();
+    });
     
     return menu;
 }
@@ -60,7 +55,7 @@ function getBooksContent() {
     
     if (get_settings["id"]) {
         // A book has been selected, show it's information
-        var content = $("<div>").addClass("col-8").append(`
+        var content = $("<div>").addClass("col-md-8 col-lg-9").append(`
             <div class="row">
                 <div class="col-md-10 text-center">
                     <h1 class="mb-3">O my friend</h1>
@@ -98,9 +93,9 @@ function getBooksContent() {
         `);
     } else {
         // No book has been selected, show default information
-        var content = $("<div>").addClass("col-8").append(`
+        var content = $("<div>").addClass("col-md-8 col-lg-9").append(`
             <div class="row mb-5 pb-5 text-center">
-                <div class="col-md-10">
+                <div class="col-md-12 px-lg-5">
                     <h1 class="mb-3">Books</h1>
                     <p class="lead">Then, my friend, when darkness overspreads my eyes, and heaven and earth seem to dwell in my soul and absorb its power, like the form of a beloved mistress, then I often think with longing, Oh, would I could describe these conceptions, could impress upon paper all that is living so full and warm within me, that it might be the mirror of my soul, as my soul is the mirror of the infinite God!&nbsp;</p>
                 </div>
@@ -111,23 +106,194 @@ function getBooksContent() {
     return content;
 }
 
-function insertBookPage() {
-    var currentPage = session_settings["page"] ? session_settings["page"] : 0;
-    var currentSort = session_settings["sort"] ? session_settings["sort"] : "order_id asc";
+function insertAll() {
+    insertSearch();
+    insertSorts();
+    insertBooks();
+    insertPages();
+}
 
+function insertSearch() {
+    $("#book_search").val(session_settings["search"] ? session_settings["search"] : "");
+}
+
+function insertSorts() {
+    // Get the settings
+    var currentSort = session_settings["sort"] ? 
+                      session_settings["sort"] : "order_id asc";
+                      
+    // Start out clean
+    $("#book_sort").empty();
+    
+    // Insert the sorts
+    $("#book_sort").append('<a class="dropdown-item active" onclick="setSort0to9()"> Bible order (ascending) </a>');
+    $("#book_sort").append('<a class="dropdown-item" onclick="setSort9to0()"> Bible order (descending) </a>');
+    $("#book_sort").append('<a class="dropdown-item" onclick="setSortAtoZ()"> Alphabetic (ascending) </a>');
+    $("#book_sort").append('<a class="dropdown-item" onclick="setSortZtoA()"> Alphabetic (descending) </a>');
+}
+
+function insertBooks() {
+    
+    // Get the settings
+    var currentPage = session_settings["page"] ? 
+                      session_settings["page"] : 0;
+    var currentSort = session_settings["sort"] ? 
+                      session_settings["sort"] : "order_id asc";
+    var currentSearch = session_settings["search"] ? 
+            "name % " + session_settings["search"] : "";
+
+    // Get a page of books. A page is 10 items long
+    // Sort by the chosen sorting method
+    // Filter by the search term
     getBooks(null, {
-        "limit": 15,
-        "offset": currentPage*15,
-        "sort": currentSort
+        "limit": pageSize,
+        "offset": currentPage*pageSize,
+        "sort": currentSort,
+        "filters": currentSearch
     }).then(function (result) {
+        
+        // No errors and at least 1 item of data
         if ((result.error == null) && result.data && result.data.length > 0) {
-            for (var i = 0; i < result.data.length; i++) {
-                var book_obj = result.data[i];
-                $("#book_list").append('<a href="/books/book/' + book_obj.book_id + '" class="list-group-item list-group-item-action"> ' + book_obj.name + ' </a>');
+            // Start out clean
+            $("#book_list").empty();
+            
+            // Insert all the books of a page
+            for (var i = 0; i < pageSize; i++) {
+                
+                if (i < result.data.length) {
+                    var book_obj = result.data[i];
+                    var active = (book_obj.book_id == get_settings["id"]) ? "active" : "";
+                    $("#book_list").append('<a href="' + setParameters('/books/book/' + book_obj.book_id) + '" class="list-group-item list-group-item-action ' + active + '"> ' + book_obj.name + ' </a>');
+                } else {
+                    $("#book_list").append('<a class="list-group-item list-group-item-action invisible"> empty </a>');
+                }
             }
         } else {
             // TODO:
             // Error melding geven dat database niet bereikt kan worden
         }
     });
+}
+
+function insertPages() {   
+    
+    // Get the settings
+    var currentPage = session_settings["page"] ? 
+                      session_settings["page"] : 0;
+    var currentSort = session_settings["sort"] ? 
+                      session_settings["sort"] : "order_id asc";
+    var currentSearch = session_settings["search"] ? 
+            "name % " + session_settings["search"] : "";
+
+    // Count the amount of items
+    // Sort by the chosen sorting method
+    // Filter by the search term
+    getBooks(null, {
+        "sort": currentSort,
+        "filters": currentSearch,
+        "calculations": "count"
+    }).then(function (result) {
+        
+        // No errors and at least 1 item of data
+        if ((result.error == null) && result.data && result.data.length > 0) {
+            // Start out clean
+            $("#book_pages").empty();
+    
+            // Count the amount of pages
+            var count = Math.ceil(result.data[0].count / pageSize);
+            
+            // Insert all the pages
+            for (var i = 0; i < count; i++) {
+                var active = (i == currentPage) ? "active" : "";
+                $("#book_pages").append(`
+                    <li class="page-item font-weight-bold w-100 ` + active + `"> 
+                        <a class="page-link text-center" onclick="setPage(` + i + `)">` + (i + 1) + `</a> 
+                    </li>
+                `);
+            }            
+            
+            if (count > 1) {
+                // Wel paginatie
+                $("#book_pagination").css("display", "");
+            } else {
+                // Geen paginatie
+                $("#book_pagination").css("display", "none");
+            }
+        } else {
+            // Geen paginatie
+            $("#book_pagination").css("display", "none");
+        }
+    });
+}
+
+function searchBooks() {
+    var query = $("#book_search").val();
+    
+    // Update the query to the session
+    updateSession({
+        "search": query,
+        "sort": null,
+        "page": null
+    });
+    
+    // Recalculate the booklist and pagination
+    insertBooks();
+    insertPages();
+    
+}
+
+function setSort0to9() {
+    updateSession({
+        "sort": "order_id asc", 
+        "page": null
+    });
+    
+    // Recalculate the booklist and pagination
+    insertSorts();
+    insertBooks();
+    insertPages();
+}
+
+function setSort9to0() {
+    updateSession({
+        "sort": "order_id desc", 
+        "page": null
+    });
+    
+    // Recalculate the booklist and pagination
+    insertSorts();
+    insertBooks();
+    insertPages();
+}
+
+function setSortAtoZ() {
+    updateSession({
+        "sort": "name asc", 
+        "page": null
+    });
+    
+    // Recalculate the booklist and pagination
+    insertSorts();
+    insertBooks();
+    insertPages();
+}
+
+function setSortZtoA() {
+    updateSession({
+        "sort": "name desc", 
+        "page": null
+    });
+    
+    // Recalculate the booklist and pagination
+    insertSorts();
+    insertBooks();
+    insertPages();
+}
+
+function setPage(page) {
+    updateSession({"page": page});
+    
+    // Recalculate the booklist and pagination
+    insertBooks();
+    insertPages();
 }

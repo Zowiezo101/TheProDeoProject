@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+var pageSize = 10;
+
 function setParameters(url) {
     var newUrl = url;
     
