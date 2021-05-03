@@ -198,6 +198,7 @@ function checkReadParams($conn, $table) {
                 $result->data->limit = $data->limit;
             }
         }
+        
         // Check the offset
         if (isset($data->offset)) {
             $offset_check = is_numeric($data->offset);
@@ -208,6 +209,18 @@ function checkReadParams($conn, $table) {
                 $result->data->offset = $data->offset;
             }
         }
+        
+        // Check the calculations
+        if (isset($data->calculations)) {
+            $calcultion_check = is_calculation_string($data->calculations);
+            if (!$calcultion_check) {
+                $result->error = "'calculations' contains invalid calcs";
+            } else {
+                // Copy the calculation from the $data variable
+                $result->data->calculations = $data->calculations;
+            }
+        }
+        
     } else {
         if (isset($data->to)) {
             $to_check = is_to_string($result->data->table, $data->to);
@@ -258,7 +271,10 @@ function getSelectStatement($parameters) {
     // The default columns to select
     $columns = getDefaultColumns($parameters);
     
-    if (isset($parameters->columns)) {
+    if (isset($parameters->calculations)) {
+        // Add the count parameter
+        $columns = ["COUNT(".$columns[0].") as count"];
+    } elseif (isset($parameters->columns)) {
         // Add these columns to the set of columns
         $columns = array_merge($columns, explode(',', $parameters->columns));
     }

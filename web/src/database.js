@@ -214,6 +214,7 @@ function getQuery(params) {
         query = checkAndAddToQuery(query, params.options, 'sort');
         query = checkAndAddToQuery(query, params.options, 'limit');
         query = checkAndAddToQuery(query, params.options, 'offset');
+        query = checkAndAddToQuery(query, params.options, 'calculations');
     }
     
     return query;
@@ -236,6 +237,7 @@ function getParams(params) {
         params_json = checkAndAddToParams(params_json, params.options, 'sort');
         params_json = checkAndAddToParams(params_json, params.options, 'limit');
         params_json = checkAndAddToParams(params_json, params.options, 'offset');
+        params_json = checkAndAddToParams(params_json, params.options, 'calculations');
     }
     
     return params_json;
