@@ -12,16 +12,14 @@
             $("<div>").addClass("container-fluid").append(
                 $("<div>").addClass("row")
                     // The column with the menu
-                    .append(getBooksMenu())
+                    .append(getItemsMenu())
                     // The column with the selected content 
-                    // (to be filled up)
-                    .append($("<div>").addClass("col-md-8 col-lg-9")
-                                     .attr("id", "book_content"))
+                    .append(getContentDiv())
             )
         );
         
         // Depending on the selected book, 
         // we need to get information from the database first
-        getBooksContent();
+        getItemsContent();
     }
 </script>

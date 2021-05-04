@@ -38,6 +38,22 @@ function insertLanguages() {
     echo implode(" | ", $links);
 }
 
+// Page is loaded server side, let's see if we changed to a different page id
+if (isset($_SESSION["page_id"])) {
+    // Save the old page id
+    $_SESSION["page_id_old"] = $_SESSION["page_id"];
+
+    // The actual check for page change
+    if ($_SESSION["page_id_old"] !== $id) {
+        unset($_SESSION["sort"]);
+        unset($_SESSION["search"]);
+        unset($_SESSION["page"]);
+    }
+}
+
+// Save the page id
+$_SESSION["page_id"] = $id;
+
 ?>
 
 <script>
@@ -45,7 +61,10 @@ function insertLanguages() {
         <?php 
         if (isset($_SESSION)) {
             foreach($_SESSION as $key => $value) {
-                echo "'".$key."': '".$value."',\n\t\t";
+                // We don't want all the session settings in here
+                if (!in_array($key, ["page_id", "page_id_old"])) {
+                    echo "'".$key."': '".$value."',\n\t\t";
+                }
             }
         }?>
     };
@@ -67,4 +86,6 @@ function insertLanguages() {
             }
         }?>
     };
+    
+    var page_id = "<?php echo $id; ?>";
 </script>

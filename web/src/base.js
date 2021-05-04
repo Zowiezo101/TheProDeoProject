@@ -35,4 +35,8 @@ function setLanguage(language, base, uri) {
     window.location.href = base + setParameters(uri);
 }
 
+function toUpperCaseFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 

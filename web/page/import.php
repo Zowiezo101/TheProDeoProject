@@ -6,8 +6,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/20.1.0/i18next.js"></script>
 
         <!-- Extra functionality per page -->
-        <!--<script src="src/template.js"></script>-->
         <script src="/src/<?php echo $id; ?>.js"></script>
+        
+        <?php if (in_array($id, ["books", "events", "peoples", "locations", "specials"])) { ?>
+        <script src="/src/items.js"></script>
+        <?php } ?>
 
         <!-- Accessing the database -->
         <script src="/src/database.js"></script>
