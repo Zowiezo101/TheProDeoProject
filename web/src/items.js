@@ -7,6 +7,9 @@
  * 
  * Selected sorting, pagination and items will be styled with class 'active'
  * */
+var pageCount = 0;
+var focusPage = false;
+
 function getItemsMenu() {
     var menu = $("<div>").addClass("col-md-4 col-lg-3").append(`
         <!-- Search bar and sorting -->
@@ -44,7 +47,7 @@ function getItemsMenu() {
         <!-- Pagination -->
         <div class="row mt-2" id="item_pagination">
             <div class="col-md-12">
-                <ul class="pagination mt-2 mb-2" id="item_pages">
+                <ul class="pagination mt-2 mb-2 justify-content-center" id="item_pages">
                     <!-- We'll update pagination as soon as we know the amount of results -->
                 </ul>
             </div>
@@ -253,58 +256,13 @@ function insertPages() {
 
             // Count the amount of pages
             var count = Math.ceil(result.data[0].count / pageSize);
+            pageCount = count;
 
-            if (count <= 9) {
-                // Insert all the pages
-                for (var i = 0; i < count; i++) {
-                    insertPage(i);
-                }
-            } else {
-                var currentPageInt = parseInt(currentPage, 10);
-                
-                // We have more than 9 pages, so we need to know the active page
-                // and insert pages accordingly
-                if (currentPageInt < 5) {
-                    // Insert the first 7 pages
-                    for (var i = 0; i < 7; i++) {
-                        insertPage(i);
-                    }
-                    
-                    // This is a divider, but also an option to select a page
-                    insertDivider();
-                
-                    // The last page
-                    insertPage(count - 1);
-                } else if (currentPageInt > (count - 6)) {
-                    // The first page
-                    insertPage(0)
-                    
-                    // This is a divider, but also an option to select a page
-                    insertDivider();
-                    
-                    // Insert the last 7 pages
-                    for (var i = count - 7; i < count; i++) {
-                        insertPage(i)
-                    }
-                } else {
-                    // The first page
-                    insertPage(0)
-                    
-                    // This is a divider, but also an option to select a page
-                    insertDivider();
-                    
-                    // Insert all the pages
-                    for (var i = currentPageInt - 2; i < currentPageInt + 3; i++) {
-                        insertPage(i)
-                    }
-                    
-                    // This is a divider, but also an option to select a page
-                    insertDivider();
-                
-                    // The last page
-                    insertPage(count - 1);
-                }
-            }
+            insertFirstPage();
+            insertPrevPage();
+            insertPage();
+            insertNextPage();
+            insertLastPage();
 
             if (count > 1) {
                 // pagination
@@ -410,33 +368,117 @@ function setSort(sort="") {
 }
 
 function setPage(page) {
-    updateSession({"page": page});
-    
-    // Recalculate the booklist and pagination
-    insertItems();
-    insertPages();
+    if ((page >= 0) && (page < pageCount)) {
+        updateSession({"page": page});
+
+        // Recalculate the booklist and pagination
+        insertItems();
+        insertPages();
+    }
 }
 
-function insertPage(page) {
+function insertFirstPage() {
     // Currently selected page
-    var currentPage = session_settings["page"] ? 
-                      session_settings["page"] : 0;
-                      
-    // Are we inserting the currently selected page?
-    var active = (page == currentPage) ? "active" : "";
-    
-    // Insert the page
+    var currentPage = parseInt(session_settings["page"] ? 
+                               session_settings["page"] : 0, 10);
+    var disabled = currentPage == 0 ? "disabled" : "";
+                               
+    // Insert the button to go the the first page
     $("#item_pages").append(`
-        <li class="page-item font-weight-bold w-100 ` + active + `"> 
-            <a class="page-link text-center" onclick="setPage(` + page + `)">` + (page + 1) + `</a> 
+        <li class="page-item font-weight-bold ` + disabled + `" ` + disabled + `>
+            <a class="page-link" onclick="setPage(` + 0 + `)">
+                <span class="text-primary">First</span>
+            </a>
         </li>
     `);
 }
 
-function insertDivider() {
+function insertPrevPage() {
+    // Currently selected page
+    var currentPage = parseInt(session_settings["page"] ? 
+                               session_settings["page"] : 0, 10);
+    var disabled = currentPage == 0 ? "disabled" : "";
+                      
+    // Insert the button to go the the previous page
     $("#item_pages").append(`
-        <li class="page-item font-weight-bold w-100 disabled"> 
-            <a class="page-link text-center" onclick="">...</a> 
+        <li class="page-item font-weight-bold ` + disabled + ` mr-1" ` + disabled + `>
+            <a class="page-link" onclick="setPage(` + (currentPage - 1) + `)">
+                <span class="text-primary">«</span>
+            </a>
+        </li>
+    `);
+}
+
+function insertPage() {
+    // Currently selected page
+    var currentPage = parseInt(session_settings["page"] ? 
+                               session_settings["page"] : 0, 10);
+                               
+    var maxLength = Math.max(pageCount.toString().length, 2);
+    var width = 15*maxLength + 15;
+    
+    // Insert the page
+    $("#item_pages").append(`
+        <li class="page-item">
+            <div class="form-inline">
+                <input class="form-control mx-auto" style="width: ` + width + `px;" value="` + (currentPage + 1) + `" type="number" maxlength="` + maxLength + `" id="page_search">
+                <label class="mx-1"> Out of ` + pageCount + ` </label>
+            </div>
+        </li>
+    `);
+    
+    // The keyup event for the input box
+    $("#page_search").on("keyup", function(event) {
+        // The search term inserted
+        var query = $("#page_search").val();
+        if (/^\d+$/.test(query)) {
+            // If it's a number, go to the page
+            focusPage = true;
+            setPage(parseInt(query, 10) - 1);
+        }
+    });
+        
+    if (focusPage == true) {
+        $("#page_search").focus();
+
+        // The focus forces the cursor at the beginning of the text
+        var val = $("#page_search").val(); //store the value of the element
+
+        $("#page_search").val(""); //clear the value of the element
+        $("#page_search").val(val); //set that value back. 
+
+        focusPage = false;
+    }
+}
+
+function insertNextPage() {
+    // Currently selected page
+    var currentPage = parseInt(session_settings["page"] ? 
+                               session_settings["page"] : 0, 10);
+    var disabled = currentPage == (pageCount - 1) ? "disabled" : "";
+                      
+    // Insert the button to go the the next page
+    $("#item_pages").append(`
+        <li class="page-item font-weight-bold ` + disabled + ` ml-1" ` + disabled + `>
+            <a class="page-link" onclick="setPage(` + (currentPage + 1) + `)">
+                <span class="text-primary">»</span>
+            </a>
+        </li>
+    `);
+}
+
+function insertLastPage() {
+    // Currently selected page
+    var currentPage = parseInt(session_settings["page"] ? 
+                               session_settings["page"] : 0, 10);
+    var disabled = currentPage == (pageCount - 1) ? "disabled" : "";
+                               
+    // Insert the button to go the the last page
+    $("#item_pages").append(`
+        <li class="page-item font-weight-bold ` + disabled + `" ` + disabled + `>
+            <a class="page-link" onclick="setPage(` + (pageCount - 1) + `)">
+                <span class="text-primary">Last</span>
+            </a>
         </li>
     `);
 }
