@@ -1,43 +1,36 @@
 
 
 function getEventContent(events) {
-    // A person has been selected, show it's information
-    var content = $("#item_content").append(`
-        <div class="row">
-            <div class="col-lg-11 px-lg-5 px-md-3 text-center">
-                <h1 class="mb-3">` + events.data[0].name + `</h1>
-                <p class="lead">` + events.data[0].descr + `</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-11 px-lg-5 px-md-3">
-                <div class="table-responsive">
-                    <table class="table table-striped table-borderless">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                            </tr>
-                        </tbody>
-                    </table>
+    if (events && (events.data.length > 0)) {
+        // An event has been selected, show it's information
+        $("#item_content").append(`
+            <div class="row">
+                <div class="col-lg-11 px-lg-5 px-md-3 text-center">
+                    <h1 class="mb-3">` + events.data[0].name + `</h1>
+                    <p class="lead">` + events.data[0].descr + `</p>
                 </div>
             </div>
-        </div>
-    `);
+            <div class="row">
+                <div class="col-lg-11 px-lg-5 px-md-3 text-center">
+                    <p class="lead font-weight-bold mt-4">` + dict["items.details"] + `</p>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-borderless">
+                            <tbody>` +
+                                insertDetail(events.data[0], 'length') + 
+                                insertDetail(events.data[0], 'date') + 
+                                insertDetail(events.data[0], 'book_start') +
+                                insertDetail(events.data[0], 'book_end') + 
+                            `</tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `);
+        
+        // TODO: Insert detail links
+    } else {
+        // TODO Foutmelding, niet kunnen vinden?
+    }
     
     /*
      * With image

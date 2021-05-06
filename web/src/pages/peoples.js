@@ -1,43 +1,52 @@
 
 
 function getPeopleContent(peoples) {
-    // A person has been selected, show it's information
-    var content = $("#item_content").append(`
-        <div class="row">
-            <div class="col-lg-11 px-lg-5 px-md-3 text-center">
-                <h1 class="mb-3">` + peoples.data[0].name + `</h1>
-                <p class="lead">` + peoples.data[0].descr + `</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-11 px-lg-5 px-md-3">
-                <div class="table-responsive">
-                    <table class="table table-striped table-borderless">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                            </tr>
-                        </tbody>
-                    </table>
+    if (peoples && (peoples.data.length > 0)) {
+        // A person has been selected, show it's information
+        var content = $("#item_content").append(`
+            <div class="row">
+                <div class="col-lg-11 px-lg-5 px-md-3 text-center">
+                    <h1 class="mb-3">` + peoples.data[0].name + `</h1>
+                    <p class="lead">` + peoples.data[0].descr + `</p>
                 </div>
             </div>
-        </div>
-    `);
+            <div class="row">
+                <div class="col-lg-11 px-lg-5 px-md-3 text-center">
+                    <p class="lead font-weight-bold mt-4">` + dict["items.details"] + `</p>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-borderless">
+                            <tbody>` +
+                                insertDetail(peoples.data[0], 'meaning_name') + 
+                                insertDetail(peoples.data[0], 'father_age') + 
+                                insertDetail(peoples.data[0], 'father_id') +
+                                insertDetail(peoples.data[0], 'mother_age') +
+                                insertDetail(peoples.data[0], 'mother_id') +
+                                insertDetail(peoples.data[0], 'age') + 
+                                insertDetail(peoples.data[0], 'gender') +
+                                insertDetail(peoples.data[0], 'tribe') +
+                                insertDetail(peoples.data[0], 'profession') +
+                                insertDetail(peoples.data[0], 'naionality') +
+                                insertDetail(peoples.data[0], 'book_start') +
+                                insertDetail(peoples.data[0], 'book_end') +
+                            `</tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `);
+        
+        // TODO: Insert detail links
+        // Father Id
+        // Mother Id
+        // A.k.a.
+        // Place of birth
+        // Place of death
+        // Place of living
+        // Related events
+        
+    } else {
+        // TODO Foutmelding, niet kunnen vinden?
+    }
     
     /*
      * With image

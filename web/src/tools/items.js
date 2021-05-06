@@ -107,7 +107,7 @@ function getItemsContent() {
         var content = $("#item_content").append(`
             <div class="row mb-5 pb-5 text-center">
                 <div class="col-lg-11 px-lg-5 px-md-3">
-                    <h1 class="mb-3">` + toUpperCaseFirst(page_id) + `</h1>
+                    <h1 class="mb-3">` + dict["navigation." + page_id] + `</h1>
                     <p class="lead">` + dict[page_id + ".overview"] + `.</p>
                 </div>
             </div>
@@ -495,9 +495,80 @@ function insertLastPage() {
 }
 
 function insertDetail(item, detail) {
+    if ((detail == "book_start") && (item["book_start_id"])) {
+        var book_id = dict["books.book_" + item["book_start_id"]];
+        var book_chap = item["book_start_chap"];
+        var book_vers = item["book_start_vers"];
+        
+        item["book_start"] = 
+                "<a " + 
+                    "href='" + getLink(item["book_start_id"], book_chap, book_vers) + "' " + 
+                    "target='_blank' " + 
+                    "class='font-weight-bold'>" + 
+                    book_id + " " + book_chap + ":" + book_vers + 
+                "</a>";
+    } else if ((detail == "book_end") && (item["book_end_id"])) {
+        var book_id = dict["books.book_" + item["book_end_id"]];
+        var book_chap = item["book_end_chap"];
+        var book_vers = item["book_end_vers"];
+        
+        item["book_end"] = 
+                "<a " + 
+                    "href='" + getLink(item["book_end_id"], book_chap, book_vers) + "' " + 
+                    "target='_blank' " + 
+                    "class='font-weight-bold'>" + 
+                    book_id + " " + book_chap + ":" + book_vers + 
+                "</a>";
+    }
+    
     return item[detail] ? 
     `<tr>
         <th scope="row">` + dict["items." + detail] + `</th>
         <td>` + item[detail] + `</td>
     </tr>` : "";
+}
+
+
+function getLink(bookIdx, chapIdx, verseIdx) {
+
+    if (get_settings["lang"] == "nl") {
+        // The abbriviation used by the website
+        var bookList = ["GEN", "EXO", "LEV", "NUM", "DEU",
+                       "JOS", "JDG", "RUT", "1SA", "2SA",
+                       "1KI", "2KI", "1CH", "2CH", "EZR",
+                       "NEH", "EST", "JOB", "PSA", "PRO",
+                       "ECC", "SNG", "ISA", "JER", "LAM",
+                       "EZK", "DAN", "HOS", "JOL", "AMO",
+                       "OBA", "JON", "MIC", "NAM", "HAB",
+                       "ZEP", "HAG", "ZEC", "MAL", "MAT",
+                       "MRK", "LUK", "JHN", "ACT", "ROM",
+                       "1CO", "2CO", "GAL", "EPH", "PHP",
+                       "COL", "1TH", "2TH", "1TI", "2TI",
+                       "TIT", "PHM", "HEB", "JAS", "1PE",
+                       "2PE", "1JN", "2JN", "3JN", "JUD",
+                       "REV"];
+    
+        // Link to a certain part of the webpage, to get the exact verse mentioned
+        var weblink = "https://debijbel.nl/bijbel/NBV/" + bookList[bookIdx - 1] + "." + chapIdx + "." + verseIdx;
+    } else {
+        // The bookname used by the website
+        var bookList = ["Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy",
+                       "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel",
+                       "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra",
+                       "Nehemiah", "Esther", "Job", "Psalm", "Proverbs",
+                       "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah", "Lamentations",
+                       "Ezekiel", "Daniel", "Hosea", "Joel", "Amos",
+                       "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk",
+                       "Zephaniah", "Haggai", "Zechariah", "Malachi", "Matthew",
+                       "Mark", "Luke", "John", "Acts", "Romans",
+                       "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians",
+                       "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy",
+                       "Titus", "Philemon", "Hebrews", "James", "1 Peter",
+                       "2 Peter", "1 John", "2 John", "3 John", "Jude",
+                       "Revelation",];
+                   
+        var weblink = "https://www.biblegateway.com/passage/?search=" + bookList[bookIdx - 1] + "+" + chapIdx + ":" + verseIdx + "&version=NLT";
+    }
+
+    return weblink;
 }
