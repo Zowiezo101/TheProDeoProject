@@ -77,15 +77,26 @@ function getContentDiv() {
 function getItemsContent() {
     
     if (get_settings["id"]) {
+        // How the data of the current item should be displayed
         switch(page_id) {
             case "books":
-                // How the data of the current item should be displayed
                 var getItemContent = getBookContent;
                 break;
                 
+            case "events": 
+                var getItemContent = getEventContent;
+                break;
+                
             case "peoples":
-                // How the data of the current item should be displayed
                 var getItemContent = getPeopleContent;
+                break;
+                
+            case "locations": 
+                var getItemContent = getLocationContent;
+                break;
+                
+            case "specials": 
+                var getItemContent = getSpecialContent;
                 break;
         }
         
@@ -97,7 +108,7 @@ function getItemsContent() {
             <div class="row mb-5 pb-5 text-center">
                 <div class="col-lg-11 px-lg-5 px-md-3">
                     <h1 class="mb-3">` + toUpperCaseFirst(page_id) + `</h1>
-                    <p class="lead">Then, my friend, when darkness overspreads my eyes, and heaven and earth seem to dwell in my soul and absorb its power, like the form of a beloved mistress, then I often think with longing, Oh, would I could describe these conceptions, could impress upon paper all that is living so full and warm within me, that it might be the mirror of my soul, as my soul is the mirror of the infinite God!&nbsp;</p>
+                    <p class="lead">This is an overview of all the ` + page_id + ` of the bible and the information I have about them.<br><br>To navigate, use the left side on the screen. Selecting a ` + page_id.substr(0, page_id.length - 1) + ` will go to a page with available details on that ` + page_id.substr(0, page_id.length - 1) + `.</p>
                 </div>
             </div>
         `);
@@ -357,8 +368,8 @@ function setSort(sort="") {
             break;
             
         default:
-            if (sort == "0_to_9") { sort = "order_id asc"; }
-            if (sort == "9_to_0") { sort = "order_id desc"; }
+            if (sort == "0_to_9") { sort = "book_start_id asc, book_start_chap asc, book_start_vers asc"; }
+            if (sort == "9_to_0") { sort = "book_start_id desc, book_start_chap desc, book_start_vers desc"; }
             if (sort == "a_to_z") { sort = "name asc"; }
             if (sort == "z_to_a") { sort = "name desc"; }
             break;

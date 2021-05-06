@@ -6,15 +6,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/20.1.0/i18next.js"></script>
 
         <!-- Extra functionality per page -->
-        <script src="/src/<?php echo $id; ?>.js"></script>
+        <script src="/src/pages/<?php echo $id; ?>.js"></script>
         
         <?php if (in_array($id, ["books", "events", "peoples", "locations", "specials"])) { ?>
-        <script src="/src/items.js"></script>
+        <script src="/src/tools/items.js"></script>
         <?php } ?>
 
         <!-- Accessing the database -->
-        <script src="/src/database.js"></script>
+        <script src="/src/tools/database.js"></script>
         
         <!-- Some basic functions we want everywhere -->
-        <script src="/src/base.js"></script>
-        <script src="/src/session.js"></script>
+        <script src="/src/tools/base.js"></script>
+        <script src="/src/tools/session.js"></script>

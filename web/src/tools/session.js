@@ -15,7 +15,7 @@ function updateSession(parameters, clear=false) {
     }
     
     // The base URL
-    var url = 'http://localhost/web/src/session.php';
+    var url = 'http://localhost/web/src/tools.session.php';
     
     var query_arr = [];
     for (var key in parameters) {
