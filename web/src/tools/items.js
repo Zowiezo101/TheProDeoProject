@@ -16,7 +16,7 @@ function getItemsMenu() {
         <div class="row mb-2">
             <div class="col-8">
                 <div class="input-group w-100">
-                    <input type="text" class="form-control" id="item_search" placeholder="Search" onkeyup="searchItems()">
+                    <input type="text" class="form-control" id="item_search" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="button" onclick="searchItems()">
                             <i class="fa fa-search"></i>
@@ -27,7 +27,7 @@ function getItemsMenu() {
     
             <div class="col-4">
                 <div class="btn-group w-100">
-                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Order </button>
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> ` + dict["database.order"] + ` </button>
                     <div class="dropdown-menu" id="item_sort"> 
                         <!-- We'll get the list as soon as we know the sort -->
                     </div>
@@ -108,7 +108,7 @@ function getItemsContent() {
             <div class="row mb-5 pb-5 text-center">
                 <div class="col-lg-11 px-lg-5 px-md-3">
                     <h1 class="mb-3">` + toUpperCaseFirst(page_id) + `</h1>
-                    <p class="lead">This is an overview of all the ` + page_id + ` of the bible and the information I have about them.<br><br>To navigate, use the left side on the screen. Selecting a ` + page_id.substr(0, page_id.length - 1) + ` will go to a page with available details on that ` + page_id.substr(0, page_id.length - 1) + `.</p>
+                    <p class="lead">` + dict[page_id + ".overview"] + `.</p>
                 </div>
             </div>
         `);
@@ -162,16 +162,16 @@ function insertSorts() {
     // if the corresponing sort is active
     $("#item_sort").append('<a class="dropdown-item' + 
             (sort_0_to_9 ? " active" : "") + '" onclick="setSort0to9()"> ' +
-            'Bible order (ascending)' + ' </a>');
+            dict["order.0_to_9"] + ' </a>');
     $("#item_sort").append('<a class="dropdown-item' + 
             (sort_9_to_0 ? " active" : "") + '" onclick="setSort9to0()"> ' + 
-            'Bible order (descending)' + ' </a>');
+            dict["order.9_to_0"] + ' </a>');
     $("#item_sort").append('<a class="dropdown-item' + 
             (sort_a_to_z ? " active" : "") + '" onclick="setSortAtoZ()"> ' + 
-            'Alphabetic (ascending)' + ' </a>');
+            dict["order.a_to_z"] + ' </a>');
     $("#item_sort").append('<a class="dropdown-item' + 
             (sort_z_to_a ? " active" : "") + '" onclick="setSortZtoA()"> ' + 
-            'Alphabetic (descending)' + ' </a>');
+            dict["order.z_to_a"] + ' </a>');
 }
 
 /** Insert the list of items and activate the id from the session */
@@ -398,7 +398,7 @@ function insertFirstPage() {
     $("#item_pages").append(`
         <li class="page-item font-weight-bold ` + disabled + `" ` + disabled + `>
             <a class="page-link" onclick="setPage(` + 0 + `)">
-                <span class="text-primary">First</span>
+                <span class="text-primary">` + dict["database.first"] + `</span>
             </a>
         </li>
     `);
@@ -433,7 +433,7 @@ function insertPage() {
         <li class="page-item">
             <div class="form-inline">
                 <input class="form-control mx-auto" style="width: ` + width + `px;" value="` + (currentPage + 1) + `" type="number" maxlength="` + maxLength + `" id="page_search">
-                <label class="mx-1"> Out of ` + pageCount + ` </label>
+                <label class="mx-1"> ` + dict["database.out_of"] + pageCount + ` </label>
             </div>
         </li>
     `);
@@ -488,8 +488,16 @@ function insertLastPage() {
     $("#item_pages").append(`
         <li class="page-item font-weight-bold ` + disabled + `" ` + disabled + `>
             <a class="page-link" onclick="setPage(` + (pageCount - 1) + `)">
-                <span class="text-primary">Last</span>
+                <span class="text-primary">` + dict["database.last"] + `</span>
             </a>
         </li>
     `);
+}
+
+function insertDetail(item, detail) {
+    return item[detail] ? 
+    `<tr>
+        <th scope="row">` + dict["items." + detail] + `</th>
+        <td>` + item[detail] + `</td>
+    </tr>` : "";
 }

@@ -51,7 +51,7 @@
 <html>    
     <head>
         <!-- Name shown on the tab -->
-        <title>Prodeo Database</title>
+        <title><?php echo $dict["globals.prodeo_database"] ?></title>
         
         <!-- Some extra information used for viewing -->
         <meta charset="utf-8">

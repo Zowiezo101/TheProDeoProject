@@ -1,4 +1,5 @@
-<?php
+<?php    
+    require "src/tools/lang.php";
 
 /* 
  * To change this license header, choose License Headers in Project Properties.

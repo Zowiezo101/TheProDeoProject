@@ -12,7 +12,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        <p class="my-0">© 2014-2021 ProDeo Productions. All rights reserved</p>
+                        <p class="my-0">© 2014-2021 <?php echo $dict["globals.prodeo_copyright"] ?></p>
                     </div>
                 </div>
             </div>
