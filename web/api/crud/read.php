@@ -547,7 +547,7 @@ function getToStatement($conn, $parameters, $query) {
                             union
                         select distinct(".$table2."s.".$id."), ".$table2."s.name from ".$table."
                             join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id."
-                            where ".$table.".".$id1." = 2";
+                            where ".$table.".".$id1." = ".$parameters->id;
             } else {
                 $linking_tables = [
                     "activity_to_event",
