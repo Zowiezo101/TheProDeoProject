@@ -1,13 +1,13 @@
 
 
 function getPeopleContent(peoples) {
-    if (peoples && (peoples.data.length > 0)) {
+    if (peoples && (peoples.data.self.length > 0)) {
         // A person has been selected, show it's information
-        var content = $("#item_content").append(`
+        $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
-                    <h1 class="mb-3">` + peoples.data[0].name + `</h1>
-                    <p class="lead">` + peoples.data[0].descr + `</p>
+                    <h1 class="mb-3">` + peoples.data.self[0].name + `</h1>
+                    <p class="lead">` + peoples.data.self[0].descr + `</p>
                 </div>
             </div>
             <div class="row">
@@ -16,18 +16,18 @@ function getPeopleContent(peoples) {
                     <div class="table-responsive">
                         <table class="table table-striped table-borderless">
                             <tbody>` +
-                                insertDetail(peoples.data[0], 'meaning_name') + 
-                                insertDetail(peoples.data[0], 'father_age') + 
-                                insertDetail(peoples.data[0], 'father_id') +
-                                insertDetail(peoples.data[0], 'mother_age') +
-                                insertDetail(peoples.data[0], 'mother_id') +
-                                insertDetail(peoples.data[0], 'age') + 
-                                insertDetail(peoples.data[0], 'gender') +
-                                insertDetail(peoples.data[0], 'tribe') +
-                                insertDetail(peoples.data[0], 'profession') +
-                                insertDetail(peoples.data[0], 'naionality') +
-                                insertDetail(peoples.data[0], 'book_start') +
-                                insertDetail(peoples.data[0], 'book_end') +
+                                insertDetail(peoples.data.self[0], 'meaning_name') + 
+                                insertDetailLink(peoples.data, 'parents') +
+                                insertDetail(peoples.data.self[0], 'father_age') + 
+                                insertDetail(peoples.data.self[0], 'mother_age') +
+                                insertDetailLink(peoples.data, 'children') +
+                                insertDetail(peoples.data.self[0], 'age') + 
+                                insertDetail(peoples.data.self[0], 'gender') +
+                                insertDetail(peoples.data.self[0], 'tribe') +
+                                insertDetail(peoples.data.self[0], 'profession') +
+                                insertDetail(peoples.data.self[0], 'nationality') +
+                                insertDetail(peoples.data.self[0], 'book_start') +
+                                insertDetail(peoples.data.self[0], 'book_end') +
                             `</tbody>
                         </table>
                     </div>

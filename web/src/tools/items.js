@@ -101,7 +101,7 @@ function getItemsContent() {
         }
         
         // Get the data of the current item
-        getData(page_id, get_settings["id"]).then(getItemContent)
+        getData(page_id, get_settings["id"], {"to": "all"}).then(getItemContent)
     } else {
         // No item has been selected, show default information
         var content = $("#item_content").append(`
@@ -519,12 +519,59 @@ function insertDetail(item, detail) {
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
+    } else if (detail == "gender") {
+        item[detail] = getGender(item[detail]);
+    } else if (detail == "tribe") {
+        item[detail] = getTribe(item[detail]);
     }
     
-    return item[detail] ? 
+    return item[detail] && (item[detail] != -1) ? 
     `<tr>
         <th scope="row">` + dict["items." + detail] + `</th>
         <td>` + item[detail] + `</td>
+    </tr>` : "";
+}
+
+function insertDetailLink(item, detail) {
+    
+    if (item[detail]) {
+        var links = [];
+        for (var i = 0; i < item[detail].length; i++) {
+            var data = item[detail][i];
+            switch(detail) {
+                case "children":
+                case "parents":
+                case "daughter":
+                case "son":
+                    to_table = "peoples";
+                    break;
+
+                case "previous":
+                case "next":
+                    to_table = "events";
+                    break;
+
+                default:
+                    to_table = detail;
+                    break;
+            }
+            var to_item = to_table.substr(0, to_table.length - 1);
+
+            links.push(
+                `<a href='` + setParameters(to_table + "/" + to_item + "/" + data[to_item + "_id"]) + `'
+                    class='font-weight-bold'>` + 
+                    data.name + 
+                `</a>`);
+        }
+
+        item[detail] = links.join("<br>");
+    }
+    
+    return item[detail] ? `<tr>
+        <th scope="row">` + dict["items." + detail] + `</th>
+        <td>` + 
+            item[detail] + 
+        `</td>
     </tr>` : "";
 }
 
@@ -571,4 +618,80 @@ function getLink(bookIdx, chapIdx, verseIdx) {
     }
 
     return weblink;
+}
+
+function getGender(int) {
+    var str = "";
+    
+    switch(int) {
+        case 0:
+            str = dict["gender.unknown"];
+            break;
+            
+        case 1:
+            str = dict["gender.male"];
+            break;
+            
+        case 2:
+            str = dict["gender.female"];
+            break;
+    }
+    
+    return str;
+}
+
+function getTribe(int) {
+    var str = "";
+    
+    switch(int) {
+        case 0:
+            str = dict["tribe.ruben"];
+            break;
+            
+        case 1:
+            str = dict["tribe.simeon"];
+            break;
+            
+        case 2:
+            str = dict["tribe.levi"];
+            break;
+            
+        case 3:
+            str = dict["tribe.juda"];
+            break;
+            
+        case 4:
+            str = dict["tribe.dan"];
+            break;
+            
+        case 5:
+            str = dict["tribe.naftali"];
+            break;
+            
+        case 6:
+            str = dict["tribe.gad"];
+            break;
+            
+        case 7:
+            str = dict["tribe.aser"];
+            break;
+            
+        case 8:
+            str = dict["tribe.issachar"];
+            break;
+            
+        case 9:
+            str = dict["tribe.zebulon"];
+            break;
+            
+        case 10:
+            str = dict["tribe.jozef"];
+            break;
+            
+        case 11:
+            str = dict["tribe.benjamin"];
+            break;
+    }
+    
+    return str;
 }

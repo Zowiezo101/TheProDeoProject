@@ -1,13 +1,13 @@
 
 
 function getEventContent(events) {
-    if (events && (events.data.length > 0)) {
+    if (events && (events.data.self.length > 0)) {
         // An event has been selected, show it's information
         $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
-                    <h1 class="mb-3">` + events.data[0].name + `</h1>
-                    <p class="lead">` + events.data[0].descr + `</p>
+                    <h1 class="mb-3">` + events.data.self[0].name + `</h1>
+                    <p class="lead">` + events.data.self[0].descr + `</p>
                 </div>
             </div>
             <div class="row">
@@ -16,10 +16,15 @@ function getEventContent(events) {
                     <div class="table-responsive">
                         <table class="table table-striped table-borderless">
                             <tbody>` +
-                                insertDetail(events.data[0], 'length') + 
-                                insertDetail(events.data[0], 'date') + 
-                                insertDetail(events.data[0], 'book_start') +
-                                insertDetail(events.data[0], 'book_end') + 
+                                insertDetail(events.data.self[0], 'length') + 
+                                insertDetail(events.data.self[0], 'date') + 
+                                insertDetailLink(events.data, 'peoples') + 
+                                insertDetailLink(events.data, 'locations') + 
+                                insertDetailLink(events.data, 'specials') + 
+                                insertDetailLink(events.data, 'previous') + 
+                                insertDetailLink(events.data, 'next') + 
+                                insertDetail(events.data.self[0], 'book_start') +
+                                insertDetail(events.data.self[0], 'book_end') + 
                             `</tbody>
                         </table>
                     </div>
