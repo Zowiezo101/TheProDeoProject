@@ -523,6 +523,10 @@ function insertDetail(item, detail) {
         item[detail] = getGender(item[detail]);
     } else if (detail == "tribe") {
         item[detail] = getTribe(item[detail]);
+    } else if (detail == "type" && (page_id == "locations")) {
+        item[detail] = getTypeLocation(item[detail]);
+    } else if (detail == "type" && (page_id == "specials")) {
+        item[detail] = getTypeSpecial(item[detail]);
     }
     
     return item[detail] && (item[detail] != -1) ? 
@@ -563,6 +567,12 @@ function insertDetailLink(item, detail) {
                     data.name + 
                 `</a>`);
         }
+        
+        if ((detail == page_id) && 
+                ((detail == "peoples") || (detail == "locations"))) {
+            detail = "aka";
+        }
+          
 
         item[detail] = links.join("<br>");
     }
@@ -690,6 +700,86 @@ function getTribe(int) {
             
         case 11:
             str = dict["tribe.benjamin"];
+            break;
+    }
+    
+    return str;
+}
+
+function getTypeLocation(int) {
+    var str = "";
+    
+    switch(int) {
+        case 0:
+            str = dict["type.well"];
+            break;
+            
+        case 1:
+            str = dict["type.river"];
+            break;
+            
+        case 2:
+            str = dict["type.mountain"];
+            break;
+            
+        case 3:
+            str = dict["type.valley"];
+            break;
+            
+        case 4:
+            str = dict["type.country"];
+            break;
+            
+        case 5:
+            str = dict["type.district"];
+            break;
+            
+        case 6:
+            str = dict["type.county"];
+            break;
+            
+        case 7:
+            str = dict["type.city"];
+            break;
+            
+        case 8:
+            str = dict["type.object"];
+            break;
+    }
+    
+    return str;
+}
+
+function getTypeSpecial(int) {
+    var str = "";
+    
+    switch(int) {
+        case 0:
+            str = dict["type.object"];
+            break;
+            
+        case 1:
+            str = dict["type.idol"];
+            break;
+            
+        case 2:
+            str = dict["type.grave"];
+            break;
+            
+        case 3:
+            str = dict["type.song"];
+            break;
+            
+        case 4:
+            str = dict["type.building"];
+            break;
+            
+        case 5:
+            str = dict["type.creature"];
+            break;
+            
+        case 6:
+            str = dict["type.world"];
             break;
     }
     

@@ -1,13 +1,15 @@
 
 
+/* global dict */
+
 function getLocationContent(locations) {
-    if (locations && (locations.data.length > 0)) {
+    if (locations && (locations.data.self.length > 0)) {
         // A location has been selected, show it's information
         $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
-                    <h1 class="mb-3">` + locations.data[0].name + `</h1>
-                    <p class="lead">` + locations.data[0].descr + `</p>
+                    <h1 class="mb-3">` + locations.data.self[0].name + `</h1>
+                    <p class="lead">` + locations.data.self[0].descr + `</p>
                 </div>
             </div>
             <div class="row">
@@ -15,26 +17,17 @@ function getLocationContent(locations) {
                     <p class="lead font-weight-bold mt-4">` + dict["items.details"] + `</p>
                     <div class="table-responsive">
                         <table class="table table-striped table-borderless">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">First</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                </tr>
-                            </tbody>
+                            <tbody>` +
+                                insertDetail(locations.data.self[0], 'meaning_name') + 
+                                insertDetail(locations.data.self[0], 'type') + 
+                                insertDetail(locations.data.self[0], 'inhabitants') + 
+                                insertDetail(locations.data.self[0], 'coordinates') +
+                                insertDetailLink(locations.data, 'locations') +
+                                insertDetailLink(locations.data, 'events') +
+                                insertDetailLink(locations.data, 'peoples') +
+                                insertDetail(locations.data.self[0], 'book_start') +
+                                insertDetail(locations.data.self[0], 'book_end') +
+                            `</tbody>
                         </table>
                     </div>
                 </div>

@@ -1,5 +1,7 @@
 
 
+/* global dict */
+
 function getPeopleContent(peoples) {
     if (peoples && (peoples.data.self.length > 0)) {
         // A person has been selected, show it's information
@@ -21,6 +23,9 @@ function getPeopleContent(peoples) {
                                 insertDetail(peoples.data.self[0], 'father_age') + 
                                 insertDetail(peoples.data.self[0], 'mother_age') +
                                 insertDetailLink(peoples.data, 'children') +
+                                insertDetailLink(peoples.data, 'peoples') +
+                                insertDetailLink(peoples.data, 'events') +
+                                insertDetailLink(peoples.data, 'locations') +
                                 insertDetail(peoples.data.self[0], 'age') + 
                                 insertDetail(peoples.data.self[0], 'gender') +
                                 insertDetail(peoples.data.self[0], 'tribe') +

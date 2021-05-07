@@ -1,5 +1,7 @@
 
 
+/* global dict */
+
 function getBookContent(books) {
     if (books && (books.data.self.length > 0)) {
     

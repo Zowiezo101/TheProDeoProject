@@ -1,5 +1,7 @@
 
 
+/* global dict */
+
 function getEventContent(events) {
     if (events && (events.data.self.length > 0)) {
         // An event has been selected, show it's information
