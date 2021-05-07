@@ -135,14 +135,20 @@ function is_sort_string($conn, $table, $sorts) {
 
 function is_to_string($table, $to) {
     // Allowed tables to link to
-    $linking_tables = [];
+    $linking_tables = ["all"];
     switch($table) {
         case "events":
-            $linking_tables[] = "events";
+            $linking_tables[] = "next";
+            $linking_tables[] = "previous";
             $linking_tables[] = "activities";
+            $linking_tables[] = "peoples";
+            $linking_tables[] = "locations";
+            $linking_tables[] = "specials";
             break;
         
         case "activitys":
+            $linking_tables[] = "next";
+            $linking_tables[] = "previous";
             $linking_tables[] = "activities";
             $linking_tables[] = "events";
             $linking_tables[] = "peoples";
@@ -152,6 +158,7 @@ function is_to_string($table, $to) {
             
         case "peoples":
             $linking_tables[] = "activities";
+            $linking_tables[] = "events";
             $linking_tables[] = "parents";
             $linking_tables[] = "children";
             $linking_tables[] = "peoples";
@@ -160,12 +167,14 @@ function is_to_string($table, $to) {
         
         case "locations":
             $linking_tables[] = "activities";
+            $linking_tables[] = "events";
             $linking_tables[] = "peoples";
             $linking_tables[] = "locations";
             break;
         
         case "specials":
             $linking_tables[] = "activities";
+            $linking_tables[] = "events";
             break;
     }
     

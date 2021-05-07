@@ -226,6 +226,13 @@ function executeQuery($conn, $sql) {
     
     if ($sql->error) {
         $result->error = $sql->error;
+    } else if ($sql->data && isset($sql->data->self)) {
+        $result->data = new stdClass();
+        
+        foreach ($sql->data as $key => $value) {
+            $data = executeQuery($conn, $value);
+            $result->data->{$key} = $data->data;
+        }
     } else if ($sql->data) {
         $sql->data->execute();
         $results = $sql->data->get_result();

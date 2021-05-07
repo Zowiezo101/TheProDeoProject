@@ -259,10 +259,14 @@ function createItemReadSql($conn, $params) {
 
     // The currect query if we don't have any linking tables
     $query = "SELECT ".$sql_select." FROM ".$params->table.$sql_where.$sql_sort.$sql_limit_offset;
-    $query = getToStatement($params, $query);
+    $query = getToStatement($conn, $params, $query);
     
     // The final SQL query
-    $sql = mysqli_prepare($conn, $query);
+    if (isset($params->to) && ($params->to == "all")) {
+        $sql = $query;
+    } else {
+        $sql = mysqli_prepare($conn, $query);
+    }
     
     return $sql;
 }
@@ -382,64 +386,218 @@ function getLimitOffsetStatement($parameters) {
     return $limit_offset_sql;
 }
 
-function getToStatement($parameters, $query) {
+function getToStatement($conn, $parameters, $query) {
     if (isset($parameters->to)) {
-        // FROM
-        $table1 = substr($parameters->table, 0, -1);
-        // TO
-        $table2 = substr($parameters->to, 0, -1);
-
-        if ($table2 == "parent") {
-            $id1 = $table1."_id";
-            $id2 = $table2."_id";
-            $table = "people_to_parent";
-                
-            $query = "select peoples.people_id, peoples.name from people_to_parent
-                        join peoples on people_to_parent.parent_id = peoples.people_id
-                        where people_to_parent.people_id = ".$parameters->id;
-        } else if ($table2 == "childre") {
-            $query = "select peoples.people_id, peoples.name from people_to_parent
-                        join peoples on people_to_parent.people_id = peoples.people_id
-                        where people_to_parent.parent_id = ".$parameters->id;
-        } else if($table1 == $table2) {
-            $table = $table1."_to_".$table2;
-            $id1 = $table1."1_id";
-            $id2 = $table2."2_id";
-            $id = $table1."_id";
-        
-            // Only asking for the linking table results
-            $query = "select ".$table2."s.".$id.", ".$table2."s.name from ".$table."
-                        join ".$table2."s on ".$table.".".$id1." = ".$table2."s.".$id."
-                        where ".$table.".".$id2." = ".$parameters->id."
-                        union
-                    select ".$table2."s.".$id.", ".$table2."s.name from ".$table."
-                        join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id."
-                        where ".$table.".".$id1." = 2";
-        } else {
-            $linking_tables = [
-                "activity_to_event",
-                "location_to_activity",
-                "people_to_activity",
-                "people_to_location",
-                "special_to_activity"
-            ];
+        if ($parameters->to == "all") {
+            // We want everything, make a different query for every table
+            $query = new stdClass();
+            $params = clone $parameters;
             
-            if (in_array($table1."_to_".$table2, $linking_tables)) {
+            switch($parameters->table) {
+                case "books":
+                    unset($params->to);
+                    $query->self = createReadSql($conn, $params);
+                    break;
+                    
+                case "events":
+                    $params->to = "next";
+                    $query->next = createReadSql($conn, $params);
+                    
+                    $params->to = "previous";
+                    $query->previous = createReadSql($conn, $params);
+                    
+                    $params->to = "activitys";
+                    $query->activitys = createReadSql($conn, $params);
+                    
+                    $params->to = "peoples";
+                    $query->peoples = createReadSql($conn, $params);
+                    
+                    $params->to = "locations";
+                    $query->locations = createReadSql($conn, $params);
+                    
+                    $params->to = "specials";
+                    $query->specials = createReadSql($conn, $params);
+                    
+                    unset($params->to);
+                    $query->self = createReadSql($conn, $params);
+                    break;
+                
+                case "activitys":
+                    $params->to = "next";
+                    $query->next = createReadSql($conn, $params);
+                    
+                    $params->to = "previous";
+                    $query->previous = createReadSql($conn, $params);
+                    
+                    $params->to = "events";
+                    $query->events = createReadSql($conn, $params);
+                    
+                    $params->to = "peoples";
+                    $query->peoples = createReadSql($conn, $params);
+                    
+                    $params->to = "locations";
+                    $query->locations = createReadSql($conn, $params);
+                    
+                    $params->to = "specials";
+                    $query->specials = createReadSql($conn, $params);
+                    
+                    unset($params->to);
+                    $query->self = createReadSql($conn, $params);
+                    break;
+                
+                case "peoples":
+                    $params->to = "events";
+                    $query->events = createReadSql($conn, $params);
+                    
+                    $params->to = "activitys";
+                    $query->activitys = createReadSql($conn, $params);
+                    
+                    $params->to = "peoples";
+                    $query->peoples = createReadSql($conn, $params);
+                    
+                    $params->to = "parents";
+                    $query->parents = createReadSql($conn, $params);
+                    
+                    $params->to = "children";
+                    $query->children = createReadSql($conn, $params);
+                    
+                    $params->to = "locations";
+                    $query->locations = createReadSql($conn, $params);
+                    
+                    $params->to = "specials";
+                    $query->specials = createReadSql($conn, $params);
+                    
+                    unset($params->to);
+                    $query->self = createReadSql($conn, $params);
+                    break;
+                
+                case "locations":
+                    $params->to = "events";
+                    $query->events = createReadSql($conn, $params);
+                    
+                    $params->to = "activitys";
+                    $query->activitys = createReadSql($conn, $params);
+                    
+                    $params->to = "peoples";
+                    $query->peoples = createReadSql($conn, $params);
+                    
+                    $params->to = "locations";
+                    $query->locations = createReadSql($conn, $params);
+                    
+                    $params->to = "specials";
+                    $query->specials = createReadSql($conn, $params);
+                    
+                    unset($params->to);
+                    $query->self = createReadSql($conn, $params);
+                    break;
+                
+                case "specials":
+                    $params->to = "events";
+                    $query->events = createReadSql($conn, $params);
+                    
+                    $params->to = "activitys";
+                    $query->activitys = createReadSql($conn, $params);
+                    
+                    $params->to = "peoples";
+                    $query->peoples = createReadSql($conn, $params);
+                    
+                    $params->to = "locations";
+                    $query->locations = createReadSql($conn, $params);
+                    
+                    unset($params->to);
+                    $query->self = createReadSql($conn, $params);
+                    break;
+            }
+        } else {
+            // FROM
+            $table1 = substr($parameters->table, 0, -1);
+            // TO
+            $table2 = substr($parameters->to, 0, -1);
+
+            if ($table2 == "parent") {
+                $id1 = $table1."_id";
+                $id2 = $table2."_id";
+                $table = "people_to_parent";
+
+                $query = "select distinct(peoples.people_id), peoples.name from people_to_parent
+                            join peoples on people_to_parent.parent_id = peoples.people_id
+                            where people_to_parent.people_id = ".$parameters->id;
+            } else if ($table2 == "childre") {
+                $query = "select distinct(peoples.people_id), peoples.name from people_to_parent
+                            join peoples on people_to_parent.people_id = peoples.people_id
+                            where people_to_parent.parent_id = ".$parameters->id;
+            } else if($table2 == "previou") {
+                $query = "select distinct(events.event_id), events.name from event_to_event
+                            join events on event_to_event.event1_id = events.event_id
+                            where event_to_event.event2_id = ".$parameters->id;
+            } else if ($table2 == "nex") {
+                $query = "select distinct(events.event_id), events.name from event_to_event
+                            join events on event_to_event.event2_id = events.event_id
+                            where event_to_event.event1_id = ".$parameters->id;
+            } else if($table1 == $table2) {
                 $table = $table1."_to_".$table2;
+                $id1 = $table1."1_id";
+                $id2 = $table2."2_id";
+                $id = $table1."_id";
+
+                // Only asking for the linking table results
+                $query = "select distinct(".$table2."s.".$id."), ".$table2."s.name from ".$table."
+                            join ".$table2."s on ".$table.".".$id1." = ".$table2."s.".$id."
+                            where ".$table.".".$id2." = ".$parameters->id."
+                            union
+                        select distinct(".$table2."s.".$id."), ".$table2."s.name from ".$table."
+                            join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id."
+                            where ".$table.".".$id1." = 2";
             } else {
-                $table = $table2."_to_".$table1;
+                $linking_tables = [
+                    "activity_to_event",
+                    "location_to_activity",
+                    "people_to_activity",
+                    "people_to_location",
+                    "special_to_activity",
+                    "event_to_people",
+                    "event_to_location",
+                    "event_to_special",
+                ];
+
+                if (in_array($table1."_to_".$table2, $linking_tables)) {
+                    $table = $table1."_to_".$table2;
+                } else {
+                    $table = $table2."_to_".$table1;
+                }
+                $id1 = $table1."_id";
+                $id2 = $table2."_id";
+                $name = "name";
+                $type = "";
+                if ($table2 == "activity") {
+                    $name = "descr";
+                } else if ($table == "people_to_location") {
+                    // Only in case of this table, we want a type as well
+                    $type = ", peoples_to_location.type";
+                }
+
+                // Only asking for the linking table results
+                if (!in_array($table, ["event_to_people", "event_to_location", "event_to_special"])) {
+                    $query = "select distinct(".$table2."s.".$id2."), ".$table2."s.".$name.$type." from ".$table."
+                                join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id2."
+                                where ".$table.".".$id1." = ".$parameters->id;
+                } else {
+                    // These tables don't exist as is, we need a little more work for this
+                    if ($table1 == "event") {
+                        $query = "select distinct(".$table2."s.".$id2."), ".$table2."s.".$name." from events 
+                                    join activity_to_event on events.event_id = activity_to_event.event_id 
+                                    join ".$table2."_to_activity on activity_to_event.activity_id = ".$table2."_to_activity.activity_id 
+                                    join ".$table2."s on ".$table2."_to_activity.".$id2." = ".$table2."s.".$id2."
+                                    WHERE events.event_id = ".$parameters->id;
+                    } else {
+                        $query = "select distinct(events.event_id), events.name from ".$table1."s
+                                    join ".$table1."_to_activity on ".$table1."s.".$id1." = ".$table1."_to_activity.".$id1."
+                                    join activity_to_event on ".$table1."_to_activity.activity_id = activity_to_event.activity_id
+                                    join events on activity_to_event.event_id = events.event_id
+                                    where ".$table1."s.".$id1." = ".$parameters->id;
+                    }
+                }
             }
-            $id1 = $table1."_id";
-            $id2 = $table2."_id";
-            $name = "name";
-            if ($table2 == "activity") {
-                $name = "descr";
-            }
-        
-            // Only asking for the linking table results
-            $query = "select ".$table2."s.".$id2.", ".$table2."s.".$name." from ".$table."
-                        join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id2."
-                        where ".$table.".".$id1." = ".$parameters->id;
         }
     }
     
