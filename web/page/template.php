@@ -18,12 +18,12 @@
         
         case 'books':
         case 'aboutus':
-            $theme = "orange";
+            $theme = "pink";
             break;
         
         case 'events':
         case 'timeline':
-            $theme = "blue";
+            $theme = "orange";
             break;
         
         case 'peoples':
@@ -33,7 +33,7 @@
         
         case 'locations':
         case 'worldmap':
-            $theme = "yellow";
+            $theme = "blue";
             break;
         
         case 'specials':
