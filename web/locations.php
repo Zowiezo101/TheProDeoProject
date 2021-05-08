@@ -18,7 +18,7 @@
             )
         );
         
-        // Depending on the selected book, 
+        // Depending on the selected location, 
         // we need to get information from the database first
         getItemsContent();
     }
