@@ -293,36 +293,8 @@ function getWhereStatement($conn, $parameters) {
     $where_sql_parts = [];
     
     if (isset($parameters->id)) {
-        switch($parameters->table) {
-            case "blog":
-                // We want these rows of this table
-                $where_sql_parts[] = "id = ".$parameters->id;
-                break;
-            
-            case "books":
-                $where_sql_parts[] = "book_id = ".$parameters->id;
-                break;
-            
-            case "events":
-                $where_sql_parts[] = "event_id = ".$parameters->id;
-                break;
-            
-            case "activitys":
-                $where_sql_parts[] = "activity_id = ".$parameters->id;
-                break;
-            
-            case "peoples":
-                $where_sql_parts[] = "people_id = ".$parameters->id;
-                break;
-            
-            case "locations":
-                $where_sql_parts[] = "location_id = ".$parameters->id;
-                break;
-            
-            case "specials":
-                $where_sql_parts[] = "special_id = ".$parameters->id;
-                break;
-        }
+        // We want these rows of this table
+        $where_sql_parts[] = "id = ".$parameters->id;
     }
     
     if (isset($parameters->filters)) {
@@ -515,38 +487,35 @@ function getToStatement($conn, $parameters, $query) {
             $table2 = substr($parameters->to, 0, -1);
 
             if ($table2 == "parent") {
-                $id1 = $table1."_id";
-                $id2 = $table2."_id";
                 $table = "people_to_parent";
 
-                $query = "select distinct(peoples.people_id), peoples.name from people_to_parent
-                            join peoples on people_to_parent.parent_id = peoples.people_id
+                $query = "select distinct(peoples.id), peoples.name from people_to_parent
+                            join peoples on people_to_parent.parent_id = peoples.id
                             where people_to_parent.people_id = ".$parameters->id;
             } else if ($table2 == "childre") {
-                $query = "select distinct(peoples.people_id), peoples.name from people_to_parent
-                            join peoples on people_to_parent.people_id = peoples.people_id
+                $query = "select distinct(peoples.id), peoples.name from people_to_parent
+                            join peoples on people_to_parent.people_id = peoples.id
                             where people_to_parent.parent_id = ".$parameters->id;
             } else if($table2 == "previou") {
-                $query = "select distinct(events.event_id), events.name from event_to_event
-                            join events on event_to_event.event1_id = events.event_id
+                $query = "select distinct(events.id), events.name from event_to_event
+                            join events on event_to_event.event1_id = events.id
                             where event_to_event.event2_id = ".$parameters->id;
             } else if ($table2 == "nex") {
-                $query = "select distinct(events.event_id), events.name from event_to_event
-                            join events on event_to_event.event2_id = events.event_id
+                $query = "select distinct(events.id), events.name from event_to_event
+                            join events on event_to_event.event2_id = events.id
                             where event_to_event.event1_id = ".$parameters->id;
             } else if($table1 == $table2) {
                 $table = $table1."_to_".$table2;
                 $id1 = $table1."1_id";
                 $id2 = $table2."2_id";
-                $id = $table1."_id";
 
                 // Only asking for the linking table results
-                $query = "select distinct(".$table2."s.".$id."), ".$table2."s.name from ".$table."
-                            join ".$table2."s on ".$table.".".$id1." = ".$table2."s.".$id."
+                $query = "select distinct(".$table2."s.id), ".$table2."s.name from ".$table."
+                            join ".$table2."s on ".$table.".".$id1." = ".$table2."s.id
                             where ".$table.".".$id2." = ".$parameters->id."
                             union
-                        select distinct(".$table2."s.".$id."), ".$table2."s.name from ".$table."
-                            join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id."
+                        select distinct(".$table2."s.id), ".$table2."s.name from ".$table."
+                            join ".$table2."s on ".$table.".".$id2." = ".$table2."s.id
                             where ".$table.".".$id1." = ".$parameters->id;
             } else {
                 $linking_tables = [
@@ -573,28 +542,28 @@ function getToStatement($conn, $parameters, $query) {
                     $name = "descr";
                 } else if ($table == "people_to_location") {
                     // Only in case of this table, we want a type as well
-                    $type = ", peoples_to_location.type";
+                    $type = ", people_to_location.type";
                 }
 
                 // Only asking for the linking table results
                 if (!in_array($table, ["event_to_people", "event_to_location", "event_to_special"])) {
-                    $query = "select distinct(".$table2."s.".$id2."), ".$table2."s.".$name.$type." from ".$table."
-                                join ".$table2."s on ".$table.".".$id2." = ".$table2."s.".$id2."
+                    $query = "select distinct(".$table2."s.id), ".$table2."s.".$name.$type." from ".$table."
+                                join ".$table2."s on ".$table.".".$id2." = ".$table2."s.id
                                 where ".$table.".".$id1." = ".$parameters->id;
                 } else {
                     // These tables don't exist as is, we need a little more work for this
                     if ($table1 == "event") {
-                        $query = "select distinct(".$table2."s.".$id2."), ".$table2."s.".$name." from events 
-                                    join activity_to_event on events.event_id = activity_to_event.event_id 
+                        $query = "select distinct(".$table2."s.id), ".$table2."s.".$name." from events 
+                                    join activity_to_event on events.id = activity_to_event.event_id 
                                     join ".$table2."_to_activity on activity_to_event.activity_id = ".$table2."_to_activity.activity_id 
-                                    join ".$table2."s on ".$table2."_to_activity.".$id2." = ".$table2."s.".$id2."
-                                    WHERE events.event_id = ".$parameters->id;
+                                    join ".$table2."s on ".$table2."_to_activity.".$id2." = ".$table2."s.id
+                                    WHERE events.id = ".$parameters->id;
                     } else {
-                        $query = "select distinct(events.event_id), events.name from ".$table1."s
-                                    join ".$table1."_to_activity on ".$table1."s.".$id1." = ".$table1."_to_activity.".$id1."
+                        $query = "select distinct(events.id), events.name from ".$table1."s
+                                    join ".$table1."_to_activity on ".$table1."s.id = ".$table1."_to_activity.".$id1."
                                     join activity_to_event on ".$table1."_to_activity.activity_id = activity_to_event.activity_id
-                                    join events on activity_to_event.event_id = events.event_id
-                                    where ".$table1."s.".$id1." = ".$parameters->id;
+                                    join events on activity_to_event.event_id = events.id
+                                    where ".$table1."s.id = ".$parameters->id;
                     }
                 }
             }
@@ -610,6 +579,7 @@ function getDefaultColumns($parameters) {
     if (isset($parameters->id)) {
         $columns[] = "*";
     } else {
+        $columns[] = "id";
         switch($parameters->table) {
             case "blog":
                 $columns[] = "title";
@@ -617,32 +587,11 @@ function getDefaultColumns($parameters) {
                 break;
 
             case "books":
-                $columns[] = "book_id";
-                $columns[] = "name";
-                break;
-            
             case "events":
-                $columns[] = "event_id";
-                $columns[] = "name";
-                break;
-            
             case "activitys":
-                $columns[] = "activity_id";
-                $columns[] = "name";
-                break;
-            
             case "peoples":
-                $columns[] = "people_id";
-                $columns[] = "name";
-                break;
-            
             case "locations":
-                $columns[] = "location_id";
-                $columns[] = "name";
-                break;
-            
             case "specials":
-                $columns[] = "special_id";
                 $columns[] = "name";
                 break;
         }

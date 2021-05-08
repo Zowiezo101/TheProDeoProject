@@ -203,7 +203,6 @@ function insertItems() {
             // Some variables that depend on the page id
             // These are the name of the id column and the link to an item
             var page_id_single = page_id.substr(0, page_id.length - 1);
-            var item_id = page_id_single + "_id";
             var item_link = "/" + page_id + "/" + page_id_single + "/";
 
             // Insert all the items of a page
@@ -214,19 +213,17 @@ function insertItems() {
                     
                     // Add the active class if the current id 
                     // corresponds with the selected id
-                    var is_active = item_obj[item_id] == get_settings["id"];
+                    var is_active = item_obj.id == get_settings["id"];
                     var active = is_active ? " active" : "";
                     
                     // Adding the item to the current page
                     $("#item_list").append(
-                            '<a href="' + 
-                                // Link to the selected item
-                                setParameters(item_link + item_obj[item_id]) + 
-                                // Classes
-                                '" class="list-group-item list-group-item-action' + active + '"> ' + 
-                                // Name of the item
-                                item_obj["name"] + 
-                            ' </a>');
+                        getLinkToItem(
+                            page_id, 
+                            item_obj.id, 
+                            item_obj["name"], 
+                            'list-group-item list-group-item-action' + active)
+                    );
                 } else {
                     // Fill up the rest with invisible empty items
                     $("#item_list").append('<a class="list-group-item list-group-item-action invisible"> empty </a>');
@@ -559,13 +556,20 @@ function insertDetailLink(item, detail) {
                     to_table = detail;
                     break;
             }
-            var to_item = to_table.substr(0, to_table.length - 1);
-
+            
+            if ((page_id == "peoples" && detail == "locations") || 
+                    (page_id == "locations" && detail == "peoples")) {
+                // These two contain a type as well
+                data.name = data.name + getTypeLink(data.type);
+            }
+            
+            // Get the link to the page
             links.push(
-                `<a href='` + setParameters(to_table + "/" + to_item + "/" + data[to_item + "_id"]) + `'
-                    class='font-weight-bold'>` + 
-                    data.name + 
-                `</a>`);
+                getLinkToItem(
+                    to_table, 
+                    data.id, 
+                    data.name)
+            );
         }
         
         if ((detail == page_id) && 
@@ -780,6 +784,34 @@ function getTypeSpecial(int) {
             
         case 6:
             str = dict["type.world"];
+            break;
+    }
+    
+    return str;
+}
+
+function getTypeLink(int) {
+    var str = "";
+    
+    switch(int) {
+        case 0:
+            str = " (" + dict["type.birth"] + ")";
+            break;
+            
+        case 1:
+            str = " (" + dict["type.living"] + ")";
+            break;
+            
+        case 2:
+            str = " (" + dict["type.death"] + ")";
+            break;
+            
+        case 3:
+            str = " (" + dict["type.founder"] + ")";
+            break;
+            
+        case 4:
+            str = " (" + dict["type.destroyer"] + ")";
             break;
     }
     

@@ -39,4 +39,24 @@ function toUpperCaseFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function getLinkToItem(type, id, text, classes="") {
+    // If any other classes are inserted
+    if (typeof classes === "undefined" || classes === "") {
+        classes = "font-weight-bold";
+    }
+    
+    var to_table = type;
+    var to_item = to_table.substr(0, to_table.length - 1);
+    
+    var link = setParameters(to_table + "/" + to_item + "/" + id);
+    if (text === "self") {
+        text = link.substr(get_settings["lang"] ? 4 : 1);
+    }
+    
+    return '<a href="' + link + '" ' + 
+        'class="' + classes + '">' + 
+            text + 
+    '</a>';
+}
+
 
