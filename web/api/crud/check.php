@@ -228,6 +228,77 @@ function get_valid_columns($conn, $table) {
         }
     }
     
+    switch($table) {
+        case "events":
+            $result[] = "activitys.id";
+            $result[] = "activitys.descr";
+            $result[] = "events1.id";
+            $result[] = "events1.name";
+            $result[] = "events2.id";
+            $result[] = "events2.name";
+            $result[] = "peoples.id";
+            $result[] = "peoples.name";
+            $result[] = "locations.id";
+            $result[] = "locations.name";
+            $result[] = "specials.id";
+            $result[] = "specials.name";
+            break;
+        
+        case "activitys":
+            $result[] = "activitys1.id";
+            $result[] = "activitys1.descr";
+            $result[] = "activitys2.id";
+            $result[] = "activitys2.descr";
+            $result[] = "events.id";
+            $result[] = "events.name";
+            $result[] = "peoples.id";
+            $result[] = "peoples.name";
+            $result[] = "locations.id";
+            $result[] = "locations.name";
+            $result[] = "specials.id";
+            $result[] = "specials.name";
+            break;
+        
+        case "peoples":
+            $result[] = "activitys.id";
+            $result[] = "activitys.descr";
+            $result[] = "events.id";
+            $result[] = "events.name";
+            $result[] = "parents.id";
+            $result[] = "parents.name";
+            $result[] = "childs.id";
+            $result[] = "childs.name";
+            $result[] = "peoples1.id";
+            $result[] = "peoples1.name";
+            $result[] = "peoples2.id";
+            $result[] = "peoples2.name";
+            $result[] = "locations.id";
+            $result[] = "locations.name";
+            $result[] = "locations.type";
+            break;
+        
+        case "locations":
+            $result[] = "activitys.id";
+            $result[] = "activitys.descr";
+            $result[] = "events.id";
+            $result[] = "events.name";
+            $result[] = "peoples.id";
+            $result[] = "peoples.name";
+            $result[] = "peoples.type";
+            $result[] = "locations1.id";
+            $result[] = "locations1.name";
+            $result[] = "locations2.id";
+            $result[] = "locations2.name";
+            break;
+        
+        case "specials":
+            $result[] = "activitys.id";
+            $result[] = "activitys.descsr";
+            $result[] = "events.id";
+            $result[] = "events.name";
+            break;
+    }
+    
     return $result;
 }
 

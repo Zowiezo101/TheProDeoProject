@@ -253,12 +253,13 @@ function createBlogReadSql($conn, $params) {
 function createItemReadSql($conn, $params) {
     
     $sql_select = getSelectStatement($params);
+    $sql_join = getJoinStatement($params);
     $sql_where = getWhereStatement($conn, $params);
     $sql_sort = getSortStatement($params);
     $sql_limit_offset = getLimitOffsetStatement($params);
 
     // The currect query if we don't have any linking tables
-    $query = "SELECT ".$sql_select." FROM ".$params->table.$sql_where.$sql_sort.$sql_limit_offset;
+    $query = "SELECT ".$sql_select." FROM ".$params->table.$sql_join.$sql_where.$sql_sort.$sql_limit_offset;
     $query = getToStatement($conn, $params, $query);
     
     // The final SQL query
@@ -280,13 +281,225 @@ function getSelectStatement($parameters) {
         $columns = ["COUNT(".$columns[0].") as count"];
     } elseif (isset($parameters->columns)) {
         // Add these columns to the set of columns
-        $columns = array_merge($columns, explode(',', $parameters->columns));
+        $columns_arr = explode(',', $parameters->columns);
+        
+        $columns_map = array_map(function($val) use ($parameters) {
+            $val = trim($val);
+            if (strpos($val, ".") !== false) {
+                $val = $val." as ".str_replace(".", "_", $val);
+            } else {
+                 $val = $parameters->table.".".$val;
+            }
+            return $val; 
+        }, $columns_arr);
+        $columns = array_merge($columns, $columns_map);
     }
     
     // We want these rows of this table
-    $select_sql = implode(",", array_unique($columns));
+    $select_sql = implode(", ", array_unique($columns));
     
     return $select_sql;
+}
+
+function getJoinStatement($parameters) {
+    $join_sql_array = [];
+    
+    if (isset($parameters->columns)) {
+        // Get all the joins in an array
+        $join_array = explode(',', $parameters->columns);
+
+        switch($parameters->table) {
+            case "events":
+                // Get the activitys
+                if (in_array("activitys.id", $join_array) || 
+                        in_array("activitys.descr", $join_array)) {
+                    $join_sql_array[] = " left join activity_to_event on activity_to_event.event_id = events.id
+                                          left join activitys on activity_to_event.activity_id = activitys.id";
+                }
+
+                // Get the events
+                if (in_array("events1.id", $join_array) || 
+                        in_array("events1.name", $join_array) || 
+                        in_array("events2.id", $join_array) || 
+                        in_array("events2.name", $join_array)) {
+                    $join_sql_array[] = " left join event_to_event as event_to_event2 on event_to_event2.event1_id = events.id
+                                          left join events as events2 on event_to_event2.event2_id = events2.id
+                                          left join event_to_event as event_to_event1 on event_to_event1.event2_id = events.id
+                                          left join events as events1 on event_to_event1.event1_id = events1.id";
+                }
+
+                // Get the peoples
+                if (in_array("peoples.id", $join_array) || 
+                        in_array("peoples.name", $join_array)) {
+                    $join_sql_array[] = " left join activity_to_event as a2ep on a2ep.event_id = events.id
+                                          left join people_to_activity on people_to_activity.activity_id = a2ep.activity_id
+                                          left join peoples on people_to_activity.people_id = peoples.id";
+                }
+
+                // Get the locations
+                if (in_array("locations.id", $join_array) || 
+                        in_array("locations.name", $join_array)) {
+                    $join_sql_array[] = " left join activity_to_event as a2el on a2el.event_id = events.id
+                                          left join location_to_activity on location_to_activity.activity_id = a2el.activity_id
+                                          left join locations on location_to_activity.location_id = locations.id";
+                }
+
+                // Get the specials
+                if (in_array("specials.id", $join_array) || 
+                        in_array("specials.name", $join_array)) {
+                    $join_sql_array[] = " left join activity_to_event as a2es on a2es.event_id = events.id
+                                          left join special_to_activity on special_to_activity.activity_id = a2es.activity_id
+                                          left join specials on special_to_activity.special_id = specials.id";
+                }
+                break;
+
+            case "activitys":
+                // Get the activitys
+                if (in_array("activitys1.id", $join_array) || 
+                        in_array("activitys1.name", $join_array) || 
+                        in_array("activitys2.id", $join_array) || 
+                        in_array("activitys2.name", $join_array)) {
+                    $join_sql_array[] = " left join activity_to_activity as activity_to_activity2 on activity_to_activity2.activity1_id = activitys.id
+                                          left join activitys as activitys2 on activity_to_activity2.activity2_id = activitys2.id
+                                          left join activity_to_activity as activity_to_activity1 on activity_to_activity1.activity2_id = activitys.id
+                                          left join activitys as activitys1 on activity_to_activity1.activity1_id = activitys1.id";
+                }
+
+                // Get the events
+                if (in_array("events.id", $join_array) || 
+                        in_array("events.name", $join_array)) {
+                    $join_sql_array[] = " left join activity_to_event on activity_to_event.activity_id = activitys.id
+                                          left join events on activity_to_event.event_id = events.id";
+                }
+
+                // Get the peoples
+                if (in_array("peoples.id", $join_array) || 
+                        in_array("peoples.name", $join_array)) {
+                    $join_sql_array[] = " left join people_to_activity on people_to_activity.activity_id = activitys.activity_id
+                                          left join peoples on people_to_activity.people_id = peoples.id";
+                }
+
+                // Get the locations
+                if (in_array("locations.id", $join_array) || 
+                        in_array("locations.name", $join_array)) {
+                    $join_sql_array[] = " left join location_to_activity on location_to_activity.activity_id = activitys.activity_id
+                                          left join locations on location_to_activity.location_id = locations.id";
+                }
+
+                // Get the specials
+                if (in_array("specials.id", $join_array) || 
+                        in_array("specials.name", $join_array)) {
+                    $join_sql_array[] = " left join special_to_activity on special_to_activity.activity_id = activitys.activity_id
+                                          left join specials on special_to_activity.special_id = specials.id";
+                }
+                break;
+
+            case "peoples":
+                // Get the activitys
+                if (in_array("activitys.id", $join_array) || 
+                        in_array("activitys.descr", $join_array)) {
+                    $join_sql_array[] = " left join people_to_activity on people_to_activity.people_id = peoples.id
+                                          left join activitys on people_to_activity.activity_id = activitys.id";
+                }
+
+                // Get the events
+                if (in_array("events.id", $join_array) || 
+                        in_array("events.name", $join_array)) {
+                    $join_sql_array[] = " left join people_to_activity on people_to_activity.people_id = peoples.id
+                                          left join activity_to_event on activity_to_event.activity_id = people_to_activity.activity_id
+                                          left join events on activity_to_event.event_id = events.id";
+                }
+
+                // Get the parents
+                if (in_array("parents.id", $join_array) || 
+                        in_array("parents.name", $join_array)) {
+                    $join_sql_array[] = " left join people_to_parent on people_to_parent.people_id = peoples.id
+                                          left join peoples as parents on people_to_parent.parent_id = parents.id";
+                }
+
+                // Get the children
+                if (in_array("childs.id", $join_array) || 
+                        in_array("childs.name", $join_array)) {
+                    $join_sql_array[] = " left join people_to_parent as people_to_children on people_to_children.parent_id = peoples.id
+                                          left join peoples as childs on people_to_children.people_id = childs.id";
+                }
+
+                // Get the peoples
+                if (in_array("peoples1.id", $join_array) || 
+                        in_array("peoples1.name", $join_array) || 
+                        in_array("peoples2.id", $join_array) || 
+                        in_array("peoples2.name", $join_array)) {
+                    $join_sql_array[] = " left join people_to_people as people_to_people2 on people_to_people2.people1_id = peoples.id
+                                          left join peoples as peoples2 on people_to_people2.people2_id = peoples2.id
+                                          left join people_to_people as people_to_people1 on people_to_people1.people2_id = peoples.id
+                                          left join peoples as peoples1 on people_to_people1.people1_id = peoples1.id";
+                }
+
+                // Get the locations
+                if (in_array("locations.id", $join_array) || 
+                        in_array("locations.name", $join_array) ||
+                        in_array("locations.type", $join_array)) {
+                    $join_sql_array[] = " left join people_to_location on people_to_location.people_id = peoples.id
+                                          left join locations on people_to_location.location_id = locations.id";
+                }
+                break;
+
+            case "locations":
+                // Get the activitys
+                if (in_array("activitys.id", $join_array) || 
+                        in_array("activitys.descr", $join_array)) {
+                    $join_sql_array[] = " left join location_to_activity on location_to_activity.location_id = locations.id
+                                          left join activitys on location_to_activity.activity_id = activitys.id";
+                }
+
+                // Get the events
+                if (in_array("events.id", $join_array) || 
+                        in_array("events.name", $join_array)) {
+                    $join_sql_array[] = " left join location_to_activity on location_to_activity.location_id = locations.id
+                                          left join activity_to_event on activity_to_event.activity_id = location_to_activity.activity_id
+                                          left join events on activity_to_event.event_id = events.id";
+                }
+
+                // Get the peoples
+                if (in_array("peoples.id", $join_array) || 
+                        in_array("peoples.name", $join_array) ||
+                        in_array("peoples.type", $join_array)) {
+                    $join_sql_array[] = " left join people_to_location on people_to_location.location_id = locations.id
+                                          left join peoples on people_to_location.people_id = peoples.id";
+                }
+
+                // Get the locations
+                if (in_array("locations1.id", $join_array) || 
+                        in_array("locations1.name", $join_array) || 
+                        in_array("locations2.id", $join_array) || 
+                        in_array("locations2.name", $join_array)) {
+                    $join_sql_array[] = " left join location_to_location as location_to_locations on location_to_location2.location1_id = locations.id
+                                          left join locations as locations2 on location_to_location2.location2_id = locations2.id
+                                          left join location_to_location as location_to_location1 on location_to_location1.location2_id = locations.id
+                                          left join locations as locations1 on location_to_location1.location1_id = locations1.id";
+                }
+                break;
+
+            case "specials":
+                // Get the activitys
+                if (in_array("activitys.id", $join_array) || 
+                        in_array("activitys.descr", $join_array)) {
+                    $join_sql_array[] = " left join special_to_activity on special_to_activity.special_id = specials.id
+                                          left join activitys on special_to_activity.activity_id = activitys.id";
+                }
+
+                // Get the events
+                if (in_array("events.id", $join_array) || 
+                        in_array("events.name", $join_array)) {
+                    $join_sql_array[] = " left join special_to_activity on special_to_activity.special_id = specials.id
+                                          left join activity_to_event on activity_to_event.activity_id = special_to_activity.activity_id
+                                          left join events on activity_to_event.event_id = events.id";
+                }
+                break;
+        }
+    }
+    
+    return implode('', $join_sql_array);
 }
 
 function getWhereStatement($conn, $parameters) {
@@ -579,7 +792,7 @@ function getDefaultColumns($parameters) {
     if (isset($parameters->id)) {
         $columns[] = "*";
     } else {
-        $columns[] = "id";
+        $columns[] = "distinct(".$parameters->table.".id)";
         switch($parameters->table) {
             case "blog":
                 $columns[] = "title";
@@ -592,7 +805,7 @@ function getDefaultColumns($parameters) {
             case "peoples":
             case "locations":
             case "specials":
-                $columns[] = "name";
+                $columns[] = $parameters->table.".name";
                 break;
         }
     }
