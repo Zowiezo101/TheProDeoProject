@@ -31,6 +31,7 @@ $dict = array(
 	"peoples.overview"=>"This is an overview of all the people of the bible and the information I have about them.<br><br>To navigate, use the left side on the screen. Selecting a person will go to a page with available details on that person",
 	"locations.overview"=>"This is an overview of all the locations of the bible and the information I have about them.<br><br>To navigate, use the left side on the screen. Selecting a location will go to a page with available details on that location",
 	"specials.overview"=>"Specials are extra pieces of information from the bible.<br>It can be objects, songs, creatures, etc.<br><br>This is an overview of all the specials of the bible and the information I have about them.<br><br>To navigate, use the left side on the screen. Selecting a special will go to a page with available details on that special",
+	"items.name"=>"Name",
 	"items.details"=>"Details:",
 	"items.num_chapters"=>"Number of chapters",
 	"items.length"=>"Length",

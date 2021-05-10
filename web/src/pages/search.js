@@ -135,11 +135,11 @@ function getSearchContent() {
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <!-- Tab selection -->
                     <ul class="nav nav-tabs font-weight-bold">
-                        <li class="nav-item"> <a class="active nav-link" data-toggle="tab" href="" data-target="#tabbooks">Books</a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabevents">Events</a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabpeoples">Peoples</a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tablocations">Locations</a></li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabspecials">Specials</a></li>
+                        <li class="nav-item"> <a class="active nav-link" data-toggle="tab" href="" data-target="#tabbooks">` + dict["navigation.books"] + `</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabevents">` + dict["navigation.events"] + `</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabpeoples">` + dict["navigation.peoples"] + `</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tablocations">` + dict["navigation.locations"] + `</a></li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabspecials">` + dict["navigation.specials"] + `</a></li>
                     </ul>
     
                     <!-- The different tabs -->
@@ -247,14 +247,14 @@ function insertItems(type, result) {
     if ((result.error == null) && result.data && result.data.length > 0) {
         
         // Table header is the name
-        var table_header = '<th scope="col">Item name</th>';
+        var table_header = '<th scope="col">' + dict["items.name"] + '</th>';
         if (type != "books") {
             // Get the first and last appearance if it's available
-            table_header += '<th scope="col">First appearance</th>';
-            table_header += '<th scope="col">Last appearance</th>';
+            table_header += '<th scope="col">' + dict["items.book_start"] + '</th>';
+            table_header += '<th scope="col">' + dict["items.book_end"] + '</th>';
         } else {
             // Get the number of chapters if they are available
-            table_header += '<th scope="col">Number of chapters</th>';
+            table_header += '<th scope="col">' + dict["items.num_chapters"] + '</th>';
         }
         table_header += '<th scope="col">Link to page</th>';
         
