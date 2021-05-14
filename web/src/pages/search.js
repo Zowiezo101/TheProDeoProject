@@ -4,7 +4,7 @@ function getSearchMenu() {
             <div class="row mb-2">
                 <div class="col-md-12">
                     <div class="input-group w-100">
-                        <input type="text" class="form-control" id="item_search" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
+                        <input type="text" class="form-control" id="item_name" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                         <div class="input-group-append">
                             <button class="btn btn-primary" type="button" onclick="searchItems()">
                                 <i class="fa fa-search"></i>
@@ -14,15 +14,14 @@ function getSearchMenu() {
                 </div>
             </div>
     
-           
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="form-inline">
+                        <input type="text" class="form-control w-100" id="item_meaning_name" placeholder="Betekenis naam" onkeyup="searchItems()">
+                    </form>
+                </div>
+            </div>
     
-                  <div class="row">
-                    <div class="col-md-12">
-                      <form class="form-inline">
-                        <input type="text" class="form-control w-100" id="inlineFormInputGroup" placeholder="Name">
-                      </form>
-                    </div>
-                  </div>
                   <div class="row">
                     <div class="col-md-12">
                       <form class="form-inline">
@@ -184,55 +183,95 @@ function getSearchContent() {
 
 /** Insert the search term from the session */
 function insertSearch() {
-    $("#item_search").val(
-            session_settings["search"] ? 
-            session_settings["search"] : "");
+    $("#item_name").val(
+            session_settings["search_name"] ? 
+            session_settings["search_name"] : "");
+    $("#item_meaning_name").val(
+            session_settings["search_meaning_name"] ? 
+            session_settings["search_meaning_name"] : "");
 }
 
 function insertResults() {
     // Get all the search terms, and use them to filter out results
-    var currentSearch = session_settings["search"] ? 
-            "name % " + session_settings["search"] : "";
+    var name = session_settings["search_name"] ? 
+            "name % " + session_settings["search_name"] : "";
+    var meaning_name = session_settings["search_meaning_name"] ? 
+            "meaning_name % " + session_settings["search_meaning_name"] : "";
+            
+    var books_search_terms = {};
+    var events_search_terms = {};
+    var peoples_search_terms = {};
+    var locations_search_terms = {};
+    var specials_search_terms = {};
+    if (name !== "") {
+        books_search_terms["name"] = name;
+        events_search_terms["name"] = name;
+        peoples_search_terms["name"] = name;
+        locations_search_terms["name"] = name;
+        specials_search_terms["name"] = name;
+    } if (meaning_name !== "") {
+        peoples_search_terms["meaning_name"] = meaning_name;
+        locations_search_terms["meaning_name"] = meaning_name;
+        specials_search_terms["meaning_name"] = meaning_name;
+    }
+
     
     // Get the data of the books, events, peoples, locations & specials 
     // using the search terms
     getBooks(null, {
-        "columns": "num_chapters",
-        "filters": currentSearch
+        "columns": ["num_chapters"]
+                        .concat(Object.keys(books_search_terms))
+                        .join(", "),
+        "filters": Object.values(books_search_terms)
+                    .join(", ")
     }).then(function(result) { insertItems("books", result); });
 
     getEvents(null, {
-        "columns": "book_start_id, book_start_chap, book_start_vers," + 
-                   "book_end_id, book_end_chap, book_end_vers",
-        "filters": currentSearch
+        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
+                    "book_end_id", "book_end_chap", "book_end_vers"]
+                        .concat(Object.keys(events_search_terms))
+                        .join(", "),
+        "filters": Object.values(events_search_terms)
+                    .join(", ")
     }).then(function(result) { insertItems("events", result); });
     
     getPeoples(null, {
-        "columns": "book_start_id, book_start_chap, book_start_vers," + 
-                   "book_end_id, book_end_chap, book_end_vers",
-        "filters": currentSearch
+        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
+                    "book_end_id", "book_end_chap", "book_end_vers"]
+                        .concat(Object.keys(peoples_search_terms))
+                        .join(", "),
+        "filters": Object.values(peoples_search_terms)
+                    .join(", ")
     }).then(function(result) { insertItems("peoples", result); });
     
     getLocations(null, {
-        "columns": "book_start_id, book_start_chap, book_start_vers," + 
-                   "book_end_id, book_end_chap, book_end_vers",
-        "filters": currentSearch
+        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
+                    "book_end_id", "book_end_chap", "book_end_vers"]
+                        .concat(Object.keys(locations_search_terms))
+                        .join(", "),
+        "filters": Object.values(locations_search_terms)
+                    .join(", ")
     }).then(function(result) { insertItems("locations", result); });
     
     getSpecials(null, {
-        "columns": "book_start_id, book_start_chap, book_start_vers," + 
-                   "book_end_id, book_end_chap, book_end_vers",
-        "filters": currentSearch
+        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
+                    "book_end_id", "book_end_chap", "book_end_vers"]
+                        .concat(Object.keys(specials_search_terms))
+                        .join(", "),
+        "filters": Object.values(specials_search_terms)
+                    .join(", ")
     }).then(function(result) { insertItems("specials", result); });
 }
 
 function searchItems() {
-    // The search term inserted
-    var query = $("#item_search").val();
+    // The search termd inserted
+    var name = $("#item_name").val();
+    var meaning_name = $("#item_meaning_name").val();
     
     // Update the query to the session
     updateSession({
-        "search": query,
+        "search_name": name,
+        "search_meaning_name": meaning_name
     });
     
     // Recalculate the search results
@@ -243,11 +282,18 @@ function insertItems(type, result) {
     // Start out clean
     $("#tab" + type).empty();
     
+    var meaning_name_types = session_settings["search_meaning_name"] ? 
+                                ["peoples", "locations", "specials"] : 
+                                        [];
+    
     // No errors and at least 1 item of data
     if ((result.error == null) && result.data && result.data.length > 0) {
         
         // Table header is the name
         var table_header = '<th scope="col">' + dict["items.name"] + '</th>';
+        if (meaning_name_types.includes(type)) {
+            table_header += '<th scope="col">' + dict["items.meaning_name"] + '</th>';
+        }
         if (type != "books") {
             // Get the first and last appearance if it's available
             table_header += '<th scope="col">' + dict["items.book_start"] + '</th>';
@@ -264,6 +310,9 @@ function insertItems(type, result) {
             
             // Table header is the name
             table_data = '<th scope="row">' + data["name"] + '</th>';
+            if (meaning_name_types.includes(type)) {
+                table_data += '<td>' + data["meaning_name"] + '</td>';
+            }
             // Get the first and last appearance if it's available
             if (type != "books") {
                 table_data += ('<td>' + dict["books.book_" + data["book_start_id"]] + " " + data["book_start_chap"] + ":" + data["book_start_vers"] + '</td>');

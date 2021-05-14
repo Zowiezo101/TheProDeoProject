@@ -33,7 +33,9 @@ function getData(table, id, options) {
     return fetch(url + query, {
             method: 'GET'
         }
-    ).then(response => response.json());
+    ).then(
+        response => response.json()
+    );
 }
 
 function postData(table, data) {
