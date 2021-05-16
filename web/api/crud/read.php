@@ -817,9 +817,9 @@ function convertFilterToSql($conn, $filter) {
     $sql = "";
     
     // Divide filter into 3 pieces
-    $column = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0]);
-    $option = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1]);
-    $value = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2]);
+    $column = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0]);
+    $option = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1]);
+    $value  = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2]);
     
     switch($option) {
         case "=":
@@ -834,11 +834,17 @@ function convertFilterToSql($conn, $filter) {
             $sql = $column."<>'".mysqli_real_escape_string($conn, $value)."'";
             break;
         
+        case "<>":
+            $value1 = trim(explode('-', $value)[0]);
+            $value2 = trim(explode('-', $value)[1]);
+            $sql = $column." BETWEEN '".mysqli_real_escape_string($conn, $value1)."' AND '".mysqli_real_escape_string($conn, $value2)."'";
+            break;
+        
         case "%":
             $sql = $column." LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
             break;
         
-        case "%":
+        case "!%":
             $sql = $column." NOT LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
             break;
     }

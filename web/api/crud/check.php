@@ -60,13 +60,13 @@ function is_filter_String($conn, $table, $filters) {
             $filter = trim($filter_array[$i]);
 
             // Divide filter into the column, option and the value
-            $column = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0]);
-            $option = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1]);
-            $value = trim(preg_split('/(!=|=|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2]);
+            $column = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[0]);
+            $option = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1]);
+            $value  = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2]);
 
             // Is this column and direction valid
             $is_column = in_array($column, $valid_columns);
-            $is_option = in_array($option, ["=", "!=", ">=", "<=", ">", "<", "%", "!%"]);
+            $is_option = in_array($option, ["=", "!=", ">=", "<=", ">", "<", "<>", "%", "!%"]);
             if (!$is_column) {
                 // It is not, break the for loop
                 $result = False;
