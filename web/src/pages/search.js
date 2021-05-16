@@ -14,104 +14,97 @@ function getSearchMenu() {
                 </div>
             </div>
     
+            <!-- Meaning name -->
             <div class="row">
                 <div class="col-md-12">
                     <form class="form-inline">
-                        <input type="text" class="form-control w-100" id="item_meaning_name" placeholder="Betekenis naam" onkeyup="searchItems()">
+                        <input type="text" class="form-control w-100" id="item_meaning_name" placeholder="` + dict["items.meaning_name"] + `" onkeyup="searchItems()">
                     </form>
                 </div>
             </div>
     
-                  <div class="row">
-                    <div class="col-md-12">
-                      <form class="form-inline">
-                        <input type="text" class="form-control w-100" id="inlineFormInputGroup" placeholder="Name">
-                      </form>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <form class="form-inline">
-                        <input type="text" class="form-control w-100" id="inlineFormInputGroup" placeholder="Name">
-                      </form>
-                    </div>
-                  </div>
-                  <div class="row mb-2">
-                    <div class="col-md-12">
-                      <div class="btn-group w-100">
-                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Type </button>
-                        <div class="dropdown-menu">
-                          <form class="px-2 py-1">
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                              <label class="form-check-label" for="dropdownCheck"> Books </label>
-                            </div>
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                              <label class="form-check-label" for="dropdownCheck"> Events </label>
-                            </div>
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                              <label class="form-check-label" for="dropdownCheck"> Peoples </label>
-                            </div>
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                              <label class="form-check-label" for="dropdownCheck"> Locations </label>
-                            </div>
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                              <label class="form-check-label" for="dropdownCheck"> Locations </label>
-                            </div>
-                            <button type="button" class="btn btn-primary w-100 mt-2">All</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row pb-2">
-                    <div class="col-md-6">
-                      <div class="btn-group w-100">
-                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Dropdown </button>
-                        <div class="dropdown-menu"> <a class="dropdown-item" href="#">Action</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="btn-group w-100">
-                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Dropdown </button>
-                        <div class="dropdown-menu"> <a class="dropdown-item" href="#">Action</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row pb-2">
-                    <div class="col-md-6">
-                      <div class="btn-group w-100">
-                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Dropdown </button>
-                        <div class="dropdown-menu"> <a class="dropdown-item" href="#">Action</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="btn-group w-100">
-                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> Dropdown </button>
-                        <div class="dropdown-menu"> <a class="dropdown-item" href="#">Action</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            <!-- Description -->
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="form-inline">
+                        <input type="text" class="form-control w-100" id="item_descr" placeholder="` + dict["items.descr"] + `" onkeyup="searchItems()">
+                    </form>
+                </div>
+            </div>
+    
+            <!-- First appearance -->    
+            <div class="row pb-2">
+                <div class="col-md-12 text-center">
+                    <label class="font-weight-bold">` + dict["items.book_start"] + `: 
+                        <a tabindex=0 onclick="removeStartFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>
+                    </label>
+                </div>
+    
+                <div class="col-md-6">
+                    <select class="custom-select" id="item_start_book" onchange="addStartChapters()">
+                        <option selected disabled value="-1">` + dict["books.book"] + `</option>
+                        <!-- Filled in later -->
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <select class="custom-select" id="item_start_chap" onchange="searchItems()">
+                        <option selected disabled value="-1">` + dict["books.chapter"] + `</option>
+                        <!-- Filled in later -->
+                    </select>
+                </div>
+            </div>
+    
+            <!-- Last appearance -->
+            <div class="row pb-2">
+                <div class="col-md-12 text-center">
+                    <label class="font-weight-bold">` + dict["items.book_end"] + `: 
+                        <a tabindex=0 onclick="removeEndFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>
+                    </label>
+                </div>
+    
+                <div class="col-md-6">
+                    <select class="custom-select" id="item_end_book" onchange="addEndChapters()">
+                        <option selected disabled value="-1">` + dict["books.book"] + `</option>
+                        <!-- Filled in later -->
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <select class="custom-select" id="item_end_chap" onchange="searchItems()">
+                        <option selected disabled value="-1">` + dict["books.chapter"] + `</option>
+                        <!-- Filled in later -->
+                    </select>
+                </div>
+            </div>
+    
+            <!-- Specific search options for -->
+            <div class="row my-2">
+                <div class="col-md-12 text-center">
+                    <label class="font-weight-bold">` + dict["search.specific_for"] + ` 
+                        <a tabindex=0 onclick="removeSpecificFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>
+                    </label>
+                </div>
+    
+                <div class="col-md-12">
+                    <select class="custom-select" id="item_specific" onchange="addSpecifics()">
+                        <option selected disabled value="-1">` + dict["search.select"] + `</option>
+                        <option value="0">` + dict["search.none"] + `</option>
+                        <option value="1">` + dict["navigation.books"] + `</option>
+                        <option value="2">` + dict["navigation.events"] + `</option>
+                        <option value="3">` + dict["navigation.peoples"] + `</option>
+                        <option value="4">` + dict["navigation.locations"] + `</option>
+                        <option value="5">` + dict["navigation.specials"] + `</option>
+                    </select>
+                </div>
+            </div>
     `);
     
     $(function(){
         //code that needs to be executed when DOM is ready, after manipulation
+        $('[data-toggle="tooltip"]').tooltip()
+        // Insert the dropdown items for books and chapters
+        addBooks();
         // Insert the search terms from the session
         insertSearch();
     });
@@ -181,97 +174,301 @@ function getSearchContent() {
     return menu;
 }
 
+function addBooks() {
+    getBooks(null, {
+       "columns": "id, name, num_chapters",
+       "sort": "order_id asc",
+    }).then(function(books) {
+        if (!books.error && books.data && books.data.length > 0) {
+            for (var i = 0; i < books.data.length; i++) {
+                $("#item_start_book").append('<option data-num-chapters="' + books.data[i]["num_chapters"] + '" value="' + (i+1) + '">' + dict["books.book_" + (i+1)] + '</option>');
+                $("#item_end_book").append('<option data-num-chapters="' + books.data[i]["num_chapters"] + '" value="' + (i+1) + '">' + dict["books.book_" + (i+1)] + '</option>');
+            }
+            
+            
+            // First and Last appearance books
+            $("#item_start_book").val(
+                    session_settings["search_start_book"] ? 
+                    session_settings["search_start_book"] : -1);
+            $("#item_end_book").val(
+                    session_settings["search_end_book"] ? 
+                    session_settings["search_end_book"] : -1);
+
+            // On change for the different select boxes
+            $("#item_start_book").change();
+            $("#item_end_book").change();
+        }
+    });
+}
+
+function addStartChapters() {
+    // Get the selected book and its amount of chapters
+    var book = $("#item_start_book option:selected");
+    console.log(book);
+    var num_chapters = book.data("numChapters");
+    
+    // Insert all the chapters
+    $("#item_start_chap").empty();
+    $("#item_start_chap").append('<option selected disabled value="-1">' + dict["books.chapter"] + '</option>');
+    for (var i = 0; i < num_chapters; i++) {
+        $("#item_start_chap").append('<option value="' + (i+1) + '">' + (i+1) + '</option>');
+    }
+    
+    // First appearance chapters
+    $("#item_start_chap").val(
+            session_settings["search_start_chap"] ? 
+            session_settings["search_start_chap"] : -1);
+    
+    console.log("Added " + num_chapters + " chapters as options");
+}
+
+function addEndChapters() {
+    // Get the selected book and its amount of chapters
+    var book = $("#item_end_book option:selected");
+    console.log(book);
+    var num_chapters = book.data("numChapters");
+    
+    // Insert all the chapters
+    $("#item_end_chap").empty();
+    $("#item_end_chap").append('<option selected disabled value="-1">' + dict["books.chapter"] + '</option>');
+    for (var i = 0; i < num_chapters; i++) {
+        $("#item_end_chap").append('<option value="' + (i+1) + '">' + (i+1) + '</option>');
+    }
+    
+    // Last appearance chapters
+    $("#item_end_chap").val(
+            session_settings["search_end_chap"] ? 
+            session_settings["search_end_chap"] : -1);
+    
+    console.log("Added " + num_chapters + " chapters as options");
+}
+
+function removeStartFilter() {
+    $("#item_start_book").val(-1);
+    $("#item_start_chap").val(-1);
+    
+    searchItems();
+}
+
+function removeEndFilter() {
+    $("#item_end_book").val(-1);
+    $("#item_end_chap").val(-1);
+    
+    searchItems();
+}
+
+function removeSpecificFilter() {
+    
+}
+
+
 /** Insert the search term from the session */
 function insertSearch() {
+    
+    // Search strings
     $("#item_name").val(
             session_settings["search_name"] ? 
             session_settings["search_name"] : "");
     $("#item_meaning_name").val(
             session_settings["search_meaning_name"] ? 
             session_settings["search_meaning_name"] : "");
+    $("#item_descr").val(
+            session_settings["item_descr"] ? 
+            session_settings["item_descr"] : "");
+    
+            
+    // Dropdown for specific stuff
+    $("#item_specific").val(
+            session_settings["item_specific"] ? 
+            session_settings["item_specific"] : -1);
 }
 
 function insertResults() {
-    // Get all the search terms, and use them to filter out results
-    var name = session_settings["search_name"] ? 
-            "name % " + session_settings["search_name"] : "";
-    var meaning_name = session_settings["search_meaning_name"] ? 
-            "meaning_name % " + session_settings["search_meaning_name"] : "";
-            
-    var books_search_terms = {};
-    var events_search_terms = {};
-    var peoples_search_terms = {};
-    var locations_search_terms = {};
-    var specials_search_terms = {};
-    if (name !== "") {
-        books_search_terms["name"] = name;
-        events_search_terms["name"] = name;
-        peoples_search_terms["name"] = name;
-        locations_search_terms["name"] = name;
-        specials_search_terms["name"] = name;
-    } if (meaning_name !== "") {
-        peoples_search_terms["meaning_name"] = meaning_name;
-        locations_search_terms["meaning_name"] = meaning_name;
-        specials_search_terms["meaning_name"] = meaning_name;
-    }
-
-    
     // Get the data of the books, events, peoples, locations & specials 
     // using the search terms
     getBooks(null, {
-        "columns": ["num_chapters"]
-                        .concat(Object.keys(books_search_terms))
-                        .join(", "),
-        "filters": Object.values(books_search_terms)
-                    .join(", ")
+        "columns": getSearchTerms("books").columns,
+        "filters": getSearchTerms("books").filters
     }).then(function(result) { insertItems("books", result); });
 
     getEvents(null, {
-        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
-                    "book_end_id", "book_end_chap", "book_end_vers"]
-                        .concat(Object.keys(events_search_terms))
-                        .join(", "),
-        "filters": Object.values(events_search_terms)
-                    .join(", ")
+        "columns": getSearchTerms("events").columns,
+        "filters": getSearchTerms("events").filters
     }).then(function(result) { insertItems("events", result); });
     
     getPeoples(null, {
-        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
-                    "book_end_id", "book_end_chap", "book_end_vers"]
-                        .concat(Object.keys(peoples_search_terms))
-                        .join(", "),
-        "filters": Object.values(peoples_search_terms)
-                    .join(", ")
+        "columns": getSearchTerms("peoples").columns,
+        "filters": getSearchTerms("peoples").filters
     }).then(function(result) { insertItems("peoples", result); });
     
     getLocations(null, {
-        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
-                    "book_end_id", "book_end_chap", "book_end_vers"]
-                        .concat(Object.keys(locations_search_terms))
-                        .join(", "),
-        "filters": Object.values(locations_search_terms)
-                    .join(", ")
+        "columns": getSearchTerms("locations").columns,
+        "filters": getSearchTerms("locations").filters
     }).then(function(result) { insertItems("locations", result); });
     
     getSpecials(null, {
-        "columns": ["book_start_id", "book_start_chap", "book_start_vers",
-                    "book_end_id", "book_end_chap", "book_end_vers"]
-                        .concat(Object.keys(specials_search_terms))
-                        .join(", "),
-        "filters": Object.values(specials_search_terms)
-                    .join(", ")
+        "columns": getSearchTerms("specials").columns,
+        "filters": getSearchTerms("specials").filters
     }).then(function(result) { insertItems("specials", result); });
+}
+
+function getFilters() {
+    // Get all the search terms, and use them to filter out results
+    var name =          session_settings["search_name"] ? 
+            "name % " + session_settings["search_name"] : "";
+    var meaning_name =          session_settings["search_meaning_name"] ? 
+            "meaning_name % " + session_settings["search_meaning_name"] : "";
+    var descr =          session_settings["search_descr"] ? 
+            "descr % " + session_settings["search_descr"] : "";
+    var summary =          session_settings["search_descr"] ? 
+            "summary % " + session_settings["search_descr"] : "";
+            
+    // First appearance
+    var start_book =              session_settings["search_start_book"] ? 
+            "book_start_id >= " + session_settings["search_start_book"] : "";
+    var start_chap =                session_settings["search_start_chap"] ? 
+            "book_start_chap >= " + session_settings["search_start_chap"] : "";
+    
+    // Last appearance
+    var end_book =              session_settings["search_end_book"] ? 
+            "book_end_id <= " + session_settings["search_end_book"] : "";
+    var end_chap =                session_settings["search_end_chap"] ? 
+            "book_end_chap <= " + session_settings["search_end_chap"] : "";
+            
+    // First & Last appearance
+    var book_ids = "";
+    if (session_settings["search_start_book"] && 
+        session_settings["search_end_book"]) {
+        var book_ids = "id <> " + 
+                session_settings["search_start_book"] + "-" + 
+                session_settings["search_end_book"];
+    } else if (session_settings["search_start_book"]) {
+        var book_ids =     session_settings["search_start_book"] ? 
+                "id >= " + session_settings["search_start_book"] : "";
+    } else if (session_settings["search_end_book"]) {
+        var book_ids =     session_settings["search_end_book"] ? 
+                "id <= " + session_settings["search_end_book"] : "";
+    }
+            
+    return {
+        "name": name,
+        "meaning_name": meaning_name,
+        "descr": descr,
+        "summary": summary,
+        "book_ids": book_ids,
+        "start_book": start_book,
+        "start_chap": start_chap,
+        "end_book": end_book,
+        "end_chap": end_chap,
+    };
+}
+
+function getSearchTerms(type) {
+    var search_terms = {};
+    var extra_columns = [];
+    
+    var filter = getFilters();
+    
+    switch(type) {
+        case "books":
+            extra_columns = ["num_chapters"];
+            search_terms["name"] = filter.name;
+            search_terms["id"] = filter.book_ids;
+            search_terms["summary"] = filter.summary;
+            break;
+            
+        case "events":
+            extra_columns = [
+                "book_start_id", "book_start_chap", "book_start_vers",
+                "book_end_id", "book_end_chap", "book_end_vers"
+            ];
+            search_terms["name"] = filter.name;
+            search_terms["descr"] = filter.descr;
+            search_terms["book_start_id"] = filter.start_book;
+            search_terms["book_start_chap"] = filter.start_chap;
+            search_terms["book_end_id"] = filter.end_book;
+            search_terms["book_end_chap"] = filter.end_chap;
+            break;
+            
+        case "peoples":
+            extra_columns = [
+                "book_start_id", "book_start_chap", "book_start_vers",
+                "book_end_id", "book_end_chap", "book_end_vers"
+            ];
+            search_terms["name"] = filter.name;
+            search_terms["meaning_name"] = filter.meaning_name;
+            search_terms["descr"] = filter.descr;
+            search_terms["book_start_id"] = filter.start_book;
+            search_terms["book_start_chap"] = filter.start_chap;
+            search_terms["book_end_id"] = filter.end_book;
+            search_terms["book_end_chap"] = filter.end_chap;
+            break;
+            
+        case "locations":
+            extra_columns = [
+                "book_start_id", "book_start_chap", "book_start_vers",
+                "book_end_id", "book_end_chap", "book_end_vers"
+            ];
+            search_terms["name"] = filter.name;
+            search_terms["meaning_name"] = filter.meaning_name;
+            search_terms["descr"] = filter.descr;
+            search_terms["book_start_id"] = filter.start_book;
+            search_terms["book_start_chap"] = filter.start_chap;
+            search_terms["book_end_id"] = filter.end_book;
+            search_terms["book_end_chap"] = filter.end_chap;
+            break;
+            
+        case "specials":
+            extra_columns = [
+                "book_start_id", "book_start_chap", "book_start_vers",
+                "book_end_id", "book_end_chap", "book_end_vers"
+            ];
+            search_terms["name"] = filter.name;
+            search_terms["meaning_name"] = filter.meaning_name;
+            search_terms["descr"] = filter.descr;
+            search_terms["book_start_id"] = filter.start_book;
+            search_terms["book_start_chap"] = filter.start_chap;
+            search_terms["book_end_id"] = filter.end_book;
+            search_terms["book_end_chap"] = filter.end_chap;
+            break;
+    }
+    
+    // Filter out anything that isn't filled
+    for (key in search_terms) {
+        if (search_terms[key] === "") {
+            delete search_terms[key];
+        }
+    }
+    
+    return {
+        "columns": extra_columns.concat(
+                    Object.keys(search_terms)
+                ).join(", "),
+        "filters": Object.values(search_terms).join(", ")
+    };
 }
 
 function searchItems() {
     // The search termd inserted
     var name = $("#item_name").val();
     var meaning_name = $("#item_meaning_name").val();
+    var descr = $("#item_descr").val();
+    var start_book = $("#item_start_book").val();
+    var start_chap = $("#item_start_chap").val();
+    var end_book = $("#item_end_book").val();
+    var end_chap = $("#item_end_chap").val();
+    var specific = $("#item_specific").val();
     
     // Update the query to the session
     updateSession({
         "search_name": name,
-        "search_meaning_name": meaning_name
+        "search_meaning_name": meaning_name,
+        "search_descr": descr,
+        "search_start_book": start_book,
+        "search_start_chap": start_chap,
+        "search_end_book": end_book,
+        "search_end_chap": end_chap,
+        "search_specific": specific,
     });
     
     // Recalculate the search results
