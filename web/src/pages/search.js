@@ -2,7 +2,7 @@ var firstChapterStart = true;
 var firstChapterEnd = true;
 
 function getSearchMenu() {
-    var menu = $("<div>").addClass("col-md-4 col-lg-3").append(`
+    var menu = $("<div id='search_menu'>").addClass("col-md-4 col-lg-3").append(`
             <!-- Search bar -->
             <div class="row mb-2">
                 <div class="col-md-12">
@@ -82,20 +82,18 @@ function getSearchMenu() {
             <!-- Specific search options for -->
             <div class="row my-2">
                 <div class="col-md-12 text-center">
-                    <label class="font-weight-bold">` + dict["search.specific_for"] + ` 
-                        <a tabindex=0 onclick="removeSpecificFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>
+                    <label class="font-weight-bold" id="item_specific_label">` + dict["search.specific_for"] + `
                     </label>
                 </div>
     
                 <div class="col-md-12">
-                    <select class="custom-select" id="item_specific" onchange="addSpecifics()">
+                    <select class="custom-select" id="item_specific" onchange="insertSpecifics()">
                         <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                        <option value="0">` + dict["search.none"] + `</option>
-                        <option value="1">` + dict["navigation.books"] + `</option>
-                        <option value="2">` + dict["navigation.events"] + `</option>
-                        <option value="3">` + dict["navigation.peoples"] + `</option>
-                        <option value="4">` + dict["navigation.locations"] + `</option>
-                        <option value="5">` + dict["navigation.specials"] + `</option>
+                        <option value="0">` + dict["navigation.books"] + `</option>
+                        <option value="1">` + dict["navigation.events"] + `</option>
+                        <option value="2">` + dict["navigation.peoples"] + `</option>
+                        <option value="3">` + dict["navigation.locations"] + `</option>
+                        <option value="4">` + dict["navigation.specials"] + `</option>
                     </select>
                 </div>
             </div>
@@ -273,6 +271,76 @@ function insertEndChapters() {
     $("#item_end_chap").change();
 }
 
+function insertSpecifics() {
+    // Get the selected book and its amount of chapters
+    var type = $("#item_specific option:selected").val();
+    
+    // Start out clean
+    removeSpecifics();
+    
+    // Update the query to the session
+    updateSession({
+        "search_specific": type,
+    });
+    
+    if (type !== "-1") {
+        // Specific search options        
+        $("#search_menu").append(`
+            <!-- Specific search items -->
+            <div class="row mt-5" id="item_specifics">
+            </div>
+        `);
+    
+        switch(type) {
+            // Alle scrollers zijn standaard niet in gebruik
+            // Zodra erop geklikt wordt, komen ze in gebruik
+            // Dit geeft ook hetzelfde 'verwijder filter' kruisje
+            // Een filter in gebruik, betekent dat alle niet-null waardes
+            // gebruikt worden. Alles wat null is, wordt dan niet weergegeven.
+            case "0":
+                // Books
+                // - Number of chapters (Scroller ---()===()---)
+                break;
+            case "1":
+                // Events
+                // - Length (Scroller)
+                // - Date (String, date etc)
+                break;
+            case "2":
+                // Peoples
+                // - Father age (Scroller)
+                // - Mother age (Scroller)
+                // - Age (Scroller)
+                // - Gender (unknown, male, female)
+                // - Tribe (Dropdown)
+                // - Profession (String)
+                // - Nationality (String)
+                break;
+            case "3":
+                // Locations
+                // - Type (Dropdown)
+                // - Inhabitants (Scroller)
+                // - Coordinates (Scrollers, X & Y)
+                break;
+            case "4":
+                // Specials
+                // - Type (Dropdown)
+                break;
+        }
+    }
+}
+
+/**
+ * Remove functions for the select boxes
+ * These will remove content when a filter is removed
+ * 
+ */
+function removeSpecifics() {
+    // Remove the div
+    $("#item_specifics").remove();
+}
+
+
 function removeStartFilter() {
     // Reset the book and chapter
     $("#item_start_book").val(-1);
@@ -298,7 +366,17 @@ function removeEndFilter() {
 }
 
 function removeSpecificFilter() {
+    //<!--<a tabindex=0 onclick="removeSpecificFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>-->
     
+    // Reset the book and chapter
+    $("#item_specific").val(-1);
+    
+    // Remove the [x]
+    $("#item_specific_label a").remove();
+    
+    // Search again after removing the specifics
+    removeSpecifics();
+    searchItems();
 }
 
 
