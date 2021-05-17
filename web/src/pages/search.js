@@ -1,3 +1,6 @@
+var firstChapterStart = true;
+var firstChapterEnd = true;
+
 function getSearchMenu() {
     var menu = $("<div>").addClass("col-md-4 col-lg-3").append(`
             <!-- Search bar -->
@@ -35,13 +38,12 @@ function getSearchMenu() {
             <!-- First appearance -->    
             <div class="row pb-2">
                 <div class="col-md-12 text-center">
-                    <label class="font-weight-bold">` + dict["items.book_start"] + `: 
-                        <a tabindex=0 onclick="removeStartFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>
+                    <label class="font-weight-bold" id="item_start_label">` + dict["items.book_start"] + `:
                     </label>
                 </div>
     
                 <div class="col-md-6">
-                    <select class="custom-select" id="item_start_book" onchange="addStartChapters()">
+                    <select class="custom-select" id="item_start_book" onchange="insertStartChapters()">
                         <option selected disabled value="-1">` + dict["books.book"] + `</option>
                         <!-- Filled in later -->
                     </select>
@@ -58,13 +60,12 @@ function getSearchMenu() {
             <!-- Last appearance -->
             <div class="row pb-2">
                 <div class="col-md-12 text-center">
-                    <label class="font-weight-bold">` + dict["items.book_end"] + `: 
-                        <a tabindex=0 onclick="removeEndFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>
+                    <label class="font-weight-bold" id="item_end_label">` + dict["items.book_end"] + `:
                     </label>
                 </div>
     
                 <div class="col-md-6">
-                    <select class="custom-select" id="item_end_book" onchange="addEndChapters()">
+                    <select class="custom-select" id="item_end_book" onchange="insertEndChapters()">
                         <option selected disabled value="-1">` + dict["books.book"] + `</option>
                         <!-- Filled in later -->
                     </select>
@@ -104,7 +105,7 @@ function getSearchMenu() {
         //code that needs to be executed when DOM is ready, after manipulation
         $('[data-toggle="tooltip"]').tooltip()
         // Insert the dropdown items for books and chapters
-        addBooks();
+        insertBooks();
         // Insert the search terms from the session
         insertSearch();
     });
@@ -174,7 +175,12 @@ function getSearchContent() {
     return menu;
 }
 
-function addBooks() {
+/**
+ * Insert functions for different select boxes
+ * These will update the search filters, depending on the selected option
+ * 
+ * */
+function insertBooks() {
     getBooks(null, {
        "columns": "id, name, num_chapters",
        "sort": "order_id asc",
@@ -184,7 +190,6 @@ function addBooks() {
                 $("#item_start_book").append('<option data-num-chapters="' + books.data[i]["num_chapters"] + '" value="' + (i+1) + '">' + dict["books.book_" + (i+1)] + '</option>');
                 $("#item_end_book").append('<option data-num-chapters="' + books.data[i]["num_chapters"] + '" value="' + (i+1) + '">' + dict["books.book_" + (i+1)] + '</option>');
             }
-            
             
             // First and Last appearance books
             $("#item_start_book").val(
@@ -201,10 +206,9 @@ function addBooks() {
     });
 }
 
-function addStartChapters() {
+function insertStartChapters() {
     // Get the selected book and its amount of chapters
     var book = $("#item_start_book option:selected");
-    console.log(book);
     var num_chapters = book.data("numChapters");
     
     // Insert all the chapters
@@ -215,17 +219,30 @@ function addStartChapters() {
     }
     
     // First appearance chapters
-    $("#item_start_chap").val(
-            session_settings["search_start_chap"] ? 
-            session_settings["search_start_chap"] : -1);
+    if (firstChapterStart) {
+        // Setting back the selected chapter from the session
+        $("#item_start_chap").val(
+                session_settings["search_start_chap"] ? 
+                session_settings["search_start_chap"] : -1);
+                
+        firstChapterStart = false;
+    } else {
+        // When changing books, preset it to the first chapter
+        $("#item_start_chap").val(1);
+        
+        // Skip it for the first appearance, otherwise it will overwrite the
+        // session settings for the last appearance before we had a chance to set it
+        $("#item_start_chap").change();
     
-    console.log("Added " + num_chapters + " chapters as options");
+        // Show a little [x] to remove the filter
+        $("#item_start_label a").remove()
+        $("#item_start_label").append('<a tabindex=0 onclick="removeStartFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '">[x]</a>')
+    }
 }
 
-function addEndChapters() {
+function insertEndChapters() {
     // Get the selected book and its amount of chapters
     var book = $("#item_end_book option:selected");
-    console.log(book);
     var num_chapters = book.data("numChapters");
     
     // Insert all the chapters
@@ -236,24 +253,47 @@ function addEndChapters() {
     }
     
     // Last appearance chapters
-    $("#item_end_chap").val(
-            session_settings["search_end_chap"] ? 
-            session_settings["search_end_chap"] : -1);
+    if (firstChapterEnd) {
+        // Setting back the selected chapter from the session
+        $("#item_end_chap").val(
+                session_settings["search_end_chap"] ? 
+                session_settings["search_end_chap"] : -1);
+                
+        firstChapterEnd = false;
+    } else {
+        // When changing books, preset it to the last chapter
+        $("#item_end_chap").val(num_chapters);
     
-    console.log("Added " + num_chapters + " chapters as options");
+        // Show a little [x] to remove the filter
+        $("#item_end_label a").remove()
+        $("#item_end_label").append('<a tabindex=0 onclick="removeEndFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '">[x]</a>')
+    }
+    
+    // Activate the onChange event
+    $("#item_end_chap").change();
 }
 
 function removeStartFilter() {
+    // Reset the book and chapter
     $("#item_start_book").val(-1);
     $("#item_start_chap").val(-1);
     
+    // Remove the [x]
+    $("#item_start_label a").remove()
+    
+    // Search again
     searchItems();
 }
 
 function removeEndFilter() {
+    // Reset the book and chapter
     $("#item_end_book").val(-1);
     $("#item_end_chap").val(-1);
     
+    // Remove the [x]
+    $("#item_end_label a").remove();
+    
+    // Search again
     searchItems();
 }
 
