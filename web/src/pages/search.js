@@ -391,16 +391,17 @@ function insertSearch() {
             session_settings["search_meaning_name"] ? 
             session_settings["search_meaning_name"] : "");
     $("#item_descr").val(
-            session_settings["item_descr"] ? 
-            session_settings["item_descr"] : "");
+            session_settings["search_descr"] ? 
+            session_settings["search_descr"] : "");
     
             
     // Dropdown for specific stuff
     $("#item_specific").val(
-            session_settings["item_specific"] ? 
-            session_settings["item_specific"] : -1);
+            session_settings["search_specific"] ? 
+            session_settings["search_specific"] : -1).change();
 }
 
+/** Insert the search results of the session */
 function insertResults() {
     // Get the data of the books, events, peoples, locations & specials 
     // using the search terms
