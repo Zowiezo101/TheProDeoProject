@@ -93,6 +93,7 @@ var dict = {
 	"items.coordinates": "Coördinaten",
 	"items.book_start": "Eerste voorkomen",
 	"items.book_end": "Laatste voorkomen",
+	"items.link": "Link naar object",
 	"books.book": "Bijbelboek",
 	"books.chapter": "Hoofdstuk",
 	"books.verse": "Vers",

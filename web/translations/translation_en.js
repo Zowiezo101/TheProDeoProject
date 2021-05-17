@@ -93,6 +93,7 @@ var dict = {
 	"items.coordinates": "Coordinates",
 	"items.book_start": "First appearance",
 	"items.book_end": "Last appearance",
+	"items.link": "Link to item",
 	"books.book": "Bible book",
 	"books.chapter": "Chapter",
 	"books.verse": "Verse",
