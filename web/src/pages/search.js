@@ -312,6 +312,7 @@ function insertResults() {
     }).then(function(result) { insertItems("specials", result); });
 }
 
+/** Get all the filters in API compatible format */
 function getFilters() {
     // Get all the search terms, and use them to filter out results
     var name =          session_settings["search_name"] ? 
@@ -320,8 +321,6 @@ function getFilters() {
             "meaning_name % " + session_settings["search_meaning_name"] : "";
     var descr =          session_settings["search_descr"] ? 
             "descr % " + session_settings["search_descr"] : "";
-    var summary =          session_settings["search_descr"] ? 
-            "summary % " + session_settings["search_descr"] : "";
             
     // First appearance
     var start_book =              session_settings["search_start_book"] ? 
@@ -354,7 +353,6 @@ function getFilters() {
         "name": name,
         "meaning_name": meaning_name,
         "descr": descr,
-        "summary": summary,
         "book_ids": book_ids,
         "start_book": start_book,
         "start_chap": start_chap,
@@ -363,6 +361,7 @@ function getFilters() {
     };
 }
 
+/** Get the columns and filters to send to the API */
 function getSearchTerms(type) {
     var search_terms = {};
     var extra_columns = [];
@@ -374,7 +373,6 @@ function getSearchTerms(type) {
             extra_columns = ["num_chapters"];
             search_terms["name"] = filter.name;
             search_terms["id"] = filter.book_ids;
-            search_terms["summary"] = filter.summary;
             break;
             
         case "events":
@@ -448,6 +446,7 @@ function getSearchTerms(type) {
     };
 }
 
+/** Updating the session settings and performing the search */
 function searchItems() {
     // The search termd inserted
     var name = $("#item_name").val();
