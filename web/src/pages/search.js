@@ -475,52 +475,35 @@ function searchItems() {
     insertResults();
 }
 
+/** Inserting the results in a readable table format */
 function insertItems(type, result) {
     // Start out clean
     $("#tab" + type).empty();
-    
-    var meaning_name_types = session_settings["search_meaning_name"] ? 
-                                ["peoples", "locations", "specials"] : 
-                                        [];
     
     // No errors and at least 1 item of data
     if ((result.error == null) && result.data && result.data.length > 0) {
         
         // Table header is the name
-        var table_header = '<th scope="col">' + dict["items.name"] + '</th>';
-        if (meaning_name_types.includes(type)) {
-            table_header += '<th scope="col">' + dict["items.meaning_name"] + '</th>';
-        }
-        if (type != "books") {
-            // Get the first and last appearance if it's available
-            table_header += '<th scope="col">' + dict["items.book_start"] + '</th>';
-            table_header += '<th scope="col">' + dict["items.book_end"] + '</th>';
-        } else {
-            // Get the number of chapters if they are available
-            table_header += '<th scope="col">' + dict["items.num_chapters"] + '</th>';
-        }
-        table_header += '<th scope="col">Link to page</th>';
+        var table_header = insertHeader(type, "name");
+        table_header += insertHeader(type, "meaning_name");
+        table_header += insertHeader(type, "descr");
+        table_header += insertHeader(type, "book_start");
+        table_header += insertHeader(type, "book_end");
+        table_header += insertHeader(type, "num_chapters");
+        table_header += insertHeader(type, "link");
         
         table_row = [];
         for (var i = 0; i < result.data.length; i++) {
             var data = result.data[i];
             
             // Table header is the name
-            table_data = '<th scope="row">' + data["name"] + '</th>';
-            if (meaning_name_types.includes(type)) {
-                table_data += '<td>' + data["meaning_name"] + '</td>';
-            }
-            // Get the first and last appearance if it's available
-            if (type != "books") {
-                table_data += ('<td>' + dict["books.book_" + data["book_start_id"]] + " " + data["book_start_chap"] + ":" + data["book_start_vers"] + '</td>');
-                table_data += ('<td>' + dict["books.book_" + data["book_end_id"]] + " " + data["book_end_chap"] + ":" + data["book_end_vers"] + '</td>');
-            } else {
-                table_data += ('<td>' + data["num_chapters"] + '</td>');
-            }
-            
-            // The link to this item
-            var link = getLinkToItem(type, data.id, "self");
-            table_data += ('<td>' + link + '</td>');
+            table_data = insertData(type, "name", data);
+            table_data += insertData(type, "meaning_name", data);
+            table_data += insertData(type, "descr", data);
+            table_data += insertData(type, "book_start", data);
+            table_data += insertData(type, "book_end", data);
+            table_data += insertData(type, "num_chapters", data);
+            table_data += insertData(type, "link", data);
             
             // The row for every item we've got
             table_row.push('<tr>' + table_data + '</tr>');
@@ -545,5 +528,83 @@ function insertItems(type, result) {
         // Error melding geven dat database niet bereikt kan worden
         $("#tab" + type).append(result.error ? result.error : "No results found");
     }
+}
+
+/**
+ * Inserting a header into the table of results
+ * */
+function insertHeader(type, name) {
+    var types = getTypes(name);
+    
+    var table_header = "";
+    if (types.includes(type)) {
+        table_header = '<th scope="col">' + dict["items." + name] + '</th>';
+    }
+    
+    return table_header;
+}
+
+/**
+ * Inserting data into the table of results
+ * */
+function insertData(type, name, data) {
+    var types = getTypes(name);
+    
+    var table_data = "";
+    if (types.includes(type) && (name == "name")) {
+        table_data = '<th scope="row">' + data[name] + '</th>';
+    } else if (types.includes(type) && (name == "link")) {
+        table_data = '<td>' + getLinkToItem(type, data.id, "self") + '</td>';
+    } else if (types.includes(type) && (name == "book_start")) {
+        table_data = '<td>' + 
+                dict["books.book_" + data["book_start_id"]] + 
+                " " + data["book_start_chap"] + 
+                ":" + data["book_start_vers"] + 
+            '</td>';
+    } else if (types.includes(type) && (name == "book_end")) {
+        table_data = '<td>' + 
+                dict["books.book_" + data["book_end_id"]] + 
+                " " + data["book_end_chap"] + 
+                ":" + data["book_end_vers"] + 
+            '</td>';
+    } else if (types.includes(type)) {
+        table_data = '<td>' + data[name] + '</td>';
+    }
+    
+    return table_data;
+}
+
+function getTypes(name) {
+    var types = []
+    if (session_settings["search_" + name]) {
+        // If this value saved in the session?
+        switch(name) {
+            case "meaning_name":
+                types = ["peoples", "locations", "specials"];
+                break;
+
+            case "descr":
+                types = ["events", "peoples", "locations", "specials"];
+                break;
+        }
+    } else {
+        switch(name) {
+            case "name":
+            case "link":
+                types = ["books", "events", "peoples", "locations", "specials"]
+                break;
+                
+            case "book_start":
+            case "book_end":
+                types = ["events", "peoples", "locations", "specials"];
+                break;
+                
+            case "num_chapters":
+                types = ["books"];
+                break;
+        }
+    }
+    
+    return types;
 }
     
