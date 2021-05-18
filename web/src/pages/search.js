@@ -112,21 +112,14 @@ function getSearchMenu() {
 }
 
 function getSearchContent() {
-    var menu = $("<div>").addClass("col-md-8 col-lg-9").append(`
-            <!-- Search explanation -->
-            <div class="row text-center mb-4">
-                <div class="col-lg-11 px-lg-5 px-md-3">
-                    <h1 class="mb-3">I enjoy with my whole heart</h1>
-                    <p>Then, my friend, when darkness overspreads my eyes, and heaven and earth seem to dwell in my soul and absorb its power, like the form of a beloved mistress, then I often think with longing, Oh, would I could describe these conceptions, could impress upon paper all that is living so full and warm within me, that it might be the mirror of my soul, as my soul is the mirror of the infinite God!&nbsp;</p>
-                </div>
-            </div>
-    
+    var menu = $("<div>").addClass("col-md-8 col-lg-9").append(` 
             <!-- Search results -->
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <!-- Tab selection -->
                     <ul class="nav nav-tabs font-weight-bold">
-                        <li class="nav-item"> <a class="active nav-link" data-toggle="tab" href="" data-target="#tabbooks">` + dict["navigation.books"] + `</a> </li>
+                        <li class="nav-item"> <a class="active nav-link" data-toggle="tab" href="" data-target="#tabsearch">` + dict["navigation.search"] + `</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabbooks">` + dict["navigation.books"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabevents">` + dict["navigation.events"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabpeoples">` + dict["navigation.peoples"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tablocations">` + dict["navigation.locations"] + `</a></li>
@@ -135,29 +128,30 @@ function getSearchContent() {
     
                     <!-- The different tabs -->
                     <div class="tab-content mt-2">
+                        <!-- Search explanation -->
+                        <div class="tab-pane fade show active" id="tabsearch" role="tabpanel">
+                            <h1>` + dict["search.title"] + `</h1>
+                            <p>` + dict["search.description"] + `</p>
+                        </div>
+    
                         <!-- Tab for books -->
-                        <div class="tab-pane fade show active" id="tabbooks" role="tabpanel">
-                            <p class="">When I hear the buzz of the little world among the stalks, and grow familiar with the countless indescribable forms.</p>
+                        <div class="tab-pane fade" id="tabbooks" role="tabpanel">
                         </div>
     
                         <!-- Tab for events -->
                         <div class="tab-pane fade" id="tabevents" role="tabpanel">
-                            <p class="">Who formed us in his own image, and the breath of that universal love which bears and sustains us. And then, my friend.</p>
                         </div>
     
                         <!-- Tab for peoples -->
                         <div class="tab-pane fade" id="tabpeoples" role="tabpanel">
-                            <p class="">In my soul and absorb its power, like the form of a beloved mistress, then I often think with longing.</p>
                         </div>
                         
                         <!-- Tab for locations -->
                         <div class="tab-pane fade" id="tablocations" role="tabpanel">
-                            <p class="">In my soul and absorb its power, like the form of a beloved mistress, then I often think with longing.</p>
                         </div>
                         
                         <!-- Tab for specials -->
                         <div class="tab-pane fade" id="tabspecials" role="tabpanel">
-                            <p class="">In my soul and absorb its power, like the form of a beloved mistress, then I often think with longing.</p>
                         </div>
                     </div>
                 </div>
