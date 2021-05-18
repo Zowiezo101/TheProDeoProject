@@ -101,6 +101,8 @@ var dict = {
 	"search.select": "Select type",
 	"search.none": "None",
 	"search.remove_filter": "Remove filter",
+	"search.title": "Searching the database",
+	"search.description": "On this page you can search the database using several filters.<br><br>For the complete database you can search on name, meaning of the name, the description and where in the bible something should appear (First and Last appearance).<br>These filters will be applied on the complete database.<br><br>If you want to search for more specific things in the database (Bible books, events, people, locations or specials), use the specific search. With this you can use more filters for one of the options in the dropdown of the specific search.<br><br>Keep in mind that when using specific filters with ranges, only the results will be shown where the searched field is known. All results that don't have a known or valid value for the searched field, are not shown!<br><br>If you use a filter with range or dropdown, you can clear the filter by pressing the x of the corresponding filter.<br><br>For more details on the search results, click the link of the object to go to the page of this specific search result. This page also contains more details over related locations, people and events (if available).",
 	"books.book_1": "Genesis",
 	"books.book_2": "Exodus",
 	"books.book_3": "Leviticus",
