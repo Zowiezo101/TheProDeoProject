@@ -80,7 +80,7 @@ function getSearchMenu() {
             </div>
     
             <!-- Specific search options for -->
-            <div class="row my-2">
+            <div class="row mt-2 pb-2">
                 <div class="col-md-12 text-center">
                     <label class="font-weight-bold" id="item_specific_label">` + dict["search.specific_for"] + `
                     </label>
@@ -95,6 +95,9 @@ function getSearchMenu() {
                         <option value="3">` + dict["navigation.locations"] + `</option>
                         <option value="4">` + dict["navigation.specials"] + `</option>
                     </select>
+                </div>
+    
+                <div class="col-md-12" id="item_specifics">
                 </div>
             </div>
     `);
@@ -278,12 +281,9 @@ function insertSpecifics() {
     });
     
     if (type !== "-1") {
-        // Specific search options        
-        $("#search_menu").append(`
-            <!-- Specific search items -->
-            <div class="row mt-5" id="item_specifics">
-            </div>
-        `);
+        // Option to remove the filter
+        $("#item_specific_label a").remove()
+        $("#item_specific_label").append('<a tabindex=0 onclick="removeSpecificFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '"><i class="fa fa-times-circle" aria-hidden="true"></i></a>')
     
         switch(type) {
             // Alle scrollers zijn standaard niet in gebruik
@@ -293,12 +293,52 @@ function insertSpecifics() {
             // gebruikt worden. Alles wat null is, wordt dan niet weergegeven.
             case "0":
                 // Books
-                // - Number of chapters (Scroller ---()===()---)
+                // - Number of chapters (Slider ---()===()---)
+                $("#item_specifics").append(`
+                    <!-- Number of chapters -->
+                    <div class="row my-2">
+                        <div class="col-md-12 text-center">
+                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.num_chapters"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input id="item_num_chapters" type="text" class="span2" value="" data-slider-min="1" data-slider-max="150" data-slider-step="1" data-slider-value="[1,150]"/>
+                        </div>
+                    </div>
+                `);
+                
+                // With JQuery
+                $("#item_num_chapters").slider({"tooltip_split": true});
                 break;
             case "1":
                 // Events
                 // - Length (Scroller)
-                // - Date (String, date etc)
+                $("#item_specifics").append(`
+                    <!-- Length -->
+                    <div class="row my-2">
+                        <div class="col-md-12 text-center">
+                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.length"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input id="item_num_chapters" type="text" class="span2" value="" data-slider-min="1" data-slider-max="150" data-slider-step="1" data-slider-value="[1,150]"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Date -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form class="form-inline">
+                                <input type="text" class="form-control w-100" id="item_date" placeholder="` + dict["items.date"] + `" onkeyup="searchItems()">
+                            </form>
+                        </div>
+                    </div>
+                `);
+                
+                // With JQuery
+                $("#item_num_chapters").slider({"tooltip_split": true});
                 break;
             case "2":
                 // Peoples
@@ -331,7 +371,7 @@ function insertSpecifics() {
  */
 function removeSpecifics() {
     // Remove the div
-    $("#item_specifics").remove();
+    $("#item_specifics").empty();
 }
 
 
