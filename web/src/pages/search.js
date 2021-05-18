@@ -232,9 +232,9 @@ function insertStartChapters() {
         // session settings for the last appearance before we had a chance to set it
         $("#item_start_chap").change();
     
-        // Show a little [x] to remove the filter
+        // Option to remove the filter
         $("#item_start_label a").remove()
-        $("#item_start_label").append('<a tabindex=0 onclick="removeStartFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '">[x]</a>')
+        $("#item_start_label").append('<a tabindex=0 onclick="removeStartFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '"><i class="fa fa-times-circle" aria-hidden="true"></i></a>')
     }
 }
 
@@ -262,9 +262,9 @@ function insertEndChapters() {
         // When changing books, preset it to the last chapter
         $("#item_end_chap").val(num_chapters);
     
-        // Show a little [x] to remove the filter
+        // Option to remove the filter
         $("#item_end_label a").remove()
-        $("#item_end_label").append('<a tabindex=0 onclick="removeEndFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '">[x]</a>')
+        $("#item_end_label").append('<a tabindex=0 onclick="removeEndFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '"><i class="fa fa-times-circle" aria-hidden="true"></i></a>');
     }
     
     // Activate the onChange event
@@ -365,9 +365,7 @@ function removeEndFilter() {
     searchItems();
 }
 
-function removeSpecificFilter() {
-    //<!--<a tabindex=0 onclick="removeSpecificFilter()" data-toggle="tooltip" data-placement="top" title="` + dict["search.remove_filter"] + `">[x]</a>-->
-    
+function removeSpecificFilter() {    
     // Reset the book and chapter
     $("#item_specific").val(-1);
     
