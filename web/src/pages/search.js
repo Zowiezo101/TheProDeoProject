@@ -1,7 +1,15 @@
-var firstChapterStart = true;
-var firstChapterEnd = true;
+/* global session_settings, dict, getBooks, getEvents, getPeoples, getLocations, getSpecials */
+
+var chapterInit = {
+    "start": true,
+    "end": true
+};
+var sliderInit = {
+    "specific": true
+};
 
 function getSearchMenu() {
+    
     var menu = $("<div id='search_menu'>").addClass("col-md-4 col-lg-3").append(`
             <!-- Search bar -->
             <div class="row mb-2">
@@ -227,12 +235,66 @@ function getSearchMenu() {
                     </select>
                 </div>
     
-                <div class="col-md-12" id="item_specifics">
+                <div class="col-md-12 d-none" id="item_specifics_books">
+                    <!-- Number of chapters -->
+                    <div class="row my-2">
+                        <div class="col-md-12 text-center">
+                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.num_chapters"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <input  id="item_num_chapters" 
+                                    type="text" 
+                                    value="" 
+                                    onchange="onSliderChange('num_chapters')"
+                                    data-slider-id="slider_num_chapters"
+                                    data-slider-tooltip-split="true"
+                                    data-slider-tooltip="always"
+                                    data-slider-min="1" 
+                                    data-slider-max="150" 
+                                    data-slider-step="1" 
+                                    data-slider-value="[1,150]"/>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-md-12 d-none" id="item_specifics_events">
+                    <!-- Length -->
+                    <div class="row my-2">
+                        <div class="col-md-12 text-center">
+                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.length"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <input  id="item_length" 
+                                    type="text" 
+                                    value="" 
+                                    onchange="onSliderChange('length')"
+                                    data-slider-id="slider_length"
+                                    data-slider-tooltip-split="true"
+                                    data-slider-tooltip="always"
+                                    data-slider-min="1" 
+                                    data-slider-max="1000" 
+                                    data-slider-step="1" 
+                                    data-slider-value="[1,1000]"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Date -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form class="form-inline">
+                                <input type="text" class="form-control w-100" id="item_date" placeholder="` + dict["items.date"] + `" onkeyup="searchItems()">
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
     `);
     
-    $(function(){
+    $(function(){                
         //code that needs to be executed when DOM is ready, after manipulation
         // Insert the search terms from the session
         insertSearch();
@@ -347,76 +409,45 @@ function insertSpecifics() {
     // Get the selected book and its amount of chapters
     var type = $("#item_specific option:selected").val();
     
-    // Start out clean
-    removeSpecifics();
-    
-    // Update the query to the session
-    updateSession({
-        "search_specific": type,
-    });
+    if (!sliderInit["specific"]) {
+        // Update the query to the session
+        // Only if this was an actual change and not the initializing
+        updateSession({
+            "search_specific": type,
+
+            // Set all the search options to zero
+            "search_num_chapters": null,
+            "search_length": null,
+            "search_date": null
+        });
+    } else {
+        sliderInit["specific"] = false;
+    }
     
     if (type !== "-1") {
         // Option to remove the filter
-        $("#item_specific_label a").remove()
-        $("#item_specific_label").append('<a tabindex=0 onclick="removeSpecificFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '"><i class="fa fa-times-circle" aria-hidden="true"></i></a>')
+        removeFilter("specific", "#item_specific_label");
+        
+        // Make all the specific filters invisible
+        $("#item_specifics_books").addClass("d-none");
+        $("#item_specifics_events").addClass("d-none");
+        $("#item_specifics_peoples").addClass("d-none");
+        $("#item_specifics_locations").addClass("d-none");
+        $("#item_specifics_specials").addClass("d-none");
     
         switch(type) {
-            // Alle scrollers zijn standaard niet in gebruik
-            // Zodra erop geklikt wordt, komen ze in gebruik
-            // Dit geeft ook hetzelfde 'verwijder filter' kruisje
-            // Een filter in gebruik, betekent dat alle niet-null waardes
-            // gebruikt worden. Alles wat null is, wordt dan niet weergegeven.
             case "0":
                 // Books
-                // - Number of chapters (Slider ---()===()---)
-                $("#item_specifics").append(`
-                    <!-- Number of chapters -->
-                    <div class="row my-2">
-                        <div class="col-md-12 text-center">
-                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.num_chapters"] + `
-                            </label>
-                        </div>
-
-                        <div class="col-md-12">
-                            <input id="item_num_chapters" type="text" class="span2" value="" data-slider-min="1" data-slider-max="150" data-slider-step="1" data-slider-value="[1,150]"/>
-                        </div>
-                    </div>
-                `);
-                
-                // With JQuery
-                $("#item_num_chapters").slider({"tooltip_split": true});
+                $("#item_specifics_books").removeClass("d-none");
                 break;
             case "1":
                 // Events
-                // - Length (Scroller)
-                $("#item_specifics").append(`
-                    <!-- Length -->
-                    <div class="row my-2">
-                        <div class="col-md-12 text-center">
-                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.length"] + `
-                            </label>
-                        </div>
-
-                        <div class="col-md-12">
-                            <input id="item_num_chapters" type="text" class="span2" value="" data-slider-min="1" data-slider-max="150" data-slider-step="1" data-slider-value="[1,150]"/>
-                        </div>
-                    </div>
-                    
-                    <!-- Date -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <form class="form-inline">
-                                <input type="text" class="form-control w-100" id="item_date" placeholder="` + dict["items.date"] + `" onkeyup="searchItems()">
-                            </form>
-                        </div>
-                    </div>
-                `);
-                
-                // With JQuery
-                $("#item_num_chapters").slider({"tooltip_split": true});
+                $("#item_specifics_events").removeClass("d-none");
                 break;
             case "2":
                 // Peoples
+                $("#item_specifics_peoples").removeClass("d-none");
+                
                 // - Father age (Scroller)
                 // - Mother age (Scroller)
                 // - Age (Scroller)
@@ -427,27 +458,22 @@ function insertSpecifics() {
                 break;
             case "3":
                 // Locations
+                $("#item_specifics_locations").removeClass("d-none");
+                
                 // - Type (Dropdown)
                 // - Inhabitants (Scroller)
                 // - Coordinates (Scrollers, X & Y)
                 break;
             case "4":
                 // Specials
+                $("#item_specifics_specials").removeClass("d-none");
+                
                 // - Type (Dropdown)
                 break;
         }
     }
 }
 
-/**
- * Remove functions for the select boxes
- * These will remove content when a filter is removed
- * 
- */
-function removeSpecifics() {
-    // Remove the div
-    $("#item_specifics").empty();
-}
 
 function removeFilter(type, label) {
     if (typeof label !== "undefined") {
@@ -506,11 +532,23 @@ function insertSearch() {
             session_settings["search_end_book"] ? 
             session_settings["search_end_book"] : -1);
     
-            
     // Dropdown for specific stuff
     $("#item_specific").val(
             session_settings["search_specific"] ? 
-            session_settings["search_specific"] : -1).change();
+            session_settings["search_specific"] : -1);
+            
+    // Initialize the sliders and set their values
+    var slider = $("#item_num_chapters").slider();
+    slider.slider('setValue', 
+                session_settings["search_num_chapters"] ? 
+      [parseInt(session_settings["search_num_chapters"].split('-')[0], 10),
+       parseInt(session_settings["search_num_chapters"].split('-')[1], 10)] : 
+            [1, 150]);
+
+    // On change for the different select boxes
+    $("#item_start_book").change();
+    $("#item_end_book").change();
+    $("#item_specific").change();
 }
 
 /** Insert the search results of the session */
@@ -565,6 +603,10 @@ function getFilters() {
     var end_chap =                session_settings["search_end_chap"] ? 
             "book_end_chap <= " + session_settings["search_end_chap"] : "";
             
+    // Sliders
+    var num_chapters =           session_settings["search_num_chapters"] ? 
+            "num_chapters <> " + session_settings["search_num_chapters"] : "";
+            
     // First & Last appearance
     var book_ids = "";
     if (session_settings["search_start_book"] && 
@@ -589,10 +631,13 @@ function getFilters() {
         "start_chap": start_chap,
         "end_book": end_book,
         "end_chap": end_chap,
+        "num_chapters": num_chapters
     };
 }
 
-/** Get the columns and filters to send to the API */
+/** Get the columns and filters to send to the API 
+ * @param {String} type
+ * */
 function getSearchTerms(type) {
     var search_terms = {};
     var extra_columns = [];
@@ -604,6 +649,7 @@ function getSearchTerms(type) {
             extra_columns = ["num_chapters"];
             search_terms["name"] = filter.name;
             search_terms["id"] = filter.book_ids;
+            search_terms["num_chapters"] = filter.num_chapters;
             break;
             
         case "events":
@@ -663,7 +709,7 @@ function getSearchTerms(type) {
     }
     
     // Filter out anything that isn't filled
-    for (key in search_terms) {
+    for (var key in search_terms) {
         if (search_terms[key] === "") {
             delete search_terms[key];
         }
@@ -679,7 +725,7 @@ function getSearchTerms(type) {
 
 /** Updating the session settings and performing the search */
 function searchItems() {
-    // The search termd inserted
+    // The search terms inserted in input boxes or dropdowns
     var name = $("#item_name").val();
     var meaning_name = $("#item_meaning_name").val();
     var descr = $("#item_descr").val();
@@ -688,6 +734,9 @@ function searchItems() {
     var end_book = $("#item_end_book").val();
     var end_chap = $("#item_end_chap").val();
     var specific = $("#item_specific").val();
+    
+    // Update the query to the session
+    var num_chapters = $("#item_num_chapters").slider('getValue');
     
     // Update the query to the session
     updateSession({
@@ -699,19 +748,39 @@ function searchItems() {
         "search_end_book": end_book,
         "search_end_chap": end_chap,
         "search_specific": specific,
+        "search_num_chapters": num_chapters.join('-')
     });
     
     // Recalculate the search results
     insertResults();
 }
 
-/** Inserting the results in a readable table format */
+function onSliderChange(type) {
+    switch(type) {
+        case "num_chapters":
+            // Update the query to the session
+            var num_chapters = $("#slider_num_chapters")[0].innerText;
+            updateSession({
+                "search_num_chapters": num_chapters.replace('\n', '-')
+            });
+            break;
+    }
+    
+    // Recalculate the search results
+    insertResults();
+    
+}
+
+/** Inserting the results in a readable table format 
+ * @param {String} type
+ * @param {Object} result * 
+ * */
 function insertItems(type, result) {
     // Start out clean
     $("#tab" + type).empty();
     
     // No errors and at least 1 item of data
-    if ((result.error == null) && result.data && result.data.length > 0) {
+    if ((result.error === null) && result.data && result.data.length > 0) {
         
         // Table header is the name
         var table_header = insertHeader(type, "name");
@@ -762,6 +831,8 @@ function insertItems(type, result) {
 
 /**
  * Inserting a header into the table of results
+ * @param {String} type
+ * @param {String} name
  * */
 function insertHeader(type, name) {
     var types = getTypes(name);
@@ -776,22 +847,25 @@ function insertHeader(type, name) {
 
 /**
  * Inserting data into the table of results
+ * @param {String} type
+ * @param {String} name
+ * @param {Object} data
  * */
 function insertData(type, name, data) {
     var types = getTypes(name);
     
     var table_data = "";
-    if (types.includes(type) && (name == "name")) {
+    if (types.includes(type) && (name === "name")) {
         table_data = '<th scope="row">' + data[name] + '</th>';
-    } else if (types.includes(type) && (name == "link")) {
+    } else if (types.includes(type) && (name === "link")) {
         table_data = '<td>' + getLinkToItem(type, data.id, "self") + '</td>';
-    } else if (types.includes(type) && (name == "book_start")) {
+    } else if (types.includes(type) && (name === "book_start")) {
         table_data = '<td>' + 
                 dict["books.book_" + data["book_start_id"]] + 
                 " " + data["book_start_chap"] + 
                 ":" + data["book_start_vers"] + 
             '</td>';
-    } else if (types.includes(type) && (name == "book_end")) {
+    } else if (types.includes(type) && (name === "book_end")) {
         table_data = '<td>' + 
                 dict["books.book_" + data["book_end_id"]] + 
                 " " + data["book_end_chap"] + 
@@ -805,23 +879,12 @@ function insertData(type, name, data) {
 }
 
 function getTypes(name) {
-    var types = []
-    if (session_settings["search_" + name]) {
-        // If this value saved in the session?
-        switch(name) {
-            case "meaning_name":
-                types = ["peoples", "locations", "specials"];
-                break;
-
-            case "descr":
-                types = ["events", "peoples", "locations", "specials"];
-                break;
-        }
-    } else {
+    var types = [];
+    if ($.inArray(name, ["name", "link", "book_start", "book_end", "num_chapters"]) !== -1) {
         switch(name) {
             case "name":
             case "link":
-                types = ["books", "events", "peoples", "locations", "specials"]
+                types = ["books", "events", "peoples", "locations", "specials"];
                 break;
                 
             case "book_start":
@@ -833,7 +896,18 @@ function getTypes(name) {
                 types = ["books"];
                 break;
         }
-    }
+    } else if (session_settings["search_" + name]) {
+        // If this value saved in the session?
+        switch(name) {
+            case "meaning_name":
+                types = ["peoples", "locations", "specials"];
+                break;
+
+            case "descr":
+                types = ["events", "peoples", "locations", "specials"];
+                break;
+        }
+    } 
     
     return types;
 }
