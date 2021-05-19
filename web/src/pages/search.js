@@ -43,9 +43,74 @@ function getSearchMenu() {
                 </div>
     
                 <div class="col-md-6">
-                    <select class="custom-select" id="item_start_book" onchange="insertStartChapters()">
+                    <select class="custom-select" id="item_start_book" onchange="insertChapters('start')">
                         <option selected disabled value="-1">` + dict["books.book"] + `</option>
-                        <!-- Filled in later -->
+                        <option data-num-chapters="50" value="1">` + dict["books.book_1"] + `</option>
+                        <option data-num-chapters="40" value="2">` + dict["books.book_2"] + `</option>
+                        <option data-num-chapters="27" value="3">` + dict["books.book_3"] + `</option>
+                        <option data-num-chapters="36" value="4">` + dict["books.book_4"] + `</option>
+                        <option data-num-chapters="34" value="5">` + dict["books.book_5"] + `</option>
+                        <option data-num-chapters="24" value="6">` + dict["books.book_6"] + `</option>
+                        <option data-num-chapters="21" value="7">` + dict["books.book_7"] + `</option>
+                        <option data-num-chapters="4" value="8">` + dict["books.book_8"] + `</option>
+                        <option data-num-chapters="31" value="9"> ` + dict["books.book_9"] + `</option>
+                        <option data-num-chapters="24" value="10">` + dict["books.book_10"] + `</option>
+                        <option data-num-chapters="22" value="11">` + dict["books.book_11"] + `</option>
+                        <option data-num-chapters="25" value="12">` + dict["books.book_12"] + `</option>
+                        <option data-num-chapters="29" value="13">` + dict["books.book_13"] + `</option>
+                        <option data-num-chapters="36" value="14">` + dict["books.book_14"] + `</option>
+                        <option data-num-chapters="10" value="15">` + dict["books.book_15"] + `</option>
+                        <option data-num-chapters="13" value="16">` + dict["books.book_16"] + `</option>
+                        <option data-num-chapters="10" value="17">` + dict["books.book_17"] + `</option>
+                        <option data-num-chapters="42" value="18">` + dict["books.book_18"] + `</option>
+                        <option data-num-chapters="150" value="19">` + dict["books.book_19"] + `</option>
+                        <option data-num-chapters="31" value="20">` + dict["books.book_20"] + `</option>
+                        <option data-num-chapters="12" value="21">` + dict["books.book_21"] + `</option>
+                        <option data-num-chapters="8" value="22">` + dict["books.book_22"] + `</option>
+                        <option data-num-chapters="66" value="23">` + dict["books.book_23"] + `</option>
+                        <option data-num-chapters="52" value="24">` + dict["books.book_24"] + `</option>
+                        <option data-num-chapters="5" value="25">` + dict["books.book_25"] + `</option>
+                        <option data-num-chapters="48" value="26">` + dict["books.book_26"] + `</option>
+                        <option data-num-chapters="12" value="27">` + dict["books.book_27"] + `</option>
+                        <option data-num-chapters="14" value="28">` + dict["books.book_28"] + `</option>
+                        <option data-num-chapters="4" value="29">` + dict["books.book_29"] + `</option>
+                        <option data-num-chapters="9" value="30">` + dict["books.book_30"] + `</option>
+                        <option data-num-chapters="1" value="31">` + dict["books.book_31"] + `</option>
+                        <option data-num-chapters="4" value="32">` + dict["books.book_32"] + `</option>
+                        <option data-num-chapters="7" value="33">` + dict["books.book_33"] + `</option>
+                        <option data-num-chapters="3" value="34">` + dict["books.book_34"] + `</option>
+                        <option data-num-chapters="3" value="35">` + dict["books.book_35"] + `</option>
+                        <option data-num-chapters="3" value="36">` + dict["books.book_36"] + `</option>
+                        <option data-num-chapters="2" value="37">` + dict["books.book_37"] + `</option>
+                        <option data-num-chapters="14" value="38">` + dict["books.book_38"] + `</option>
+                        <option data-num-chapters="3" value="39">` + dict["books.book_39"] + `</option>
+                        <option data-num-chapters="28" value="40">` + dict["books.book_40"] + `</option>
+                        <option data-num-chapters="16" value="41">` + dict["books.book_41"] + `</option>
+                        <option data-num-chapters="24" value="42">` + dict["books.book_42"] + `</option>
+                        <option data-num-chapters="21" value="43">` + dict["books.book_43"] + `</option>
+                        <option data-num-chapters="28" value="44">` + dict["books.book_44"] + `</option>
+                        <option data-num-chapters="16" value="45">` + dict["books.book_45"] + `</option>
+                        <option data-num-chapters="16" value="46">` + dict["books.book_46"] + `</option>
+                        <option data-num-chapters="13" value="47">` + dict["books.book_47"] + `</option>
+                        <option data-num-chapters="6" value="48">` + dict["books.book_48"] + `</option>
+                        <option data-num-chapters="6" value="49">` + dict["books.book_49"] + `</option>
+                        <option data-num-chapters="4" value="50">` + dict["books.book_50"] + `</option>
+                        <option data-num-chapters="4" value="51">` + dict["books.book_51"] + `</option>
+                        <option data-num-chapters="5" value="52">` + dict["books.book_52"] + `</option>
+                        <option data-num-chapters="3" value="53">` + dict["books.book_53"] + `</option>
+                        <option data-num-chapters="6" value="54">` + dict["books.book_54"] + `</option>
+                        <option data-num-chapters="4" value="55">` + dict["books.book_55"] + `</option>
+                        <option data-num-chapters="3" value="56">` + dict["books.book_56"] + `</option>
+                        <option data-num-chapters="1" value="57">` + dict["books.book_57"] + `</option>
+                        <option data-num-chapters="13" value="58">` + dict["books.book_58"] + `</option>
+                        <option data-num-chapters="5" value="59">` + dict["books.book_59"] + `</option>
+                        <option data-num-chapters="5" value="60">` + dict["books.book_60"] + `</option>
+                        <option data-num-chapters="3" value="61">` + dict["books.book_61"] + `</option>
+                        <option data-num-chapters="5" value="62">` + dict["books.book_62"] + `</option>
+                        <option data-num-chapters="1" value="63">` + dict["books.book_63"] + `</option>
+                        <option data-num-chapters="1" value="64">` + dict["books.book_64"] + `</option>
+                        <option data-num-chapters="1" value="65">` + dict["books.book_65"] + `</option>
+                        <option data-num-chapters="22" value="66">` + dict["books.book_66"] + `</option>
                     </select>
                 </div>
 
@@ -65,9 +130,74 @@ function getSearchMenu() {
                 </div>
     
                 <div class="col-md-6">
-                    <select class="custom-select" id="item_end_book" onchange="insertEndChapters()">
+                    <select class="custom-select" id="item_end_book" onchange="insertChapters('end')">
                         <option selected disabled value="-1">` + dict["books.book"] + `</option>
-                        <!-- Filled in later -->
+                        <option data-num-chapters="50" value="1">` + dict["books.book_1"] + `</option>
+                        <option data-num-chapters="40" value="2">` + dict["books.book_2"] + `</option>
+                        <option data-num-chapters="27" value="3">` + dict["books.book_3"] + `</option>
+                        <option data-num-chapters="36" value="4">` + dict["books.book_4"] + `</option>
+                        <option data-num-chapters="34" value="5">` + dict["books.book_5"] + `</option>
+                        <option data-num-chapters="24" value="6">` + dict["books.book_6"] + `</option>
+                        <option data-num-chapters="21" value="7">` + dict["books.book_7"] + `</option>
+                        <option data-num-chapters="4" value="8">` + dict["books.book_8"] + `</option>
+                        <option data-num-chapters="31" value="9"> ` + dict["books.book_9"] + `</option>
+                        <option data-num-chapters="24" value="10">` + dict["books.book_10"] + `</option>
+                        <option data-num-chapters="22" value="11">` + dict["books.book_11"] + `</option>
+                        <option data-num-chapters="25" value="12">` + dict["books.book_12"] + `</option>
+                        <option data-num-chapters="29" value="13">` + dict["books.book_13"] + `</option>
+                        <option data-num-chapters="36" value="14">` + dict["books.book_14"] + `</option>
+                        <option data-num-chapters="10" value="15">` + dict["books.book_15"] + `</option>
+                        <option data-num-chapters="13" value="16">` + dict["books.book_16"] + `</option>
+                        <option data-num-chapters="10" value="17">` + dict["books.book_17"] + `</option>
+                        <option data-num-chapters="42" value="18">` + dict["books.book_18"] + `</option>
+                        <option data-num-chapters="150" value="19">` + dict["books.book_19"] + `</option>
+                        <option data-num-chapters="31" value="20">` + dict["books.book_20"] + `</option>
+                        <option data-num-chapters="12" value="21">` + dict["books.book_21"] + `</option>
+                        <option data-num-chapters="8" value="22">` + dict["books.book_22"] + `</option>
+                        <option data-num-chapters="66" value="23">` + dict["books.book_23"] + `</option>
+                        <option data-num-chapters="52" value="24">` + dict["books.book_24"] + `</option>
+                        <option data-num-chapters="5" value="25">` + dict["books.book_25"] + `</option>
+                        <option data-num-chapters="48" value="26">` + dict["books.book_26"] + `</option>
+                        <option data-num-chapters="12" value="27">` + dict["books.book_27"] + `</option>
+                        <option data-num-chapters="14" value="28">` + dict["books.book_28"] + `</option>
+                        <option data-num-chapters="4" value="29">` + dict["books.book_29"] + `</option>
+                        <option data-num-chapters="9" value="30">` + dict["books.book_30"] + `</option>
+                        <option data-num-chapters="1" value="31">` + dict["books.book_31"] + `</option>
+                        <option data-num-chapters="4" value="32">` + dict["books.book_32"] + `</option>
+                        <option data-num-chapters="7" value="33">` + dict["books.book_33"] + `</option>
+                        <option data-num-chapters="3" value="34">` + dict["books.book_34"] + `</option>
+                        <option data-num-chapters="3" value="35">` + dict["books.book_35"] + `</option>
+                        <option data-num-chapters="3" value="36">` + dict["books.book_36"] + `</option>
+                        <option data-num-chapters="2" value="37">` + dict["books.book_37"] + `</option>
+                        <option data-num-chapters="14" value="38">` + dict["books.book_38"] + `</option>
+                        <option data-num-chapters="3" value="39">` + dict["books.book_39"] + `</option>
+                        <option data-num-chapters="28" value="40">` + dict["books.book_40"] + `</option>
+                        <option data-num-chapters="16" value="41">` + dict["books.book_41"] + `</option>
+                        <option data-num-chapters="24" value="42">` + dict["books.book_42"] + `</option>
+                        <option data-num-chapters="21" value="43">` + dict["books.book_43"] + `</option>
+                        <option data-num-chapters="28" value="44">` + dict["books.book_44"] + `</option>
+                        <option data-num-chapters="16" value="45">` + dict["books.book_45"] + `</option>
+                        <option data-num-chapters="16" value="46">` + dict["books.book_46"] + `</option>
+                        <option data-num-chapters="13" value="47">` + dict["books.book_47"] + `</option>
+                        <option data-num-chapters="6" value="48">` + dict["books.book_48"] + `</option>
+                        <option data-num-chapters="6" value="49">` + dict["books.book_49"] + `</option>
+                        <option data-num-chapters="4" value="50">` + dict["books.book_50"] + `</option>
+                        <option data-num-chapters="4" value="51">` + dict["books.book_51"] + `</option>
+                        <option data-num-chapters="5" value="52">` + dict["books.book_52"] + `</option>
+                        <option data-num-chapters="3" value="53">` + dict["books.book_53"] + `</option>
+                        <option data-num-chapters="6" value="54">` + dict["books.book_54"] + `</option>
+                        <option data-num-chapters="4" value="55">` + dict["books.book_55"] + `</option>
+                        <option data-num-chapters="3" value="56">` + dict["books.book_56"] + `</option>
+                        <option data-num-chapters="1" value="57">` + dict["books.book_57"] + `</option>
+                        <option data-num-chapters="13" value="58">` + dict["books.book_58"] + `</option>
+                        <option data-num-chapters="5" value="59">` + dict["books.book_59"] + `</option>
+                        <option data-num-chapters="5" value="60">` + dict["books.book_60"] + `</option>
+                        <option data-num-chapters="3" value="61">` + dict["books.book_61"] + `</option>
+                        <option data-num-chapters="5" value="62">` + dict["books.book_62"] + `</option>
+                        <option data-num-chapters="1" value="63">` + dict["books.book_63"] + `</option>
+                        <option data-num-chapters="1" value="64">` + dict["books.book_64"] + `</option>
+                        <option data-num-chapters="1" value="65">` + dict["books.book_65"] + `</option>
+                        <option data-num-chapters="22" value="66">` + dict["books.book_66"] + `</option>
                     </select>
                 </div>
 
@@ -104,9 +234,6 @@ function getSearchMenu() {
     
     $(function(){
         //code that needs to be executed when DOM is ready, after manipulation
-        $('[data-toggle="tooltip"]').tooltip()
-        // Insert the dropdown items for books and chapters
-        insertBooks();
         // Insert the search terms from the session
         insertSearch();
     });
@@ -170,102 +297,50 @@ function getSearchContent() {
     return menu;
 }
 
-/**
- * Insert functions for different select boxes
- * These will update the search filters, depending on the selected option
- * 
- * */
-function insertBooks() {
-    getBooks(null, {
-       "columns": "id, name, num_chapters",
-       "sort": "order_id asc",
-    }).then(function(books) {
-        if (!books.error && books.data && books.data.length > 0) {
-            for (var i = 0; i < books.data.length; i++) {
-                $("#item_start_book").append('<option data-num-chapters="' + books.data[i]["num_chapters"] + '" value="' + (i+1) + '">' + dict["books.book_" + (i+1)] + '</option>');
-                $("#item_end_book").append('<option data-num-chapters="' + books.data[i]["num_chapters"] + '" value="' + (i+1) + '">' + dict["books.book_" + (i+1)] + '</option>');
-            }
-            
-            // First and Last appearance books
-            $("#item_start_book").val(
-                    session_settings["search_start_book"] ? 
-                    session_settings["search_start_book"] : -1);
-            $("#item_end_book").val(
-                    session_settings["search_end_book"] ? 
-                    session_settings["search_end_book"] : -1);
-
-            // On change for the different select boxes
-            $("#item_start_book").change();
-            $("#item_end_book").change();
-        }
-    });
-}
-
-function insertStartChapters() {
+function insertChapters(type) {
     // Get the selected book and its amount of chapters
-    var book = $("#item_start_book option:selected");
+    var book = $("#item_" + type + "_book option:selected");
     var num_chapters = book.data("numChapters");
     
-    // Insert all the chapters
-    $("#item_start_chap").empty();
-    $("#item_start_chap").append('<option selected disabled value="-1">' + dict["books.chapter"] + '</option>');
+    // Insert all the options
+    $("#item_" + type + "_chap").empty();
+    $("#item_" + type + "_chap").append(
+                // Default option, is not selectable
+                '<option selected disabled value="-1">' + 
+                    dict["books.chapter"] + 
+                '</option>'
+            );
     for (var i = 0; i < num_chapters; i++) {
-        $("#item_start_chap").append('<option value="' + (i+1) + '">' + (i+1) + '</option>');
+        // Inserting the chapters
+        $("#item_" + type + "_chap").append(
+                '<option value="' + (i+1) + '">' + 
+                    (i+1) + 
+                '</option>'
+            );
     }
     
-    // First appearance chapters
-    if (firstChapterStart) {
+    // Need to initialize First/Last appearance chapters?
+    if (chapterInit[type]) {
         // Setting back the selected chapter from the session
-        $("#item_start_chap").val(
+        $("#item_" + type + "_chap").val(
                 session_settings["search_start_chap"] ? 
                 session_settings["search_start_chap"] : -1);
                 
-        firstChapterStart = false;
+        // Done initializing this dropdown
+        chapterInit[type] = false;
     } else {
-        // When changing books, preset it to the first chapter
-        $("#item_start_chap").val(1);
+        // When changing books, preset it to the first/last chapter
+        $("#item_" + type + "_chap").val(type === "start" ? 1 : num_chapters);
+    }
         
-        // Skip it for the first appearance, otherwise it will overwrite the
-        // session settings for the last appearance before we had a chance to set it
-        $("#item_start_chap").change();
+    // Take over the changes
+    $("#item_" + type + "_chap").change();
     
-        // Option to remove the filter
-        $("#item_start_label a").remove()
-        $("#item_start_label").append('<a tabindex=0 onclick="removeStartFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '"><i class="fa fa-times-circle" aria-hidden="true"></i></a>')
+    // Set the filter if a value is set
+    if ($("#item_" + type + "_chap").val() !== -1 &&
+        $("#item_" + type + "_chap").val() !== null) {
+        removeFilter(type, "#item_" + type + "_label");
     }
-}
-
-function insertEndChapters() {
-    // Get the selected book and its amount of chapters
-    var book = $("#item_end_book option:selected");
-    var num_chapters = book.data("numChapters");
-    
-    // Insert all the chapters
-    $("#item_end_chap").empty();
-    $("#item_end_chap").append('<option selected disabled value="-1">' + dict["books.chapter"] + '</option>');
-    for (var i = 0; i < num_chapters; i++) {
-        $("#item_end_chap").append('<option value="' + (i+1) + '">' + (i+1) + '</option>');
-    }
-    
-    // Last appearance chapters
-    if (firstChapterEnd) {
-        // Setting back the selected chapter from the session
-        $("#item_end_chap").val(
-                session_settings["search_end_chap"] ? 
-                session_settings["search_end_chap"] : -1);
-                
-        firstChapterEnd = false;
-    } else {
-        // When changing books, preset it to the last chapter
-        $("#item_end_chap").val(num_chapters);
-    
-        // Option to remove the filter
-        $("#item_end_label a").remove()
-        $("#item_end_label").append('<a tabindex=0 onclick="removeEndFilter()" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '"><i class="fa fa-times-circle" aria-hidden="true"></i></a>');
-    }
-    
-    // Activate the onChange event
-    $("#item_end_chap").change();
 }
 
 function insertSpecifics() {
@@ -374,41 +449,38 @@ function removeSpecifics() {
     $("#item_specifics").empty();
 }
 
+function removeFilter(type, label) {
+    if (typeof label !== "undefined") {
+        // Option to remove the filter
+        $(label + " a").remove();
+        $(label).append(
+                '<a tabindex=0 onclick="removeFilter(\'' + type + '\')" data-toggle="tooltip" data-placement="top" title="' + dict["search.remove_filter"] + '">' + 
+                    '<i class="fa fa-times-circle" aria-hidden="true"></i>' + 
+                '</a>');
+    } else {
+        switch(type) {
+            case "start":
+            case "end":
+                // Reset the book and chapter
+                $("#item_" + type + "_book").val(-1);
+                $("#item_" + type + "_chap").val(-1);
 
-function removeStartFilter() {
-    // Reset the book and chapter
-    $("#item_start_book").val(-1);
-    $("#item_start_chap").val(-1);
-    
-    // Remove the [x]
-    $("#item_start_label a").remove()
-    
-    // Search again
-    searchItems();
-}
+                // Remove the [x]
+                $("#item_" + type + "_label a").remove();
+                break;
+                
+            case "specific":
+                // Reset the book and chapter
+                $("#item_specific").val(-1);
 
-function removeEndFilter() {
-    // Reset the book and chapter
-    $("#item_end_book").val(-1);
-    $("#item_end_chap").val(-1);
+                // Remove the [x]
+                $("#item_specific_label a").remove();
+                break
+        }
     
-    // Remove the [x]
-    $("#item_end_label a").remove();
-    
-    // Search again
-    searchItems();
-}
-
-function removeSpecificFilter() {    
-    // Reset the book and chapter
-    $("#item_specific").val(-1);
-    
-    // Remove the [x]
-    $("#item_specific_label a").remove();
-    
-    // Search again after removing the specifics
-    removeSpecifics();
-    searchItems();
+        // Search again
+        searchItems();
+    }
 }
 
 
@@ -425,6 +497,14 @@ function insertSearch() {
     $("#item_descr").val(
             session_settings["search_descr"] ? 
             session_settings["search_descr"] : "");
+            
+    // First and Last appearance books
+    $("#item_start_book").val(
+            session_settings["search_start_book"] ? 
+            session_settings["search_start_book"] : -1);
+    $("#item_end_book").val(
+            session_settings["search_end_book"] ? 
+            session_settings["search_end_book"] : -1);
     
             
     // Dropdown for specific stuff
