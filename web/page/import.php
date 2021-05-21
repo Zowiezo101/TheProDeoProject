@@ -10,7 +10,7 @@
         
 <?php if (in_array($id, ["books", "events", "peoples", "locations", "specials"])) { ?>
         <script src="/src/tools/items.js"></script>
-<?php } else if (in_array($id, ["search"])) { ?>
+<?php } if (in_array($id, ["search"])) { ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
 <?php }?>
 

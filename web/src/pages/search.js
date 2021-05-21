@@ -24,28 +24,42 @@ function getSearchMenu() {
                     </div>
                 </div>
             </div>
-    
+   
+            <hr class="my-1"/>
+ 
             <!-- Meaning name -->
             <div class="row">
                 <div class="col-md-12">
+                    <label class="font-weight-bold" id="item_start_label">` + dict["items.meaning_name"] + `:
+                    </label>
+                </div>
+                <div class="col-md-12">
                     <form class="form-inline">
-                        <input type="text" class="form-control w-100" id="item_meaning_name" placeholder="` + dict["items.meaning_name"] + `" onkeyup="searchItems()">
+                        <input type="text" class="form-control w-100" id="item_meaning_name" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                     </form>
                 </div>
             </div>
+    
+            <hr class="my-1"/>
     
             <!-- Description -->
             <div class="row">
                 <div class="col-md-12">
+                    <label class="font-weight-bold" id="item_start_label">` + dict["items.descr"] + `:
+                    </label>
+                </div>
+                <div class="col-md-12">
                     <form class="form-inline">
-                        <input type="text" class="form-control w-100" id="item_descr" placeholder="` + dict["items.descr"] + `" onkeyup="searchItems()">
+                        <input type="text" class="form-control w-100" id="item_descr" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                     </form>
                 </div>
             </div>
     
+            <hr class="my-1"/>
+    
             <!-- First appearance -->    
             <div class="row pb-2">
-                <div class="col-md-12 text-center">
+                <div class="col-md-12">
                     <label class="font-weight-bold" id="item_start_label">` + dict["items.book_start"] + `:
                     </label>
                 </div>
@@ -130,9 +144,11 @@ function getSearchMenu() {
                 </div>
             </div>
     
+            <hr class="my-1"/>
+    
             <!-- Last appearance -->
             <div class="row pb-2">
-                <div class="col-md-12 text-center">
+                <div class="col-md-12">
                     <label class="font-weight-bold" id="item_end_label">` + dict["items.book_end"] + `:
                     </label>
                 </div>
@@ -217,14 +233,16 @@ function getSearchMenu() {
                 </div>
             </div>
     
+            <hr class="my-1"/>
+    
             <!-- Specific search options for -->
-            <div class="row mt-2 pb-2">
-                <div class="col-md-12 text-center">
+            <div class="row">
+                <div class="col-md-12">
                     <label class="font-weight-bold" id="item_specific_label">` + dict["search.specific_for"] + `
                     </label>
                 </div>
     
-                <div class="col-md-12">
+                <div class="col-md-12 pb-2">
                     <select class="custom-select" id="item_specific" onchange="insertSpecifics()">
                         <option selected disabled value="-1">` + dict["search.select"] + `</option>
                         <option value="0">` + dict["navigation.books"] + `</option>
@@ -236,21 +254,24 @@ function getSearchMenu() {
                 </div>
     
                 <div class="col-md-12 d-none" id="item_specifics_books">
+    
+                    <hr class="my-1"/>
+    
                     <!-- Number of chapters -->
-                    <div class="row my-2">
-                        <div class="col-md-12 text-center">
-                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.num_chapters"] + `
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_num_chapters_label">` + dict["items.num_chapters"] + `
                             </label>
                         </div>
 
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12">
                             <input  id="item_num_chapters" 
                                     type="text" 
                                     value="" 
                                     onchange="onSliderChange('num_chapters')"
                                     data-slider-id="slider_num_chapters"
                                     data-slider-tooltip-split="true"
-                                    data-slider-tooltip="always"
+                                    data-slider-ticks="[1, 150]"
                                     data-slider-min="1" 
                                     data-slider-max="150" 
                                     data-slider-step="1" 
@@ -260,10 +281,13 @@ function getSearchMenu() {
                 </div>
     
                 <div class="col-md-12 d-none" id="item_specifics_events">
+    
+                    <hr class="my-1"/>
+    
                     <!-- Length -->
                     <div class="row my-2">
-                        <div class="col-md-12 text-center">
-                            <label class="font-weight-bold" id="item_specific_label">` + dict["items.length"] + `
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_length_label">` + dict["items.length"] + `
                             </label>
                         </div>
 
@@ -281,6 +305,8 @@ function getSearchMenu() {
                                     data-slider-value="[1,1000]"/>
                         </div>
                     </div>
+    
+                    <hr class="my-1"/>
                     
                     <!-- Date -->
                     <div class="row">
@@ -288,6 +314,191 @@ function getSearchMenu() {
                             <form class="form-inline">
                                 <input type="text" class="form-control w-100" id="item_date" placeholder="` + dict["items.date"] + `" onkeyup="searchItems()">
                             </form>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-md-12 d-none" id="item_specifics_peoples">
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Parents age -->
+                    <div class="row my-2">
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_age_parent_label">` + dict["items.parent_age"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <input  id="item_age_parent" 
+                                    type="text" 
+                                    value="" 
+                                    onchange="onSliderChange('age_parent')"
+                                    data-slider-id="slider_age_parent"
+                                    data-slider-tooltip-split="true"
+                                    data-slider-tooltip="always"
+                                    data-slider-min="1" 
+                                    data-slider-max="120" 
+                                    data-slider-step="1" 
+                                    data-slider-value="[1,120]"/>
+                        </div>
+                    </div>
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Reached age -->
+                    <div class="row my-2">
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_age_label">` + dict["items.age"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <input  id="item_age" 
+                                    type="text" 
+                                    value="" 
+                                    onchange="onSliderChange('age')"
+                                    data-slider-id="slider_age"
+                                    data-slider-tooltip-split="true"
+                                    data-slider-tooltip="always"
+                                    data-slider-min="1" 
+                                    data-slider-max="120" 
+                                    data-slider-step="1" 
+                                    data-slider-value="[1,120]"/>
+                        </div>
+                    </div>
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Gender -->
+                    <div class="row pb-2">
+                        <div class="col-md-12">
+                            <select class="custom-select" id="item_gender" onchange="searchItems()">
+                                <option selected disabled value="-1">` + dict["items.gender"] + `</option>
+                                <option value="0">` + getGender(0) + `</option>
+                                <option value="1">` + getGender(1) + `</option>
+                                <option value="2">` + getGender(2) + `</option>
+                                <option value="3">` + dict["search.all"] + `</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Tribe -->
+                    <div class="row pb-2">
+                        <div class="col-md-12">
+                            <select class="custom-select" id="item_tribe" onchange="searchItems()">
+                                <option selected disabled value="-1">` + dict["items.tribe"] + `</option>
+                                <option value="0">` + getTribe(0) + `</option>
+                                <option value="1">` + getTribe(1) + `</option>
+                                <option value="2">` + getTribe(2) + `</option>
+                                <option value="3">` + getTribe(3) + `</option>
+                                <option value="4">` + getTribe(4) + `</option>
+                                <option value="5">` + getTribe(5) + `</option>
+                                <option value="6">` + getTribe(6) + `</option>
+                                <option value="7">` + getTribe(7) + `</option>
+                                <option value="8">` + getTribe(8) + `</option>
+                                <option value="9">` + getTribe(9) + `</option>
+                                <option value="10">` + getTribe(10) + `</option>
+                                <option value="11">` + getTribe(11) + `</option>
+                                <option value="12">` + getTribe(12) + `</option>
+                                <option value="13">` + dict["search.all"] + `</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Profession -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form class="form-inline">
+                                <input type="text" class="form-control w-100" id="item_profession" placeholder="` + dict["items.profession"] + `" onkeyup="searchItems()">
+                            </form>
+                        </div>
+                    </div>
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Nationality -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form class="form-inline">
+                                <input type="text" class="form-control w-100" id="item_nationality" placeholder="` + dict["items.nationality"] + `" onkeyup="searchItems()">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12 d-none" id="item_specifics_locations">    
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Type -->
+                    <div class="row my-2">
+                        <div class="col-md-12">
+                            <select class="custom-select" id="item_type_location" onchange="searchItems()">
+                                <option selected disabled value="-1">` + dict["items.type"] + `</option>
+                                <option value="0">` + getTypeLocation(0) + `</option>
+                                <option value="1">` + getTypeLocation(1) + `</option>
+                                <option value="2">` + getTypeLocation(2) + `</option>
+                                <option value="3">` + getTypeLocation(3) + `</option>
+                                <option value="4">` + getTypeLocation(4) + `</option>
+                                <option value="5">` + getTypeLocation(5) + `</option>
+                                <option value="6">` + getTypeLocation(6) + `</option>
+                                <option value="7">` + getTypeLocation(7) + `</option>
+                                <option value="8">` + getTypeLocation(8) + `</option>
+                                <option value="9">` + getTypeLocation(9) + `</option>
+                                <option value="13">` + dict["search.all"] + `</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Inhabitants -->
+                    <div class="row my-2">
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_inhabitants_label">` + dict["items.inhabitants"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <input  id="item_inhabitants" 
+                                    type="text" 
+                                    value="" 
+                                    onchange="onSliderChange('inhabitants')"
+                                    data-slider-id="slider_inhabitants"
+                                    data-slider-tooltip-split="true"
+                                    data-slider-tooltip="always"
+                                    data-slider-min="1" 
+                                    data-slider-max="10000" 
+                                    data-slider-step="1" 
+                                    data-slider-value="[1,10000]"/>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12 d-none" id="item_specifics_specials">
+    
+                    <hr class="my-1"/>
+    
+                    <!-- Type -->
+                    <div class="row my-2">
+                        <div class="col-md-12">
+                            <select class="custom-select" id="item_type_special" onchange="searchItems()">
+                                <option selected disabled value="-1">` + dict["items.type"] + `</option>
+                                <option value="0">` + getTypeSpecial(0) + `</option>
+                                <option value="1">` + getTypeSpecial(1) + `</option>
+                                <option value="2">` + getTypeSpecial(2) + `</option>
+                                <option value="3">` + getTypeSpecial(3) + `</option>
+                                <option value="4">` + getTypeSpecial(4) + `</option>
+                                <option value="5">` + getTypeSpecial(5) + `</option>
+                                <option value="6">` + getTypeSpecial(6) + `</option>
+                                <option value="7">` + getTypeSpecial(7) + `</option>
+                                <option value="13">` + dict["search.all"] + `</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -310,7 +521,6 @@ function getSearchContent() {
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <!-- Tab selection -->
                     <ul class="nav nav-tabs font-weight-bold">
-                        <li class="nav-item"> <a class="active nav-link" data-toggle="tab" href="" data-target="#tabsearch">` + dict["navigation.search"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabbooks">` + dict["navigation.books"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabevents">` + dict["navigation.events"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabpeoples">` + dict["navigation.peoples"] + `</a> </li>
@@ -424,16 +634,17 @@ function insertSpecifics() {
         sliderInit["specific"] = false;
     }
     
+    // Option to remove the filter
+    removeFilter("specific", "#item_specific_label");
+
+    // Make all the specific filters invisible
+    $("#item_specifics_books").addClass("d-none");
+    $("#item_specifics_events").addClass("d-none");
+    $("#item_specifics_peoples").addClass("d-none");
+    $("#item_specifics_locations").addClass("d-none");
+    $("#item_specifics_specials").addClass("d-none");
+    
     if (type !== "-1") {
-        // Option to remove the filter
-        removeFilter("specific", "#item_specific_label");
-        
-        // Make all the specific filters invisible
-        $("#item_specifics_books").addClass("d-none");
-        $("#item_specifics_events").addClass("d-none");
-        $("#item_specifics_peoples").addClass("d-none");
-        $("#item_specifics_locations").addClass("d-none");
-        $("#item_specifics_specials").addClass("d-none");
     
         switch(type) {
             case "0":
@@ -447,28 +658,14 @@ function insertSpecifics() {
             case "2":
                 // Peoples
                 $("#item_specifics_peoples").removeClass("d-none");
-                
-                // - Father age (Scroller)
-                // - Mother age (Scroller)
-                // - Age (Scroller)
-                // - Gender (unknown, male, female)
-                // - Tribe (Dropdown)
-                // - Profession (String)
-                // - Nationality (String)
                 break;
             case "3":
                 // Locations
                 $("#item_specifics_locations").removeClass("d-none");
-                
-                // - Type (Dropdown)
-                // - Inhabitants (Scroller)
-                // - Coordinates (Scrollers, X & Y)
                 break;
             case "4":
                 // Specials
                 $("#item_specifics_specials").removeClass("d-none");
-                
-                // - Type (Dropdown)
                 break;
         }
     }
@@ -544,6 +741,27 @@ function insertSearch() {
       [parseInt(session_settings["search_num_chapters"].split('-')[0], 10),
        parseInt(session_settings["search_num_chapters"].split('-')[1], 10)] : 
             [1, 150]);
+    
+    var slider = $("#item_length").slider();
+    slider.slider('setValue', 
+                session_settings["search_length"] ? 
+      [parseInt(session_settings["search_length"].split('-')[0], 10),
+       parseInt(session_settings["search_length"].split('-')[1], 10)] : 
+            [1, 1000]);
+    
+    var slider = $("#item_age_parent").slider();
+    slider.slider('setValue', 
+                session_settings["search_age_parent"] ? 
+      [parseInt(session_settings["search_age_parent"].split('-')[0], 10),
+       parseInt(session_settings["search_age_parent"].split('-')[1], 10)] : 
+            [1, 120]);
+    
+    var slider = $("#item_age").slider();
+    slider.slider('setValue', 
+                session_settings["search_age"] ? 
+      [parseInt(session_settings["search_age"].split('-')[0], 10),
+       parseInt(session_settings["search_age"].split('-')[1], 10)] : 
+            [1, 120]);
 
     // On change for the different select boxes
     $("#item_start_book").change();
@@ -791,12 +1009,12 @@ function insertItems(type, result) {
         table_header += insertHeader(type, "num_chapters");
         table_header += insertHeader(type, "link");
         
-        table_row = [];
+        var table_row = [];
         for (var i = 0; i < result.data.length; i++) {
             var data = result.data[i];
             
             // Table header is the name
-            table_data = insertData(type, "name", data);
+            var table_data = insertData(type, "name", data);
             table_data += insertData(type, "meaning_name", data);
             table_data += insertData(type, "descr", data);
             table_data += insertData(type, "book_start", data);
