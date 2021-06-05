@@ -1,12 +1,18 @@
 /* global session_settings, dict, getBooks, getEvents, getPeoples, getLocations, getSpecials */
 
-var chapterInit = {
+// For dropdowns
+var elementInit = {
     "start": true,
-    "end": true
-};
-var sliderInit = {
+    "end": true,
     "specific": true
 };
+
+// For sliders
+var elementEnabled = {
+    "num_chapters": false,
+    "length": false,
+    "sge_parents": false
+}
 
 function getSearchMenu() {
     
@@ -294,11 +300,10 @@ function getSearchMenu() {
                                     type="text" 
                                     value="" 
                                     data-slider-id="slider_length"
-                                    data-slider-tooltip-split="true"
                                     data-slider-min="1" 
-                                    data-slider-max="1000" 
+                                    data-slider-max="10000" 
                                     data-slider-step="1" 
-                                    data-slider-value="[1,1000]"/>
+                                    data-slider-value="[1,10000]"/>
                         </div>
                     </div>
     
@@ -590,14 +595,14 @@ function insertChapters(type) {
     }
     
     // Need to initialize First/Last appearance chapters?
-    if (chapterInit[type]) {
+    if (elementInit[type]) {
         // Setting back the selected chapter from the session
         $("#item_" + type + "_chap").val(
                 session_settings["search_start_chap"] ? 
                 session_settings["search_start_chap"] : -1);
                 
         // Done initializing this dropdown
-        chapterInit[type] = false;
+        elementInit[type] = false;
     } else {
         // When changing books, preset it to the first/last chapter
         $("#item_" + type + "_chap").val(type === "start" ? 1 : num_chapters);
@@ -617,7 +622,7 @@ function insertSpecifics() {
     // Get the selected book and its amount of chapters
     var type = $("#item_specific option:selected").val();
     
-    if (!sliderInit["specific"]) {
+    if (!elementInit["specific"]) {
         // Update the query to the session
         // Only if this was an actual change and not the initializing
         updateSession({
@@ -630,8 +635,9 @@ function insertSpecifics() {
         });
         
         removeFilter("num_chapters");
+        removeFilter("length");
     } else {
-        sliderInit["specific"] = false;
+        elementInit["specific"] = false;
     }
 
     // Make all the specific filters invisible
@@ -696,15 +702,18 @@ function removeFilter(type, label) {
                 break
                 
             case "num_chapters":
-                // Reset the number of chapters
-                var slider = $("#item_num_chapters").slider();
-                slider.slider('setValue', 
-                    [0, 150]);
+            case "length":
+                // Reset the sliders
+                var slider = $("#item_" + type).slider();
+                slider.slider('refresh');
                     
-                // Set back the color
-                $("#slider_num_chapters")
+                // Set back the color to disabled
+                $("#slider_" + type)
                     .find(".slider-selection")
                     .css("background-color", "");
+            
+                // To make a different between enabled and disabled values
+                elementEnabled[type] = false;
                 break;
         }
 
@@ -744,24 +753,43 @@ function insertSearch() {
             session_settings["search_specific"] ? 
             session_settings["search_specific"] : -1);
             
-    // Initialize the sliders and set their values
+    
+    // Slider for the number of chapters
     var slider = $("#item_num_chapters").slider();
+        slider.on("slideStop", onSliderChangeNumChapters);
+        
     if (session_settings["search_num_chapters"]) {
+        // Initialize the sliders and set their values
         slider.slider('setValue', 
             [parseInt(session_settings["search_num_chapters"].split('-')[0], 10),
-             parseInt(session_settings["search_num_chapters"].split('-')[1], 10)],
-            false,
-            true);
-        slider.on("slideStop", onSliderChangeNumChapters);
+             parseInt(session_settings["search_num_chapters"].split('-')[1], 10)]);
+         
+        // Activate the onchange function
+        onSliderChangeNumChapters({value: session_settings["search_num_chapters"].split("-")});
     }
     
-    var slider = $("#item_length").slider();
-    slider.slider('setValue', 
-                session_settings["search_length"] ? 
-      [parseInt(session_settings["search_length"].split('-')[0], 10),
-       parseInt(session_settings["search_length"].split('-')[1], 10)] : 
-            [1, 1000]);
+    // Slider of the length of an event
+    var slider = $("#item_length").slider({
+        formatter: function(values) {
+            var timeString = ["", ""];
+            for (var i = 0; i < values.length; i++) {
+                var value = values[i];
+                
+                timeString[i] = timeToString(value);
+            }
+            return timeString.join(" : ");
+        }
+    });
         slider.on("slideStop", onSliderChangeLength);
+        
+    if (session_settings["search_length"]) {
+        slider.slider('setValue',
+          [parseInt(session_settings["search_length"].split('-')[0], 10),
+           parseInt(session_settings["search_length"].split('-')[1], 10)]);
+         
+        // Activate the onchange function
+        onSliderChangeLength({value: session_settings["search_length"].split("-")});
+    }
     
     var slider = $("#item_age_parent").slider();
     slider.slider('setValue', 
@@ -775,7 +803,7 @@ function insertSearch() {
                 session_settings["search_age"] ? 
       [parseInt(session_settings["search_age"].split('-')[0], 10),
        parseInt(session_settings["search_age"].split('-')[1], 10)] : 
-            [1, 120]);
+            [1, 120]); 
 
     // On change for the different select boxes
     $("#item_start_book").change();
@@ -838,6 +866,8 @@ function getFilters() {
     // Sliders
     var num_chapters =           session_settings["search_num_chapters"] ? 
             "num_chapters <> " + session_settings["search_num_chapters"] : "";
+    var length =           session_settings["search_length"] ? 
+            "length <> " + session_settings["search_length"] : "";
             
     // First & Last appearance
     var book_ids = "";
@@ -863,7 +893,8 @@ function getFilters() {
         "start_chap": start_chap,
         "end_book": end_book,
         "end_chap": end_chap,
-        "num_chapters": num_chapters
+        "num_chapters": num_chapters,
+        "length": length
     };
 }
 
@@ -891,6 +922,7 @@ function getSearchTerms(type) {
             ];
             search_terms["name"] = filter.name;
             search_terms["descr"] = filter.descr;
+            search_terms["length"] = filter.length;
             search_terms["book_start_id"] = filter.start_book;
             search_terms["book_start_chap"] = filter.start_chap;
             search_terms["book_end_id"] = filter.end_book;
@@ -969,6 +1001,7 @@ function searchItems() {
     
     // Update the query to the session
     var num_chapters = $("#item_num_chapters").slider('getValue');
+    var length = $("#item_length").slider('getValue');
     
     // Update the query to the session
     updateSession({
@@ -980,7 +1013,10 @@ function searchItems() {
         "search_end_book": end_book,
         "search_end_chap": end_chap,
         "search_specific": specific,
-        "search_num_chapters": num_chapters.join('-')
+        "search_num_chapters": elementEnabled["num_chapters"] ? 
+                    num_chapters.join('-') : "",
+        "search_length": elementEnabled["length"] ? 
+                    length.join('-') : ""
     });
     
     // Recalculate the search results
@@ -995,24 +1031,30 @@ function onSliderChangeLength(value) {
 }
 
 function onSliderChange(type, value) {
-    switch(type) {
-        case "num_chapters":
-            // Update the query to the session
-            updateSession({
-                "search_num_chapters": value.join( '-')
-            });
-            
-            // Set the slider as active
-            $("#slider_num_chapters")
-                    .find(".slider-selection")
-                    .css("background-color", "#46c1fe");
-            removeFilter("num_chapters", "#item_num_chapters_label");
-            break;
+    if (value === "") {
+        return;
     }
+    
+    // Update the query to the session
+    var params = {};
+    params["search_" + type] = value.join('-');
+    updateSession(params);
+
+    // Set the slider as active
+    $("#slider_" + type)
+            .find(".slider-selection")
+            .css("background-color", "#46c1fe");
+    
+    // Add the [x] to disable the slider
+    removeFilter(type, "#item_" + type + "_label");
+
+    // Set the slider as enabled
+    elementEnabled[type] = true;
     
     // Recalculate the search results
     insertResults();
     
+    return;
 }
 
 /** Inserting the results in a readable table format 
@@ -1030,6 +1072,7 @@ function insertItems(type, result) {
         var table_header = insertHeader(type, "name");
         table_header += insertHeader(type, "meaning_name");
         table_header += insertHeader(type, "descr");
+        table_header += insertHeader(type, "length");
         table_header += insertHeader(type, "book_start");
         table_header += insertHeader(type, "book_end");
         table_header += insertHeader(type, "num_chapters");
@@ -1043,6 +1086,7 @@ function insertItems(type, result) {
             var table_data = insertData(type, "name", data);
             table_data += insertData(type, "meaning_name", data);
             table_data += insertData(type, "descr", data);
+            table_data += insertData(type, "length", data);
             table_data += insertData(type, "book_start", data);
             table_data += insertData(type, "book_end", data);
             table_data += insertData(type, "num_chapters", data);
@@ -1099,24 +1143,28 @@ function insertData(type, name, data) {
     var types = getTypes(name);
     
     var table_data = "";
-    if (types.includes(type) && (name === "name")) {
-        table_data = '<th scope="row">' + data[name] + '</th>';
-    } else if (types.includes(type) && (name === "link")) {
-        table_data = '<td>' + getLinkToItem(type, data.id, "self") + '</td>';
-    } else if (types.includes(type) && (name === "book_start")) {
-        table_data = '<td>' + 
-                dict["books.book_" + data["book_start_id"]] + 
-                " " + data["book_start_chap"] + 
-                ":" + data["book_start_vers"] + 
-            '</td>';
-    } else if (types.includes(type) && (name === "book_end")) {
-        table_data = '<td>' + 
-                dict["books.book_" + data["book_end_id"]] + 
-                " " + data["book_end_chap"] + 
-                ":" + data["book_end_vers"] + 
-            '</td>';
-    } else if (types.includes(type)) {
-        table_data = '<td>' + data[name] + '</td>';
+    if (types.includes(type)) {
+        if (name === "name") {
+            table_data = '<th scope="row">' + data[name] + '</th>';
+        } else if (name === "link") {
+            table_data = '<td>' + getLinkToItem(type, data.id, "self") + '</td>';
+        } else if (name === "length") {
+            table_data = '<td>' + timeToString(data.length) + '</td>';
+        } else if (name === "book_start") {
+            table_data = '<td>' + 
+                    dict["books.book_" + data["book_start_id"]] + 
+                    " " + data["book_start_chap"] + 
+                    ":" + data["book_start_vers"] + 
+                '</td>';
+        } else if (name === "book_end") {
+            table_data = '<td>' + 
+                    dict["books.book_" + data["book_end_id"]] + 
+                    " " + data["book_end_chap"] + 
+                    ":" + data["book_end_vers"] + 
+                '</td>';
+        } else {
+            table_data = '<td>' + data[name] + '</td>';
+        }
     }
     
     return table_data;
@@ -1150,9 +1198,46 @@ function getTypes(name) {
             case "descr":
                 types = ["events", "peoples", "locations", "specials"];
                 break;
+                
+            case "length":
+                types = ["events"];
+                break;
         }
     } 
     
     return types;
+}
+
+function timeToString(value) {
+    var day = 24;
+    var week = day*7;
+    var month = day*30;
+    var year = day*365;
+    var timeString = [];
+
+    // Count the amount of years
+    var years = Math.floor(value/year);
+    value = value - years*year;
+
+    // Count the amount of months
+    var months = Math.floor(value/month);
+    value = value - months*month;
+
+    // Count the amount of weeks
+    var weeks = Math.floor(value/week);
+    value = value - weeks*week;
+
+    // Count the amount of days
+    var days = Math.floor(value/day);
+    value = value - days*day;
+
+    timeString.push((value > 0) ? (value + " hours") : "");
+    timeString.push((days > 0) ? (days + " days") : "");
+    timeString.push((weeks > 0) ? (weeks + " weeks") : "");
+    timeString.push((months > 0) ? (months + " months") : "");
+    timeString.push((years > 0) ? (years + " years") : "");
+
+    // Filter out empty elements and join
+    return timeString.filter(n => n).join(', ');
 }
     
