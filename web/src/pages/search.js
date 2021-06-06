@@ -1,21 +1,22 @@
 /* global session_settings, dict, getBooks, getEvents, getPeoples, getLocations, getSpecials */
 
-// For dropdowns
+// The elements that need initializing
 var elementInit = {
-    "start": true,
-    "end": true,
-    "specific": true
+    "start": false,
+    "end": false,
+    "specific": false,
+    "num_chapters": false,
+    "length": false
 };
 
-// For sliders
+// The elements that can be disabled
 var elementEnabled = {
     "num_chapters": false,
     "length": false,
     "sge_parents": false
-}
+};
 
 function getSearchMenu() {
-    
     var menu = $("<div id='search_menu'>").addClass("col-md-4 col-lg-3").append(`
             <!-- Search bar -->
             <div class="row mb-2">
@@ -272,6 +273,7 @@ function getSearchMenu() {
 
                         <div class="col-md-12">
                             <input  id="item_num_chapters" 
+                                    class="d-none"
                                     type="text" 
                                     value="" 
                                     data-slider-id="slider_num_chapters"
@@ -297,6 +299,7 @@ function getSearchMenu() {
 
                         <div class="col-md-12">
                             <input  id="item_length" 
+                                    class="d-none"
                                     type="text" 
                                     value="" 
                                     data-slider-id="slider_length"
@@ -328,38 +331,16 @@ function getSearchMenu() {
     
                     <hr class="my-1"/>
     
-                    <!-- Parents age -->
-                    <div class="row my-2">
-                        <div class="col-md-12">
-                            <label class="font-weight-bold" id="item_age_parent_label">` + dict["items.parent_age"] + `
-                            </label>
-                        </div>
-
-                        <div class="col-md-12 mt-3">
-                            <input  id="item_age_parent" 
-                                    type="text" 
-                                    value="" 
-                                    onchange="onSliderChange('age_parent')"
-                                    data-slider-id="slider_age_parent"
-                                    data-slider-tooltip-split="true"
-                                    data-slider-min="1" 
-                                    data-slider-max="120" 
-                                    data-slider-step="1" 
-                                    data-slider-value="[1,120]"/>
-                        </div>
-                    </div>
-    
-                    <hr class="my-1"/>
-    
                     <!-- Reached age -->
-                    <div class="row my-2">
+                    <div class="row">
                         <div class="col-md-12">
                             <label class="font-weight-bold" id="item_age_label">` + dict["items.age"] + `
                             </label>
                         </div>
 
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12">
                             <input  id="item_age" 
+                                    class="d-none"
                                     type="text" 
                                     value="" 
                                     onchange="onSliderChange('age')"
@@ -374,11 +355,39 @@ function getSearchMenu() {
     
                     <hr class="my-1"/>
     
+                    <!-- Parents age -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_parent_age_label">` + dict["items.parent_age"] + `
+                            </label>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input  id="item_parent_age" 
+                                    class="d-none"
+                                    type="text" 
+                                    value="" 
+                                    onchange="onSliderChange('parent_age')"
+                                    data-slider-id="slider_parent_age"
+                                    data-slider-tooltip-split="true"
+                                    data-slider-min="1" 
+                                    data-slider-max="120" 
+                                    data-slider-step="1" 
+                                    data-slider-value="[1,120]"/>
+                        </div>
+                    </div>
+    
+                    <hr class="my-1"/>
+    
                     <!-- Gender -->
                     <div class="row pb-2">
                         <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_gender_label">` + dict["items.gender"] + `
+                            </label>
+                        </div>
+                        <div class="col-md-12">
                             <select class="custom-select" id="item_gender" onchange="searchItems()">
-                                <option selected disabled value="-1">` + dict["items.gender"] + `</option>
+                                <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getGender(0) + `</option>
                                 <option value="1">` + getGender(1) + `</option>
                                 <option value="2">` + getGender(2) + `</option>
@@ -392,8 +401,12 @@ function getSearchMenu() {
                     <!-- Tribe -->
                     <div class="row pb-2">
                         <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_tribe_label">` + dict["items.tribe"] + `
+                            </label>
+                        </div>
+                        <div class="col-md-12">
                             <select class="custom-select" id="item_tribe" onchange="searchItems()">
-                                <option selected disabled value="-1">` + dict["items.tribe"] + `</option>
+                                <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getTribe(0) + `</option>
                                 <option value="1">` + getTribe(1) + `</option>
                                 <option value="2">` + getTribe(2) + `</option>
@@ -417,8 +430,12 @@ function getSearchMenu() {
                     <!-- Profession -->
                     <div class="row">
                         <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_profession_label">` + dict["items.profession"] + `
+                            </label>
+                        </div>
+                        <div class="col-md-12">
                             <form class="form-inline">
-                                <input type="text" class="form-control w-100" id="item_profession" placeholder="` + dict["items.profession"] + `" onkeyup="searchItems()">
+                                <input type="text" class="form-control w-100" id="item_profession" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                             </form>
                         </div>
                     </div>
@@ -428,8 +445,12 @@ function getSearchMenu() {
                     <!-- Nationality -->
                     <div class="row">
                         <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_nationality_label">` + dict["items.nationality"] + `
+                            </label>
+                        </div>
+                        <div class="col-md-12">
                             <form class="form-inline">
-                                <input type="text" class="form-control w-100" id="item_nationality" placeholder="` + dict["items.nationality"] + `" onkeyup="searchItems()">
+                                <input type="text" class="form-control w-100" id="item_nationality" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                             </form>
                         </div>
                     </div>
@@ -440,10 +461,14 @@ function getSearchMenu() {
                     <hr class="my-1"/>
     
                     <!-- Type -->
-                    <div class="row my-2">
+                    <div class="row pb-2">
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_type_location_label">` + dict["items.type"] + `
+                            </label>
+                        </div>
                         <div class="col-md-12">
                             <select class="custom-select" id="item_type_location" onchange="searchItems()">
-                                <option selected disabled value="-1">` + dict["items.type"] + `</option>
+                                <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getTypeLocation(0) + `</option>
                                 <option value="1">` + getTypeLocation(1) + `</option>
                                 <option value="2">` + getTypeLocation(2) + `</option>
@@ -462,14 +487,15 @@ function getSearchMenu() {
                     <hr class="my-1"/>
     
                     <!-- Inhabitants -->
-                    <div class="row my-2">
+                    <div class="row">
                         <div class="col-md-12">
                             <label class="font-weight-bold" id="item_inhabitants_label">` + dict["items.inhabitants"] + `
                             </label>
                         </div>
 
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12">
                             <input  id="item_inhabitants" 
+                                    class="d-none"
                                     type="text" 
                                     value="" 
                                     onchange="onSliderChange('inhabitants')"
@@ -488,10 +514,14 @@ function getSearchMenu() {
                     <hr class="my-1"/>
     
                     <!-- Type -->
-                    <div class="row my-2">
+                    <div class="row pb-2">
+                        <div class="col-md-12">
+                            <label class="font-weight-bold" id="item_type_special_label">` + dict["items.type"] + `
+                            </label>
+                        </div>
                         <div class="col-md-12">
                             <select class="custom-select" id="item_type_special" onchange="searchItems()">
-                                <option selected disabled value="-1">` + dict["items.type"] + `</option>
+                                <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getTypeSpecial(0) + `</option>
                                 <option value="1">` + getTypeSpecial(1) + `</option>
                                 <option value="2">` + getTypeSpecial(2) + `</option>
@@ -508,7 +538,7 @@ function getSearchMenu() {
             </div>
     `);
     
-    $(function(){                
+    $(function(){
         //code that needs to be executed when DOM is ready, after manipulation
         // Insert the search terms from the session
         insertSearch();
@@ -595,14 +625,14 @@ function insertChapters(type) {
     }
     
     // Need to initialize First/Last appearance chapters?
-    if (elementInit[type]) {
+    if (!elementInit[type]) {
         // Setting back the selected chapter from the session
         $("#item_" + type + "_chap").val(
                 session_settings["search_start_chap"] ? 
                 session_settings["search_start_chap"] : -1);
                 
         // Done initializing this dropdown
-        elementInit[type] = false;
+        elementInit[type] = true;
     } else {
         // When changing books, preset it to the first/last chapter
         $("#item_" + type + "_chap").val(type === "start" ? 1 : num_chapters);
@@ -622,7 +652,7 @@ function insertSpecifics() {
     // Get the selected book and its amount of chapters
     var type = $("#item_specific option:selected").val();
     
-    if (!elementInit["specific"]) {
+    if (elementInit["specific"]) {
         // Update the query to the session
         // Only if this was an actual change and not the initializing
         updateSession({
@@ -634,10 +664,20 @@ function insertSpecifics() {
             "search_date": null
         });
         
-        removeFilter("num_chapters");
-        removeFilter("length");
+        removeFilter("num_chapters", null, true);
+        removeFilter("length", null, true);
+        removeFilter("date", null, true);
+        removeFilter("age", null, true);
+        removeFilter("parent_age", null, true);
+        removeFilter("gender", null, true);
+        removeFilter("tribe", null, true);
+        removeFilter("profession", null, true);
+        removeFilter("nationality", null, true);
+        removeFilter("type_location", null, true);
+        removeFilter("inhabitants", null, true);
+        removeFilter("type_special", null, true);
     } else {
-        elementInit["specific"] = false;
+        elementInit["specific"] = true;
     }
 
     // Make all the specific filters invisible
@@ -678,8 +718,12 @@ function insertSpecifics() {
 }
 
 
-function removeFilter(type, label) {
-    if (typeof label !== "undefined") {
+function removeFilter(type, label, force) {
+    if (typeof force === "undefined") {
+        force = false;
+    }
+    
+    if ((typeof label !== "undefined") && (label !== null)) {
         // Option to remove the filter
         $(label + " a").remove();
         $(label).append(
@@ -696,13 +740,22 @@ function removeFilter(type, label) {
                 break;
                 
             case "specific":
+            case "gender":
+            case "tribe":
+            case "type_location":
+            case "type_special":
                 // Reset the specifics
-                $("#item_specific").val(-1);
-                $("#item_specific").change();
+                $("#item_" + type).val(-1);
+                if (!force) {
+                    $("#item_" + type).change();
+                }
                 break
                 
             case "num_chapters":
             case "length":
+            case "age":
+            case "parent_age":
+            case "inhabitants":
                 // Reset the sliders
                 var slider = $("#item_" + type).slider();
                 slider.slider('refresh');
@@ -715,13 +768,21 @@ function removeFilter(type, label) {
                 // To make a different between enabled and disabled values
                 elementEnabled[type] = false;
                 break;
+                
+            case "date":
+            case "profession":
+            case "nationality":
+                $("#item_" + type).val("");
+                break;
         }
 
         // Remove the [x]
         $("#item_" + type + "_label a").remove();
     
-        // Search again
-        searchItems();
+        // Search again (unless we're clearing some filters)
+        if (!force) {
+            searchItems();
+        }
     }
 }
 
@@ -739,6 +800,15 @@ function insertSearch() {
     $("#item_descr").val(
             session_settings["search_descr"] ? 
             session_settings["search_descr"] : "");
+    $("#item_date").val(
+            session_settings["search_date"] ? 
+            session_settings["search_date"] : "");
+    $("#item_profession").val(
+            session_settings["search_profession"] ? 
+            session_settings["search_profession"] : "");
+    $("#item_nationality").val(
+            session_settings["search_nationality"] ? 
+            session_settings["search_nationality"] : "");
             
     // First and Last appearance books
     $("#item_start_book").val(
@@ -752,58 +822,160 @@ function insertSearch() {
     $("#item_specific").val(
             session_settings["search_specific"] ? 
             session_settings["search_specific"] : -1);
+    $("#item_gender").val(
+            session_settings["search_gender"] ? 
+            session_settings["search_gender"] : -1);
+    $("#item_tribe").val(
+            session_settings["search_tribe"] ? 
+            session_settings["search_tribe"] : -1);
+    $("#item_type_location").val(
+            session_settings["search_type_location"] ? 
+            session_settings["search_type_location"] : -1);
+    $("#item_type_special").val(
+            session_settings["search_type_special"] ? 
+            session_settings["search_type_special"] : -1);
             
-    
-    // Slider for the number of chapters
-    var slider = $("#item_num_chapters").slider();
-        slider.on("slideStop", onSliderChangeNumChapters);
+    // Sliders     
+    getBooks(null, {
+        'calculations': ["min_num_chapters", "max_num_chapters"]
+    }).then(function(result) {
         
-    if (session_settings["search_num_chapters"]) {
-        // Initialize the sliders and set their values
-        slider.slider('setValue', 
-            [parseInt(session_settings["search_num_chapters"].split('-')[0], 10),
-             parseInt(session_settings["search_num_chapters"].split('-')[1], 10)]);
-         
-        // Activate the onchange function
-        onSliderChangeNumChapters({value: session_settings["search_num_chapters"].split("-")});
-    }
-    
-    // Slider of the length of an event
-    var slider = $("#item_length").slider({
-        formatter: function(values) {
-            var timeString = ["", ""];
-            for (var i = 0; i < values.length; i++) {
-                var value = values[i];
-                
-                timeString[i] = timeToString(value);
+        // No errors and at least 1 item of data
+        if ((result.error === null) && result.data && result.data.length > 0) {
+            var data = result.data[0];
+            
+            // Set the max and min values
+            var slider_num_chapters = $("#item_num_chapters").slider({
+                max: data["max_num_chapters"],
+                min: Math.max(data["min_num_chapters"], 1)
+            });
+            
+            // Set the onSlideStop event
+            slider_num_chapters.on("slideStop", onSliderChangeNumChapters);
+
+            if (session_settings["search_num_chapters"]) {
+                // Initialize the sliders and set their values
+                slider_num_chapters.slider("setValue", 
+                    [parseInt(session_settings["search_num_chapters"].split('-')[0], 10),
+                     parseInt(session_settings["search_num_chapters"].split('-')[1], 10)]);
+
+                // Activate the onchange function
+                onSliderChangeNumChapters({value: session_settings["search_num_chapters"].split("-")});
             }
-            return timeString.join(" : ");
         }
     });
-        slider.on("slideStop", onSliderChangeLength);
+    
+    getEvents(null, {
+        'calculations': ["min_length", "max_length"]
+    }).then(function(result) {
         
-    if (session_settings["search_length"]) {
-        slider.slider('setValue',
-          [parseInt(session_settings["search_length"].split('-')[0], 10),
-           parseInt(session_settings["search_length"].split('-')[1], 10)]);
-         
-        // Activate the onchange function
-        onSliderChangeLength({value: session_settings["search_length"].split("-")});
-    }
+        // No errors and at least 1 item of data
+        if ((result.error === null) && result.data && result.data.length > 0) { 
+            var data = result.data[0];
+            
+            // Set the max and min values
+            var slider_length = $("#item_length").slider({
+                formatter: function(values) {
+                    var timeString = ["", ""];
+                    for (var i = 0; i < values.length; i++) {
+                        var value = values[i];
+
+                        timeString[i] = timeToString(value);
+                    }
+                    return timeString.join(" : ");
+                },
+                max: data["max_length"],
+                min: Math.max(data["min_length"], 1)
+            });
+            
+            // Set the onSlideStop event
+            slider_length.on("slideStop", onSliderChangeLength);
+
+            if (session_settings["search_length"]) {
+                slider_length.slider('setValue',
+                  [parseInt(session_settings["search_length"].split('-')[0], 10),
+                   parseInt(session_settings["search_length"].split('-')[1], 10)]);
+                 
+                // Activate the onchange function
+                onSliderChangeLength({value: session_settings["search_length"].split("-")});
+            }
+        }
+    });
     
-    var slider = $("#item_age_parent").slider();
-    slider.slider('setValue', 
-                session_settings["search_age_parent"] ? 
-      [parseInt(session_settings["search_age_parent"].split('-')[0], 10),
-       parseInt(session_settings["search_age_parent"].split('-')[1], 10)] : 
-            [1, 120]);
+    getPeoples(null, {
+        'calculations': [
+            "min_age", "max_age",
+            "min_father_age", "max_father_age",
+            "min_mother_age", "max_mother_age"]
+    }).then(function(result) {
+        
+        // No errors and at least 1 item of data
+        if ((result.error === null) && result.data && result.data.length > 0) { 
+            var data = result.data[0];
+            
+            // Set the max and min values
+            var slider_age = $("#item_age").slider({
+                max: data["max_age"],
+                min: Math.max(data["min_age"], 1)
+            });
+            
+            // Set the max and min values
+            var slider_parent_age = $("#item_parent_age").slider({
+                max: Math.max(data["max_father_age"], data["max_mother_age"]),
+                min: Math.max(Math.min(data["min_father_age"], data["min_mother_age"]), 1)
+            });
+            
+            // Set the onSlideStop event
+            slider_age.on("slideStop", onSliderChangeAge);
+            slider_parent_age.on("slideStop", onSliderChangeParentAge);
+
+            if (session_settings["search_age"]) {
+                slider_age.slider('setValue',
+                  [parseInt(session_settings["search_age"].split('-')[0], 10),
+                   parseInt(session_settings["search_age"].split('-')[1], 10)]);
+                 
+                // Activate the onchange function
+                onSliderChangeAge({value: session_settings["search_age"].split("-")});
+            }
+
+            if (session_settings["search_parent_age"]) {
+                slider_parent_age.slider('setValue',
+                  [parseInt(session_settings["search_parent_age"].split('-')[0], 10),
+                   parseInt(session_settings["search_parent_age"].split('-')[1], 10)]);
+                 
+                // Activate the onchange function
+                onSliderChangeParentAge({value: session_settings["search_parent_age"].split("-")});
+            }
+        }
+    });
     
-    var slider = $("#item_age").slider();
-    slider.slider('setValue', 
-                session_settings["search_age"] ? 
-      [parseInt(session_settings["search_age"].split('-')[0], 10),
-       parseInt(session_settings["search_age"].split('-')[1], 10)] : 
-            [1, 120]); 
+    getLocations(null, {
+        'calculations': ["min_inhabitants", "max_inhabitants"]
+    }).then(function(result) {
+        
+        // No errors and at least 1 item of data
+        if ((result.error === null) && result.data && result.data.length > 0) { 
+            var data = result.data[0];
+            
+            // Set the max and min values
+            var slider_inhabitants = $("#item_inhabitants").slider({
+                max: data["max_inhabitants"],
+                min: Math.max(data["min_inhabitants"], 1)
+            });
+            
+            // Set the onSlideStop event
+            slider_inhabitants.on("slideStop", onSliderChangeInhabitants);
+
+            if (session_settings["search_inhabitants"]) {
+                slider_inhabitants.slider('setValue',
+                  [parseInt(session_settings["search_inhabitants"].split('-')[0], 10),
+                   parseInt(session_settings["search_inhabitants"].split('-')[1], 10)]);
+                 
+                // Activate the onchange function
+                onSliderChangeInhabitants({value: session_settings["search_inhabitants"].split("-")});
+            }
+        }
+    });
 
     // On change for the different select boxes
     $("#item_start_book").change();
@@ -869,6 +1041,10 @@ function getFilters() {
     var length =           session_settings["search_length"] ? 
             "length <> " + session_settings["search_length"] : "";
             
+    // String searches
+    var date =          session_settings["search_date"] ? 
+            "date % " + session_settings["search_date"] : "";
+            
     // First & Last appearance
     var book_ids = "";
     if (session_settings["search_start_book"] && 
@@ -894,7 +1070,8 @@ function getFilters() {
         "end_book": end_book,
         "end_chap": end_chap,
         "num_chapters": num_chapters,
-        "length": length
+        "length": length,
+        "date": date
     };
 }
 
@@ -923,6 +1100,7 @@ function getSearchTerms(type) {
             search_terms["name"] = filter.name;
             search_terms["descr"] = filter.descr;
             search_terms["length"] = filter.length;
+            search_terms["date"] = filter.date;
             search_terms["book_start_id"] = filter.start_book;
             search_terms["book_start_chap"] = filter.start_chap;
             search_terms["book_end_id"] = filter.end_book;
@@ -989,35 +1167,36 @@ function getSearchTerms(type) {
 
 /** Updating the session settings and performing the search */
 function searchItems() {
-    // The search terms inserted in input boxes or dropdowns
-    var name = $("#item_name").val();
-    var meaning_name = $("#item_meaning_name").val();
-    var descr = $("#item_descr").val();
-    var start_book = $("#item_start_book").val();
-    var start_chap = $("#item_start_chap").val();
-    var end_book = $("#item_end_book").val();
-    var end_chap = $("#item_end_chap").val();
-    var specific = $("#item_specific").val();
+    // The search terms inserted in input boxes or dropdowns    
+    var params = {
+        "search_name": $("#item_name").val(),
+        "search_meaning_name": $("#item_meaning_name").val(),
+        "search_descr": $("#item_descr").val(),
+        "search_start_book": $("#item_start_book").val(),
+        "search_start_chap": $("#item_start_chap").val(),
+        "search_end_book": $("#item_end_book").val(),
+        "search_end_chap": $("#item_end_chap").val(),
+        "search_specific": $("#item_specific").val(),
+        "search_date": $("#item_date").val()
+    };
+    
+    // Only if it is initialized to prevent overwriting
+    if (elementInit["num_chapters"]) {
+        var num_chapters = $("#item_num_chapters").slider('getValue');
+        params["search_num_chapters"] = 
+                elementEnabled["num_chapters"] ? 
+                num_chapters.join('-') : "";
+    }
+    
+    if (elementInit["length"]) {
+        var length = $("#item_length").slider('getValue');
+        params["search_length"] = 
+                elementEnabled["length"] ? 
+                length.join('-') : "";
+    }
     
     // Update the query to the session
-    var num_chapters = $("#item_num_chapters").slider('getValue');
-    var length = $("#item_length").slider('getValue');
-    
-    // Update the query to the session
-    updateSession({
-        "search_name": name,
-        "search_meaning_name": meaning_name,
-        "search_descr": descr,
-        "search_start_book": start_book,
-        "search_start_chap": start_chap,
-        "search_end_book": end_book,
-        "search_end_chap": end_chap,
-        "search_specific": specific,
-        "search_num_chapters": elementEnabled["num_chapters"] ? 
-                    num_chapters.join('-') : "",
-        "search_length": elementEnabled["length"] ? 
-                    length.join('-') : ""
-    });
+    updateSession(params);
     
     // Recalculate the search results
     insertResults();
@@ -1050,6 +1229,7 @@ function onSliderChange(type, value) {
 
     // Set the slider as enabled
     elementEnabled[type] = true;
+    elementInit[type] = true;
     
     // Recalculate the search results
     insertResults();
@@ -1073,6 +1253,7 @@ function insertItems(type, result) {
         table_header += insertHeader(type, "meaning_name");
         table_header += insertHeader(type, "descr");
         table_header += insertHeader(type, "length");
+        table_header += insertHeader(type, "date");
         table_header += insertHeader(type, "book_start");
         table_header += insertHeader(type, "book_end");
         table_header += insertHeader(type, "num_chapters");
@@ -1087,6 +1268,7 @@ function insertItems(type, result) {
             table_data += insertData(type, "meaning_name", data);
             table_data += insertData(type, "descr", data);
             table_data += insertData(type, "length", data);
+            table_data += insertData(type, "date", data);
             table_data += insertData(type, "book_start", data);
             table_data += insertData(type, "book_end", data);
             table_data += insertData(type, "num_chapters", data);
@@ -1200,6 +1382,7 @@ function getTypes(name) {
                 break;
                 
             case "length":
+            case "date":
                 types = ["events"];
                 break;
         }
@@ -1231,11 +1414,11 @@ function timeToString(value) {
     var days = Math.floor(value/day);
     value = value - days*day;
 
-    timeString.push((value > 0) ? (value + " hours") : "");
-    timeString.push((days > 0) ? (days + " days") : "");
-    timeString.push((weeks > 0) ? (weeks + " weeks") : "");
-    timeString.push((months > 0) ? (months + " months") : "");
-    timeString.push((years > 0) ? (years + " years") : "");
+    timeString.push((value > 0) ? (value + " " + dict[value > 1 ? "length.hours" : "length.hour"]) : "");
+    timeString.push((days > 0) ? (days + " " + dict[days > 1 ? "length.days" : "length.day"]) : "");
+    timeString.push((weeks > 0) ? (weeks + " " + dict[weeks > 1 ? "length.weeks" : "length.week"]) : "");
+    timeString.push((months > 0) ? (months + " " + dict[months > 1 ? "length.months" : "length.month"]) : "");
+    timeString.push((years > 0) ? (years + " " + dict[years > 1 ? "length.years" : "length.year"]) : "");
 
     // Filter out empty elements and join
     return timeString.filter(n => n).join(', ');
