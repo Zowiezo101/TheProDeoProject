@@ -187,16 +187,28 @@ function is_calculation_string($calculations) {
 
     if ($calculations && is_string($calculations)) {
         $calculation_array = explode(',', $calculations);
+        
         for ($i = 0; $i < count($calculation_array); $i++) {
             // We have an array of calculations, now check all the calculations are valid
             $calculation = trim($calculation_array[$i]);
+            if (substr_count($calculation, '_')) {
+                // Is this calculation valid
+                $is_calculation = in_array(strtolower(explode('_', $calculation)[0]), ["count", "min", "max"]);
 
-            // Is this calculation valid
-            $is_calculation = in_array(strtolower($calculation), ["count"]);
-            if (!$is_calculation) {
-                // It is not, break the for loop
-                $result = False;
-                break;
+                if (!$is_calculation) {
+                    // It is not, break the for loop
+                    $result = False;
+                    break;
+                }  
+            } else {
+                // Is this calculation valid
+                $is_calculation = in_array(strtolower($calculation), ["count"]);
+
+                if (!$is_calculation) {
+                    // It is not, break the for loop
+                    $result = False;
+                    break;
+                }
             }
         }
 

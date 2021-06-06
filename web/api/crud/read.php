@@ -277,8 +277,28 @@ function getSelectStatement($parameters) {
     $columns = getDefaultColumns($parameters);
     
     if (isset($parameters->calculations)) {
-        // Add the count parameter
-        $columns = ["COUNT(".$columns[0].") as count"];
+        $columns = [];
+        
+        // Add these columns to the set of columns
+        $calculation_arr = explode(',', $parameters->calculations);
+        
+        for ($i = 0; $i < count($calculation_arr); $i++) {
+            $calculation = $calculation_arr[$i];
+            
+            if ($calculation == "count") {
+                // Add the count parameter
+                $columns[] = "COUNT(".$columns[0].") as count";
+            } else {
+                if (strpos($calculation, "max") !== false) {
+                    // Add the max parameter
+                    $columns[] = "MAX(".explode("_", $calculation, 2)[1].") as ".$calculation;
+                }
+                if (strpos($calculation, "min") !== false) {
+                    // Add the min parameter
+                    $columns[] = "MIN(".explode("_", $calculation, 2)[1].") as ".$calculation;
+                }
+            }
+        }
     } elseif (isset($parameters->columns)) {
         // Add these columns to the set of columns
         $columns_arr = explode(',', $parameters->columns);
