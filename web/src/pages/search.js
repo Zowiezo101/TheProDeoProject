@@ -6,14 +6,19 @@ var elementInit = {
     "end": false,
     "specific": false,
     "num_chapters": false,
-    "length": false
+    "length": false,
+    "age": false,
+    "age_parents": false,
+    "inhabitants": false
 };
 
 // The elements that can be disabled
 var elementEnabled = {
     "num_chapters": false,
     "length": false,
-    "sge_parents": false
+    "age": false,
+    "age_parents": false,
+    "inhabitants": false
 };
 
 function getSearchMenu() {
@@ -278,10 +283,8 @@ function getSearchMenu() {
                                     value="" 
                                     data-slider-id="slider_num_chapters"
                                     data-slider-tooltip-split="true"
-                                    data-slider-min="1" 
-                                    data-slider-max="150" 
-                                    data-slider-step="1" 
-                                    data-slider-value="[1,150]"/>
+                                    data-slider-step="1"
+                                    data-slider-range="true" />
                         </div>
                     </div>
                 </div>
@@ -303,10 +306,8 @@ function getSearchMenu() {
                                     type="text" 
                                     value="" 
                                     data-slider-id="slider_length"
-                                    data-slider-min="1" 
-                                    data-slider-max="10000" 
-                                    data-slider-step="1" 
-                                    data-slider-value="[1,10000]"/>
+                                    data-slider-step="1"
+                                    data-slider-range="true" />
                         </div>
                     </div>
     
@@ -343,13 +344,10 @@ function getSearchMenu() {
                                     class="d-none"
                                     type="text" 
                                     value="" 
-                                    onchange="onSliderChange('age')"
                                     data-slider-id="slider_age"
                                     data-slider-tooltip-split="true"
-                                    data-slider-min="1" 
-                                    data-slider-max="120" 
-                                    data-slider-step="1" 
-                                    data-slider-value="[1,120]"/>
+                                    data-slider-step="1"
+                                    data-slider-range="true" />
                         </div>
                     </div>
     
@@ -367,13 +365,10 @@ function getSearchMenu() {
                                     class="d-none"
                                     type="text" 
                                     value="" 
-                                    onchange="onSliderChange('parent_age')"
                                     data-slider-id="slider_parent_age"
                                     data-slider-tooltip-split="true"
-                                    data-slider-min="1" 
-                                    data-slider-max="120" 
-                                    data-slider-step="1" 
-                                    data-slider-value="[1,120]"/>
+                                    data-slider-step="1"
+                                    data-slider-range="true" />
                         </div>
                     </div>
     
@@ -498,13 +493,10 @@ function getSearchMenu() {
                                     class="d-none"
                                     type="text" 
                                     value="" 
-                                    onchange="onSliderChange('inhabitants')"
                                     data-slider-id="slider_inhabitants"
                                     data-slider-tooltip-split="true"
-                                    data-slider-min="1" 
-                                    data-slider-max="10000" 
-                                    data-slider-step="1" 
-                                    data-slider-value="[1,10000]"/>
+                                    data-slider-step="1"
+                                    data-slider-range="true" />
                         </div>
                     </div>
                 </div>
@@ -661,7 +653,16 @@ function insertSpecifics() {
             // Set all the search options to zero
             "search_num_chapters": null,
             "search_length": null,
-            "search_date": null
+            "search_date": null,
+            "search_age": null,
+            "search_parent_age": null,
+            "search_gender": null,
+            "search_tribe": null,
+            "search_profession": null,
+            "search_nationality": null,
+            "search_type_location": null,
+            "search_inhabitants": null,
+            "search_type_special": null
         });
         
         removeFilter("num_chapters", null, true);
@@ -843,11 +844,13 @@ function insertSearch() {
         // No errors and at least 1 item of data
         if ((result.error === null) && result.data && result.data.length > 0) {
             var data = result.data[0];
+            var max = parseInt(data["max_num_chapters"], 10);
+            var min = parseInt(Math.max(data["min_num_chapters"], 1), 10);
             
             // Set the max and min values
             var slider_num_chapters = $("#item_num_chapters").slider({
-                max: data["max_num_chapters"],
-                min: Math.max(data["min_num_chapters"], 1)
+                max: max,
+                min: min
             });
             
             // Set the onSlideStop event
@@ -861,6 +864,10 @@ function insertSearch() {
 
                 // Activate the onchange function
                 onSliderChangeNumChapters({value: session_settings["search_num_chapters"].split("-")});
+            } else {
+                // Initialize the sliders and set their values
+                slider_num_chapters.slider("setValue", 
+                    [min, max]);
             }
         }
     });
@@ -872,6 +879,8 @@ function insertSearch() {
         // No errors and at least 1 item of data
         if ((result.error === null) && result.data && result.data.length > 0) { 
             var data = result.data[0];
+            var max = parseInt(data["max_length"], 10);
+            var min = parseInt(Math.max(data["min_length"], 1), 10);
             
             // Set the max and min values
             var slider_length = $("#item_length").slider({
@@ -884,8 +893,8 @@ function insertSearch() {
                     }
                     return timeString.join(" : ");
                 },
-                max: data["max_length"],
-                min: Math.max(data["min_length"], 1)
+                max: max,
+                min: min
             });
             
             // Set the onSlideStop event
@@ -898,6 +907,9 @@ function insertSearch() {
                  
                 // Activate the onchange function
                 onSliderChangeLength({value: session_settings["search_length"].split("-")});
+            } else {
+                slider_length.slider('setValue',
+                  [min, max]);
             }
         }
     });
@@ -912,17 +924,21 @@ function insertSearch() {
         // No errors and at least 1 item of data
         if ((result.error === null) && result.data && result.data.length > 0) { 
             var data = result.data[0];
+            var max1 = parseInt(Math.max(data["max_age"], 1), 10);
+            var min1 = parseInt(Math.max(data["min_age"], 1), 10);
+            var max2 = parseInt(Math.max(data["max_father_age"], data["max_mother_age"], 1), 10);
+            var min2 = parseInt(Math.max(Math.min(data["min_father_age"], data["min_mother_age"]), 1), 10);
             
             // Set the max and min values
             var slider_age = $("#item_age").slider({
-                max: data["max_age"],
-                min: Math.max(data["min_age"], 1)
+                max: max1,
+                min: min1
             });
             
             // Set the max and min values
             var slider_parent_age = $("#item_parent_age").slider({
-                max: Math.max(data["max_father_age"], data["max_mother_age"]),
-                min: Math.max(Math.min(data["min_father_age"], data["min_mother_age"]), 1)
+                max: max2,
+                min: min2
             });
             
             // Set the onSlideStop event
@@ -936,6 +952,9 @@ function insertSearch() {
                  
                 // Activate the onchange function
                 onSliderChangeAge({value: session_settings["search_age"].split("-")});
+            } else {
+                slider_age.slider('setValue',
+                  [min1, max1]);
             }
 
             if (session_settings["search_parent_age"]) {
@@ -945,6 +964,9 @@ function insertSearch() {
                  
                 // Activate the onchange function
                 onSliderChangeParentAge({value: session_settings["search_parent_age"].split("-")});
+            } else {
+                slider_parent_age.slider('setValue',
+                  [min2, max2]);
             }
         }
     });
@@ -1195,6 +1217,27 @@ function searchItems() {
                 length.join('-') : "";
     }
     
+    if (elementInit["age"]) {
+        var length = $("#item_age").slider('getValue');
+        params["search_age"] = 
+                elementEnabled["age"] ? 
+                length.join('-') : "";
+    }
+    
+    if (elementInit["parent_age"]) {
+        var length = $("#item_parent_age").slider('getValue');
+        params["search_parent_age"] = 
+                elementEnabled["parent_age"] ? 
+                length.join('-') : "";
+    }
+    
+    if (elementInit["inhabitants"]) {
+        var length = $("#item_inhabitants").slider('getValue');
+        params["search_inhabitants"] = 
+                elementEnabled["inhabitants"] ? 
+                length.join('-') : "";
+    }
+    
     // Update the query to the session
     updateSession(params);
     
@@ -1207,6 +1250,18 @@ function onSliderChangeNumChapters(value) {
 }
 function onSliderChangeLength(value) {
     onSliderChange('length', value.value);
+}
+
+function onSliderChangeAge(value) {
+    onSliderChange('age', value.value);
+}
+
+function onSliderChangeParentAge(value) {
+    onSliderChange('parent_age', value.value);
+}
+
+function onSliderChangeInhabitants(value) {
+    onSliderChange('inhabitants', value.value);
 }
 
 function onSliderChange(type, value) {
