@@ -276,9 +276,7 @@ function getSelectStatement($parameters) {
     // The default columns to select
     $columns = getDefaultColumns($parameters);
     
-    if (isset($parameters->calculations)) {
-        $columns = [];
-        
+    if (isset($parameters->calculations)) {        
         // Add these columns to the set of columns
         $calculation_arr = explode(',', $parameters->calculations);
         
