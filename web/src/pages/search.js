@@ -1067,10 +1067,25 @@ function getFilters() {
             "num_chapters <> " + session_settings["search_num_chapters"] : "";
     var length =           session_settings["search_length"] ? 
             "length <> " + session_settings["search_length"] : "";
+    var age =           session_settings["search_age"] ? 
+            "age <> " + session_settings["search_age"] : "";
+    var parent_age =           session_settings["search_parent_age"] ? 
+            "father_age <> " + session_settings["search_parent_age"] + 
+            "mother_age <> " + session_settings["search_parent_age"] : "";
             
     // String searches
     var date =          session_settings["search_date"] ? 
             "date % " + session_settings["search_date"] : "";
+    var profession =          session_settings["search_profession"] ? 
+            "profession % " + session_settings["search_profession"] : "";
+    var nationality =          session_settings["search_nationality"] ? 
+            "date % " + session_settings["search_nationality"] : "";
+            
+    // Dropdown searches
+    var gender =          session_settings["search_gender"] ? 
+            "gender = " + session_settings["search_gender"] : "";
+    var tribe =          session_settings["search_tribe"] ? 
+            "tribe = " + session_settings["search_tribe"] : "";
             
     // First & Last appearance
     var book_ids = "";
@@ -1098,7 +1113,13 @@ function getFilters() {
         "end_chap": end_chap,
         "num_chapters": num_chapters,
         "length": length,
-        "date": date
+        "date": date,
+        "age": age,
+        "parent_age": parent_age,
+        "gender": gender,
+        "tribe": tribe,
+        "profession": profession,
+        "nationality": nationality
     };
 }
 
@@ -1142,6 +1163,13 @@ function getSearchTerms(type) {
             search_terms["name"] = filter.name;
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
+            search_terms["age"] = filter.age;
+            search_terms["father_age"] = filter.parent_age;
+            search_terms["mother_age"] = filter.parent_age;
+            search_terms["gender"] = filter.gender;
+            search_terms["tribe"] = filter.tribe;
+            search_terms["profession"] = filter.profession;
+            search_terms["nationality"] = filter.nationality;
             search_terms["book_start_id"] = filter.start_book;
             search_terms["book_start_chap"] = filter.start_chap;
             search_terms["book_end_id"] = filter.end_book;
@@ -1204,7 +1232,11 @@ function searchItems() {
         "search_end_book": $("#item_end_book").val(),
         "search_end_chap": $("#item_end_chap").val(),
         "search_specific": $("#item_specific").val(),
-        "search_date": $("#item_date").val()
+        "search_date": $("#item_date").val(),
+        "search_gender": $("#item_gender").val(),
+        "search_tribe": $("#item_tribe").val(),
+        "search_profession": $("#item_profession").val(),
+        "search_nationality": $("#item_nationality").val()
     };
     
     // Only if it is initialized to prevent overwriting
