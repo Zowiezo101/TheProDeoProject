@@ -284,6 +284,7 @@ function getSearchMenu() {
                                     data-slider-id="slider_num_chapters"
                                     data-slider-tooltip-split="true"
                                     data-slider-step="1"
+                                    data-slider-value="1"
                                     data-slider-range="true" />
                         </div>
                     </div>
@@ -307,6 +308,7 @@ function getSearchMenu() {
                                     value="" 
                                     data-slider-id="slider_length"
                                     data-slider-step="1"
+                                    data-slider-value="1"
                                     data-slider-range="true" />
                         </div>
                     </div>
@@ -347,6 +349,7 @@ function getSearchMenu() {
                                     data-slider-id="slider_age"
                                     data-slider-tooltip-split="true"
                                     data-slider-step="1"
+                                    data-slider-value="1"
                                     data-slider-range="true" />
                         </div>
                     </div>
@@ -368,6 +371,7 @@ function getSearchMenu() {
                                     data-slider-id="slider_parent_age"
                                     data-slider-tooltip-split="true"
                                     data-slider-step="1"
+                                    data-slider-value="1"
                                     data-slider-range="true" />
                         </div>
                     </div>
@@ -496,6 +500,7 @@ function getSearchMenu() {
                                     data-slider-id="slider_inhabitants"
                                     data-slider-tooltip-split="true"
                                     data-slider-step="1"
+                                    data-slider-value="1"
                                     data-slider-range="true" />
                         </div>
                     </div>
