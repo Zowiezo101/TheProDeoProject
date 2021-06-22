@@ -20,7 +20,6 @@ function getLocationContent(locations) {
                             <tbody>` +
                                 insertDetail(locations.data.self[0], 'meaning_name') + 
                                 insertDetail(locations.data.self[0], 'type') + 
-                                insertDetail(locations.data.self[0], 'inhabitants') + 
                                 insertDetail(locations.data.self[0], 'coordinates') +
                                 insertDetailLink(locations.data, 'locations') +
                                 insertDetailLink(locations.data, 'events') +
