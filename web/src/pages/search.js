@@ -8,8 +8,7 @@ var elementInit = {
     "num_chapters": false,
     "length": false,
     "age": false,
-    "age_parents": false,
-    "inhabitants": false
+    "age_parents": false
 };
 
 // The elements that can be disabled
@@ -17,8 +16,7 @@ var elementEnabled = {
     "num_chapters": false,
     "length": false,
     "age": false,
-    "age_parents": false,
-    "inhabitants": false
+    "age_parents": false
 };
 
 function getSearchMenu() {
@@ -385,7 +383,7 @@ function getSearchMenu() {
                             </label>
                         </div>
                         <div class="col-md-12">
-                            <select class="custom-select" id="item_gender" onchange="searchItems()">
+                            <select class="custom-select" id="item_gender" onchange="onSelectChange('gender')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getGender(0) + `</option>
                                 <option value="1">` + getGender(1) + `</option>
@@ -404,7 +402,7 @@ function getSearchMenu() {
                             </label>
                         </div>
                         <div class="col-md-12">
-                            <select class="custom-select" id="item_tribe" onchange="searchItems()">
+                            <select class="custom-select" id="item_tribe" onchange="onSelectChange('tribe')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getTribe(0) + `</option>
                                 <option value="1">` + getTribe(1) + `</option>
@@ -466,7 +464,7 @@ function getSearchMenu() {
                             </label>
                         </div>
                         <div class="col-md-12">
-                            <select class="custom-select" id="item_type_location" onchange="searchItems()">
+                            <select class="custom-select" id="item_type_location" onchange="onSelectChange('type_location')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getTypeLocation(0) + `</option>
                                 <option value="1">` + getTypeLocation(1) + `</option>
@@ -482,28 +480,6 @@ function getSearchMenu() {
                             </select>
                         </div>
                     </div>
-    
-                    <hr class="my-1"/>
-    
-                    <!-- Inhabitants -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="font-weight-bold" id="item_inhabitants_label">` + dict["items.inhabitants"] + `
-                            </label>
-                        </div>
-
-                        <div class="col-md-12">
-                            <input  id="item_inhabitants" 
-                                    class="d-none"
-                                    type="text" 
-                                    value="" 
-                                    data-slider-id="slider_inhabitants"
-                                    data-slider-tooltip-split="true"
-                                    data-slider-step="1"
-                                    data-slider-value="1"
-                                    data-slider-range="true" />
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="col-md-12 d-none" id="item_specifics_specials">
@@ -517,7 +493,7 @@ function getSearchMenu() {
                             </label>
                         </div>
                         <div class="col-md-12">
-                            <select class="custom-select" id="item_type_special" onchange="searchItems()">
+                            <select class="custom-select" id="item_type_special" onchange="onSelectChange('type_special')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
                                 <option value="0">` + getTypeSpecial(0) + `</option>
                                 <option value="1">` + getTypeSpecial(1) + `</option>
@@ -545,7 +521,7 @@ function getSearchMenu() {
 }
 
 function getSearchContent() {
-    var menu = $("<div>").addClass("col-md-8 col-lg-9").append(` 
+    var content = $("<div>").addClass("col-md-8 col-lg-9").append(` 
             <!-- Search results -->
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
@@ -596,7 +572,7 @@ function getSearchContent() {
         insertResults();
     });
     
-    return menu;
+    return content;
 }
 
 function insertChapters(type) {
@@ -666,7 +642,6 @@ function insertSpecifics() {
             "search_profession": null,
             "search_nationality": null,
             "search_type_location": null,
-            "search_inhabitants": null,
             "search_type_special": null
         });
         
@@ -680,8 +655,9 @@ function insertSpecifics() {
         removeFilter("profession", null, true);
         removeFilter("nationality", null, true);
         removeFilter("type_location", null, true);
-        removeFilter("inhabitants", null, true);
         removeFilter("type_special", null, true);
+        
+        searchItems();
     } else {
         elementInit["specific"] = true;
     }
@@ -761,7 +737,6 @@ function removeFilter(type, label, force) {
             case "length":
             case "age":
             case "parent_age":
-            case "inhabitants":
                 // Reset the sliders
                 var slider = $("#item_" + type).slider();
                 slider.slider('refresh');
@@ -852,6 +827,8 @@ function insertSearch() {
             var max = parseInt(data["max_num_chapters"], 10);
             var min = parseInt(Math.max(data["min_num_chapters"], 1), 10);
             
+            console.log("Min: " + min + "\nMax: " + max);
+            
             // Set the max and min values
             var slider_num_chapters = $("#item_num_chapters").slider({
                 max: max,
@@ -886,6 +863,8 @@ function insertSearch() {
             var data = result.data[0];
             var max = parseInt(data["max_length"], 10);
             var min = parseInt(Math.max(data["min_length"], 1), 10);
+            
+            console.log("Min: " + min + "\nMax: " + max);
             
             // Set the max and min values
             var slider_length = $("#item_length").slider({
@@ -975,39 +954,15 @@ function insertSearch() {
             }
         }
     });
-    
-    getLocations(null, {
-        'calculations': ["min_inhabitants", "max_inhabitants"]
-    }).then(function(result) {
-        
-        // No errors and at least 1 item of data
-        if ((result.error === null) && result.data && result.data.length > 0) { 
-            var data = result.data[0];
-            
-            // Set the max and min values
-            var slider_inhabitants = $("#item_inhabitants").slider({
-                max: data["max_inhabitants"],
-                min: Math.max(data["min_inhabitants"], 1)
-            });
-            
-            // Set the onSlideStop event
-            slider_inhabitants.on("slideStop", onSliderChangeInhabitants);
-
-            if (session_settings["search_inhabitants"]) {
-                slider_inhabitants.slider('setValue',
-                  [parseInt(session_settings["search_inhabitants"].split('-')[0], 10),
-                   parseInt(session_settings["search_inhabitants"].split('-')[1], 10)]);
-                 
-                // Activate the onchange function
-                onSliderChangeInhabitants({value: session_settings["search_inhabitants"].split("-")});
-            }
-        }
-    });
 
     // On change for the different select boxes
     $("#item_start_book").change();
     $("#item_end_book").change();
     $("#item_specific").change();
+    $("#item_gender").change();
+    $("#item_tribe").change();
+    $("#item_type_location").change();
+    $("#item_type_special").change();
 }
 
 /** Insert the search results of the session */
@@ -1079,13 +1034,17 @@ function getFilters() {
     var profession =          session_settings["search_profession"] ? 
             "profession % " + session_settings["search_profession"] : "";
     var nationality =          session_settings["search_nationality"] ? 
-            "date % " + session_settings["search_nationality"] : "";
+            "nationality % " + session_settings["search_nationality"] : "";
             
     // Dropdown searches
     var gender =          session_settings["search_gender"] ? 
             "gender = " + session_settings["search_gender"] : "";
     var tribe =          session_settings["search_tribe"] ? 
             "tribe = " + session_settings["search_tribe"] : "";
+    var type_location = session_settings["search_type_location"] ? 
+            "type = " + session_settings["search_type_location"] : "";
+    var type_special =  session_settings["search_type_special"] ? 
+            "type = " + session_settings["search_type_special"] : "";
             
     // First & Last appearance
     var book_ids = "";
@@ -1119,7 +1078,9 @@ function getFilters() {
         "gender": gender,
         "tribe": tribe,
         "profession": profession,
-        "nationality": nationality
+        "nationality": nationality,
+        "type_location": type_location,
+        "type_special": type_special
     };
 }
 
@@ -1184,6 +1145,7 @@ function getSearchTerms(type) {
             search_terms["name"] = filter.name;
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
+            search_terms["type"] = filter.type_location;
             search_terms["book_start_id"] = filter.start_book;
             search_terms["book_start_chap"] = filter.start_chap;
             search_terms["book_end_id"] = filter.end_book;
@@ -1198,6 +1160,7 @@ function getSearchTerms(type) {
             search_terms["name"] = filter.name;
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
+            search_terms["type"] = filter.type_special;
             search_terms["book_start_id"] = filter.start_book;
             search_terms["book_start_chap"] = filter.start_chap;
             search_terms["book_end_id"] = filter.end_book;
@@ -1236,7 +1199,9 @@ function searchItems() {
         "search_gender": $("#item_gender").val(),
         "search_tribe": $("#item_tribe").val(),
         "search_profession": $("#item_profession").val(),
-        "search_nationality": $("#item_nationality").val()
+        "search_nationality": $("#item_nationality").val(),
+        "search_type_location": $("#item_type_location").val(),
+        "search_type_special": $("#item_type_special").val()
     };
     
     // Only if it is initialized to prevent overwriting
@@ -1268,13 +1233,6 @@ function searchItems() {
                 length.join('-') : "";
     }
     
-    if (elementInit["inhabitants"]) {
-        var length = $("#item_inhabitants").slider('getValue');
-        params["search_inhabitants"] = 
-                elementEnabled["inhabitants"] ? 
-                length.join('-') : "";
-    }
-    
     // Update the query to the session
     updateSession(params);
     
@@ -1295,10 +1253,6 @@ function onSliderChangeAge(value) {
 
 function onSliderChangeParentAge(value) {
     onSliderChange('parent_age', value.value);
-}
-
-function onSliderChangeInhabitants(value) {
-    onSliderChange('inhabitants', value.value);
 }
 
 function onSliderChange(type, value) {
@@ -1329,6 +1283,26 @@ function onSliderChange(type, value) {
     return;
 }
 
+function onSelectChange(type) {    
+    // Update the query to the session
+    var value = $("#item_" + type).val();
+    if (!value || value === "-1") {
+        return;
+    }
+    
+    var params = {};
+    params["search_" + type] = value;
+    updateSession(params);
+    
+    // Add the [x] to disable the slider
+    removeFilter(type, "#item_" + type + "_label");
+    
+    // Recalculate the search results
+    insertResults();
+    
+    return;
+}
+
 /** Inserting the results in a readable table format 
  * @param {String} type
  * @param {Object} result * 
@@ -1346,6 +1320,13 @@ function insertItems(type, result) {
         table_header += insertHeader(type, "descr");
         table_header += insertHeader(type, "length");
         table_header += insertHeader(type, "date");
+        table_header += insertHeader(type, "age");
+        table_header += insertHeader(type, "parent_age");
+        table_header += insertHeader(type, "gender");
+        table_header += insertHeader(type, "tribe");
+        table_header += insertHeader(type, "profession");
+        table_header += insertHeader(type, "nationality");
+        table_header += insertHeader(type, "type");
         table_header += insertHeader(type, "book_start");
         table_header += insertHeader(type, "book_end");
         table_header += insertHeader(type, "num_chapters");
@@ -1361,6 +1342,13 @@ function insertItems(type, result) {
             table_data += insertData(type, "descr", data);
             table_data += insertData(type, "length", data);
             table_data += insertData(type, "date", data);
+            table_data += insertData(type, "age", data);
+            table_data += insertData(type, "parent_age", data);
+            table_data += insertData(type, "gender", data);
+            table_data += insertData(type, "tribe", data);
+            table_data += insertData(type, "profession", data);
+            table_data += insertData(type, "nationality", data);
+            table_data += insertData(type, "type", data);
             table_data += insertData(type, "book_start", data);
             table_data += insertData(type, "book_end", data);
             table_data += insertData(type, "num_chapters", data);
@@ -1419,11 +1407,23 @@ function insertData(type, name, data) {
     var table_data = "";
     if (types.includes(type)) {
         if (name === "name") {
-            table_data = '<th scope="row">' + data[name] + '</th>';
+            table_data = '<th scope="row">' + data["name"] + '</th>';
         } else if (name === "link") {
-            table_data = '<td>' + getLinkToItem(type, data.id, "self") + '</td>';
+            table_data = '<td>' + getLinkToItem(type, data["id"], "self") + '</td>';
         } else if (name === "length") {
-            table_data = '<td>' + timeToString(data.length) + '</td>';
+            table_data = '<td>' + timeToString(data["length"]) + '</td>';
+        } else if (name === "parent_age") {
+            if ((data["father_age"] !== "-1") && (data["mother_age"] !== -1)) {
+                table_data = '<td>' + data["father_age"] + ', ' + data["mother_age"] + '</td>';
+            } else {
+                table_data = '<td>' + Math.max(data["father_age"], data["mother_age"]) + '</td>';
+            } 
+        } else if (name === "gender") {
+            table_data = '<td>' + getGender(data["gender"]) + '</td>';
+        } else if (name === "tribe") {
+            table_data = '<td>' + getTribe(data["tribe"]) + '</td>';
+        } else if (name === "type") {
+            table_data = '<td>' + ((type === "locations") ? getTypeLocation(data["type"]) : getTypeSpecial(data["type"])) + '</td>';
         } else if (name === "book_start") {
             table_data = '<td>' + 
                     dict["books.book_" + data["book_start_id"]] + 
@@ -1477,8 +1477,21 @@ function getTypes(name) {
             case "date":
                 types = ["events"];
                 break;
+                
+            case "age":
+            case "parent_age":
+            case "gender":
+            case "tribe":
+            case "profession":
+            case "nationality":
+                types = ["peoples"];
+                break;
         }
-    } 
+    }  else if ((name === "type") && (session_settings["search_" + name + "_location"])) {
+        types = ["locations"];
+    } else if ((name === "type") && (session_settings["search_" + name + "_special"])) {
+        types = ["specials"];
+    }
     
     return types;
 }

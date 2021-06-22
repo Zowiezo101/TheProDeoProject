@@ -541,11 +541,11 @@ function getWhereStatement($conn, $parameters) {
             if (count($filters_or) > 1) {
                 $sql_or_parts = [];
                 for ($j = 0; $j < count($filters_or); $j++) {
-                    $sql_or_parts[] = convertFilterToSql($conn, $filters_or[$j]);
+                    $sql_or_parts[] = convertFilterToSql($conn, $parameters->table, $filters_or[$j]);
                 }
                 $sql_and_parts[] = "(".implode(" OR ", $sql_or_parts).")";
             } else {
-                $sql_and_parts[] = convertFilterToSql($conn, $filters_or[0]);
+                $sql_and_parts[] = convertFilterToSql($conn, $parameters->table, $filters_or[0]);
             }
         }
         $where_sql_parts[] = implode(" AND ", $sql_and_parts);
@@ -831,7 +831,7 @@ function getDefaultColumns($parameters) {
     return $columns;
 }
 
-function convertFilterToSql($conn, $filter) {
+function convertFilterToSql($conn, $type, $filter) {
     $sql = "";
     
     // Divide filter into 3 pieces
@@ -839,32 +839,44 @@ function convertFilterToSql($conn, $filter) {
     $option = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[1]);
     $value  = trim(preg_split('/(!=|=|<>|>=|>|<=|<|!%|%)/', $filter, -1, PREG_SPLIT_DELIM_CAPTURE)[2]);
     
-    switch($option) {
-        case "=":
-        case ">=":
-        case "<=":
-        case ">":
-        case "<":
-            $sql = $column.$option."'".mysqli_real_escape_string($conn, $value)."'";
-            break;
-        
-        case "!=":
-            $sql = $column."<>'".mysqli_real_escape_string($conn, $value)."'";
-            break;
-        
-        case "<>":
-            $value1 = trim(explode('-', $value)[0]);
-            $value2 = trim(explode('-', $value)[1]);
-            $sql = $column." BETWEEN '".mysqli_real_escape_string($conn, $value1)."' AND '".mysqli_real_escape_string($conn, $value2)."'";
-            break;
-        
-        case "%":
-            $sql = $column." LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
-            break;
-        
-        case "!%":
-            $sql = $column." NOT LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
-            break;
+    if ($column == "gender" && $value == "3") {
+        // We want all options
+        $sql = "gender in (0, 1, 2)";
+    } elseif ($column == "tribe" && $value == "13") {
+        // We want all options
+        $sql = "tribe in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)";
+    } elseif ($column == "type" && $type == "locations" && $value == "10") {
+        $sql = "type in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)";
+    } elseif ($column == "type" && $type == "specials" && $value == "8") {
+        $sql = "type in (0, 1, 2, 3, 4, 5, 6, 7)";
+    } else {
+        switch($option) {
+            case "=":
+            case ">=":
+            case "<=":
+            case ">":
+            case "<":
+                $sql = $column.$option."'".mysqli_real_escape_string($conn, $value)."'";
+                break;
+
+            case "!=":
+                $sql = $column."<>'".mysqli_real_escape_string($conn, $value)."'";
+                break;
+
+            case "<>":
+                $value1 = trim(explode('-', $value)[0]);
+                $value2 = trim(explode('-', $value)[1]);
+                $sql = $column." BETWEEN '".mysqli_real_escape_string($conn, $value1)."' AND '".mysqli_real_escape_string($conn, $value2)."'";
+                break;
+
+            case "%":
+                $sql = $column." LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
+                break;
+
+            case "!%":
+                $sql = $column." NOT LIKE '%".mysqli_real_escape_string($conn, $value)."%'";
+                break;
+        }
     }
     
     return $sql;
