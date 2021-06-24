@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* global fetch */
+/* global fetch, base_url */
 
 /**
  * getData(table, id, options)
@@ -27,7 +27,7 @@
  * 
  */
 function getData(table, id, options) {
-    var url = "http://localhost/web/api/" + table;
+    var url = base_url + "/web/api/" + table + ".php";
     var query = getQuery({"id": id, "options": options});
     
     return fetch(url + query, {
@@ -39,7 +39,7 @@ function getData(table, id, options) {
 }
 
 function postData(table, data) {
-    var url = "http://localhost/web/api/" + table;
+    var url = base_url + "/web/api/" + table + ".php";
     var params = getParams({"data": data});
     
     return fetch(url, {
@@ -53,7 +53,7 @@ function postData(table, data) {
 }
 
 function putData(table, id, data) {
-    var url = "http://localhost/web/api/" + table;
+    var url = base_url + "/web/api/" + table + ".php";
     var params = getParams({"id": id, "data": data});
     
     return fetch(url, {
@@ -67,7 +67,7 @@ function putData(table, id, data) {
 }
 
 function deleteData(table, id) {
-    var url = "http://localhost/web/api/" + table;
+    var url = base_url + "/web/api/" + table + ".php";
     var params = getParams({"id": id});
     
     return fetch(url, {

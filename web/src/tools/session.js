@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* global fetch, session_settings */
+/* global fetch, session_settings, base_url */
 
 function updateSession(parameters, clear=false) {
     
@@ -15,7 +15,7 @@ function updateSession(parameters, clear=false) {
     }
     
     // The base URL
-    var url = 'http://localhost/web/src/tools/session.php';
+    var url = base_url + 'web/src/tools/session.php';
     
     var query_arr = [];
     for (var key in parameters) {

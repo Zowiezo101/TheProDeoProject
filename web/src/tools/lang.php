@@ -133,7 +133,7 @@ if (filter_input(INPUT_GET, "lang") === null) {
     $langs = prefered_language($available_languages, filter_input(INPUT_SERVER, "HTTP_ACCEPT_LANGUAGE"));
     
     // Most prefered language, link to this language
-    header("Location: http://".filter_input(INPUT_SERVER, 'SERVER_NAME')."/".$langs[0]."/", true, 302);
+    header("Location: ".$base_url."/".$langs[0]."/", true, 302);
     
     exit();
 }

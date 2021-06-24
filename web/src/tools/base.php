@@ -1,5 +1,10 @@
 <?php    
     require "src/tools/lang.php";
+    
+// Needed for testing purposes
+$base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ? 
+                "http://localhost" : 
+                "https://prodeodatabase.com";
 
 /* 
  * To change this license header, choose License Headers in Project Properties.
@@ -8,6 +13,7 @@
  */
 
 function setParameters($url) {
+    global $base_url;
     $newUrl = $url;
     
     // TODO: Get languague from window.location.url
@@ -15,10 +21,12 @@ function setParameters($url) {
         $newUrl = filter_input(INPUT_GET, "lang")."/".$url;
     }
     
-    return "http://".filter_input(INPUT_SERVER, 'SERVER_NAME')."/".$newUrl;
+    return $base_url."/".$newUrl;
 }
 
 function insertLanguages() {
+    global $base_url;
+    
     // Get all the currently available languages
     $languages = ["nl", "en"];
     
@@ -31,7 +39,7 @@ function insertLanguages() {
         // TabIndex is purely to get the style as if href was set
         $links[] = "<a tabindex='0' class='font-weight-bold' onclick=\"setLanguage(".
                             "'".$languages[$i]."',".
-                            "'http://".filter_input(INPUT_SERVER, 'SERVER_NAME')."',".
+                            "'".$base_url."',".
                             "'".$uri."')\">".strtoupper($languages[$i])."</a>";
     }
     
@@ -87,6 +95,9 @@ $_SESSION["page_id"] = $id;
             }
         }?>
     };
+    
+    // Needed for testing purposes
+    var base_url = "<?php echo $base_url; ?>";
     
     var page_id = "<?php echo $id; ?>";
 </script>
