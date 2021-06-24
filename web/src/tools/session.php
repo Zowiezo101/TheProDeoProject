@@ -1,6 +1,8 @@
 <?php    
     // Update the session variables to keep them when reloading a page
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
 
     $get_parameters = filter_input_array(INPUT_GET);
     
