@@ -11,7 +11,7 @@ var pageSize = 10;
 function setParameters(url) {
     var newUrl = url;
     
-    // TODO: Get languague from window.location.url
+    // Get languague from window.location.url
     if (get_settings.hasOwnProperty("lang") && get_settings["lang"]) {
         newUrl = "/" + get_settings["lang"] + (url[0] === "/" ? "" : "/") + url;
     }
