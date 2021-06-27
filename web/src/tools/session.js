@@ -15,7 +15,7 @@ function updateSession(parameters, clear=false) {
     }
     
     // The base URL
-    var url = base_url + 'web/src/tools/session.php';
+    var url = base_url + '/web/src/tools/session.php';
     
     var query_arr = [];
     for (var key in parameters) {
@@ -27,7 +27,7 @@ function updateSession(parameters, clear=false) {
         query = "?" + query_arr.join("&");
     }
     
-    for (var key in parameters) {
+    for (key in parameters) {
         if (session_settings.hasOwnProperty(key)) {
             if ((parameters[key] !== "") && (parameters[key] !== "null")) {
                 // Update the value

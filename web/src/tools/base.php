@@ -72,7 +72,7 @@ $_SESSION["page_id"] = $id;
             foreach($_SESSION as $key => $value) {
                 // We don't want all the session settings in here
                 if (!in_array($key, ["page_id", "page_id_old"])) {
-                    echo "'".$key."': '".$value."',\n\t\t";
+                    echo "'".$key."': `".$value."`,\n\t\t";
                 }
             }
         }?>

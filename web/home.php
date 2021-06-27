@@ -21,6 +21,10 @@
         
         // Get the blogs from the database
         getBlogs().then(function(blogs) {
+            if (!blogs.data) {
+                // No blogs
+                return;
+            }
             for(var i = 0; i < blogs.data.length; i++) {
                 // The blog to be added
                 var blog = blogs.data[i];
