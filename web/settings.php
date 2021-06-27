@@ -7,6 +7,7 @@
 
 <script>
     function onLoadSettings() {
+<?php if (isset($_SESSION["login"])) { ?>
         $("#content").append(
             $("<div>").addClass("container-fluid").append(
                 $("<div>").addClass("row")
@@ -16,5 +17,16 @@
                     .append(getTabsContent())
             )
         );
+<?php } else { ?>
+        $("#content").append(
+            $("<div>").addClass("container-fluid").append(
+                $("<div>").addClass("row")
+                    // The column with the tabs
+                    .append(getLoginMenu())
+                    // The column with the selected tabs
+                    .append(getLoginContent())
+            )
+        );
+<?php } ?>
     }
 </script>

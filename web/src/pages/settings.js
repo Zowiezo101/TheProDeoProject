@@ -1,5 +1,30 @@
 
-/* global postBlog */
+/* global postBlog, dict */
+
+function getLoginMenu() {
+    var menu = $("<div>").addClass("col-3").append(`
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item"> <a href="" class="active nav-link" data-toggle="pill" data-target="#tablogin"> LOG IN <i class="fa fa-user-circle text-muted fa-lg"></i></a> </li>
+        </ul>
+    `);
+    
+    return menu;
+}
+
+function getLoginContent() {
+    var content = $("<div>").addClass("col-9").append(
+        $("<div>").addClass("tab-content")
+            // Tab for adding blogs
+            .append(`
+                    <div class="tab-pane fade show active" id="tablogin" role="tabpanel">
+                      <form class="">
+                        ` + dict["settings.overview"] + `
+                      </form>
+                    </div>`)
+    );
+    
+    return content;
+}
 
 function getTabsMenu() {
     var menu = $("<div>").addClass("col-3").append(`
