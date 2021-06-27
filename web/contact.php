@@ -14,6 +14,8 @@
     require "src/phpmailer/Exception.php";
     require "src/phpmailer/SMTP.php";
     require "src/phpmailer/POP3.php";
+    
+    require "../login_data.php";
 
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\Exception;
@@ -32,7 +34,7 @@
         $mail->SMTPDebug = 0;
 
         //Set the hostname of the mail server
-        $mail->Host = 'smtp.gmail.com';
+        $mail->Host = $email_host;
 
         $mail->SMTPOptions = array(
             'ssl' => array(
@@ -55,13 +57,13 @@
         $mail->SMTPAuth = true;
 
         //Username to use for SMTP authentication - use full email address for gmail
-        $mail->Username = "Info.ProDeoProjects@gmail.com";
+        $mail->Username = $email_user;
 
         //Password to use for SMTP authentication
-        $mail->Password = "Info@Notifier";
+        $mail->Password = $email_pass;
 
         //Set who the message is to be sent from
-        $mail->setFrom('Info.ProDeoProjects@gmail.com', 'ProDeo Projects');
+        $mail->setFrom($email_user, 'ProDeo Projects');
 
         //Set an alternative reply-to address
         //$mail->addReplyTo('replyto@example.com', 'First Last');
@@ -100,16 +102,16 @@
         if (session_settings["sent"] && session_settings["sent"] === '1') {
             var contact_form = 
                             '<div class="mx-auto p-4 col-md-6">' +
-                            '    <h2 class="mb-4">' + dict["contact.sent"] + '</h2>' + 
-                            '    <p>Je bericht is verstuurd, dankjewel!</p>' + 
+                            '    <h2 class="mb-4">' + dict["contact.sent_title"] + '</h2>' + 
+                            '    <p>' + dict["contact.sent_message"] + '</p>' + 
                             '</div>';
                                     
             updateSession({sent: null, error: null});
         } else if (session_settings["error"] && session_settings["error"] !== "") {
             contact_form = 
                         '<div class="mx-auto p-4 col-md-6">' + 
-                        '    <h2 class="mb-4">' + dict["contact.error"] + '</h2>' + 
-                        '    <p>Tijdens het versturen van je anonieme bericht, kregen we de volgende foutmelding: ' + session_settings["error"] + '</p>' + 
+                        '    <h2 class="mb-4">' + dict["contact.error_title"] + '</h2>' + 
+                        '    <p>' + dict["contact.error_message"] + session_settings["error"] + '</p>' + 
                         '</div>';
             updateSession({sent: null, error: null});
         } else {
