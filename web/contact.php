@@ -15,7 +15,7 @@
     require "src/phpmailer/SMTP.php";
     require "src/phpmailer/POP3.php";
     
-    require "../login_data.php";
+    require "../../settings.conf";
 
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\Exception;
