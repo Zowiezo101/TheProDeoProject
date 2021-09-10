@@ -4,3 +4,4 @@ web.zip
 nbproject/private/private.xml
 .tmp.drivedownload/*.driveupload
 www.zip
+.tmp.driveupload/*
