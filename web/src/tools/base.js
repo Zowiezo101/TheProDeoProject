@@ -53,6 +53,10 @@ function getLinkToItem(type, id, text, classes="") {
         text = link.substr(get_settings["lang"] ? 4 : 1);
     }
     
+    if (id === null) {
+        link = '#';
+    }
+    
     return '<a href="' + link + '" ' + 
         'class="' + classes + '">' + 
             text + 

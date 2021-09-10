@@ -3,13 +3,13 @@
 /* global dict */
 
 function getPeopleContent(peoples) {
-    if (peoples && (peoples.data.self.length > 0)) {
+    if (peoples) {
         // A person has been selected, show it's information
         $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
-                    <h1 class="mb-3">` + peoples.data.self[0].name + `</h1>
-                    <p class="lead">` + peoples.data.self[0].descr + `</p>
+                    <h1 class="mb-3">` + peoples.name + `</h1>
+                    <p class="lead">` + peoples.description + `</p>
                 </div>
             </div>
             <div class="row">
@@ -18,21 +18,21 @@ function getPeopleContent(peoples) {
                     <div class="table-responsive">
                         <table class="table table-striped table-borderless">
                             <tbody>` +
-                                insertDetail(peoples.data.self[0], 'meaning_name') + 
-                                insertDetailLink(peoples.data, 'parents') +
-                                insertDetail(peoples.data.self[0], 'father_age') + 
-                                insertDetail(peoples.data.self[0], 'mother_age') +
-                                insertDetailLink(peoples.data, 'children') +
-                                insertDetailLink(peoples.data, 'peoples') +
-                                insertDetailLink(peoples.data, 'events') +
-                                insertDetailLink(peoples.data, 'locations') +
-                                insertDetail(peoples.data.self[0], 'age') + 
-                                insertDetail(peoples.data.self[0], 'gender') +
-                                insertDetail(peoples.data.self[0], 'tribe') +
-                                insertDetail(peoples.data.self[0], 'profession') +
-                                insertDetail(peoples.data.self[0], 'nationality') +
-                                insertDetail(peoples.data.self[0], 'book_start') +
-                                insertDetail(peoples.data.self[0], 'book_end') +
+                                insertDetail(peoples, 'meaning_name') + 
+                                insertDetail(peoples, 'father_age') + 
+                                insertDetail(peoples, 'mother_age') +
+                                insertDetailLink(peoples, 'parents') +
+                                insertDetailLink(peoples, 'children') +
+                                insertDetailLink(peoples, 'peoples') +
+                                insertDetailLink(peoples, 'events') +
+                                insertDetailLink(peoples, 'locations') +
+                                insertDetail(peoples, 'age') + 
+                                insertDetail(peoples, 'gender') +
+                                insertDetail(peoples, 'tribe') +
+                                insertDetail(peoples, 'profession') +
+                                insertDetail(peoples, 'nationality') +
+                                insertDetail(peoples, 'book_start') +
+                                insertDetail(peoples, 'book_end') +
                             `</tbody>
                         </table>
                     </div>

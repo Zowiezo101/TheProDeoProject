@@ -21,13 +21,13 @@
         
         // Get the blogs from the database
         getBlogs().then(function(blogs) {
-            if (!blogs.data) {
+            if (!blogs.records) {
                 // No blogs
                 return;
             }
-            for(var i = 0; i < blogs.data.length; i++) {
+            for(var i = 0; i < blogs.records.length; i++) {
                 // The blog to be added
-                var blog = blogs.data[i];
+                var blog = blogs.records[i];
                 
                 // Add the blog to the container
                 addBlogToContainer(div_container, blog);

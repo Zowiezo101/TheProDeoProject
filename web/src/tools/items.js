@@ -101,7 +101,7 @@ function getItemsContent() {
         }
         
         // Get the data of the current item
-        getData(page_id, get_settings["id"], {"to": "all"}).then(getItemContent)
+        getItem(page_id, get_settings["id"]).then(getItemContent)
     } else {
         // No item has been selected, show default information
         var content = $("#item_content").append(`
@@ -128,8 +128,6 @@ function insertAll() {
     insertSorts();
     
     // Insert the list of items and activate the id from the session
-    insertItems();
-    
     // Insert pagination and activate the page from the session
     insertPages();
 }
@@ -175,41 +173,36 @@ function insertSorts() {
 }
 
 /** Insert the list of items and activate the id from the session */
-function insertItems() {
+function insertPages() {
     
     // Get the settings
     var currentPage = session_settings["page"] ? 
                       session_settings["page"] : 0;
-    var currentSort = setSort(session_settings["sort"] ? 
-                              session_settings["sort"] : "");
+    var currentSort = session_settings["sort"] ? 
+                      session_settings["sort"] : "";
     var currentSearch = session_settings["search"] ? 
-            "name % " + session_settings["search"] : "";
+                        session_settings["search"] : "";
 
     // Get a page of items. A page is 10 items long
     // Sort by the chosen sorting method
     // Filter by the search term    
-    getData(page_id, null, {
-        "limit": pageSize,
-        "offset": currentPage*pageSize,
-        "sort": currentSort,
-        "filters": currentSearch
-    }).then(function (result) {
+    getItemPage(page_id,
+        currentPage,
+        currentSort,
+        currentSearch,
+    ).then(function (result) {
         // Start out clean
         $("#item_list").empty();
+        $("#item_pages").empty();
 
-        // No errors and at least 1 item of data
-        if ((result.error == null) && result.data && result.data.length > 0) {
-            
-            // Some variables that depend on the page id
-            // These are the name of the id column and the link to an item
-            var page_id_single = page_id.substr(0, page_id.length - 1);
-            var item_link = "/" + page_id + "/" + page_id_single + "/";
+        // We got results
+        if (result.records) {
 
             // Insert all the items of a page
             for (var i = 0; i < pageSize; i++) {
-                if (i < result.data.length) {
+                if (i < result.records.length) {
                     // Per item
-                    var item_obj = result.data[i];
+                    var item_obj = result.records[i];
                     
                     // Add the active class if the current id 
                     // corresponds with the selected id
@@ -229,50 +222,18 @@ function insertItems() {
                     $("#item_list").append('<a class="list-group-item list-group-item-action invisible"> empty </a>');
                 }
             }
-        } else {
-            // TODO:
-            // Error melding geven dat database niet bereikt kan worden
-            $("#item_list").append(result.error ? result.error : "No results found");
-        }
-    });
-}
-
-/** Insert pagination and activate the page from the session */
-function insertPages() {   
-    
-    // Get the settings
-    var currentPage = session_settings["page"] ? 
-                      session_settings["page"] : 0;
-    var currentSort = setSort(session_settings["sort"] ? 
-                              session_settings["sort"] : "");
-    var currentSearch = session_settings["search"] ? 
-            "name % " + session_settings["search"] : ""; 
-
-    // Count the amount of items
-    // Sort by the chosen sorting method
-    // Filter by the search term
-    getData(page_id, null, {
-        "sort": currentSort,
-        "filters": currentSearch,
-        "calculations": "count"
-    }).then(function (result) {
-
-        // No errors and at least 1 item of data
-        if ((result.error == null) && result.data && result.data.length > 0) {
-            // Start out clean
-            $("#item_pages").empty();
-
-            // Count the amount of pages
-            var count = Math.ceil(result.data[0].count / pageSize);
-            pageCount = count;
-
+            
+            // Insert the paging
+            pageCount = result.paging;
+            
+            // Pagination
             insertFirstPage();
             insertPrevPage();
             insertPage();
             insertNextPage();
             insertLastPage();
 
-            if (count > 1) {
+            if (pageCount > 1) {
                 // pagination
                 $("#item_pagination").css("display", "");
             } else {
@@ -280,6 +241,10 @@ function insertPages() {
                 $("#item_pagination").css("display", "none");
             }
         } else {
+            // TODO:
+            // Error melding geven dat database niet bereikt kan worden
+            $("#item_list").append(result.error ? result.error : "No results found");
+            
             // No pagination
             $("#item_pagination").css("display", "none");
         }
@@ -297,7 +262,6 @@ function searchItems() {
     });
     
     // Recalculate the itemlist and pagination
-    insertItems();
     insertPages();
     
 }
@@ -310,7 +274,6 @@ function setSort0to9() {
     
     // Recalculate the itemlist and pagination
     insertSorts();
-    insertItems();
     insertPages();
 }
 
@@ -322,7 +285,6 @@ function setSort9to0() {
     
     // Recalculate the itemlist and pagination
     insertSorts();
-    insertItems();
     insertPages();
 }
 
@@ -334,7 +296,6 @@ function setSortAtoZ() {
     
     // Recalculate the itemlist and pagination
     insertSorts();
-    insertItems();
     insertPages();
 }
 
@@ -346,33 +307,7 @@ function setSortZtoA() {
     
     // Recalculate the itemlist and pagination
     insertSorts();
-    insertItems();
     insertPages();
-}
-
-function setSort(sort="") {
-    if (sort == "") {
-        // Default sort
-        sort = "0_to_9";
-    }
-    
-    switch(page_id) {
-        case "books":
-            if (sort == "0_to_9") { sort = "order_id asc"; }
-            if (sort == "9_to_0") { sort = "order_id desc"; }
-            if (sort == "a_to_z") { sort = "name asc"; }
-            if (sort == "z_to_a") { sort = "name desc"; }
-            break;
-            
-        default:
-            if (sort == "0_to_9") { sort = "book_start_id asc, book_start_chap asc, book_start_vers asc"; }
-            if (sort == "9_to_0") { sort = "book_start_id desc, book_start_chap desc, book_start_vers desc"; }
-            if (sort == "a_to_z") { sort = "name asc"; }
-            if (sort == "z_to_a") { sort = "name desc"; }
-            break;
-    }
-    
-    return sort
 }
 
 function setPage(page) {
@@ -380,7 +315,6 @@ function setPage(page) {
         updateSession({"page": page});
 
         // Recalculate the booklist and pagination
-        insertItems();
         insertPages();
     }
 }

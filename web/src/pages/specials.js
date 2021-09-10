@@ -3,13 +3,13 @@
 /* global dict */
 
 function getSpecialContent(specials) {
-    if (specials && (specials.data.self.length > 0)) {
+    if (specials) {
         // A special has been selected, show it's information
         $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
-                    <h1 class="mb-3">` + specials.data.self[0].name + `</h1>
-                    <p class="lead">` + specials.data.self[0].descr + `</p>
+                    <h1 class="mb-3">` + specials.name + `</h1>
+                    <p class="lead">` + specials.description + `</p>
                 </div>
             </div>
             <div class="row">
@@ -18,11 +18,11 @@ function getSpecialContent(specials) {
                     <div class="table-responsive">
                         <table class="table table-striped table-borderless">
                             <tbody>` +
-                                insertDetail(specials.data.self[0], 'meaning_name') + 
-                                insertDetail(specials.data.self[0], 'type') + 
-                                insertDetailLink(specials.data, 'events') +
-                                insertDetail(specials.data.self[0], 'book_start') +
-                                insertDetail(specials.data.self[0], 'book_end') +
+                                insertDetail(specials, 'meaning_name') + 
+                                insertDetail(specials, 'type') + 
+                                insertDetailLink(specials, 'events') +
+                                insertDetail(specials, 'book_start') +
+                                insertDetail(specials, 'book_end') +
                             `</tbody>
                         </table>
                     </div>

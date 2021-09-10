@@ -7,39 +7,31 @@
 /* global fetch, base_url */
 
 /**
- * getData(table, id, options)
+ * getData(table, type, data)
  * @param {String} table
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
+ * @param {String} type
+ * @param {Object} data
  *  
  *  @return {Promise}
- *  
- *  getBooks()
- *  getPeoples()
- *  getEvents()
- *  getLocations()
- *  getSpecials()
- *  getActivities()
- *  getBlogs()
  * 
  */
-function getData(table, id, options) {
-    var url = base_url + "/web/api/" + table + ".php";
-    var query = getQuery({"id": id, "options": options});
+function getData(table, type, data) {
+    var url = base_url + "/web/APIv2/" + table + "/" + type + ".php";
+    var query = getQuery(data);
     
     return fetch(url + query, {
             method: 'GET'
         }
     ).then(
-        response => response.json()
-    );
+        response => response.text()
+    ).then (function (response) {
+        console.log(response);
+        return JSON.parse(response);
+    });
 }
 
 function postData(table, data) {
-    var url = base_url + "/web/api/" + table + ".php";
+    var url = base_url + "/web/APIv2/" + table + "/create.php";
     var params = getParams({"data": data});
     
     return fetch(url, {
@@ -81,24 +73,12 @@ function deleteData(table, id) {
 }
 
 /**
- * getBlogs(id, options)
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
+ * getBlogs()
  *  
  *  @return {Promise}
  */
-function getBlogs(id, options) {
-    if ((typeof(id) === "undefined") || 
-            (typeof(options) === "undefined")) {
-        options = {
-            sort: ["id desc"],
-            columns: ["id", "title", "text", "user", "date"]
-        };
-    }
-    return getData("blog", id, options);
+function getBlogs() {
+    return getData("blog", "read", {});
 }
 
 function postBlog(title, text, user, date) {
@@ -119,17 +99,53 @@ function deleteBlog(id) {
 }
 
 /**
- * getBooks(id, options)
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
+ * getItemPage(table, page, sort, search)
+ * @param {String} table
+ * @param {Number} page
+ * @param {String} sort
+ * @param {String} filter
  *  
  *  @return {Promise}
  */
-function getBooks(id, options) {
-    return getData("books", id, options);
+function getItemPage(table, page, sort, filter) {
+    return getData(table, "read_paging", {"page": page, "sort": sort, "filter": filter});
+}
+
+/**
+ * getItem(table, id)
+ * @param {String} table
+ * @param {Number} id
+ *  
+ *  @return {Promise}
+ */
+function getItem(table, id) {
+    return getData(table, "read_one", {"id": id});
+}
+
+function getItemsSearch(table) {
+    
+}
+
+/**
+ * getBookPage(page, sort, search)
+ * @param {Number} page
+ * @param {String} sort
+ * @param {String} filter
+ *  
+ *  @return {Promise}
+ */
+function getBookPage(page, sort, filter) {
+    return getItemPage("book", page, sort, filter);
+}
+
+/**
+ * getBook(id)
+ * @param {Number} id
+ *  
+ *  @return {Promise}
+ */
+function getBook(id) {
+    return getItem("book", id);
 }
 
 /**
@@ -210,16 +226,9 @@ function getQuery(params) {
     var query = "";
     
     query = checkAndAddToQuery(query, params, 'id');
-    if (params.options) {
-        query = checkAndAddToQuery(query, params.options, 'columns');
-        query = checkAndAddToQuery(query, params.options, 'filters');
-        query = checkAndAddToQuery(query, params.options, 'sort');
-        query = checkAndAddToQuery(query, params.options, 'limit');
-        query = checkAndAddToQuery(query, params.options, 'offset');
-        query = checkAndAddToQuery(query, params.options, 'calculations');
-        query = checkAndAddToQuery(query, params.options, 'joins');
-        query = checkAndAddToQuery(query, params.options, 'to');
-    }
+    query = checkAndAddToQuery(query, params, 'sort');
+    query = checkAndAddToQuery(query, params, 'page');
+    query = checkAndAddToQuery(query, params, 'filter');
     
     return query;
 }
