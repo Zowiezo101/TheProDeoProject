@@ -12,10 +12,12 @@
             $("<div>").addClass("container-fluid").append(
                 $("<div>").addClass("row")
                     // The column with the menu
-                    .append(getFamilytreeMenu())
+                    .append(getItemsMenu())
                     // The column with the selected content 
-                    .append(getFamilytreeContent())
+                    .append(getContentDiv())
             )
         );
+
+        getItemsContent();
     }
 </script>

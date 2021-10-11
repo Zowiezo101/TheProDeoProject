@@ -47,6 +47,9 @@ function getLinkToItem(type, id, text, classes="") {
     
     var to_table = type;
     var to_item = to_table.substr(0, to_table.length - 1);
+    if (type === "familytree") {
+        to_item = "map";
+    }
     
     var link = setParameters(to_table + "/" + to_item + "/" + id);
     if (text === "self") {

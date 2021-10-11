@@ -8,11 +8,20 @@
         <!-- Extra functionality per page -->
         <script src="/src/pages/<?php echo $id; ?>.js"></script>
         
-<?php if (in_array($id, ["books", "events", "peoples", "locations", "specials"])) { ?>
+<?php if (in_array($id, ["books", "events", "peoples", "locations", "specials", "familytree"])) { ?>
+        <!-- For the sidebar used with many pages -->
         <script src="/src/tools/items.js"></script>
-<?php } if (in_array($id, ["search"])) { ?>
+<?php } ?>
+        
+<?php if (in_array($id, ["search"])) { ?>
+        <!-- Bootstrap slider -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
-<?php }?>
+<?php } ?>
+        
+<?php if (in_array($id, ["familytree"])) { ?>
+        <!-- The family tree maker -->
+        <script type="module" src="/web/src/relatives-tree/index.js"></script>
+<?php } ?>
 
         <!-- Accessing the database -->
         <script src="/src/tools/database.js"></script>

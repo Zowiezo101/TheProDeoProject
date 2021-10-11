@@ -19,6 +19,7 @@ RewriteRule ^([^/]+)/event/([0-9]*)/?$ $1?id=$2 [QSA,DPI]
 RewriteRule ^([^/]+)/people/([0-9]*)/?$ $1?id=$2 [QSA,DPI]
 RewriteRule ^([^/]+)/location/([0-9]*)/?$ $1?id=$2 [QSA,DPI]
 RewriteRule ^([^/]+)/special/([0-9]*)/?$ $1?id=$2 [QSA,DPI]
+RewriteRule ^([^/]+)/map/([0-9]*)/?$ $1?id=$2 [QSA,DPI]
 
 # Making sure files and scripts are linked to correctly
 RewriteCond %{REQUEST_FILENAME} !-d

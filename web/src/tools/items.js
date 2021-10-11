@@ -98,6 +98,10 @@ function getItemsContent() {
             case "specials": 
                 var getItemContent = getSpecialContent;
                 break;
+                
+            case "familytree":
+                var getItemContent = getFamilytreeContent;
+                break;
         }
         
         // Get the data of the current item
