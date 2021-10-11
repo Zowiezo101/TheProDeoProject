@@ -16,7 +16,7 @@
  * 
  */
 function getData(table, type, data) {
-    var url = base_url + "/web/APIv2/" + table + "/" + type + ".php";
+    var url = base_url + "/web/api/" + table + "/" + type + ".php";
     var query = getQuery(data);
     
     return fetch(url + query, {
@@ -31,7 +31,7 @@ function getData(table, type, data) {
 }
 
 function postData(table, data) {
-    var url = base_url + "/web/APIv2/" + table + "/create.php";
+    var url = base_url + "/web/api/" + table + "/create.php";
     var params = getParams({"data": data});
     
     return fetch(url, {

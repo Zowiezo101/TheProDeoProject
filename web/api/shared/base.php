@@ -304,7 +304,7 @@ class ItemBase {
     public function getPeopleToChildren($id) {
         // select all query
         $query = "SELECT
-                    distinct(p.id) as id, p.name
+                    distinct(p.id) as id, p.name, p.gender, p2p.parent_id
                 FROM
                     " . $this->table_peoples . " p
                     LEFT JOIN
@@ -444,6 +444,34 @@ class ItemBase {
         
         // bind variable values
         $stmt->bindParam(1, $id, PDO::PARAM_INT);
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getResults($stmt);
+    }
+    
+    public function getFamilytreeToChildren($ids) {
+        // select all query
+        $query = "SELECT
+                    p.id, p.name, p.gender, p2p.parent_id
+                FROM
+                    " . $this->table_peoples . " p
+                    LEFT JOIN
+                        " . $this->table_p2pa . " p2p
+                            ON p2p.people_id = p.id
+                WHERE
+                    p2p.parent_id in (" . implode(',', $ids /*array_fill(0, count($ids), '?')*/) . ")
+                ORDER BY
+                    p.id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+//        foreach($ids as $idx => $id) {
+//            $stmt->bindParam($idx + 1, $id, PDO::PARAM_STR);
+//        }
 
         // execute query
         $stmt->execute();
