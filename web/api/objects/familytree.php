@@ -122,12 +122,15 @@ class FamilyTree {
         $parent->id = $this->id;
         $parent->readOne();
         
+        $level = 1;
+        
         while (count($child_ids) > 0) {            
             // query to read familytree
-            $children = $this->base->getFamilytreeToChildren($child_ids);
+            $children = $this->base->getFamilytreeToChildren($child_ids, $level);
             $people_arr = array_merge($people_arr, $children);
             
             $child_ids = array_map(function($child) { return $child["id"]; }, $children);
+            $level++;
         }
         
         $this->name = $parent->name;

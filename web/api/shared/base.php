@@ -451,10 +451,11 @@ class ItemBase {
         return $this->getResults($stmt);
     }
     
-    public function getFamilytreeToChildren($ids) {
+    public function getFamilytreeToChildren($ids, $level) {
         // select all query
         $query = "SELECT
-                    p.id, p.name, p.gender, p2p.parent_id
+                    p.id, p.name, p.descr, p.gender, p2p.parent_id,
+                    ".$level." as level, 0 as X, 0 as Y
                 FROM
                     " . $this->table_peoples . " p
                     LEFT JOIN
@@ -463,7 +464,7 @@ class ItemBase {
                 WHERE
                     p2p.parent_id in (" . implode(',', $ids /*array_fill(0, count($ids), '?')*/) . ")
                 ORDER BY
-                    p.id ASC";
+                    p2p.parent_id ASC, p.order_id ASC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
