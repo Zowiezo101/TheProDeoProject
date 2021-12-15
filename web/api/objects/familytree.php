@@ -14,7 +14,7 @@ class FamilyTree {
     public $id;
     public $name;
     public $gender;
-    public $peoples;
+    public $items;
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -132,7 +132,7 @@ class FamilyTree {
         
         $this->name = $parent->name;
         $this->gender = $parent->gender;
-        $this->peoples = $people_arr;
+        $this->items = $people_arr;
     }
 }
 ?>

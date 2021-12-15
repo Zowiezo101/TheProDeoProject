@@ -23,7 +23,7 @@ $item->id = filter_input(INPUT_GET,'id') !== null ? filter_input(INPUT_GET,'id')
 // read the details of item to be edited
 $item->readOne();
   
-if(count($item->peoples) > 0){
+if(count($item->items) > 0){
     // create array
     $array = (array) get_object_vars($item);
   
@@ -39,6 +39,6 @@ else{
     http_response_code(404);
   
     // tell the user item does not exist
-    echo json_encode(array("message" => $Item->item_name . " does not exist."));
+    echo json_encode(array("message" => $item->item_name . " does not exist."));
 }
 ?>
