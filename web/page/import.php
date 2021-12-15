@@ -19,8 +19,14 @@
 <?php } ?>
         
 <?php if (in_array($id, ["familytree"])) { ?>
+        <!-- -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.1/svg.min.js"></script>
+        <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js' query='#map' name='pz'></script>
+        
         <!-- The family tree maker -->
-        <script type="module" src="/web/src/relatives-tree/index.js"></script>
+        <script src="/src/map/calc.js"></script>
+        <script src="/src/map/draw.js"></script>
+        <script src="/src/map/view.js"></script>
 <?php } ?>
 
         <!-- Accessing the database -->
