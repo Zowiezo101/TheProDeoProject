@@ -3,12 +3,14 @@
 var ALIGNMENT_VERTICAL = 0;
 var ALIGNMENT_HORIZONTAL = 1;
 
-var CALC_NONE = 0;
-var CALC_LOCATION = 1;
-var CALC_INDEX = 2;
+var PARENTS_NONE = 0;
+var PARENTS_LOCATION = 1;
+var PARENT_ID_NONE = 2;
+var PARENT_ID_LOCATION = 3;
 
 var g_MapItems = null;
 var g_Options = null;
+var g_ClashedItems = [];
 
 //function prep_DrawLegenda() {
 //    //Legenda
@@ -101,8 +103,6 @@ function setMapItems (map) {
             mapItems.splice(idx, 1);
         }
         
-        delete mapItem.parent_id;
-        
         // Add it to the end of the mapItems array
         mapItems.push(mapItem);
         
@@ -157,6 +157,12 @@ function calcMapItems(options = new Object()) {
         item.calculated = true;
     });
     
+    // Sort the array by ancestors, since those need to be moved
+    sortByAncestor();
+    
+    // Try to solve all the clashes we found
+    g_ClashedItems.forEach(item => solveClash(item));
+    
     return g_MapItems;
     
 }
@@ -197,14 +203,12 @@ function setParents(id, parent_id) {
     
 }
 
-function getChildren(id, calc = CALC_NONE) {
+function getChildren(id, calc) {
     // Get the children of this item
     // First get all the items with this id as parent
-    var items = filterMapItems('parents', id);
-    if (calc === CALC_LOCATION) {
+    var items = filterMapItems([PARENTS_NONE, PARENTS_LOCATION].indexOf(calc) !== -1 ? 'parents' : 'parent_id', id);
+    if ([PARENTS_NONE, PARENT_ID_NONE].indexOf(calc) === -1) {
         items = items.filter(item => item.calculated === true);
-    } else if (calc === CALC_INDEX) {
-        items = items.filter(item => item.indexed !== true);
     }
     var children = items.map(item => item.id);
     
@@ -265,15 +269,18 @@ function getAncestors(id) {
         var parentId = parents.shift();
         var parentItem = getMapItem(parentId);
         
-        var newParents = parentItem.parents;
-        ancestors = ancestors.concat(newParents);
-        parents = parents.concat(newParents);
+        var newParent = parentItem.parent_id;
+        if (newParent !== "-1") {
+            ancestors.push(newParent);
+            parents.push(newParent);
+        }
     }
     
     return ancestors;
 }
 
 function getCommonAncestor(leftId, rightId) {
+    
     var left = getAncestors(leftId);
     var right = getAncestors(rightId);
             
@@ -293,16 +300,16 @@ function getCommonAncestor(leftId, rightId) {
     right.forEach(function(item) {
         // Is this ancestor of the left side of the clash also on the 
         // right side of the clash?
-        var ancestor = getChildren(commonAncestor).indexOf(item);
+        var ancestor = getChildren(commonAncestor, PARENT_ID_NONE).indexOf(item);
         if ((ancestor !== -1) && (rightAncestor === -1)) {
             rightAncestor = item;
         }
     });
     
-    return rightAncestor !== -1 ? getMapItem(rightAncestor) : null;
+    return rightAncestor !== -1 ? getMapItem(rightAncestor) : getMapItem(rightId);
 }
 
-function moveCommonAncestor(offset, parent) {    
+function moveCommonAncestor(offset, parent, right) {    
     // Start offsetting the parent and everything on the right
     var items = getRightLevelSiblings(parent.id);
     
@@ -315,14 +322,17 @@ function moveCommonAncestor(offset, parent) {
         item.X = item.X + offset;
         
         // Get the children as well (only the calculated ones)
-        items = items.concat(getChildren(item.id, CALC_LOCATION));
+        items = items.concat(getChildren(item.id, PARENT_ID_NONE));
     }
+    
+    // Now offset the parents on the right as well until we've reached the common ancestor
+    var items = getRightLevelSiblings(right.id);
 }
 
 function filterMapItems(prop, value) {
 //    return g_MapItems.filter(item => (prop == "parents") ? (item[prop].includes(value)) : (item[prop] === value));
     return g_MapItems.filter(function(item) {
-        return (prop === "parents") ? (item[prop].includes(value)) : (item[prop] === value)
+        return (prop === "parents") ? (item[prop].includes(value)) : (item[prop] === value);
     });
 }
 
@@ -349,18 +359,20 @@ function calcX(item) {
     var X = 0;
     
     // The X depends on the parents to start with
-    if(item.parents.length) {
-        // Get the highest level parent
-        var parent = item.parents.reduce(function(parent1, idx) {
-            var parent2 = getMapItem(idx);
-            
-            return (parent1.level < parent2.level) ? parent2 : parent1;
-        }, getMapItem(item.parents[0]));
+    if(item.parent_id !== "-1") {
+//        // Get the highest level parent
+//        var parent = item.parents.reduce(function(parent1, idx) {
+//            var parent2 = getMapItem(idx);
+//            
+//            return (parent1.level < parent2.level) ? parent2 : parent1;
+//        }, getMapItem(item.parents[0]));
+        var parent = getMapItem(item.parent_id);
         
         // Get the average X coordinate of the parents
-        var avgX = item.parents.reduce(function(avg, idx) {
-            return getMapItem(idx).X + avg;
-        }, 0) / item.parents.length;
+//        var avgX = item.parents.reduce(function(avg, idx) {
+//            return getMapItem(idx).X + avg;
+//        }, 0) / item.parents.length;
+        var avgX = parent.X;
         
         // Number of children of parent
         if (parent.children.length % 2) {  // odd
@@ -402,51 +414,83 @@ function calcX(item) {
     // Does this  X coordinate cause an overlap with the left level sibling?
     var sibling = getLeftLevelSibling(item.id);
 
-    if (item.level < 5 /*|| (item.level == 4 && item.level_index < 25)*/) {
     if (sibling) {
         // The distance needed between left and right
-        var offset = (sibling.X + sibling.width + g_Options.x_dist) - X;
-        
-        if (item.id == "685") {
-            console.log("Abisai!");
-        }
-        if (offset > 0) {            
-            // Move the siblings, and the parent & siblings 
-            // until the overlap is no more
-//                console.log("There is an overlap detected!");
-//                console.log(item);
-//                console.log(sibling);
-
-            // Step 1: Find a common ancestor, and get the child on the 
-            // right side of the clash
+        var offset = (sibling.X + sibling.width + g_Options.x_dist) - X;        
+        if (offset > 0) { 
             var ancestor = getCommonAncestor(sibling.id, item.id);
-
-
-            if (ancestor) {
-                // Step 2: Per child of the ancester, move child and siblings to the right
-                moveCommonAncestor(offset, ancestor);
-            }
-
-            // Now update the coordinates of the item itself
-            X = X + offset;
-
-            // Step 3: Check again
-            // The distance needed between left and right
-            var offset = (sibling.X + sibling.width + g_Options.x_dist) - X;
-            if (offset > 0) {
-                // Something's not right..
-                console.log("There is an overlap detected! Again..");
-                console.log(item);
-                console.log(sibling);
-                console.log(ancestor);
-
-                var ancestor = getCommonAncestor(sibling.id, item.id);
-            }
+            
+            // Save it to solve it later
+            g_ClashedItems.push({
+                right: item.id,
+                left: sibling.id,
+                ancestor: ancestor.id
+            });
         }
-    }
     }
     
     return X;
+}
+
+function sortByAncestor() {
+    g_ClashedItems.sort(function(left, right) {
+        // Get the levels
+        var levelL = getMapItem(left.ancestor).level;
+        var levelR = getMapItem(right.ancestor).level;
+        
+        // Get the level indexes
+        var indexL = getMapItem(left.ancestor).level_index;
+        var indexR = getMapItem(right.ancestor).level_index;
+        
+        // Sort by level (desc) and then by level index (asc)
+        if (levelL !== levelR) {
+            return levelR - levelL;
+        } else if (levelL === levelR) {
+            return indexL - indexR;
+        }
+    });
+    
+    console.log(g_ClashedItems);
+}
+
+function solveClash(item) {
+    // Get the items that are clashing
+    var left = getMapItem(item.left);
+    var right = getMapItem(item.right);
+    
+    // Make sure the clash is still present
+    var offset = (left.X + left.width + g_Options.x_dist) - right.X;  
+    if (offset > 0) {
+        // Move the siblings, and the parent & siblings 
+        // until the overlap is no more
+        console.log("There is an overlap detected! (offset: " + offset + ")");
+//        console.log(left);
+//        console.log(right);
+
+        // Step 1: Find a common ancestor, and get the child on the 
+        // right side of the clash
+        var ancestor = getMapItem(item.ancestor);
+        console.log(ancestor);
+
+        // Step 2: Per child of the ancester, move child and siblings to the right
+        moveCommonAncestor(offset, ancestor, right);
+
+        // Now update the coordinates of the item itself
+//        right.X = right.X + offset;
+
+        // Step 3: Check again
+        // The distance needed between left and right
+        var offset = (left.X + left.width + g_Options.x_dist) - right.X;
+        if (offset > 0) {
+            // Something's not right..
+            console.log("There is an overlap detected! Again..");
+            console.log(right);
+            console.log(left);
+            console.log(ancestor);
+
+            var ancestor = getCommonAncestor(left.id, right.id);
+        }
+    }
 }
 
 

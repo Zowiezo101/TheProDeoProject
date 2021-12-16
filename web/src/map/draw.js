@@ -111,10 +111,10 @@ function drawLink(group, child) {
         child.parents.forEach(function (parent_id) {
             var parent = getMapItem(parent_id);
 
-            group.polyline([[parent.X + parent.width / 2, parent.Y + parent.height], 
-                        [parent.X + parent.width / 2, parent.Y + parent.height + g_Options.y_dist / 2], 
-                        [child.X + child.width / 2, child.Y - g_Options.y_dist / 2], 
-                        [child.X + child.width / 2, child.Y]])
+            group.polyline([[parent.X + parent.width / 3, parent.Y + parent.height], 
+                        [parent.X + parent.width / 3, parent.Y + parent.height + g_Options.y_dist / 3], 
+                        [child.X + child.width / 3, child.Y - g_Options.y_dist / 3], 
+                        [child.X + child.width / 3, child.Y]])
                 .fill('none')
                 .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
                           width: 4, linecap: 'round', linejoin: 'round' });
