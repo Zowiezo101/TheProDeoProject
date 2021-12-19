@@ -325,8 +325,21 @@ function moveCommonAncestor(offset, parent, right) {
         items = items.concat(getChildren(item.id, PARENT_ID_NONE));
     }
     
-    // Now offset the parents on the right as well until we've reached the common ancestor
-    var items = getRightLevelSiblings(right.id);
+    // Now offset the parents on the right as well until we've reached the 
+    // true ancestor
+    var ancestors = getAncestors(parent.id);
+    
+    ancestors.forEach(function(id) {
+        var siblings = getRightLevelSiblings(id);
+        siblings.forEach(function(sibling) {
+            // Not the actual ancestor, just its siblings
+            if (!ancestors.includes(sibling)) {
+                // The actual items themselves
+                var item = getMapItem(sibling);
+                item.X = item.X + offset;
+            }
+        });
+    });
 }
 
 function filterMapItems(prop, value) {
@@ -358,20 +371,11 @@ function calcY(item) {
 function calcX(item) {
     var X = 0;
     
-    // The X depends on the parents to start with
+    // The X depends on the parent
     if(item.parent_id !== "-1") {
-//        // Get the highest level parent
-//        var parent = item.parents.reduce(function(parent1, idx) {
-//            var parent2 = getMapItem(idx);
-//            
-//            return (parent1.level < parent2.level) ? parent2 : parent1;
-//        }, getMapItem(item.parents[0]));
         var parent = getMapItem(item.parent_id);
         
         // Get the average X coordinate of the parents
-//        var avgX = item.parents.reduce(function(avg, idx) {
-//            return getMapItem(idx).X + avg;
-//        }, 0) / item.parents.length;
         var avgX = parent.X;
         
         // Number of children of parent
@@ -463,14 +467,17 @@ function solveClash(item) {
     if (offset > 0) {
         // Move the siblings, and the parent & siblings 
         // until the overlap is no more
-        console.log("There is an overlap detected! (offset: " + offset + ")");
+//        console.log("There is an overlap detected! (offset: " + offset + ")");
+//        console.log("Left: ");
 //        console.log(left);
+//        console.log("Right: ");
 //        console.log(right);
 
         // Step 1: Find a common ancestor, and get the child on the 
         // right side of the clash
         var ancestor = getMapItem(item.ancestor);
-        console.log(ancestor);
+//        console.log("Ancestor: ");
+//        console.log(ancestor);
 
         // Step 2: Per child of the ancester, move child and siblings to the right
         moveCommonAncestor(offset, ancestor, right);
@@ -484,8 +491,11 @@ function solveClash(item) {
         if (offset > 0) {
             // Something's not right..
             console.log("There is an overlap detected! Again..");
-            console.log(right);
+            console.log("Left: ");
             console.log(left);
+            console.log("Right: ");
+            console.log(right);
+            console.log("Ancestor: ");
             console.log(ancestor);
 
             var ancestor = getCommonAncestor(left.id, right.id);
