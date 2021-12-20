@@ -70,20 +70,6 @@ function setMapItems (map) {
     // Max level
     var topLevel = g_MapItems[g_MapItems.length - 1].level;
     
-    // Lets go per level
-    for (var i = 0; i < topLevel; i++) {
-        // Per level, check the level_index of the parents and sort by that
-        var items = filterMapItems('level', i + 1).sort(function(a, b) {
-            var parent_a = getMapItem(a.parent_id);
-            var parent_b = getMapItem(b.parent_id);
-            return parent_a.level_index - parent_b.level_index;
-        });
-        
-        // Now set the level indexes in that order
-        var level_index = 0;
-        items.forEach(item => item.level_index = level_index++);
-    }
-    
     // Remove the duplicates
     g_MapItems = g_MapItems.reduce(function(mapItems, mapItem) {
         
@@ -110,6 +96,28 @@ function setMapItems (map) {
         return mapItems;
     }, []);
     
+    // Lets go per level
+    for (var i = 0; i < topLevel; i++) {
+        // Per level, check the level_index of the parents and sort by that
+        var items = filterMapItems('level', i).sort(function(a, b) {
+            return a.level_index - b.level_index;
+        });
+        
+        // Now get the children
+        var items = items.reduce(function (array, item) {
+            var children = getChildren(item.id, PARENTS_NONE)
+                                .map(child => getMapItem(child));           
+            return array.concat(
+                children.filter((child) => child.level === (item.level + 1))
+            );
+    
+        }, []);
+        
+        // Now set the level indexes in that order
+        var level_index = 0;
+        items.forEach(child => child.level_index = level_index++);
+    }
+    
     // Reorder the mapItems by level and level index
     g_MapItems = g_MapItems.sort(function(a, b) {
         if ((a.level > b.level) || (a.level === b.level && a.level_index > b.level_index)) {
@@ -120,8 +128,6 @@ function setMapItems (map) {
         }
         return 0;
     });
-    
-    console.log(g_MapItems);
     
     return g_MapItems;
 }
@@ -309,7 +315,7 @@ function getCommonAncestor(leftId, rightId) {
     return rightAncestor !== -1 ? getMapItem(rightAncestor) : getMapItem(rightId);
 }
 
-function moveCommonAncestor(offset, parent, right) {    
+function moveCommonAncestor(offset, parent) {    
     // Start offsetting the parent and everything on the right
     var items = getRightLevelSiblings(parent.id);
     
@@ -453,8 +459,6 @@ function sortByAncestor() {
             return indexL - indexR;
         }
     });
-    
-    console.log(g_ClashedItems);
 }
 
 function solveClash(item) {
@@ -465,40 +469,26 @@ function solveClash(item) {
     // Make sure the clash is still present
     var offset = (left.X + left.width + g_Options.x_dist) - right.X;  
     if (offset > 0) {
-        // Move the siblings, and the parent & siblings 
-        // until the overlap is no more
-//        console.log("There is an overlap detected! (offset: " + offset + ")");
-//        console.log("Left: ");
-//        console.log(left);
-//        console.log("Right: ");
-//        console.log(right);
-
         // Step 1: Find a common ancestor, and get the child on the 
         // right side of the clash
         var ancestor = getMapItem(item.ancestor);
-//        console.log("Ancestor: ");
-//        console.log(ancestor);
 
         // Step 2: Per child of the ancester, move child and siblings to the right
-        moveCommonAncestor(offset, ancestor, right);
-
-        // Now update the coordinates of the item itself
-//        right.X = right.X + offset;
+        moveCommonAncestor(offset, ancestor);
 
         // Step 3: Check again
         // The distance needed between left and right
-        var offset = (left.X + left.width + g_Options.x_dist) - right.X;
-        if (offset > 0) {
-            // Something's not right..
-            console.log("There is an overlap detected! Again..");
+        var new_offset = (left.X + left.width + g_Options.x_dist) - right.X;
+        if (new_offset > 0) {
+            // Something's not right.. We've just moved right,
+			// and right is still not far enough..
+            console.log("There is an overlap detected! Again.." + "(offset: " + offset + ", new offset: " + new_offset + ")");
             console.log("Left: ");
             console.log(left);
             console.log("Right: ");
             console.log(right);
             console.log("Ancestor: ");
             console.log(ancestor);
-
-            var ancestor = getCommonAncestor(left.id, right.id);
         }
     }
 }
