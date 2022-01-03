@@ -3,10 +3,8 @@
 var ALIGNMENT_VERTICAL = 0;
 var ALIGNMENT_HORIZONTAL = 1;
 
-var PARENTS_NONE = 0;
-var PARENTS_LOCATION = 1;
-var PARENT_ID_NONE = 2;
-var PARENT_ID_LOCATION = 3;
+var PARENTS = 0;
+var PARENT_ID = 2;
 
 var g_MapItems = null;
 var g_Options = null;
@@ -105,7 +103,7 @@ function setMapItems (map) {
         
         // Now get the children
         var items = items.reduce(function (array, item) {
-            var children = getChildren(item.id, PARENTS_NONE)
+            var children = getChildren(item.id, PARENTS)
                                 .map(child => getMapItem(child));           
             return array.concat(
                 children.filter((child) => child.level === (item.level + 1))
@@ -212,10 +210,7 @@ function setParents(id, parent_id) {
 function getChildren(id, calc) {
     // Get the children of this item
     // First get all the items with this id as parent
-    var items = filterMapItems([PARENTS_NONE, PARENTS_LOCATION].indexOf(calc) !== -1 ? 'parents' : 'parent_id', id);
-    if ([PARENTS_NONE, PARENT_ID_NONE].indexOf(calc) === -1) {
-        items = items.filter(item => item.calculated === true);
-    }
+    var items = filterMapItems(calc === PARENTS ? 'parents' : 'parent_id', id);
     var children = items.map(item => item.id);
     
     // Return the (valid) children
@@ -306,7 +301,7 @@ function getCommonAncestor(leftId, rightId) {
     right.forEach(function(item) {
         // Is this ancestor of the left side of the clash also on the 
         // right side of the clash?
-        var ancestor = getChildren(commonAncestor, PARENT_ID_NONE).indexOf(item);
+        var ancestor = getChildren(commonAncestor, PARENT_ID).indexOf(item);
         if ((ancestor !== -1) && (rightAncestor === -1)) {
             rightAncestor = item;
         }
@@ -328,23 +323,46 @@ function moveCommonAncestor(offset, parent) {
         item.X = item.X + offset;
         
         // Get the children as well (only the calculated ones)
-        items = items.concat(getChildren(item.id, PARENT_ID_NONE));
+        items = items.concat(getChildren(item.id, PARENT_ID));
     }
     
     // Now offset the parents on the right as well until we've reached the 
-    // true ancestor
+    // true ancestor, unless none of these have children..
+    // Right side level siblings don't always need to be moved..
+    // Only those who have children and those on the right of these
     var ancestors = getAncestors(parent.id);
     
+    var siblingParents = [];
     ancestors.forEach(function(id) {
+        // The siblings of these ancestors
         var siblings = getRightLevelSiblings(id);
+        
+        // Only move when any has children
+        var child = false;        
+        var newParents = [];
+        
         siblings.forEach(function(sibling) {
             // Not the actual ancestor, just its siblings
             if (!ancestors.includes(sibling)) {
                 // The actual items themselves
                 var item = getMapItem(sibling);
-                item.X = item.X + offset;
+                
+                // Check if they have children
+                var children = getChildren(item.id, PARENT_ID);
+                if (children.length > 0) {
+                    // Only update it when this item has children
+                    // Otherwise just leave it be
+                    child = true;
+                }
+                
+                if (child || (siblingParents.indexOf(item.parent_id) !== -1)) {
+                    item.X = item.X + offset;
+                    newParents.push(sibling);
+                }
             }
         });
+        
+        siblingParents = newParents;
     });
 }
 
