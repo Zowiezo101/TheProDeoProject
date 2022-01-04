@@ -194,7 +194,7 @@ class People {
         // bind
         $i = 1;
         foreach($params["values"] as $value) {
-            $stmt->bindParam($i++, $value);
+            $stmt->bindValue($i++, $value);
         }
 
         // execute query
