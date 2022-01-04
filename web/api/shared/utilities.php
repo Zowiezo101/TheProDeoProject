@@ -101,11 +101,6 @@ class Utilities{
                     $item_filters[] = "name LIKE ?";
                     $item_params[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
                 }
-                if(property_exists($json_filters, 'id')) {
-                    $item_columns[] = "id";
-                    $item_filters[] = "id LIKE ?";
-                    $item_params[] = "%".htmlspecialchars(strip_tags($json_filters->id))."%";
-                }
                 if(property_exists($json_filters, 'num_chapters')) {
                     $item_columns[] = "num_chapters";
                     $item_filters[] = "num_chapters LIKE ?";
