@@ -1,6 +1,7 @@
 <?php
 
 require_once "../shared/base.php";
+require_once "../shared/utilities.php";
 
 class Special {
   
@@ -149,6 +150,37 @@ class Special {
         $this->book_end_chap = $row['book_end_chap'];
         $this->book_end_vers = $row['book_end_vers'];
         $this->events = $this->base->getSpecialToEvents($this->id);
+    }
+    
+    // search products
+    function search($filters){
+        // utilities
+        $utilities = new Utilities();
+        
+        $params = $utilities->getParams($this->table_name, $filters);
+
+        // select all query
+        $query = "SELECT
+                    " . $params["columns"] . "
+                FROM
+                    " . $this->table_name . " s
+                ". $params["filters"] ."
+                ORDER BY
+                    s.order_id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // bind
+        $i = 0;
+        foreach($params["values"] as $value) {
+            $stmt->bindParam($i++, $value);
+        }
+
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
     }
 }
 ?>

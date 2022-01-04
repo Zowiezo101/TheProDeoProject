@@ -1,6 +1,7 @@
 <?php
 
 require_once "../shared/base.php";
+require_once "../shared/utilities.php";
 
 class Book {
   
@@ -129,5 +130,36 @@ class Book {
         $this->name = $row['name'];
         $this->num_chapters = $row['num_chapters'];
         $this->summary = $row['summary'];
+    }
+    
+    // search products
+    function search($filters){
+        // utilities
+        $utilities = new Utilities();
+        
+        $params = $utilities->getParams($this->table_name, $filters);
+
+        // select all query
+        $query = "SELECT
+                    " . $params["columns"] . "
+                FROM
+                    " . $this->table_name . " b
+                ". $params["filters"] ."
+                ORDER BY
+                    b.order_id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // bind
+        $i = 0;
+        foreach($params["values"] as $value) {
+            $stmt->bindParam($i++, $value);
+        }
+
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 require_once "../shared/base.php";
+require_once "../shared/utilities.php";
 
 class Location {
   
@@ -155,6 +156,37 @@ class Location {
         $this->peoples = $this->base->getLocationToPeoples($this->id);
         $this->events = $this->base->getLocationToEvents($this->id);
         $this->locations = $this->base->getLocationToLocations($this->id);
+    }
+    
+    // search products
+    function search($filters){
+        // utilities
+        $utilities = new Utilities();
+        
+        $params = $utilities->getParams($this->table_name, $filters);
+
+        // select all query
+        $query = "SELECT
+                    " . $params["columns"] . "
+                FROM
+                    " . $this->table_name . " l
+                ". $params["filters"] ."
+                ORDER BY
+                    l.order_id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // bind
+        $i = 0;
+        foreach($params["values"] as $value) {
+            $stmt->bindParam($i++, $value);
+        }
+
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
     }
 }
 ?>

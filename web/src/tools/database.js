@@ -121,101 +121,75 @@ function getItemPage(table, page, sort, filter) {
 function getItem(table, id) {
     return getData(table, "read_one", {"id": id});
 }
-
-function getItemsSearch(table) {
-    
-}
-
 /**
- * getBookPage(page, sort, search)
- * @param {Number} page
- * @param {String} sort
- * @param {String} filter
+ * getItemsSearch(table, filter)
+ * @param {String} table
+ * @param {Object} filter
  *  
  *  @return {Promise}
  */
-function getBookPage(page, sort, filter) {
-    return getItemPage("book", page, sort, filter);
+function getItemsSearch(table, filter) {
+    return getData(table, "search", {"filter": filter});
 }
 
 /**
- * getBook(id)
- * @param {Number} id
+ * searchBook(filter)
+ * @param {Object} filter
  *  
  *  @return {Promise}
  */
-function getBook(id) {
-    return getItem("book", id);
+function searchBooks(filter) {
+    return getItemsSearch("books", filter);
 }
 
 /**
- * getEvents(id, options)
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
- *  
+ * searchEvents(filter)
+ * @param {Object} filter
+ * 
  *  @return {Promise}
  */
-function getEvents(id, options) {
-    return getData("events", id, options);
+function searchEvents(filter) {
+    return getItemsSearch("events", filter);
 }
 
 /**
- * getActivities(id, options)
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
- *  
+ * searchActivities(filter)
+ * @param {Object} filter
+ * 
  *  @return {Promise}
  */
-function getActivities(id, options) {
-    return getData("activitys", id, options);
+function searchActivities(filter) {
+    return getItemsSearch("activitys", filter);
 }
 
 /**
- * getPeoples(id, options)
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
+ * searchPeoples(filter)
+ * @param {Object} filter
  *  
  *  @return {Promise}
  */
-function getPeoples(id, options) {
-    return getData("peoples", id, options);
+function searchPeoples(filter) {
+    return getItemsSearch("peoples", filter);
 }
 
 /**
- * getLocations(id, options)
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
+ * searchLocations(filter)
+ * @param {Object} filter
  *  
  *  @return {Promise}
  */
-function getLocations(id, options) {
-    return getData("locations", id, options);
+function searchLocations(filter) {
+    return getItemsSearch("locations", filter);
 }
 
 /**
- * getSpecials(id, options)
- * @param {String} id
- * @param options
- *  - Filter
- *  - Columns to return
- *  - Calculations to return
+ * searchSpecials(filter)
+ * @param {Object} filter
  *  
  *  @return {Promise}
  */
-function getSpecials(id, options) {
-    return getData("specials", id, options);
+function searchSpecials(filter) {
+    return getItemsSearch("specials", filter);
 }
 
 /**
@@ -244,16 +218,6 @@ function getParams(params) {
     
     params_json = checkAndAddToParams(params_json, params, 'id');
     params_json = checkAndAddToParams(params_json, params, 'data');
-    if (params.options) {
-        params_json = checkAndAddToParams(params_json, params.options, 'columns');
-        params_json = checkAndAddToParams(params_json, params.options, 'filters');
-        params_json = checkAndAddToParams(params_json, params.options, 'sort');
-        params_json = checkAndAddToParams(params_json, params.options, 'limit');
-        params_json = checkAndAddToParams(params_json, params.options, 'offset');
-        params_json = checkAndAddToParams(params_json, params.options, 'calculations');
-        params_json = checkAndAddToParams(params_json, params.options, 'joins');
-        params_json = checkAndAddToParams(params_json, params.options, 'to');
-    }
     
     return params_json;
 }

@@ -1,4 +1,5 @@
-/* global session_settings, dict, getBooks, getEvents, getPeoples, getLocations, getSpecials */
+
+/* global dict, session_settings, searchBooks, searchEvents, searchPeoples, searchLocations, searchSpecials */
 
 // The elements that need initializing
 var elementInit = {
@@ -817,13 +818,11 @@ function insertSearch() {
             session_settings["search_type_special"] : -1);
             
     // Sliders     
-    getBooks(null, {
-        'calculations': ["min_num_chapters", "max_num_chapters"]
-    }).then(function(result) {
+    searchBooks(JSON.stringify({"sliders": ["chapters"]})).then(function(result) {
         
         // No errors and at least 1 item of data
-        if ((result.error === null) && result.data && result.data.length > 0) {
-            var data = result.data[0];
+        if (result.records) {
+            var data = result.records[0];
             var max = parseInt(data["max_num_chapters"], 10);
             var min = parseInt(Math.max(data["min_num_chapters"], 1), 10);
             
@@ -854,14 +853,12 @@ function insertSearch() {
         }
     });
     
-    getEvents(null, {
-        'calculations': ["min_length", "max_length"]
-    }).then(function(result) {
+    searchEvents(JSON.stringify({'sliders': ["length"]})).then(function(result) {
         
         // No errors and at least 1 item of data
-        if ((result.error === null) && result.data && result.data.length > 0) { 
-            var data = result.data[0];
-            var max = parseInt(data["max_length"], 10);
+        if (result.records) { 
+            var data = result.records[0];
+            var max = parseInt(Math.max(data["max_length"], 1), 10);
             var min = parseInt(Math.max(data["min_length"], 1), 10);
             
             console.log("Min: " + min + "\nMax: " + max);
@@ -898,20 +895,18 @@ function insertSearch() {
         }
     });
     
-    getPeoples(null, {
-        'calculations': [
-            "min_age", "max_age",
-            "min_father_age", "max_father_age",
-            "min_mother_age", "max_mother_age"]
-    }).then(function(result) {
+    searchPeoples(JSON.stringify({'sliders': 
+            ["age",
+             "parent_age"]
+    })).then(function(result) {
         
         // No errors and at least 1 item of data
-        if ((result.error === null) && result.data && result.data.length > 0) { 
-            var data = result.data[0];
+        if (result.records) { 
+            var data = result.records[0];
             var max1 = parseInt(Math.max(data["max_age"], 1), 10);
             var min1 = parseInt(Math.max(data["min_age"], 1), 10);
-            var max2 = parseInt(Math.max(data["max_father_age"], data["max_mother_age"], 1), 10);
-            var min2 = parseInt(Math.max(Math.min(data["min_father_age"], data["min_mother_age"]), 1), 10);
+            var max2 = parseInt(Math.max(data["max_parent_age"], 1), 10);
+            var min2 = parseInt(Math.max(data["min_parent_age"], 1), 10);
             
             // Set the max and min values
             var slider_age = $("#item_age").slider({
@@ -969,103 +964,67 @@ function insertSearch() {
 function insertResults() {
     // Get the data of the books, events, peoples, locations & specials 
     // using the search terms
-    getBooks(null, {
-        "columns": getSearchTerms("books").columns,
-        "filters": getSearchTerms("books").filters
-    }).then(function(result) { insertItems("books", result); });
-
-    getEvents(null, {
-        "columns": getSearchTerms("events").columns,
-        "filters": getSearchTerms("events").filters
-    }).then(function(result) { insertItems("events", result); });
-    
-    getPeoples(null, {
-        "columns": getSearchTerms("peoples").columns,
-        "filters": getSearchTerms("peoples").filters
-    }).then(function(result) { insertItems("peoples", result); });
-    
-    getLocations(null, {
-        "columns": getSearchTerms("locations").columns,
-        "filters": getSearchTerms("locations").filters
-    }).then(function(result) { insertItems("locations", result); });
-    
-    getSpecials(null, {
-        "columns": getSearchTerms("specials").columns,
-        "filters": getSearchTerms("specials").filters
-    }).then(function(result) { insertItems("specials", result); });
+    searchBooks(getSearchTerms("books")).then(function(result) { insertItems("books", result); });
+    searchEvents(getSearchTerms("events")).then(function(result) { insertItems("events", result); });
+    searchPeoples(getSearchTerms("peoples")).then(function(result) { insertItems("peoples", result); });
+    searchLocations(getSearchTerms("locations")).then(function(result) { insertItems("locations", result); });
+    searchSpecials(getSearchTerms("specials")).then(function(result) { insertItems("specials", result); });
 }
 
 /** Get all the filters in API compatible format */
 function getFilters() {
     // Get all the search terms, and use them to filter out results
     var name =          session_settings["search_name"] ? 
-            "name % " + session_settings["search_name"] : "";
-    var meaning_name =          session_settings["search_meaning_name"] ? 
-            "meaning_name % " + session_settings["search_meaning_name"] : "";
-    var descr =          session_settings["search_descr"] ? 
-            "descr % " + session_settings["search_descr"] : "";
+                        session_settings["search_name"] : "";
+    var meaning_name =  session_settings["search_meaning_name"] ? 
+                        session_settings["search_meaning_name"] : "";
+    var descr =         session_settings["search_descr"] ? 
+                        session_settings["search_descr"] : "";
             
     // First appearance
-    var start_book =              session_settings["search_start_book"] ? 
-            "book_start_id >= " + session_settings["search_start_book"] : "";
-    var start_chap =                session_settings["search_start_chap"] ? 
-            "book_start_chap >= " + session_settings["search_start_chap"] : "";
+    var start_book =    session_settings["search_start_book"] ? 
+                        session_settings["search_start_book"] : "";
+    var start_chap =    session_settings["search_start_chap"] ? 
+                        session_settings["search_start_chap"] : "";
     
     // Last appearance
-    var end_book =              session_settings["search_end_book"] ? 
-            "book_end_id <= " + session_settings["search_end_book"] : "";
-    var end_chap =                session_settings["search_end_chap"] ? 
-            "book_end_chap <= " + session_settings["search_end_chap"] : "";
+    var end_book =  session_settings["search_end_book"] ? 
+                    session_settings["search_end_book"] : "";
+    var end_chap =  session_settings["search_end_chap"] ? 
+                    session_settings["search_end_chap"] : "";
             
     // Sliders
-    var num_chapters =           session_settings["search_num_chapters"] ? 
-            "num_chapters <> " + session_settings["search_num_chapters"] : "";
-    var length =           session_settings["search_length"] ? 
-            "length <> " + session_settings["search_length"] : "";
-    var age =           session_settings["search_age"] ? 
-            "age <> " + session_settings["search_age"] : "";
-    var parent_age =           session_settings["search_parent_age"] ? 
-            "father_age <> " + session_settings["search_parent_age"] + 
-            "mother_age <> " + session_settings["search_parent_age"] : "";
+    var num_chapters =  session_settings["search_num_chapters"] ? 
+                        session_settings["search_num_chapters"] : "";
+    var length =    session_settings["search_length"] ? 
+                    session_settings["search_length"] : "";
+    var age =   session_settings["search_age"] ? 
+                session_settings["search_age"] : "";
+    var parent_age =    session_settings["search_parent_age"] ? 
+                        session_settings["search_parent_age"] : "";
             
     // String searches
-    var date =          session_settings["search_date"] ? 
-            "date % " + session_settings["search_date"] : "";
-    var profession =          session_settings["search_profession"] ? 
-            "profession % " + session_settings["search_profession"] : "";
-    var nationality =          session_settings["search_nationality"] ? 
-            "nationality % " + session_settings["search_nationality"] : "";
+    var date =  session_settings["search_date"] ? 
+                session_settings["search_date"] : "";
+    var profession =    session_settings["search_profession"] ? 
+                        session_settings["search_profession"] : "";
+    var nationality =   session_settings["search_nationality"] ? 
+                        session_settings["search_nationality"] : "";
             
     // Dropdown searches
-    var gender =          session_settings["search_gender"] ? 
-            "gender = " + session_settings["search_gender"] : "";
-    var tribe =          session_settings["search_tribe"] ? 
-            "tribe = " + session_settings["search_tribe"] : "";
+    var gender =    session_settings["search_gender"] ? 
+                    session_settings["search_gender"] : "";
+    var tribe = session_settings["search_tribe"] ? 
+                session_settings["search_tribe"] : "";
     var type_location = session_settings["search_type_location"] ? 
-            "type = " + session_settings["search_type_location"] : "";
+                        session_settings["search_type_location"] : "";
     var type_special =  session_settings["search_type_special"] ? 
-            "type = " + session_settings["search_type_special"] : "";
-            
-    // First & Last appearance
-    var book_ids = "";
-    if (session_settings["search_start_book"] && 
-        session_settings["search_end_book"]) {
-        var book_ids = "id <> " + 
-                session_settings["search_start_book"] + "-" + 
-                session_settings["search_end_book"];
-    } else if (session_settings["search_start_book"]) {
-        var book_ids =     session_settings["search_start_book"] ? 
-                "id >= " + session_settings["search_start_book"] : "";
-    } else if (session_settings["search_end_book"]) {
-        var book_ids =     session_settings["search_end_book"] ? 
-                "id <= " + session_settings["search_end_book"] : "";
-    }
+                        session_settings["search_type_special"] : "";
             
     return {
         "name": name,
         "meaning_name": meaning_name,
         "descr": descr,
-        "book_ids": book_ids,
         "start_book": start_book,
         "start_chap": start_chap,
         "end_book": end_book,
@@ -1088,24 +1047,17 @@ function getFilters() {
  * @param {String} type
  * */
 function getSearchTerms(type) {
-    var search_terms = {};
-    var extra_columns = [];
-    
+    var search_terms = {};    
     var filter = getFilters();
     
     switch(type) {
         case "books":
-            extra_columns = ["num_chapters"];
             search_terms["name"] = filter.name;
             search_terms["id"] = filter.book_ids;
             search_terms["num_chapters"] = filter.num_chapters;
             break;
             
         case "events":
-            extra_columns = [
-                "book_start_id", "book_start_chap", "book_start_vers",
-                "book_end_id", "book_end_chap", "book_end_vers"
-            ];
             search_terms["name"] = filter.name;
             search_terms["descr"] = filter.descr;
             search_terms["length"] = filter.length;
@@ -1117,10 +1069,6 @@ function getSearchTerms(type) {
             break;
             
         case "peoples":
-            extra_columns = [
-                "book_start_id", "book_start_chap", "book_start_vers",
-                "book_end_id", "book_end_chap", "book_end_vers"
-            ];
             search_terms["name"] = filter.name;
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
@@ -1138,10 +1086,6 @@ function getSearchTerms(type) {
             break;
             
         case "locations":
-            extra_columns = [
-                "book_start_id", "book_start_chap", "book_start_vers",
-                "book_end_id", "book_end_chap", "book_end_vers"
-            ];
             search_terms["name"] = filter.name;
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
@@ -1153,10 +1097,6 @@ function getSearchTerms(type) {
             break;
             
         case "specials":
-            extra_columns = [
-                "book_start_id", "book_start_chap", "book_start_vers",
-                "book_end_id", "book_end_chap", "book_end_vers"
-            ];
             search_terms["name"] = filter.name;
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
@@ -1175,12 +1115,7 @@ function getSearchTerms(type) {
         }
     }
     
-    return {
-        "columns": extra_columns.concat(
-                    Object.keys(search_terms)
-                ).join(", "),
-        "filters": Object.values(search_terms).join(", ")
-    };
+    return JSON.stringify(Object.values(search_terms));
 }
 
 /** Updating the session settings and performing the search */
@@ -1312,7 +1247,7 @@ function insertItems(type, result) {
     $("#tab" + type).empty();
     
     // No errors and at least 1 item of data
-    if ((result.error === null) && result.data && result.data.length > 0) {
+    if (result.records) {
         
         // Table header is the name
         var table_header = insertHeader(type, "name");
@@ -1333,8 +1268,8 @@ function insertItems(type, result) {
         table_header += insertHeader(type, "link");
         
         var table_row = [];
-        for (var i = 0; i < result.data.length; i++) {
-            var data = result.data[i];
+        for (var i = 0; i < result.records.length; i++) {
+            var data = result.records[i];
             
             // Table header is the name
             var table_data = insertData(type, "name", data);

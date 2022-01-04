@@ -1,6 +1,7 @@
 <?php
 
 require_once "../shared/base.php";
+require_once "../shared/utilities.php";
 
 class Event {
   
@@ -158,5 +159,36 @@ class Event {
         $this->specials = $this->base->getEventToSpecials($this->id);
         $this->next = $this->base->getEventToChildren($this->id);
         $this->previous = $this->base->getEventToParents($this->id);
+    }
+    
+    // search products
+    function search($filters){
+        // utilities
+        $utilities = new Utilities();
+        
+        $params = $utilities->getParams($this->table_name, $filters);
+
+        // select all query
+        $query = "SELECT
+                    " . $params["columns"] . "
+                FROM
+                    " . $this->table_name . " e
+                ". $params["filters"] ."
+                ORDER BY
+                    e.order_id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // bind
+        $i = 0;
+        foreach($params["values"] as $value) {
+            $stmt->bindParam($i++, $value);
+        }
+
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
     }
 }
