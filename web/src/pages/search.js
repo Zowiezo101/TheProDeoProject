@@ -1115,7 +1115,7 @@ function getSearchTerms(type) {
         }
     }
     
-    return JSON.stringify(Object.values(search_terms));
+    return JSON.stringify(search_terms);
 }
 
 /** Updating the session settings and performing the search */
