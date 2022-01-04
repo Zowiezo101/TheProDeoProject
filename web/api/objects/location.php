@@ -178,7 +178,7 @@ class Location {
         $stmt = $this->conn->prepare($query);
 
         // bind
-        $i = 0;
+        $i = 1;
         foreach($params["values"] as $value) {
             $stmt->bindParam($i++, $value);
         }
