@@ -44,7 +44,7 @@ class Utilities{
         // The filters to be applied on the database
         $item_columns = array();
         $item_filters = array();
-        $item_params = array();
+        $item_values = array();
         $item_params["filters"] = array();
         $item_params["values"] = array();
         $item_params["columns"] = array();
@@ -99,7 +99,7 @@ class Utilities{
         
                 if(property_exists($json_filters, 'name')) {
                     $item_filters[] = "name LIKE ?";
-                    $item_params[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
                 }
                 if(property_exists($json_filters, 'num_chapters')) {
                     
@@ -114,6 +114,7 @@ class Utilities{
         $item_params["columns"] = implode(', ', $item_columns);
         $item_params["filters"] = implode(' AND ', $item_filters) ? 
                         "WHERE " . implode(' AND ', $item_filters) : "";
+        $item_params["values"] = $item_values;
         
         return $item_params;
     }
