@@ -102,10 +102,12 @@ class Utilities{
                     $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
                 }
                 if(property_exists($json_filters, 'num_chapters')) {
+                    $item_filters[] = "num_chapters BETWEEN ? AND ?";
                     
                     // The two chapters to set between
                     $chapters = explode('-', htmlspecialchars(strip_tags($json_filters->num_chapters)), 2);
-                    $item_filters[] = "num_chapters BETWEEN ".$chapters[0]." AND ".$chapters[1];
+                    $item_values[] = $chapters[0];
+                    $item_values[] = $chapters[1];
                 }
             }
         }
