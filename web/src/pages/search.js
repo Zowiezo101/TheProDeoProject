@@ -1062,10 +1062,10 @@ function getSearchTerms(type) {
             search_terms["descr"] = filter.descr;
             search_terms["length"] = filter.length;
             search_terms["date"] = filter.date;
-            search_terms["book_start_id"] = filter.start_book;
-            search_terms["book_start_chap"] = filter.start_chap;
-            search_terms["book_end_id"] = filter.end_book;
-            search_terms["book_end_chap"] = filter.end_chap;
+            search_terms["start_book"] = filter.start_book;
+            search_terms["start_chap"] = filter.start_chap;
+            search_terms["end_book"] = filter.end_book;
+            search_terms["end_chap"] = filter.end_chap;
             break;
             
         case "peoples":
@@ -1079,10 +1079,10 @@ function getSearchTerms(type) {
             search_terms["tribe"] = filter.tribe;
             search_terms["profession"] = filter.profession;
             search_terms["nationality"] = filter.nationality;
-            search_terms["book_start_id"] = filter.start_book;
-            search_terms["book_start_chap"] = filter.start_chap;
-            search_terms["book_end_id"] = filter.end_book;
-            search_terms["book_end_chap"] = filter.end_chap;
+            search_terms["start_book"] = filter.start_book;
+            search_terms["start_chap"] = filter.start_chap;
+            search_terms["end_book"] = filter.end_book;
+            search_terms["end_chap"] = filter.end_chap;
             break;
             
         case "locations":
@@ -1090,10 +1090,10 @@ function getSearchTerms(type) {
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
             search_terms["type"] = filter.type_location;
-            search_terms["book_start_id"] = filter.start_book;
-            search_terms["book_start_chap"] = filter.start_chap;
-            search_terms["book_end_id"] = filter.end_book;
-            search_terms["book_end_chap"] = filter.end_chap;
+            search_terms["start_book"] = filter.start_book;
+            search_terms["start_chap"] = filter.start_chap;
+            search_terms["end_book"] = filter.end_book;
+            search_terms["end_chap"] = filter.end_chap;
             break;
             
         case "specials":
@@ -1101,10 +1101,10 @@ function getSearchTerms(type) {
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
             search_terms["type"] = filter.type_special;
-            search_terms["book_start_id"] = filter.start_book;
-            search_terms["book_start_chap"] = filter.start_chap;
-            search_terms["book_end_id"] = filter.end_book;
-            search_terms["book_end_chap"] = filter.end_chap;
+            search_terms["start_book"] = filter.start_book;
+            search_terms["start_chap"] = filter.start_chap;
+            search_terms["end_book"] = filter.end_book;
+            search_terms["end_chap"] = filter.end_chap;
             break;
     }
     
