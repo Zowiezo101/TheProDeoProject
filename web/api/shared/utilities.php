@@ -101,6 +101,16 @@ class Utilities{
                     $item_filters[] = "name LIKE ?";
                     $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
                 }
+                if(property_exists($json_filters, 'meaning_name')) {
+                    $item_filters[] = "meaning_name LIKE ?";
+                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->meaning_name))."%";
+                    $item_columns[] = "meaning_name";
+                }
+                if(property_exists($json_filters, 'descr')) {
+                    $item_filters[] = "descr LIKE ?";
+                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->descr))."%";
+                    $item_columns[] = "descr";
+                }
                 if(property_exists($json_filters, 'num_chapters')) {
                     $item_filters[] = "num_chapters BETWEEN ? AND ?";
                     
@@ -108,6 +118,36 @@ class Utilities{
                     $chapters = explode('-', htmlspecialchars(strip_tags($json_filters->num_chapters)), 2);
                     $item_values[] = $chapters[0];
                     $item_values[] = $chapters[1];
+                }
+                if(property_exists($json_filters, 'length')) {
+                    $item_filters[] = "length BETWEEN ? AND ?";
+                    
+                    // The two lengths to set between
+                    $lengths = explode('-', htmlspecialchars(strip_tags($json_filters->length)), 2);
+                    $item_values[] = $lengths[0];
+                    $item_values[] = $lengths[1];
+                    $item_columns[] = "length";
+                }
+                if(property_exists($json_filters, 'date')) {
+                    $item_filters[] = "date LIKE ?";
+                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->date))."%";
+                    $item_columns[] = "date";
+                }
+                if(property_exists($json_filters, 'start_book')) {
+                    $item_filters[] = "book_start_id >= ?";
+                    $item_values[] = htmlspecialchars(strip_tags($json_filters->start_book));
+                }
+                if(property_exists($json_filters, 'start_chap')) {
+                    $item_filters[] = "book_start_chap >= ?";
+                    $item_values[] = htmlspecialchars(strip_tags($json_filters->start_chap));
+                }
+                if(property_exists($json_filters, 'end_book')) {
+                    $item_filters[] = "book_end_id <= ?";
+                    $item_values[] = htmlspecialchars(strip_tags($json_filters->end_book));
+                }
+                if(property_exists($json_filters, 'end_chap')) {
+                    $item_filters[] = "book_end_chap <= ?";
+                    $item_values[] = htmlspecialchars(strip_tags($json_filters->end_chap));
                 }
             }
         }
