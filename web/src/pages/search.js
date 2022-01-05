@@ -602,8 +602,8 @@ function insertChapters(type) {
     if (!elementInit[type]) {
         // Setting back the selected chapter from the session
         $("#item_" + type + "_chap").val(
-                session_settings["search_start_chap"] ? 
-                session_settings["search_start_chap"] : -1);
+                session_settings["search_" + type + "_chap"] ? 
+                session_settings["search_" + type + "_chap"] : -1);
                 
         // Done initializing this dropdown
         elementInit[type] = true;
@@ -1126,9 +1126,7 @@ function searchItems() {
         "search_meaning_name": $("#item_meaning_name").val(),
         "search_descr": $("#item_descr").val(),
         "search_start_book": $("#item_start_book").val(),
-        "search_start_chap": $("#item_start_chap").val(),
         "search_end_book": $("#item_end_book").val(),
-        "search_end_chap": $("#item_end_chap").val(),
         "search_specific": $("#item_specific").val(),
         "search_date": $("#item_date").val(),
         "search_gender": $("#item_gender").val(),
@@ -1166,6 +1164,16 @@ function searchItems() {
         params["search_parent_age"] = 
                 elementEnabled["parent_age"] ? 
                 length.join('-') : "";
+    }
+    
+    if (elementInit["start"]) {
+        var start_chap = $("#item_start_chap").val();
+        params["search_start_chap"] = start_chap;
+    }
+    
+    if (elementInit["end"]) {
+        var end_chap = $("#item_end_chap").val();
+        params["search_end_chap"] = end_chap;
     }
     
     // Update the query to the session
