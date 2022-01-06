@@ -167,42 +167,52 @@ function getTypeLocation(int) {
     
     switch(int) {
         case 0:
+        case "0":
             str = dict["type.well"];
             break;
             
         case 1:
+        case "1":
             str = dict["type.river"];
             break;
             
         case 2:
+        case "2":
             str = dict["type.mountain"];
             break;
             
         case 3:
+        case "3":
             str = dict["type.valley"];
             break;
             
         case 4:
+        case "4":
             str = dict["type.country"];
             break;
             
         case 5:
+        case "5":
             str = dict["type.district"];
             break;
             
         case 6:
+        case "6":
             str = dict["type.county"];
             break;
             
         case 7:
+        case "7":
             str = dict["type.city"];
             break;
             
         case 8:
+        case "8":
             str = dict["type.object"];
             break;
             
         case 9:
+        case "9":
             str = dict["type.unknown"];
             break;
     }
@@ -215,35 +225,43 @@ function getTypeSpecial(int) {
     
     switch(int) {
         case 0:
+        case "0":
             str = dict["type.object"];
             break;
             
         case 1:
+        case "1":
             str = dict["type.idol"];
             break;
             
         case 2:
+        case "2":
             str = dict["type.grave"];
             break;
             
         case 3:
+        case "3":
             str = dict["type.song"];
             break;
             
         case 4:
+        case "4":
             str = dict["type.building"];
             break;
             
         case 5:
+        case "5":
             str = dict["type.creature"];
             break;
             
         case 6:
+        case "6":
             str = dict["type.world"];
             break;
             
         case 7:
-            str = dict["type.object"];
+        case "7":
+            str = dict["type.unknown"];
             break;
     }
     
@@ -255,22 +273,27 @@ function getTypeLink(int) {
     
     switch(int) {
         case 0:
+        case "0":
             str = " (" + dict["type.birth"] + ")";
             break;
             
         case 1:
+        case "1":
             str = " (" + dict["type.living"] + ")";
             break;
             
         case 2:
+        case "2":
             str = " (" + dict["type.death"] + ")";
             break;
             
         case 3:
+        case "3":
             str = " (" + dict["type.founder"] + ")";
             break;
             
         case 4:
+        case "4":
             str = " (" + dict["type.destroyer"] + ")";
             break;
     }

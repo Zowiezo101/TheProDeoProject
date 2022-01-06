@@ -115,17 +115,17 @@ class Utilities{
                     $item_filters[] = "num_chapters BETWEEN ? AND ?";
                     
                     // The two chapters to set between
-                    $chapters = explode('-', htmlspecialchars(strip_tags($json_filters->num_chapters)), 2);
-                    $item_values[] = $chapters[0];
-                    $item_values[] = $chapters[1];
+                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->num_chapters)), 2);
+                    $item_values[] = $items[0];
+                    $item_values[] = $items[1];
                 }
                 if(property_exists($json_filters, 'length')) {
                     $item_filters[] = "length BETWEEN ? AND ?";
                     
                     // The two lengths to set between
-                    $lengths = explode('-', htmlspecialchars(strip_tags($json_filters->length)), 2);
-                    $item_values[] = $lengths[0];
-                    $item_values[] = $lengths[1];
+                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->length)), 2);
+                    $item_values[] = $items[0];
+                    $item_values[] = $items[1];
                     $item_columns[] = "length";
                 }
                 if(property_exists($json_filters, 'date')) {
@@ -133,6 +133,77 @@ class Utilities{
                     $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->date))."%";
                     $item_columns[] = "date";
                 }
+                if(property_exists($json_filters, 'age')) {
+                    $item_filters[] = "age BETWEEN ? AND ?";
+                    
+                    // The two lengths to set between
+                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->age)), 2);
+                    $item_values[] = $items[0];
+                    $item_values[] = $items[1];
+                    $item_columns[] = "age";
+                }
+                if(property_exists($json_filters, 'parent_age')) {
+                    $item_filters[] = "(father_age BETWEEN ? AND ? OR mother_age BETWEEN ? AND ?)";
+                    
+                    // The two lengths to set between
+                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->parent_age)), 2);
+                    $item_values[] = $items[0];
+                    $item_values[] = $items[1];
+                    $item_values[] = $items[0];
+                    $item_values[] = $items[1];
+                    $item_columns[] = "father_age";
+                    $item_columns[] = "mother_age";
+                }
+                if(property_exists($json_filters, 'gender')) {
+                    $item_filters[] = "gender = ?";
+                    $item_values[] = htmlspecialchars(strip_tags($json_filters->gender));
+                    $item_columns[] = "gender";
+                    
+                    if ($json_filters->gender == "3") {
+                        // We want all genders
+                        $item_filters[] = "gender in (0, 1, 2)";
+                        array_pop($item_values);
+                    }
+                }
+                if(property_exists($json_filters, 'tribe')) {
+                    $item_filters[] = "tribe = ?";
+                    $item_values[] = htmlspecialchars(strip_tags($json_filters->tribe));
+                    $item_columns[] = "tribe";
+                    
+                    if ($json_filters->tribe == "13") {
+                        // We want all tribes
+                        $item_filters[] = "tribe in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)";
+                        array_pop($item_values);
+                    }
+                }
+                if(property_exists($json_filters, 'profession')) {
+                    $item_filters[] = "profession LIKE ?";
+                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->profession))."%";
+                    $item_columns[] = "profession";
+                }
+                if(property_exists($json_filters, 'nationality')) {
+                    $item_filters[] = "nationality LIKE ?";
+                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->nationality))."%";
+                    $item_columns[] = "nationality";
+                }
+                if(property_exists($json_filters, 'type')) {
+                    $item_filters[] = "type = ?";
+                    $item_values[] = htmlspecialchars(strip_tags($json_filters->type));
+                    $item_columns[] = "type";
+                    
+                    if (($json_filters->type == "10") && ($type == "locations")) {
+                        // We want all tribes
+                        $item_filters[] = "type in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)";
+                        array_pop($item_values);
+                    }
+                    
+                    if (($json_filters->type == "8") && ($type == "specials")) {
+                        // We want all tribes
+                        $item_filters[] = "type in (0, 1, 2, 3, 4, 5, 6, 7)";
+                        array_pop($item_values);
+                    }
+                }
+            
                 if(property_exists($json_filters, 'start_book')) {
                     $item_filters[] = "book_start_id >= ?";
                     $item_values[] = htmlspecialchars(strip_tags($json_filters->start_book));

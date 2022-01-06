@@ -1073,8 +1073,7 @@ function getSearchTerms(type) {
             search_terms["meaning_name"] = filter.meaning_name;
             search_terms["descr"] = filter.descr;
             search_terms["age"] = filter.age;
-            search_terms["father_age"] = filter.parent_age;
-            search_terms["mother_age"] = filter.parent_age;
+            search_terms["parent_age"] = filter.parent_age;
             search_terms["gender"] = filter.gender;
             search_terms["tribe"] = filter.tribe;
             search_terms["profession"] = filter.profession;
@@ -1356,7 +1355,7 @@ function insertData(type, name, data) {
         } else if (name === "length") {
             table_data = '<td>' + timeToString(data["length"]) + '</td>';
         } else if (name === "parent_age") {
-            if ((data["father_age"] !== "-1") && (data["mother_age"] !== -1)) {
+            if ((data["father_age"] !== "-1") && (data["mother_age"] !== "-1")) {
                 table_data = '<td>' + data["father_age"] + ', ' + data["mother_age"] + '</td>';
             } else {
                 table_data = '<td>' + Math.max(data["father_age"], data["mother_age"]) + '</td>';
