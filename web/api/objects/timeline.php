@@ -1,8 +1,138 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+require_once "../shared/base.php";
 
+class Timeline {
+  
+    // database connection and table name
+    private $conn;
+    private $base;
+    private $table_name = "events";
+    public $item_name = "Timeline";
+  
+    // object properties
+    public $id;
+    public $name;
+    public $gender;
+    public $items;
+  
+    // constructor with $db as database connection
+    public function __construct($db){
+        $this->conn = $db;
+        $this->base = new ItemBase($db);
+    }
+
+    // read products with pagination
+    public function readPaging($from_record_num, $records_per_page, $sort, $filter){        
+        // The sorting for the pages
+        $sort_sql = "e.book_start_id asc, e.book_start_chap asc, e.book_start_vers asc";
+        
+        // If a sort different than the default is given
+        if($sort !== null) { 
+           switch($sort) {
+               case '0_to_9':
+                   $sort_sql = "e.book_start_id asc, e.book_start_chap asc, e.book_start_vers asc";
+                   break;
+               case '9_to_0':
+                   $sort_sql = "e.book_start_id desc, e.book_start_chap desc, e.book_start_vers desc";
+                   break;
+               case 'a_to_z':
+                   $sort_sql = "e.name asc";
+                   break;
+               case 'z_to_a':
+                   $sort_sql = "e.name desc";
+                   break;
+           }
+        }
+        
+        // Filtering on a name
+        $filter_sql = "";
+        if (isset($filter)) {
+            $filter_sql = " WHERE name LIKE ? ";
+            $filter = '%'.$filter.'%';
+        }
+
+        // select query
+        $query = "SELECT
+                    e.id, e.name
+                FROM
+                    " . $this->table_name . " e
+                ".$filter_sql."
+                ORDER BY ".$sort_sql."
+                LIMIT ?, ?";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare( $query );
+
+        // bind variable values
+        $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $from_record_num, PDO::PARAM_INT);
+        $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $records_per_page, PDO::PARAM_INT);
+        if (isset($filter)) {
+            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
+        }
+
+        // execute query
+        $stmt->execute();
+
+        // return values from database
+        return $stmt;
+    }
+    
+    // used for paging products
+    public function count($filter){
+        
+        // Filtering on a name
+        $filter_sql = "";
+        if (isset($filter)) {
+            $filter_sql = " WHERE name LIKE ? ";
+            $filter = '%'.$filter.'%';
+        }
+        
+        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . "
+                    ".$filter_sql;
+
+        $stmt = $this->conn->prepare( $query );
+        
+        if (isset($filter)) {
+            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row['total_rows'];
+    }
+    
+    // used when filling up the update product form
+    function readOne(){
+        
+        // The parent
+        $parent = new Event($this->conn);
+        $parent->id = $this->id;
+        $parent->readOne();
+        
+        // Get all the activities that belong with this event
+        // Take the activities that have no parents
+        // TODO:
+        $activity_ids = $this->base->getTimelineToChildren($this->id);
+        
+        // Repeat same for family tree to get levels as well
+        $child_ids = array($activity_ids);
+        $activity_arr = array();
+        
+        $level = 1;
+        
+        while (count($child_ids) > 0) {            
+            // query to read familytree
+            $children = $this->base->getActivityToChildren($child_ids, $level);
+            $activity_arr = array_merge($activity_arr, $children);
+            
+            $child_ids = array_map(function($child) { return $child["id"]; }, $children);
+            $level++;
+        }
+        
+        $this->name = $parent->name;
+        $this->items = $activity_arr;
+    }
+}
+?>

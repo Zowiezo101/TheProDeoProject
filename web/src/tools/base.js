@@ -47,7 +47,7 @@ function getLinkToItem(type, id, text, classes="") {
     
     var to_table = type;
     var to_item = to_table.substr(0, to_table.length - 1);
-    if (type === "familytree") {
+    if (["familytree", "timeline"].includes(type)) {
         to_item = "map";
     }
     

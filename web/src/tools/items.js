@@ -102,6 +102,10 @@ function getItemsContent() {
             case "familytree":
                 var getItemContent = getFamilytreeContent;
                 break;
+                
+            case "familytree":
+                var getItemContent = getTimelineContent;
+                break;
         }
         
         // Get the data of the current item

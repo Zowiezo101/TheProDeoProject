@@ -1,28 +1,43 @@
-/* global page_id, dict */
+/* global SVG */
 
-function getTimelineMenu() {
-    // T.B.D.
-    var menu = $("<div id='search_menu'>").addClass("col-md-4 col-lg-3").append(`
-        
-    `);
+function getTimelineContent(timeline) {
     
-    return menu;
-}
-
-function getTimelineContent() {
-    // var content = $("<div>").addClass("col-md-8 col-lg-9").append(`
-    var content = $("<div>").addClass("col-12").append(`
-        <div class="row mb-5 pb-5 text-center">
-            <!-- <div class="col-lg-11 px-lg-5 px-md-3"> -->
-            <div class="col-12 px-lg-5 px-md-3">
-                <h1 class="mb-3">` + dict["navigation." + page_id] + `</h1>
-                <p class="lead">` + dict[page_id + ".overview"] + `</p>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%">0%</div>
+    if (timeline) {
+        // An eventhas been selected, show it's information
+        $("#item_content").append(`
+            <div class="row">
+                <div class="col-lg-11 text-center">
+                    <h1 class="mb-3">` + timeline.name + `</h1>
                 </div>
             </div>
-        </div>
-    `);
+            <div class="row" style="height: 100%;">
+                <div class="col-lg-11 text-center">
+                    <div id="map_div">
+                        
+                    </div>
+                </div>
+            </div>
+        `);
+        
+        showMap(timeline);
+
+    } else {
+        // TODO Foutmelding, niet kunnen vinden?
+    }
+}
+
+function showMap(timeline) {
+    // Get the SVG
+    var draw = SVG().addTo('#map_div').size('100%', '100%');  
     
-    return content;
+    if(setSVG(draw)) {
+        setMapItems(timeline);
+        
+        // Calculate all the locations of the familytree
+        calcMapItems();
+
+        // We've got the people and the locations, now time to draw it!
+        drawControlButtons();
+        drawMapItems();
+    }
 }

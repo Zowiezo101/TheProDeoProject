@@ -8,7 +8,7 @@
         <!-- Extra functionality per page -->
         <script src="/src/pages/<?php echo $id; ?>.js"></script>
         
-<?php if (in_array($id, ["books", "events", "peoples", "locations", "specials", "familytree"])) { ?>
+<?php if (in_array($id, ["books", "events", "peoples", "locations", "specials", "familytree", "timeline"])) { ?>
         <!-- For the sidebar used with many pages -->
         <script src="/src/tools/items.js"></script>
 <?php } ?>
