@@ -462,7 +462,7 @@ class ItemBase {
                         " . $this->table_p2pa . " p2p
                             ON p2p.people_id = p.id
                 WHERE
-                    p2p.parent_id in (" . implode(',', $ids /*array_fill(0, count($ids), '?')*/) . ")
+                    p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
                 ORDER BY
                     p2p.parent_id ASC, p.order_id ASC";
 
@@ -470,9 +470,9 @@ class ItemBase {
         $stmt = $this->conn->prepare($query);
         
         // bind variable values
-//        foreach($ids as $idx => $id) {
-//            $stmt->bindParam($idx + 1, $id, PDO::PARAM_STR);
-//        }
+        foreach($ids as $idx => $id) {
+            $stmt->bindValue($idx + 1, $id, PDO::PARAM_STR);
+        }
 
         // execute query
         $stmt->execute();
