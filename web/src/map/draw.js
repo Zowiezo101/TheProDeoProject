@@ -89,7 +89,8 @@ function drawMapItems() {
 function drawItem(group, item) {
     
     // The link to the object
-    var link = group.link('https://google.com');
+    var link = group.link(setParameters("peoples/people/" + item.id));
+    link.target('_blank');
     
     // Draw the rectangle
     link.rect(item.width, 
