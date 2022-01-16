@@ -111,32 +111,41 @@ class Timeline {
     // used when filling up the update product form
     function readOne(){
         
-        // The parent
-        $parent = new Event($this->conn);
-        $parent->id = $this->id;
-        $parent->readOne();
-        
-        // Get all the activities that belong with this event
-        // Take the activities that have no parents
-        // TODO:
-        $activity_ids = $this->base->getTimelineToChildren($this->id);
-        
-        // Repeat same for family tree to get levels as well
-        $child_ids = array($activity_ids);
-        $activity_arr = array();
-        
-        $level = 1;
-        
-        while (count($child_ids) > 0) {            
-            // query to read familytree
-            $children = $this->base->getActivityToChildren($child_ids, $level);
-            $activity_arr = array_merge($activity_arr, $children);
+        if ($this->id === "-999") {
+            // Main timeline
+            // Get all the events
+            $activity_ids = $this->base->getTimelineToChildren($this->id);
             
-            $child_ids = array_map(function($child) { return $child["id"]; }, $children);
-            $level++;
+            // Repeat same for family tree to get levels as well
+            $child_ids = array($activity_ids);
+            $activity_arr = array();
+
+            $level = 1;
+
+            while (count($child_ids) > 0) {            
+                // query to read familytree
+                $children = $this->base->getEventsToChildren($child_ids, $level);
+                $activity_arr = array_merge($activity_arr, $children);
+
+                $child_ids = array_map(function($child) { return $child["id"]; }, $children);
+                $level++;
+            }
+            
+            $this->name = "Global";
+            
+        } else {
+        
+            // The parent
+            $parent = new Event($this->conn);
+            $parent->id = $this->id;
+            $parent->readOne();
+        
+            // Get all the activities that belong with this event
+            $activity_ids = $this->base->getTimelineToChildren($this->id);
+            
+            $this->name = $parent->name;
         }
         
-        $this->name = $parent->name;
         $this->items = $activity_arr;
     }
 }

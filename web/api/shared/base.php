@@ -479,5 +479,34 @@ class ItemBase {
         
         return $this->getResults($stmt);
     }
+    
+    public function getTimelineToChildren($ids, $level) {
+        // select all query
+        $query = "SELECT
+                    a.id, a.name, a.descr, a.gender, a2a.activity1_id,
+                    ".$level." as level, 0 as X, 0 as Y
+                FROM
+                    " . $this->table_peoples . " p
+                    LEFT JOIN
+                        " . $this->table_p2pa . " p2p
+                            ON p2p.people_id = p.id
+                WHERE
+                    p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
+                ORDER BY
+                    p2p.parent_id ASC, p.order_id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+        foreach($ids as $idx => $id) {
+            $stmt->bindValue($idx + 1, $id, PDO::PARAM_STR);
+        }
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getResults($stmt);
+    }
 }
 ?>
