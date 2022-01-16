@@ -55,6 +55,9 @@ function getLinkToItem(type, id, text, classes="") {
     if (text === "self") {
         text = link.substr(get_settings["lang"] ? 4 : 1);
     }
+    if (text === "Global") {
+        text = dict["timeline.global"];
+    }
     
     if (id === null) {
         link = '#';

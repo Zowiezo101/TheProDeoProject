@@ -53,12 +53,17 @@ class Timeline {
         }
 
         // select query
-        $query = "SELECT
-                    e.id, e.name
-                FROM
-                    " . $this->table_name . " e
-                ".$filter_sql."
-                ORDER BY ".$sort_sql."
+        $query = "SELECT * FROM (
+                    SELECT * FROM (select -999 as id, 'Global' as name) as e1
+                    UNION ALL
+                    SELECT * FROM (
+                        SELECT
+                            e.id, e.name
+                        FROM
+                            " . $this->table_name . " e
+                        ".$filter_sql."
+                        ORDER BY ".$sort_sql." ) as e2
+                ) as e
                 LIMIT ?, ?";
 
         // prepare query statement
