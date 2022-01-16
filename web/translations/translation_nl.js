@@ -31,6 +31,7 @@ var dict = {
 	"locations.overview": "Dit is een overzicht van alle locaties van de Bijbel en de informatie die ik over ze heb.<br><br>Om te navigeren, gebruik de linkerkant van het scherm. Wanneer je een locatie selecteert, krijg je alle beschikbare details over die locatie te zien",
 	"specials.overview": "Specials zijn extra beetjes informatie uit de Bijbel.<br>Dit kunnen objecten, liederen, wezens etc zijn.<br><br>Dit is een overzicht van alle specials van de Bijbel en de informatie die ik over ze heb.<br><br>Om te navigeren, gebruik de linkerkant van het scherm. Wanneer je een special selecteert, krijg je alle beschikbare details over die special te zien",
 	"timeline.overview": "Dit is nog onder verbouwing.. <i class='fa fa-wrench' aria-hidden='true'></i>",
+	"timeline.global": "Globale tijdslijn",
 	"familytree.overview": "Dit is nog onder verbouwing.. <i class='fa fa-wrench' aria-hidden='true'></i>",
 	"worldmap.overview": "Dit is nog onder verbouwing.. <i class='fa fa-wrench' aria-hidden='true'></i>",
 	"contact.overview": "Als je vragen, ideeen, feedback, klachten of iets anders voor de website of onze projecten hebt, voel je dan vrij om contact op te nemen met ons!<br><br>Je kan het formulier aan de rechterkant gebruiken om een anoniem bericht te sturen, of het onderstaande email adres gebruiken om een email te sturen met je standaard email client.",

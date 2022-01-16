@@ -32,6 +32,7 @@ $dict = array(
 	"locations.overview"=>"This is an overview of all the locations of the Bible and the information I have about them.<br><br>To navigate, use the left side on the screen. Selecting a location will go to a page with available details on that location",
 	"specials.overview"=>"Specials are extra pieces of information from the Bible.<br>It can be objects, songs, creatures, etc.<br><br>This is an overview of all the specials of the Bible and the information I have about them.<br><br>To navigate, use the left side on the screen. Selecting a special will go to a page with available details on that special",
 	"timeline.overview"=>"This is still a work in progress.. <i class='fa fa-wrench' aria-hidden='true'></i>",
+	"timeline.global"=>"Global timeline",
 	"familytree.overview"=>"This is still a work in progress.. <i class='fa fa-wrench' aria-hidden='true'></i>",
 	"worldmap.overview"=>"This is still a work in progress.. <i class='fa fa-wrench' aria-hidden='true'></i>",
 	"contact.overview"=>"If you have any questions, ideas, feedback, complaints or anything else for the website or our projects, feel free to contact us!<br><br>You can use the form on the right side to send an anonymous message, or use the email address below to send an email using your default email client.",
