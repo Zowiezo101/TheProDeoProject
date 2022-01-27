@@ -114,39 +114,50 @@ class Timeline {
         if ($this->id === "-999") {
             // Main timeline
             // Get all the events
-            $activity_ids = $this->base->getTimelineToChildren($this->id);
+            $activity_ids = $this->base->getTimelineEvents($this->id);
             
-            // Repeat same for family tree to get levels as well
-            $child_ids = array($activity_ids);
+//            // Repeat same as for family tree to get levels as well
+//            $child_ids = array($activity_ids);
             $activity_arr = array();
-
-            $level = 1;
-
-            while (count($child_ids) > 0) {            
-                // query to read familytree
-                $children = $this->base->getEventsToChildren($child_ids, $level);
-                $activity_arr = array_merge($activity_arr, $children);
-
-                $child_ids = array_map(function($child) { return $child["id"]; }, $children);
-                $level++;
-            }
+//
+//            $level = 1;
+//
+//            while (count($child_ids) > 0) {            
+//                // query to read familytree
+//                $children = $this->base->getEventsToChildren($child_ids, $level);
+//                $activity_arr = array_merge($activity_arr, $children);
+//
+//                $child_ids = array_map(function($child) { return $child["id"]; }, $children);
+//                $level++;
+//            }
             
             $this->name = "Global";
+        
+            $this->items = $activity_arr;
             
         } else {
         
+            $child_ids = array($this->id);
+            $activity_arr = array();
+
             // The parent
             $parent = new Event($this->conn);
             $parent->id = $this->id;
             $parent->readOne();
-        
-            // Get all the activities that belong with this event
-            $activity_ids = $this->base->getTimelineToChildren($this->id);
-            
+
+            $level = 1;
+
+            while (count($child_ids) > 0) {            
+                // query to read timeline
+                $children = $this->base->getTimelineActivities($child_ids, $level++);
+                $activity_arr = array_merge($activity_arr, $children);
+
+                $child_ids = array_map(function($child) { return $child["id"]; }, $children);
+            }
+
             $this->name = $parent->name;
+            $this->items = $activity_arr;
         }
-        
-        $this->items = $activity_arr;
     }
 }
 ?>

@@ -103,7 +103,7 @@ function getItemsContent() {
                 var getItemContent = getFamilytreeContent;
                 break;
                 
-            case "familytree":
+            case "timeline":
                 var getItemContent = getTimelineContent;
                 break;
         }

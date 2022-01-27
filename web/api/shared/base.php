@@ -1,5 +1,6 @@
 <?php
 
+require_once "../objects/event.php";
 require_once "../objects/people.php";
 require_once "../objects/location.php";
 require_once "../objects/special.php";
@@ -7,10 +8,12 @@ require_once "../objects/special.php";
 class ItemBase {
     private $conn;
     
+    public $table_activities = "activitys";
     public $table_events = "events";
     public $table_peoples = "peoples";
     public $table_locations = "locations";
     public $table_speciacls = "locations";
+    public $table_a2a = "activity_to_activity";
     public $table_a2e = "activity_to_event";
     public $table_e2e = "event_to_event";
     public $table_p2a = "people_to_activity";
@@ -480,10 +483,10 @@ class ItemBase {
         return $this->getResults($stmt);
     }
     
-    public function getTimelineToChildren($ids, $level) {
+    public function getTimelineEvents($ids, $level) {
         // select all query
         $query = "SELECT
-                    a.id, a.name, a.descr, a.gender, a2a.activity1_id,
+                    a.id, a.name, a.descr, a.gender, a2a.activity1_id as parent_id,
                     ".$level." as level, 0 as X, 0 as Y
                 FROM
                     " . $this->table_peoples . " p
@@ -494,6 +497,57 @@ class ItemBase {
                     p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
                 ORDER BY
                     p2p.parent_id ASC, p.order_id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+        foreach($ids as $idx => $id) {
+            $stmt->bindValue($idx + 1, $id, PDO::PARAM_STR);
+        }
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getResults($stmt);
+    }
+    
+    public function getTimelineActivities($ids, $level) {
+        
+        if ($level > 1) {
+            // select all query
+            $query = "SELECT
+                        a.id, a.descr, a.length, a.date, a2a.activity1_id as parent_id,
+                        ".$level." as level, 0 as X, 0 as Y
+                    FROM
+                        " . $this->table_activities . " a
+
+                        LEFT JOIN
+                            " . $this->table_a2a . " a2a
+                                ON a2a.activity2_id = a.id
+                    WHERE
+                        a2a.activity1_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
+                    ORDER BY
+                        a2a.activity1_id ASC, a.order_id ASC";
+        } else {
+            // select all query
+            $query = "SELECT
+                        a.id, a.descr, a.length, a.date, a2e.event_id as parent_id,
+                        ".$level." as level, 0 as X, 0 as Y
+                    FROM
+                        " . $this->table_activities . " a
+
+                        LEFT JOIN
+                            " . $this->table_a2a . " a2a
+                                ON a2a.activity2_id = a.id
+                        LEFT JOIN 
+                            " . $this->table_a2e . " a2e
+                                ON a2e.activity_id = a.id
+                    WHERE
+                        a2e.event_id = ? AND a2a.activity1_id is null
+                    ORDER BY
+                        a2a.activity1_id ASC, a.order_id ASC";
+        }
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

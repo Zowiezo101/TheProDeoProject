@@ -18,7 +18,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
 <?php } ?>
         
-<?php if (in_array($id, ["familytree"])) { ?>
+<?php if (in_array($id, ["familytree", "timeline"])) { ?>
         <!-- -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.1/svg.min.js"></script>
         <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js' query='#map' name='pz'></script>
