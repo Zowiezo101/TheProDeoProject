@@ -4,7 +4,7 @@
 
 function getEventContent(event) {
     if (event) {
-        // An event has been selected, show it's information
+        // An event has been selected, show its information
         $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">

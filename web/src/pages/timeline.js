@@ -3,7 +3,7 @@
 function getTimelineContent(timeline) {
     
     if (timeline) {
-        // An eventhas been selected, show it's information
+        // An eventhas been selected, show its information
         $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 text-center">

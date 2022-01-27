@@ -3,7 +3,7 @@
 function getFamilytreeContent(familytree) {
     
     if (familytree) {
-        // A person has been selected, show it's information
+        // A person has been selected, show its information
         $("#item_content").append(`
             <div class="row">
                 <div class="col-lg-11 text-center">
