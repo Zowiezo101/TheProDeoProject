@@ -64,40 +64,39 @@ if (isset($_SESSION["page_id"])) {
 $_SESSION["page_id"] = $id;
 
 ?>
-
-<script>
-    var session_settings = {
-        <?php 
-        if (isset($_SESSION)) {
-            foreach($_SESSION as $key => $value) {
-                // We don't want all the session settings in here
-                if (!in_array($key, ["page_id", "page_id_old"])) {
+    <script>
+        var session_settings = {
+            <?php 
+            if (isset($_SESSION)) {
+                foreach($_SESSION as $key => $value) {
+                    // We don't want all the session settings in here
+                    if (!in_array($key, ["page_id", "page_id_old"])) {
+                        echo "'".$key."': `".$value."`,\n\t\t";
+                    }
+                }
+            }?>
+        };
+        var get_settings = {
+            <?php  
+            $input_get = filter_input_array(INPUT_GET);
+            if ($input_get) {
+                foreach($input_get as $key => $value) {
                     echo "'".$key."': `".$value."`,\n\t\t";
                 }
-            }
-        }?>
-    };
-    var get_settings = {
-        <?php  
-        $input_get = filter_input_array(INPUT_GET);
-        if ($input_get) {
-            foreach($input_get as $key => $value) {
-                echo "'".$key."': `".$value."`,\n\t\t";
-            }
-        }?>
-    };
-    var post_settings = {
-        <?php 
-        $input_post = filter_input_array(INPUT_POST);
-        if ($input_post) {
-            foreach($input_post as $key => $value) {
-                echo "'".$key."': `".$value."`,\n\t\t";
-            }
-        }?>
-    };
-    
-    // Needed for testing purposes
-    var base_url = "<?php echo $base_url; ?>";
-    
-    var page_id = "<?php echo $id; ?>";
-</script>
+            }?>
+        };
+        var post_settings = {
+            <?php 
+            $input_post = filter_input_array(INPUT_POST);
+            if ($input_post) {
+                foreach($input_post as $key => $value) {
+                    echo "'".$key."': `".$value."`,\n\t\t";
+                }
+            }?>
+        };
+
+        // Needed for testing purposes
+        var base_url = "<?php echo $base_url; ?>";
+
+        var page_id = "<?php echo $id; ?>";
+    </script>

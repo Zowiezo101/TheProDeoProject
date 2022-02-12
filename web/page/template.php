@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>   
 <?php 
     if(session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
@@ -48,9 +50,8 @@
             break;
     }
 ?>
-
-<!DOCTYPE html>
-<html>    
+    
+    
     <head>
         <!-- Name shown on the tab -->
         <title><?php echo $dict["globals.prodeo_database"] ?></title>
@@ -73,17 +74,17 @@
         <!-- External Javascript files -->
 <?php require "page/import.php"; ?>
         
-<script>
-    
-    window.onload = function() {
-        // Set some default stuff
-        //onLoadDefault();
         
-        // Then run the function that is different per page
-        <?php echo "onLoad".ucfirst($id)."()"; ?>;
-    };
-</script>
+        <script>
 
+            window.onload = function() {
+                // Set some default stuff
+                //onLoadDefault();
+
+                // Then run the function that is different per page
+                <?php echo "onLoad".ucfirst($id)."()"; ?>;
+            };
+        </script>
     </head>
     
     <body>
