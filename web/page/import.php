@@ -37,4 +37,4 @@
         <script src="/src/tools/session.js"></script>
 
         <!-- The translation files -->
-        <script src="/translations/translation_<?php echo $_GET["lang"]; ?>.js"></script>
+        <script src="/translations/translation_<?php echo filter_input(INPUT_GET, "lang"); ?>.js"></script>
