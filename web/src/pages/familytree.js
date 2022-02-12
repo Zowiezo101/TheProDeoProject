@@ -12,7 +12,7 @@ function getFamilytreeContent(familytree) {
             </div>
             <div class="row" style="height: 100%;">
                 <div class="col-lg-11 text-center">
-                    <div id="map_div">
+                    <div id="map_div" style="height: 100%;">
                         
                     </div>
                 </div>
