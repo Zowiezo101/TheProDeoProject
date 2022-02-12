@@ -1,4 +1,4 @@
-/* global SVG */
+/* global SVG, ALIGNMENT_HORIZONTAL */
 
 function getTimelineContent(timeline) {
     
@@ -34,7 +34,7 @@ function showMap(timeline) {
         setMapItems(timeline);
         
         // Calculate all the locations of the familytree
-        calcMapItems();
+        calcMapItems({align: ALIGNMENT_HORIZONTAL});
 
         // We've got the people and the locations, now time to draw it!
         drawControlButtons();

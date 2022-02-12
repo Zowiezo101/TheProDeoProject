@@ -48,6 +48,8 @@ function setMapItems (map) {
         id: map.id,
         name: map.name,
         gender: map.hasOwnProperty('gender') ? map.gender : null,
+        date: map.hasOwnProperty('date') ? map.date : null,
+        length: map.hasOwnProperty('length') ? map.length : null,
         parent_id: "-1",
         level: 0,
         level_index: 0,
@@ -137,16 +139,16 @@ function getMapItems() {
 function calcMapItems(options = new Object()) {
     
     // Standard settings if some are not set
+    if(!options || !options.hasOwnProperty('align')) 
+        options.align = ALIGNMENT_VERTICAL;
     if(!options || !options.hasOwnProperty('width')) 
-        options.width = 100;
+        options.width = options.align === ALIGNMENT_VERTICAL ? 100 : 300;
     if(!options || !options.hasOwnProperty('height')) 
         options.height = 50;
     if(!options || !options.hasOwnProperty('x_dist')) 
-        options.x_dist = 25;
+        options.x_dist = options.align === ALIGNMENT_VERTICAL ? 25 : 30;
     if(!options || !options.hasOwnProperty('y_dist')) 
-        options.y_dist = 30;
-    if(!options || !options.hasOwnProperty('align')) 
-        options.align = ALIGNMENT_VERTICAL;
+        options.y_dist = options.align === ALIGNMENT_VERTICAL ? 30 : 25;
     g_Options = options;
     
     g_MapItems.forEach(function(item) { 
@@ -154,8 +156,8 @@ function calcMapItems(options = new Object()) {
         item.width = g_Options.width;
         item.height = g_Options.height;
         
-        item.Y = calcY(item);
-        item.X = calcX(item);
+        item.Y = g_Options === ALIGNMENT_VERTICAL ? calcY(item) : calcX(item);
+        item.X = g_Options === ALIGNMENT_VERTICAL ? calcX(item) : calcY(item);
     
         // We calculated its coordinates
         item.calculated = true;

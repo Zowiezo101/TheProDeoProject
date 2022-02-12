@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options */
+/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -100,13 +100,33 @@ function drawItem(group, item) {
             .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
             .stroke('black')
             .radius(10, 10)
-            .move(item.X, item.Y);
+            .move(item.X, item.Y)
+    
+//    // When the mouse hovers over the link
+//    .mouseover(function() {
+//        SVG("#tooltip").show().move(item.X, item.Y);
+//    })
+//    
+//    // When the mouse no longer hovers over the link
+//    .mouseout(function() {
+//        SVG("#tooltip").hide();
+//    });
     
     //Insert the text
     link.text(item.name)
             .font({size: 20})
             .center(item.X + item.width / 2, 
-                    item.Y + item.height / 2);
+                    item.Y + item.height / 2)
+    
+//    // When the mouse hovers over the link
+//    .mouseover(function() {
+//        SVG("#tooltip").show().move(item.X, item.Y);
+//    })
+//    
+//    // When the mouse no longer hovers over the link
+//    .mouseout(function() {
+//        SVG("#tooltip").hide();
+//    });
 }
 
 function drawLink(group, child) {
@@ -114,18 +134,34 @@ function drawLink(group, child) {
         child.parents.forEach(function (parent_id) {
             var parent = getMapItem(parent_id);
 
-            group.polyline([
-                        [parent.X + parent.width / 2, 
-                         parent.Y + parent.height], 
-                        [parent.X + parent.width / 2, 
-                         parent.Y + parent.height + g_Options.y_dist / 3], 
-                        [child.X + child.width / 2, 
-                         child.Y - g_Options.y_dist / 3], 
-                        [child.X + child.width / 2, 
-                         child.Y]])
-                .fill('none')
-                .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
-                          width: 4, linecap: 'round', linejoin: 'round' });
+            if (g_Options.align === ALIGNMENT_VERTICAL) {
+                group.polyline([
+                            [parent.X + parent.width / 2, 
+                             parent.Y + parent.height], 
+                            [parent.X + parent.width / 2, 
+                             parent.Y + parent.height + g_Options.y_dist / 3], 
+                            [child.X + child.width / 2, 
+                             child.Y - g_Options.y_dist / 3], 
+                            [child.X + child.width / 2, 
+                             child.Y]])
+                    .fill('none')
+                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
+                              width: 4, linecap: 'round', linejoin: 'round' });
+            } else {
+                group.polyline([
+                            [parent.X + parent.width, 
+                             parent.Y + parent.height / 2], 
+                            [parent.X + parent.width + g_Options.x_dist / 3, 
+                             parent.Y + parent.height / 2], 
+                            [child.X - g_Options.x_dist / 3, 
+                             child.Y + child.height / 2], 
+                            [child.X, 
+                             child.Y + child.height / 2]])
+                    .fill('none')
+                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
+                              width: 4, linecap: 'round', linejoin: 'round' });
+                 
+            }
         });
     }
 }
