@@ -84,6 +84,8 @@ function drawMapItems() {
         drawLink(group, item);
         drawItem(group, item);
     });
+    
+    panzoom(group.node);
 }
 
 function drawItem(group, item) {
