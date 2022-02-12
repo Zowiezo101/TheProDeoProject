@@ -155,8 +155,26 @@ class Timeline {
                 $child_ids = array_map(function($child) { return $child["id"]; }, $children);
             }
 
+            $this->id = "-999";
             $this->name = $parent->name;
-            $this->items = $activity_arr;
+            $this->items = array_reduce($activity_arr, function ($carry, $var1) {
+                // Check if item is already in carry
+                $dupl_arr = array_filter($carry, function($var2) use ($var1) {
+                    return (($var1["id"] === $var2["id"]) && ($var1["parent_id"] === $var2["parent_id"]));
+                });
+                
+                // There should be either one or zero items already in the carry
+                if (empty($dupl_arr)) {
+                    // No duplicate, add it to the carry
+                    $carry[] = $var1;
+                } else {
+                    // There already is a duplicate, use the one with the highest level
+                    $dupl_idx = array_keys($dupl_arr)[0];
+                    $carry[$dupl_idx]["level"] = max($carry[$dupl_idx]["level"], $var1["level"]);
+                }
+                
+                return $carry;                
+            }, []);
         }
     }
 }

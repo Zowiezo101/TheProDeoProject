@@ -517,7 +517,7 @@ class ItemBase {
         if ($level > 1) {
             // select all query
             $query = "SELECT
-                        a.id, a.descr, a.length, a.date, a2a.activity1_id as parent_id,
+                        a.id, a.descr as name, a.length, a.date, a2a.activity1_id as parent_id,
                         ".$level." as level, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
@@ -532,7 +532,7 @@ class ItemBase {
         } else {
             // select all query
             $query = "SELECT
-                        a.id, a.descr, a.length, a.date, a2e.event_id as parent_id,
+                        a.id, a.descr as name, a.length, a.date, -999 as parent_id,
                         ".$level." as level, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
@@ -546,7 +546,7 @@ class ItemBase {
                     WHERE
                         a2e.event_id = ? AND a2a.activity1_id is null
                     ORDER BY
-                        a2a.activity1_id ASC, a.order_id ASC";
+                        a2e.event_id ASC, a.order_id ASC";
         }
 
         // prepare query statement
