@@ -96,6 +96,30 @@ function setMapItems (map) {
         return mapItems;
     }, []);
     
+    // Make sure parents have the highest level possible for the best readability in case of timelines
+    if(parent.id === "-999") {
+        // In this case it's a timeline, let's go by level
+        for (var i = 0; i < topLevel; i++) {
+            // Get all the parents of this level
+            var parents = filterMapItems('level', i);
+            
+            parents.forEach(function(mapItem) {
+                if (mapItem.children.length !== 0) {
+                    var lowestLevelChild = mapItem.children.reduce(function(lowestLevel, childIdx) {
+                        var child = getMapItem(childIdx);
+                        if (lowestLevel === -1) {
+                            return child.level;
+                        } else {
+                            return child.level < lowestLevel ? child.level : lowestLevel;
+                        }
+                    }, -1);
+                    
+                    mapItem.level = lowestLevelChild - 1;
+                }
+            });
+        }
+    }
+    
     // Lets go per level
     for (var i = 0; i < topLevel; i++) {
         // Per level, check the level_index of the parents and sort by that
