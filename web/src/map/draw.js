@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL */
+/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -92,7 +92,6 @@ function drawItem(group, item) {
     
     // The link to the object
     if (g_Options.align === ALIGNMENT_VERTICAL) {
-        
         var link = group.link(setParameters("peoples/people/" + item.id));
         link.target('_blank');
     

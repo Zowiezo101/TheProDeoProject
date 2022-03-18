@@ -165,6 +165,7 @@ function calcMapItems(options = new Object()) {
     // Standard settings if some are not set
     if(!options || !options.hasOwnProperty('align')) 
         options.align = ALIGNMENT_VERTICAL;
+    
     if(!options || !options.hasOwnProperty('width')) 
         // Length when horizontal
         // Width when vertical
