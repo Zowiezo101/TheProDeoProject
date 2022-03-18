@@ -91,42 +91,44 @@ function drawMapItems() {
 function drawItem(group, item) {
     
     // The link to the object
-    var link = group.link(setParameters("peoples/people/" + item.id));
-    link.target('_blank');
+    if (g_Options.align === ALIGNMENT_VERTICAL) {
+        
+        var link = group.link(setParameters("peoples/people/" + item.id));
+        link.target('_blank');
     
-    // Draw the rectangle
-    link.rect(item.x_length, 
-              item.y_length)
-            .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
-            .stroke('black')
-            .radius(10, 10)
-            .move(item.X, item.Y)
+        // Draw the rectangle
+        link.rect(item.x_length, 
+                  item.y_length)
+                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
+                .stroke('black')
+                .radius(10, 10)
+                .move(item.X, item.Y);
+
+        //Insert the text
+        link.text(item.name)
+                .font({size: 20})
+                .center(item.X + item.x_length / 2, 
+                        item.Y + item.y_length / 2);
+    } else {
+        // Turn it all counter clock wise
+        var link = group.link(setParameters("events/event/" + get_settings["id"]));
+        link.target('_blank');
     
-//    // When the mouse hovers over the link
-//    .mouseover(function() {
-//        SVG("#tooltip").show().move(item.X, item.Y);
-//    })
-//    
-//    // When the mouse no longer hovers over the link
-//    .mouseout(function() {
-//        SVG("#tooltip").hide();
-//    });
+        // Draw the rectangle
+        link.rect(item.y_length, 
+                  item.x_length)
+                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
+                .stroke('black')
+                .radius(10, 10)
+                .move(item.Y, item.X);
+
+        //Insert the text
+        link.text(item.name)
+                .font({size: 20})
+                .center(item.Y + item.y_length / 2, 
+                        item.X + item.x_length / 2);
+    }
     
-    //Insert the text
-    link.text(item.name)
-            .font({size: 20})
-            .center(item.X + item.x_length / 2, 
-                    item.Y + item.y_length / 2)
-    
-//    // When the mouse hovers over the link
-//    .mouseover(function() {
-//        SVG("#tooltip").show().move(item.X, item.Y);
-//    })
-//    
-//    // When the mouse no longer hovers over the link
-//    .mouseout(function() {
-//        SVG("#tooltip").hide();
-//    });
 }
 
 function drawLink(group, child) {
@@ -149,14 +151,14 @@ function drawLink(group, child) {
                               width: 4, linecap: 'round', linejoin: 'round' });
             } else {
                 group.polyline([
-                            [parent.X + parent.x_length, 
-                             parent.Y + parent.y_length / 2], 
-                            [parent.X + parent.x_length + g_Options.x_dist / 3, 
-                             parent.Y + parent.y_length / 2], 
-                            [child.X - g_Options.x_dist / 3, 
-                             child.Y + child.y_length / 2], 
-                            [child.X, 
-                             child.Y + child.y_length / 2]])
+                            [parent.Y + parent.y_length, 
+                             parent.X + parent.x_length / 2], 
+                            [parent.Y + parent.y_length + g_Options.y_dist / 3, 
+                             parent.X + parent.x_length / 2], 
+                            [child.Y - g_Options.y_dist / 3, 
+                             child.X + child.x_length / 2], 
+                            [child.Y, 
+                             child.X + child.x_length / 2]])
                     .fill('none')
                     .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
                               width: 4, linecap: 'round', linejoin: 'round' });

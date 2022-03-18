@@ -166,14 +166,19 @@ function calcMapItems(options = new Object()) {
     if(!options || !options.hasOwnProperty('align')) 
         options.align = ALIGNMENT_VERTICAL;
     if(!options || !options.hasOwnProperty('width')) 
-        options.x_length = options.align === ALIGNMENT_VERTICAL ? 100 : 300;
+        // Length when horizontal
+        // Width when vertical
+        options.x_length = options.align === ALIGNMENT_VERTICAL ? 100 : 50;
     if(!options || !options.hasOwnProperty('height')) 
-        options.y_length = 50;
+        // Width when horizontal
+        // Length when vertical
+        options.y_length = options.align === ALIGNMENT_HORIZONTAL ? 300 : 50;
     
     if(!options || !options.hasOwnProperty('x_dist')) 
-        options.x_dist = options.align === ALIGNMENT_VERTICAL ? 25 : 30;
+        options.x_dist = 25;
     if(!options || !options.hasOwnProperty('y_dist')) 
-        options.y_dist = options.align === ALIGNMENT_VERTICAL ? 30 : 25;
+        options.y_dist = 30;
+    
     g_Options = options;
     
     g_MapItems.forEach(function(item) { 
@@ -181,8 +186,8 @@ function calcMapItems(options = new Object()) {
         item.x_length = g_Options.x_length;
         item.y_length = g_Options.y_length;
         
-        item.Y = g_Options === ALIGNMENT_VERTICAL ? calcY(item) : calcX(item);
-        item.X = g_Options === ALIGNMENT_VERTICAL ? calcX(item) : calcY(item);
+        item.X = calcX(item);
+        item.Y = calcY(item);
     
         // We calculated its coordinates
         item.calculated = true;
