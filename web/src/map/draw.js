@@ -95,8 +95,8 @@ function drawItem(group, item) {
     link.target('_blank');
     
     // Draw the rectangle
-    link.rect(item.width, 
-              item.height)
+    link.rect(item.x_length, 
+              item.y_length)
             .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
             .stroke('black')
             .radius(10, 10)
@@ -115,8 +115,8 @@ function drawItem(group, item) {
     //Insert the text
     link.text(item.name)
             .font({size: 20})
-            .center(item.X + item.width / 2, 
-                    item.Y + item.height / 2)
+            .center(item.X + item.x_length / 2, 
+                    item.Y + item.y_length / 2)
     
 //    // When the mouse hovers over the link
 //    .mouseover(function() {
@@ -136,27 +136,27 @@ function drawLink(group, child) {
 
             if (g_Options.align === ALIGNMENT_VERTICAL) {
                 group.polyline([
-                            [parent.X + parent.width / 2, 
-                             parent.Y + parent.height], 
-                            [parent.X + parent.width / 2, 
-                             parent.Y + parent.height + g_Options.y_dist / 3], 
-                            [child.X + child.width / 2, 
+                            [parent.X + parent.x_length / 2, 
+                             parent.Y + parent.y_length], 
+                            [parent.X + parent.x_length / 2, 
+                             parent.Y + parent.y_length + g_Options.y_dist / 3], 
+                            [child.X + child.x_length / 2, 
                              child.Y - g_Options.y_dist / 3], 
-                            [child.X + child.width / 2, 
+                            [child.X + child.x_length / 2, 
                              child.Y]])
                     .fill('none')
                     .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
                               width: 4, linecap: 'round', linejoin: 'round' });
             } else {
                 group.polyline([
-                            [parent.X + parent.width, 
-                             parent.Y + parent.height / 2], 
-                            [parent.X + parent.width + g_Options.x_dist / 3, 
-                             parent.Y + parent.height / 2], 
+                            [parent.X + parent.x_length, 
+                             parent.Y + parent.y_length / 2], 
+                            [parent.X + parent.x_length + g_Options.x_dist / 3, 
+                             parent.Y + parent.y_length / 2], 
                             [child.X - g_Options.x_dist / 3, 
-                             child.Y + child.height / 2], 
+                             child.Y + child.y_length / 2], 
                             [child.X, 
-                             child.Y + child.height / 2]])
+                             child.Y + child.y_length / 2]])
                     .fill('none')
                     .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
                               width: 4, linecap: 'round', linejoin: 'round' });

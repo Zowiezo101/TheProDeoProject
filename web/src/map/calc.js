@@ -142,9 +142,10 @@ function calcMapItems(options = new Object()) {
     if(!options || !options.hasOwnProperty('align')) 
         options.align = ALIGNMENT_VERTICAL;
     if(!options || !options.hasOwnProperty('width')) 
-        options.width = options.align === ALIGNMENT_VERTICAL ? 100 : 300;
+        options.x_length = options.align === ALIGNMENT_VERTICAL ? 100 : 300;
     if(!options || !options.hasOwnProperty('height')) 
-        options.height = 50;
+        options.y_length = 50;
+    
     if(!options || !options.hasOwnProperty('x_dist')) 
         options.x_dist = options.align === ALIGNMENT_VERTICAL ? 25 : 30;
     if(!options || !options.hasOwnProperty('y_dist')) 
@@ -153,8 +154,8 @@ function calcMapItems(options = new Object()) {
     
     g_MapItems.forEach(function(item) { 
         
-        item.width = g_Options.width;
-        item.height = g_Options.height;
+        item.x_length = g_Options.x_length;
+        item.y_length = g_Options.y_length;
         
         item.Y = g_Options === ALIGNMENT_VERTICAL ? calcY(item) : calcX(item);
         item.X = g_Options === ALIGNMENT_VERTICAL ? calcX(item) : calcY(item);
@@ -389,7 +390,7 @@ function calcY(item) {
         
         // Get the parent Y coordinate, add the height to it 
         // and the standard vertinal offset
-        Y = parent.Y + parent.height + g_Options.y_dist;
+        Y = parent.Y + g_Options.y_length + g_Options.y_dist;
     }
     return Y;
 }
@@ -417,12 +418,12 @@ function calcX(item) {
                 // Are we on the right side of the middle?
                 // Place the block on the right side of parents X coordinate
                 var offset = index - middle;
-                X = avgX + offset*(g_Options.width + g_Options.x_dist);
+                X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
             } else {
                 // Are we on the left side of the middle?
                 // Place the block on the left side of parents X coordinate
                 var offset = middle - index;
-                X = avgX - offset*(g_Options.width + g_Options.x_dist);
+                X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
             }
         } else { // even
             var middle = parent.children.length / 2;
@@ -431,12 +432,12 @@ function calcX(item) {
                 // Are we on the right side of the middle?
                 // Place the block on the right side of parents X coordinate
                 var offset = index - middle;
-                X = (avgX + ((g_Options.width + g_Options.x_dist) / 2)) + offset*(g_Options.width + g_Options.x_dist);
+                X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
             } else {
                 // Are we on the left side of the middle?
                 // Place the block on the left side of parents X coordinate
                 var offset = middle - index;
-                X = (avgX + ((g_Options.width + g_Options.x_dist) / 2)) - offset*(g_Options.width + g_Options.x_dist);
+                X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
             }
         }
     }
@@ -446,7 +447,7 @@ function calcX(item) {
 
     if (sibling) {
         // The distance needed between left and right
-        var offset = (sibling.X + sibling.width + g_Options.x_dist) - X;        
+        var offset = (sibling.X + g_Options.x_length + g_Options.x_dist) - X; 
         if (offset > 0) { 
             var ancestor = getCommonAncestor(sibling.id, item.id);
             
@@ -487,7 +488,7 @@ function solveClash(item) {
     var right = getMapItem(item.right);
     
     // Make sure the clash is still present
-    var offset = (left.X + left.width + g_Options.x_dist) - right.X;  
+    var offset = (left.X + g_Options.x_length + g_Options.x_dist) - right.X;
     if (offset > 0) {
         // Step 1: Find a common ancestor, and get the child on the 
         // right side of the clash
@@ -498,7 +499,7 @@ function solveClash(item) {
 
         // Step 3: Check again
         // The distance needed between left and right
-        var new_offset = (left.X + left.width + g_Options.x_dist) - right.X;
+        var new_offset = (left.X + g_Options.x_length + g_Options.x_dist) - right.X;
         if (new_offset > 0) {
             // Something's not right.. We've just moved right,
 			// and right is still not far enough..
