@@ -432,7 +432,19 @@ function calcX(item) {
         var parent = getMapItem(item.parent_id);
         
         // Get the average X coordinate of the parents
-        var avgX = parent.X;
+        if (g_Options.align === ALIGNMENT_VERTICAL) {
+            var avgX = parent.X;
+        } else {
+            var parentXs = [];
+            var avgX = filterMapItems("parents", item.id).reduce(function(carry, parent) {
+                if (parent.level === item.level + 1) {
+                    carry += parent.X;
+                    parentXs.push(parent.X);
+                }
+                return carry;
+            }, []);
+            var avgX = avgX / parentXs.length;
+        }
         
         // Number of children of parent
         if (parent.children.length % 2) {  // odd
