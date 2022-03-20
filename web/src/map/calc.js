@@ -96,7 +96,7 @@ function setMapItems (map) {
         return mapItems;
     }, []);
     
-    // Make sure parents have the highest level possible for the best readability in case of timelines
+    // Make sure parents and children have the highest level possible for the best readability in case of timelines
     if(parent.id === "-999") {
         // In this case it's a timeline, let's go by level
         for (var i = 0; i < topLevel; i++) {
@@ -115,6 +115,27 @@ function setMapItems (map) {
                     }, -1);
                     
                     mapItem.level = lowestLevelChild - 1;
+                }
+            });
+        }
+        
+        // In this case it's a timeline, let's go by level
+        for (var i = 0; i < topLevel; i++) {
+            // Get all the children of this level
+            var children = filterMapItems('level', i);
+            
+            children.forEach(function(mapItem) {
+                if (mapItem.parents.length !== 0) {
+                    var highestLevelParent = mapItem.parents.reduce(function(highestLevel, parentIdx) {
+                        var parent = getMapItem(parentIdx);
+                        if (highestLevel === -1) {
+                            return parent.level;
+                        } else {
+                            return parent.level > highestLevel ? parent.level : highestLevel;
+                        }
+                    }, -1);
+                    
+                    mapItem.level = highestLevelParent + 1;
                 }
             });
         }
