@@ -423,7 +423,7 @@ function moveCommonAncestor(offset, parent) {
 function filterMapItems(prop, value) {
 //    return g_MapItems.filter(item => (prop == "parents") ? (item[prop].includes(value)) : (item[prop] === value));
     return g_MapItems.filter(function(item) {
-        return (prop === "parents") ? (item[prop].includes(value)) : (item[prop] === value);
+        return ["parents", "children"].includes(prop) ? (item[prop].includes(value)) : (item[prop] === value);
     });
 }
 
@@ -458,14 +458,26 @@ function calcX(item) {
             var avgX = parent.X;
         } else {
             var parentXs = [];
-            var avgX = filterMapItems("parents", item.id).reduce(function(carry, parent) {
-                if (parent.level === item.level + 1) {
-                    carry += parent.X;
+            
+            // Get all the parents for this child 
+            // a.k.a search for every child with this id
+            var avgX = filterMapItems("children", item.id).reduce(function(carry, parent) {
+                // Is it directly above us? Use it's X coordinate
+                if ((parent.level + 1) === item.level) {
+                    carry += parseInt(parent.X, 10);
                     parentXs.push(parent.X);
                 }
                 return carry;
-            }, []);
-            var avgX = avgX / parentXs.length;
+            }, 0);
+            
+            if (parentXs.length > 0) {
+                // Parents directly above us
+                var avgX = avgX / parentXs.length;
+            } else {
+                // No parents directly above us?
+                var parent = getMapItem(item.parent_id);
+                avgX = parent.X;
+            }
         }
         
         // Number of children of parent
