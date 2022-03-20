@@ -374,7 +374,11 @@ function moveCommonAncestor(offset, parent) {
         
         // The actual items themselves
         var item = getMapItem(id);
-        item.X = item.X + offset;
+        if (g_Options.align === ALIGNMENT_VERTICAL) {
+            item.X = item.X + offset;
+        } else {
+            item.X = item.X - offset;
+        }
         
         // Get the children as well (only the calculated ones)
         items = items.concat(getChildren(item.id, PARENT_ID));
@@ -410,7 +414,11 @@ function moveCommonAncestor(offset, parent) {
                 }
                 
                 if (child || (siblingParents.indexOf(item.parent_id) !== -1)) {
-                    item.X = item.X + offset;
+                    if (g_Options.align === ALIGNMENT_VERTICAL) {
+                        item.X = item.X + offset;
+                    } else {
+                        item.X = item.X - offset;
+                    }
                     newParents.push(sibling);
                 }
             }
@@ -493,12 +501,20 @@ function calcX(item) {
                 // Are we on the right side of the middle?
                 // Place the block on the right side of parents X coordinate
                 var offset = index - middle;
-                X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
+                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                    X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
+                } else {
+                    X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
+                }
             } else {
                 // Are we on the left side of the middle?
                 // Place the block on the left side of parents X coordinate
                 var offset = middle - index;
-                X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
+                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                    X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
+                } else {
+                    X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
+                }  
             }
         } else { // even
             var middle = parent.children.length / 2;
@@ -507,12 +523,20 @@ function calcX(item) {
                 // Are we on the right side of the middle?
                 // Place the block on the right side of parents X coordinate
                 var offset = index - middle;
-                X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
+                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                    X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
+                } else {
+                    X = (avgX - ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
+                }
             } else {
                 // Are we on the left side of the middle?
                 // Place the block on the left side of parents X coordinate
                 var offset = middle - index;
-                X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
+                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                    X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
+                } else {
+                    X = (avgX - ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
+                }
             }
         }
     }
@@ -522,7 +546,11 @@ function calcX(item) {
 
     if (sibling) {
         // The distance needed between left and right
-        var offset = (sibling.X + g_Options.x_length + g_Options.x_dist) - X; 
+        if (g_Options.align === ALIGNMENT_VERTICAL) {
+            var offset = (sibling.X + (g_Options.x_length) + g_Options.x_dist) - X; 
+        } else {
+            var offset = X - (sibling.X - (g_Options.x_length + g_Options.x_dist)); 
+        }
         if (offset > 0) { 
             var ancestor = getCommonAncestor(sibling.id, item.id);
             
@@ -563,7 +591,11 @@ function solveClash(item) {
     var right = getMapItem(item.right);
     
     // Make sure the clash is still present
-    var offset = (left.X + g_Options.x_length + g_Options.x_dist) - right.X;
+    if (g_Options.align === ALIGNMENT_VERTICAL) {
+        var offset = (left.X + (g_Options.x_length + g_Options.x_dist)) - right.X;
+    } else {
+        var offset = right.X - (left.X - (g_Options.x_length + g_Options.x_dist));
+    }
     if (offset > 0) {
         // Step 1: Find a common ancestor, and get the child on the 
         // right side of the clash
@@ -574,7 +606,11 @@ function solveClash(item) {
 
         // Step 3: Check again
         // The distance needed between left and right
-        var new_offset = (left.X + g_Options.x_length + g_Options.x_dist) - right.X;
+        if (g_Options.align === ALIGNMENT_VERTICAL) {
+            var new_offset = (left.X + (g_Options.x_length + g_Options.x_dist)) - right.X;
+        } else {
+            var new_offset = right.X - (left.X - (g_Options.x_length + g_Options.x_dist));
+        }
         if (new_offset > 0) {
             // Something's not right.. We've just moved right,
 			// and right is still not far enough..
