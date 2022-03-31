@@ -484,19 +484,37 @@ class ItemBase {
     }
     
     public function getTimelineEvents($ids, $level) {
-        // select all query
-        $query = "SELECT
-                    a.id, a.name, a.descr, a.gender, a2a.activity1_id as parent_id,
-                    ".$level." as level, 0 as X, 0 as Y
-                FROM
-                    " . $this->table_peoples . " p
-                    LEFT JOIN
-                        " . $this->table_p2pa . " p2p
-                            ON p2p.people_id = p.id
-                WHERE
-                    p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
-                ORDER BY
-                    p2p.parent_id ASC, p.order_id ASC";
+        if ($level > 1) {
+            // select all query
+            $query = "SELECT
+                        e.id, e.name as name, e.length, e.date, e2e.event1_id as parent_id,
+                        ".$level." as level, 0 as X, 0 as Y
+                    FROM
+                        " . $this->table_events . " e
+
+                        LEFT JOIN
+                            " . $this->table_e2e . " e2e
+                                ON e2e.event2_id = e.id
+                    WHERE
+                        e2e.event1_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
+                    ORDER BY
+                        e.id ASC, e.order_id ASC";
+        } else {
+            // select all query
+            $query = "SELECT
+                        e.id, e.name as name, e.length, e.date, -999 as parent_id,
+                        ".$level." as level, 0 as X, 0 as Y
+                    FROM
+                        " . $this->table_events . " e
+
+                        LEFT JOIN
+                            " . $this->table_e2e . " e2e
+                                ON e2e.event2_id = e.id
+                    WHERE
+                        e2e.event1_id is null
+                    ORDER BY
+                        e.id ASC, e.order_id ASC";
+        }
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
