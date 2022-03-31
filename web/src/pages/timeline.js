@@ -1,6 +1,9 @@
-/* global SVG, ALIGNMENT_HORIZONTAL */
+/* global SVG, ALIGNMENT_HORIZONTAL, dict */
 
 function getTimelineContent(timeline) {
+    if (timeline.name === "Global") {
+        timeline.name = dict["timeline.global"];
+    }
     
     if (timeline) {
         // An eventhas been selected, show its information
