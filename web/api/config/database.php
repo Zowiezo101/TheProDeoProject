@@ -12,11 +12,11 @@ class Database {
   
     // get the database connection
     public function getConnection() {
-        global $servername, $username, $password, $database;
+        global $servername, $db_username, $db_password, $db_database;
         $this->host = $servername;
-        $this->db_name = $database;
-        $this->username = $username;
-        $this->password = $password;  
+        $this->db_name = $db_database;
+        $this->username = $db_username;
+        $this->password = $db_password;  
         
         try {
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
