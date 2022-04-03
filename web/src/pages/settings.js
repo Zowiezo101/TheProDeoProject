@@ -107,9 +107,12 @@ function getTabsContent() {
 }
 
 function addBlog() {
-    /* Title and the contents of a blog */
+    /* Title of a blog */
     var blog_title = $("#add_blog_title").val();
-    var blog_text = $("#add_blog_text").val();
+    
+    /* The contents of a blog, done with Quill JS */
+    var editor = Quill.find( $("#add_blog_text")[0] );
+    var blog_text = JSON.stringify(editor.getContents());
     
     // The user depends on the logged-in user
     var blog_user = session_settings["username"];

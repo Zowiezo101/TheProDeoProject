@@ -22,15 +22,15 @@ $data = json_decode(file_get_contents("php://input"));
   
 // make sure data is not empty
 if(
-    !empty($data->title) &&
-    !empty($data->text) &&
-    !empty($data->user)
+    !empty($data->data->title) &&
+    !empty($data->data->text) &&
+    !empty($data->data->user)
 ){
   
     // set product property values
-    $blog->title = $data->title;
-    $blog->text = $data->text;
-    $blog->user = $data->user;
+    $blog->title = $data->data->title;
+    $blog->text = $data->data->text;
+    $blog->user = $data->data->user;
     $blog->date = date('Y-m-d H:i:s');
   
     // create the product

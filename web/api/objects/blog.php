@@ -53,10 +53,10 @@ class Blog {
         $stmt = $this->conn->prepare($query);
 
         // sanitize
-        $this->title=htmlspecialchars(strip_tags($this->title));
-        $this->text=htmlspecialchars(strip_tags($this->text));
-        $this->user=htmlspecialchars(strip_tags($this->user));
-        $this->date=htmlspecialchars(strip_tags($this->date));
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->text = $this->text;
+        $this->user = htmlspecialchars(strip_tags($this->user));
+        $this->date = htmlspecialchars(strip_tags($this->date));
 
         // bind values
         $stmt->bindParam(":title", $this->title);
