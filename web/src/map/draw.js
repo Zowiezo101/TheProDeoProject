@@ -86,6 +86,10 @@ function drawMapItems() {
     });
     
     panzoom(group.node);
+    
+    // TODO:
+//    g_svg.text(dict["familytree.link"]).attr("id", "tooltip").hide();
+    group.element("title").words("Click to go to details page");
 }
 
 function drawItem(group, item) {
@@ -101,13 +105,33 @@ function drawItem(group, item) {
                 .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
-                .move(item.X, item.Y);
+                .move(item.X, item.Y)
+
+    //    // When the mouse hovers over the link
+    //    .mouseover(function() {
+    //        SVG("#tooltip").show().move(item.X, item.Y);
+    //    })
+    //    
+    //    // When the mouse no longer hovers over the link
+    //    .mouseout(function() {
+    //        SVG("#tooltip").hide();
+    //    });
 
         //Insert the text
         link.text(item.name)
                 .font({size: 20})
                 .center(item.X + item.x_length / 2, 
-                        item.Y + item.y_length / 2);
+                        item.Y + item.y_length / 2)
+
+    //    // When the mouse hovers over the link
+    //    .mouseover(function() {
+    //        SVG("#tooltip").show().move(item.X, item.Y);
+    //    })
+    //    
+    //    // When the mouse no longer hovers over the link
+    //    .mouseout(function() {
+    //        SVG("#tooltip").hide();
+    //    });
     } else {
         // Turn it all counter clock wise
         var link = group.link(setParameters("events/event/" + get_settings["id"]));
@@ -119,13 +143,33 @@ function drawItem(group, item) {
                 .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
-                .move(item.Y, item.X);
+                .move(item.Y, item.X)
+
+    //    // When the mouse hovers over the link
+    //    .mouseover(function() {
+    //        SVG("#tooltip").show().move(item.X, item.Y);
+    //    })
+    //    
+    //    // When the mouse no longer hovers over the link
+    //    .mouseout(function() {
+    //        SVG("#tooltip").hide();
+    //    });
 
         //Insert the text
         link.text(item.name)
                 .font({size: 20})
                 .center(item.Y + item.y_length / 2, 
-                        item.X + item.x_length / 2);
+                        item.X + item.x_length / 2)
+
+    //    // When the mouse hovers over the link
+    //    .mouseover(function() {
+    //        SVG("#tooltip").show().move(item.X, item.Y);
+    //    })
+    //    
+    //    // When the mouse no longer hovers over the link
+    //    .mouseout(function() {
+    //        SVG("#tooltip").hide();
+    //    });
     }
     
 }
