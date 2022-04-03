@@ -32,9 +32,11 @@ function getTabsContent() {
                             <input id="add_blog_title" type="text" class="form-control w-75" placeholder="Enter a title" required> 
                         </div>
                         <!-- Text for the blog -->
-                        <div class="form-group"> 
+                        <div class="form-group w-75"> 
                             <label>Text</label> 
-                            <textarea id="add_blog_text" class="form-control w-75" placeholder="Blog contents" rows="5" required></textarea> 
+                            <div class="form-control" id="add_blog_text" required>
+                                <!-- Space for Quill -->
+                            </div>
                         </div>
                         <button class="btn btn-primary" onclick="addBlog()">Add Blog</button>
                       </form>
@@ -82,6 +84,24 @@ function getTabsContent() {
                       </form>
                     </div>`)
     );
+    
+    $(function(){
+        //code that needs to be executed when DOM is ready, after manipulation
+        // Using quill
+        var toolbarOptions = [['bold', 'italic', 'underline', 'strike'], 
+                              [{ 'header': [1, 2, 3, 4, 5, 6, false] }]];
+        
+        var editor = new Quill('#add_blog_text', {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        });
+        
+        // Change the height of the editor
+        $(".ql-editor").height("200px");
+    });
+    
     
     return content;
 }
