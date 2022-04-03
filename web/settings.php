@@ -3,11 +3,23 @@
     // Less change of errors
     $id = basename(filter_input(INPUT_SERVER, 'PHP_SELF'), '.php');
     require 'page/template.php';
+    include "src/tools/server.php";
+    
+    // Are we already logged in?
+    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+        // Redirect to login page
+        $URL = "login";
+        if( headers_sent() ) { 
+            echo("<script>location.href='$URL'</script>"); 
+        } else { 
+            header("Location: $URL"); 
+        }
+        exit;
+    }
 ?>
 
 <script>
     function onLoadSettings() {
-<?php if (isset($_SESSION["login"])) { ?>
         $("#content").append(
             $("<div>").addClass("container-fluid").append(
                 $("<div>").addClass("row")
@@ -17,16 +29,5 @@
                     .append(getTabsContent())
             )
         );
-<?php } else { ?>
-        $("#content").append(
-            $("<div>").addClass("container-fluid").append(
-                $("<div>").addClass("row")
-                    // The column with the tabs
-                    .append(getLoginMenu())
-                    // The column with the selected tabs
-                    .append(getLoginContent())
-            )
-        );
-<?php } ?>
     }
 </script>
