@@ -4,12 +4,12 @@
 function getTabsMenu() {
     var menu = $("<div>").addClass("col-3").append(`
         <ul class="nav nav-pills flex-column">
-            <li class="nav-item"> <a href="" class="active nav-link" data-toggle="pill" data-target="#tabadd"> ` + dict["settings.blog.add"] + ` <i class="fa fa-plus text-muted fa-lg"></i></a> </li>
-            <li class="nav-item"> <a href="" class="nav-link" data-toggle="pill" data-target="#tabedit"> ` + dict["settings.blog.edit"] + ` <i class="fa fa-edit text-muted fa-lg"></i></a> </li>
-            <li class="nav-item"> <a href="" class="nav-link" data-toggle="pill" data-target="#tabdelete"> ` + dict["settings.blog.delete"] + ` BLOG <i class="fa fa-trash text-muted fa-lg"></i></a> </li>
+            <li class="nav-item"> <a href="" class="active nav-link" data-toggle="pill" data-target="#tabadd"><i class="fa fa-plus text-muted fa-lg"></i> ` + dict["settings.blog.add"] + ` </a> </li>
+            <li class="nav-item"> <a href="" class="nav-link" data-toggle="pill" data-target="#tabedit"><i class="fa fa-edit text-muted fa-lg"></i> ` + dict["settings.blog.edit"] + ` </a> </li>
+            <li class="nav-item"> <a href="" class="nav-link" data-toggle="pill" data-target="#tabdelete"><i class="fa fa-trash text-muted fa-lg"></i> ` + dict["settings.blog.delete"] + ` </a> </li>
             <li class="nav-item"> 
                 <form action="settings" method="post" name="logout">
-                    <button class="btn btn-link nav-link" type="submit" name="logout"> ` + dict["settings.logout"] + ` <i class="fa fa-trash text-muted fa-lg"></button>
+                    <button class="btn btn-link nav-link" type="submit" name="logout"><i class="fa fa-sign-out text-muted fa-lg"></i> ` + dict["settings.logout"] + ` </button>
                 </form>
             </li>
         </ul>
