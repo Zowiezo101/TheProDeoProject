@@ -29,6 +29,11 @@
         <script src="/src/map/view.js"></script>
 <?php } ?>
 
+<?php if (in_array($id, ["settings"])) { ?>
+        <!-- Main Quill library -->
+        <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+<?php } ?>
+
         <!-- Accessing the database -->
         <script src="/src/tools/database.js"></script>
         

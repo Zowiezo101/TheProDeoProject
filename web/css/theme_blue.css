@@ -128,6 +128,10 @@ b,
 strong {
   font-weight: bolder; }
 
+ql-editor b,
+strong {
+  font-weight: bold; }
+
 small {
   font-size: 80%; }
 
@@ -7150,3 +7154,4 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+

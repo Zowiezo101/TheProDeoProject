@@ -114,6 +114,10 @@ b,
 strong {
   font-weight: bolder; }
 
+ql-editor b,
+strong {
+  font-weight: bold; }
+
 small {
   font-size: 80%; }
 

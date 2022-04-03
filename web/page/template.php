@@ -66,6 +66,8 @@
 <?php if (in_array($id, ["search"])) { ?>
         <link rel="stylesheet" href="/css/slider_<?php echo $theme; ?>.css">
 <?php } ?>
+        <!-- Include stylesheet -->
+        <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
       
         <!-- Fav icons -->
         <link rel="icon" type="image/png" sizes="32x32" href="/../favicon-32x32.png">
