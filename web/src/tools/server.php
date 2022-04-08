@@ -251,7 +251,6 @@
             header("Location: $URL"); 
         }
         exit;
-        exit;
     }
 
 ?>
