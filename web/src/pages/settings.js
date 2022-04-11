@@ -119,9 +119,21 @@ function addBlog() {
     var blog_date = new Date();
     
     if (session_settings["loggedin"]) {
+    
+        // Form tries to reload the page before the post could return..
+        event.preventDefault();
+    
         // Post the blog to the database
         postBlog(blog_title, blog_text, blog_user, blog_date).then(function (result) {
+            // Let the user know it went right
             alert(result);
+            
+            location.reload();
+        }).catch(function (result) {
+            // Show error if anything went wrong
+            alert(result);
+            
+            location.reload();
         });
     }
 }
