@@ -10,7 +10,7 @@ function addBlogToContainer(container, blog) {
     var blogBgColor = getBgColor(blogNumber);
     var blogId = "blog_" + blog.id;
     var blogTitle = blog.title;
-    var blogText = blog.text;
+    var blogText = blog.text ? blog.text + (blog.text.endsWith('</p>') ? '<br>' : '<br><br>') : '';
     var blogUser = blog.user === "undefined" ? "Zowiezo101" : blog.user;
     var blogDate = blog.date ? " @ " + blog.date.toUpperCase() : "";
         
@@ -18,7 +18,7 @@ function addBlogToContainer(container, blog) {
     '<div class="row">' + 
     '    <div class="col-md-11 mb-3">' + 
     '        <h1 class="text-center pb-2 pt-2 mb-0" style="background-color: var(--dark-' + blogBgColor + ')">' + blogTitle + '</h1>' + 
-    '        <h5 class="text-center pb-2 pt-2 mb-0" style="word-break:break-word; background-color: var(--light-' + blogBgColor + ')" id="' + blogId + '">' + blogText + '<br><br></h5>' + 
+    '        <div class="text-center pb-2 pt-2 mb-0 h5" style="word-break:break-word; background-color: var(--light-' + blogBgColor + ')" id="' + blogId + '">' + blogText + '</div>' + 
     '        <h6 class="pb-2 text-center font-weight-bold" style="background-color: var(--light-' + blogBgColor + ')">' + dict["blogs.posted_by"] + ' <a href="' + setParameters("settings") + '" class="text-decoration-none text-body">' + blogUser + '</a>' + blogDate + ' </h6>' + 
     '    </div>' + 
     '</div>');
