@@ -34,9 +34,7 @@ function getTabsContent() {
                         <!-- Text for the blog -->
                         <div class="form-group w-75"> 
                             <label>Text</label> 
-                            <div class="form-control" id="add_blog_text" required>
-                                <!-- Space for Quill -->
-                            </div>
+                            <textarea id="add_blog_text" class="form-control" placeholder="` + dict["settings.placeholder"] + `" required name="editordata"></textarea> 
                         </div>
                         <button class="btn btn-primary" onclick="addBlog()">Add Blog</button>
                       </form>
@@ -87,19 +85,20 @@ function getTabsContent() {
     
     $(function(){
         //code that needs to be executed when DOM is ready, after manipulation
-        // Using quill
-        var toolbarOptions = [['bold', 'italic', 'underline', 'strike'], 
-                              [{ 'header': [1, 2, 3, 4, 5, 6, false] }]];
-        
-        var editor = new Quill('#add_blog_text', {
-            theme: 'snow',
-            modules: {
-                toolbar: toolbarOptions
-            }
+        // Using Summernote
+        $('#add_blog_text').summernote({
+            inheritPlaceholder: true,
+            disableResizeEditor: true,
+            height: 200,
+            styleTags: ['p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph', 'style']],
+            ],
         });
         
-        // Change the height of the editor
-        $(".ql-editor").height("200px");
+        // Remove the resize bar
+        $('.note-statusbar').hide() 
     });
     
     
@@ -110,9 +109,8 @@ function addBlog() {
     /* Title of a blog */
     var blog_title = $("#add_blog_title").val();
     
-    /* The contents of a blog, done with Quill JS */
-    var editor = Quill.find( $("#add_blog_text")[0] );
-    var blog_text = JSON.stringify(editor.getContents());
+    /* The contents of a blog, done with SummerNote */
+    var blog_text = $('#add_blog_text').summernote('code');;
     
     // The user depends on the logged-in user
     var blog_user = session_settings["username"];

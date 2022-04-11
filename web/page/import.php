@@ -31,7 +31,8 @@
 
 <?php if (in_array($id, ["settings"])) { ?>
         <!-- Main Quill library -->
-        <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <?php } ?>
 
         <!-- Accessing the database -->
