@@ -41,7 +41,12 @@ function postData(table, data) {
             },
             body: JSON.stringify(params)
         }
-    ).then(response => response.json());
+    ).then(
+        response => response.text()
+    ).then (function (response) {
+        console.log(response);
+        return JSON.parse(response);
+    });
 }
 
 function putData(table, id, data) {
@@ -55,7 +60,12 @@ function putData(table, id, data) {
             },
             body: JSON.stringify(params)
         }
-    ).then(response => response.json());
+    ).then(
+        response => response.text()
+    ).then (function (response) {
+        console.log(response);
+        return JSON.parse(response);
+    });
 }
 
 function deleteData(table, id) {
@@ -69,7 +79,12 @@ function deleteData(table, id) {
             },
             body: JSON.stringify(params)
         }
-    ).then(response => response.json());
+    ).then(
+        response => response.text()
+    ).then (function (response) {
+        console.log(response);
+        return JSON.parse(response);
+    });
 }
 
 /**
