@@ -28,7 +28,7 @@
                     .append(
                         $("<div>").addClass("col-3").append(`
                             <ul class="nav nav-pills flex-column">
-                                <li class="nav-item"> <a href="" class="active nav-link" data-toggle="pill" data-target="#tablogin"> LOG IN <i class="fa fa-user-circle text-muted fa-lg"></i></a> </li>
+                                <li class="nav-item"> <a href="" class="active nav-link" data-toggle="pill" data-target="#tablogin"> <?php echo strtoupper($dict["settings.login"]); ?> <i class="fa fa-user-circle text-muted fa-lg"></i></a> </li>
                             </ul>
                         `))
                     // The column with the selected tabs
@@ -44,17 +44,17 @@
                                     ?>
                                     <form class="text-left" action="login" method="post" name="login">
                                         <div class="form-group">
-                                            <label for="email_username">Email address or username</label>
+                                            <label for="email_username"><?php echo $dict["settings.username"]; ?></label>
                                             <input type="text" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ((!empty($username)) ? 'is-valid' : ''); ?>" name="username" id="email_username" value="<?php echo $param_username; ?>" placeholder="ProdeoDatabase">
                                             <span class="invalid-feedback"><?php echo $dict[$username_err]; ?></span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="password">Password</label>
+                                            <label for="password"><?php echo $dict["settings.password"]; ?></label>
                                             <input type="password" class="form-control <?php echo (!empty($password1_err)) ? 'is-invalid' : ((!empty($password1)) ? 'is-valid' : ''); ?>" name="password" id="password" value="<?php echo $param_password1; ?>" placeholder="Password">
                                             <span class="invalid-feedback"><?php echo $dict[$password1_err]; ?></span>
                                         </div>
                                                     <!--- TODO! -->
-                                        <button type="submit" name="login" class="btn btn-primary">Log in</button>
+                                        <button type="submit" name="login" class="btn btn-primary"><?php echo $dict["settings.login"]; ?></button>
                                     </form>
                                 </div>
                             `)
