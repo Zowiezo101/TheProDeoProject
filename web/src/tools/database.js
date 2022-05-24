@@ -88,12 +88,16 @@ function deleteData(table, id) {
 }
 
 /**
- * getBlogs()
+ * getBlogs(user)
+ * 
+ * @param {String} id
  *  
  *  @return {Promise}
  */
-function getBlogs() {
-    return getData("blog", "read", {});
+function getBlogs(id) {
+    return getData("blog", "read", {
+        "id": id
+    });
 }
 
 function postBlog(title, text, user, date) {

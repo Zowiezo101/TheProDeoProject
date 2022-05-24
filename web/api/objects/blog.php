@@ -30,9 +30,24 @@ class Blog {
                 JOIN 
                     users u
                 ON 
-                    u.id = b.user
+                    u.id = b.user";
+        if ($this->id !== -1) {
+            $query = $query."
+                WHERE b.id = ?
                 ORDER BY
                     b.id DESC";
+
+            // prepare query statement
+            $stmt = $this->conn->prepare( $query );
+
+            // bind id of product to be updated
+            $stmt->bindParam(1, $this->id);
+            
+        } else {
+            $query = $query."
+                ORDER BY
+                    b.id DESC";
+        }
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

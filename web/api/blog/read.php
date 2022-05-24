@@ -14,6 +14,9 @@ $conn = $db->getConnection();
 // initialize object
 $blog = new Blog($conn);
   
+// set ID property of record to read
+$blog->id = filter_input(INPUT_GET,'id') !== null ? filter_input(INPUT_GET,'id') : -1;
+  
 // query blogs
 $stmt = $blog->read();
 $num = $stmt->rowCount();
