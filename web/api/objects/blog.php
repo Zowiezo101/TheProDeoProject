@@ -24,9 +24,13 @@ class Blog {
 
         // select all query
         $query = "SELECT
-                    b.id, b.title, b.text, b.user, b.date
+                    b.id, b.title, b.text, u.name, b.date
                 FROM
                     " . $this->table_name . " b
+                JOIN 
+                    users u
+                ON 
+                    u.id = b.user
                 ORDER BY
                     b.id DESC";
 

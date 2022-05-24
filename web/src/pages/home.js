@@ -11,8 +11,11 @@ function addBlogToContainer(container, blog) {
     var blogId = "blog_" + blog.id;
     var blogTitle = blog.title;
     var blogText = blog.text ? blog.text + (blog.text.endsWith('</p>') ? '<br>' : '<br><br>') : '';
-    var blogUser = blog.user === "undefined" ? "Zowiezo101" : blog.user;
-    var blogDate = blog.date ? " @ " + blog.date.toUpperCase() : "";
+    var blogUser = blog.name === "undefined" ? "Zowiezo101" : blog.name;
+    
+    // Showing the correct date in the correct timezone
+    var date = new Date(blog.date);
+    var blogDate = (!isNaN(Date.parse(blog.date))) ? " @ " + date.toLocaleString() : "";
         
     container.append(
     '<div class="row">' + 

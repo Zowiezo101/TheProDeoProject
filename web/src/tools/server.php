@@ -32,7 +32,7 @@
             $username_err = "settings.name_err.invalid";
         } else {
             // See if the username already exists
-            $sql = "select user_id from users where user_name = ?";
+            $sql = "select id from users where name = ?";
             $stmt = $conn->prepare($sql);
             if ($stmt) {
                 // Bind the parameter
@@ -65,7 +65,7 @@
             $email_err = "settings.email_err.invalid";
         } else {
             // See if the email address already exists
-            $sql = "select user_id from users where user_email = ?";
+            $sql = "select id from users where email = ?";
             $stmt = $conn->prepare($sql);
             if ($stmt) {
                 // Bind the parameter
@@ -115,7 +115,7 @@
         if(empty($username_err) && empty($email_err) && empty($password1_err) && empty($password2_err)){
 
             // Prepare an insert statement
-            $sql = "INSERT INTO users (user_name, user_email, user_hash) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO users (name, email, hash) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($sql);
             if($stmt){
                 // Bind variables to the prepared statement as parameters
@@ -178,8 +178,8 @@
         if(empty($username_err) && empty($password1_err)){
             
             // Prepare a select statement
-            $sql = "SELECT user_id, user_name, user_hash FROM users "
-                    . "WHERE user_name = ?";
+            $sql = "SELECT id, name, hash FROM users "
+                    . "WHERE name = ?";
             $stmt = $conn->prepare($sql);
             if($stmt){
                 // Bind variables to the prepared statement as parameters
@@ -202,8 +202,8 @@
 
                                 // Store data in session variables
                                 $_SESSION["loggedin"] = true;
-                                $_SESSION["id"] = $result_id;
-                                $_SESSION["username"] = $result_name;
+                                $_SESSION["user_id"] = $result_id;
+                                $_SESSION["user_name"] = $result_name;
                                 
                                 // Redirect to user page
                                 $URL = "settings";
