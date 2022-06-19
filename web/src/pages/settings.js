@@ -44,14 +44,9 @@ function getTabsContent() {
                     <div class="tab-pane fade" id="tabedit" role="tabpanel">
                       <form class="">
                         <h2>` + dict["settings.blog.editing"].toUpperCase() + `</h2>
-                        <div class="form-group">
+                        <div class="form-group w-75">
                           <label>Select a blog to edit</label>
-                          <select class="form-control" id="exampleFormControlSelect1">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                          <select class="form-control" id="edit_blog_select">
                           </select>
                         </div>
                         <!-- Text for the blog -->
@@ -99,8 +94,26 @@ function getTabsContent() {
             ],
         });
         
+        
+        // Using Summernote
+        $('#edit_blog_text').summernote({
+            inheritPlaceholder: true,
+            disableResizeEditor: true,
+            height: 200,
+            styleTags: ['p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph', 'style']],
+            ],
+        });
+        
         // Remove the resize bar
         $('.note-statusbar').hide() 
+        
+        // Disable the textbox for now
+        $('#edit_blog_text').summernote('disable');
+        
+        getBlogs(session_settings["user_id"]).then(blogs => addBlogsToSelect(blogs));
     });
     
     
@@ -150,4 +163,22 @@ function editBlog() {
 
 function deleteBlog() {
     
+}
+
+function addBlogsToSelect(blogs) {
+    if (!blogs.records) {
+        // No blogs
+        return;
+    }
+    for(var i = 0; i < blogs.records.length; i++) {
+        // The blog to be added
+        var blog = blogs.records[i];
+
+        // Add the blog to the container
+        $("#edit_blog_select").append(
+                '<option value="' + blog.id + '">' + 
+                    blog.date + " - " + blog.title +
+                '</option>'
+            );
+    }
 }
