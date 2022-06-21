@@ -31,15 +31,15 @@ class Blog {
                     users u
                 ON 
                     u.id = b.user";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare( $query );
             
         if ($this->id !== -1) {
             $query = $query."
                 WHERE u.id = ?
                 ORDER BY
-                    u.id DESC";
+                    b.id DESC";
+
+            // prepare query statement
+            $stmt = $this->conn->prepare( $query );
 
             // bind id of product to be updated
             $stmt->bindParam(1, $this->id);
@@ -48,6 +48,9 @@ class Blog {
             $query = $query."
                 ORDER BY
                     b.id DESC";
+
+            // prepare query statement
+            $stmt = $this->conn->prepare( $query );
         }
 
         // execute query
