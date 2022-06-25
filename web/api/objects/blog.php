@@ -59,6 +59,38 @@ class Blog {
         return $stmt;
     }
     
+    // used when filling up the update product form
+    function readOne(){
+
+        // query to read single record
+        $query = "SELECT
+                    b.title, b.text, b.user, b.date
+                FROM
+                    " . $this->table_name . " b
+                WHERE
+                    b.id = ?
+                LIMIT
+                    0,1";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare( $query );
+
+        // bind id of product to be updated
+        $stmt->bindParam(1, $this->id);
+
+        // execute query
+        $stmt->execute();
+
+        // get retrieved row
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // set values to object properties
+        $this->title = $row['title'];
+        $this->text = $row['text'];
+        $this->user = $row['user'];
+        $this->date = $row['date'];
+    }
+    
     // create product
     function create(){
 

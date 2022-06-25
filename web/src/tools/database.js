@@ -100,6 +100,19 @@ function getBlogs(id) {
     });
 }
 
+/**
+ * getBlog(id)
+ * 
+ * @param {String} id
+ *  
+ *  @return {Promise}
+ */
+function getBlog(id) {
+    return getData("blog", "read_one", {
+        "id": id
+    });
+}
+
 function postBlog(title, text, user, date) {
     return postData("blog", {
         "title": title,

@@ -46,7 +46,7 @@ function getTabsContent() {
                         <h2>` + dict["settings.blog.editing"].toUpperCase() + `</h2>
                         <div class="form-group w-75">
                           <label>Select a blog to edit</label>
-                          <select class="form-control" id="edit_blog_select">
+                          <select class="form-control" id="edit_blog_select" onchange="onChangeEdit()">
                           </select>
                         </div>
                         <!-- Text for the blog -->
@@ -181,4 +181,15 @@ function addBlogsToSelect(blogs) {
                 '</option>'
             );
     }
+}
+
+function onChangeEdit(option) {
+    var option = $("#edit_blog_select option:selected")[0];
+    getBlog(option.value).then(function(blog) {
+        if (blog) {
+            // Enable the textbox for editing
+            $('#edit_blog_text').summernote('enable');
+            $('#edit_blog_text').summernote('code') = blog.text;
+        }
+    });
 }
