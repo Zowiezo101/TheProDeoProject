@@ -125,7 +125,7 @@ function addBlog() {
     var blog_title = $("#add_blog_title").val();
     
     /* The contents of a blog, done with SummerNote */
-    var blog_text = $('#add_blog_text').summernote('code');;
+    var blog_text = $('#add_blog_text').summernote('code');
     
     // The user depends on the logged-in user
     var blog_user = session_settings["user_id"];
@@ -170,6 +170,7 @@ function addBlogsToSelect(blogs) {
         // No blogs
         return;
     }
+    
     for(var i = 0; i < blogs.records.length; i++) {
         // The blog to be added
         var blog = blogs.records[i];
