@@ -123,7 +123,10 @@ function postBlog(title, text, user, date) {
 }
 
 function putBlog(id, title, text) {
-    
+    return putData("blog", id, {
+        "title": title,
+        "text": text
+    });
 }
 
 function deleteBlog(id) {
