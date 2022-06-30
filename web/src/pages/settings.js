@@ -45,7 +45,6 @@ function getTabsContent() {
                       <form class="">
                         <h2>` + dict["settings.blog.editing"].toUpperCase() + `</h2>
                         <div class="form-group w-75">
-                          <label>Select a blog to edit</label>
                           <select class="form-control" id="edit_blog_select" onchange="onChangeEdit()">
                             <option selected disabled value="-1"> 
                                 ` + dict["settings.blog.select_edit"] + `
@@ -60,35 +59,33 @@ function getTabsContent() {
                         <div class="form-group w-75"> 
                             <textarea id="edit_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required name="editordata"></textarea> 
                         </div>
-                        <button disabled class="btn btn-primary">Submit</button>
+                        <button disabled class="btn btn-primary" onclick="editBlog()">` + dict["settings.blog.edit"] + `</button>
                       </form>
                     </div>`)
             // Tab for deleting blogs
             .append(`
                     <div class="tab-pane fade" id="tabdelete" role="tabpanel">
                       <form class="">
-                        <p class="lead">In my soul and absorb its power, like the form of a beloved mistress, then I often think with longing. A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart.</p>
-                        <div class="form-group">
-                          <label for="exampleFormControlSelect1">Example select</label>
-                          <select class="form-control" id="exampleFormControlSelect1">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                        <h2>` + dict["settings.blog.deleting"].toUpperCase() + `</h2>
+                        <div class="form-group w-75">
+                          <select class="form-control" id="delete_blog_select" onchange="onChangeDelete()">
+                            <option selected disabled value="-1"> 
+                                ` + dict["settings.blog.select_delete"] + `
+                            </option>
                           </select>
                         </div>
-                        <div class="form-group"> <label>Email address</label> <input type="text" class="form-control" placeholder="Enter email"> </div>
-                        <div class="form-group"> <label>Password</label> <textarea class="form-control" placeholder="Password" rows="5"></textarea> </div>
-                        <div class="form-group"> <label>Email address</label> <input type="text" class="form-control" placeholder="Enter email"> </div>
-                        <button class="btn btn-primary">Submit</button>
+                        <!-- Text for the blog -->
+                        <div class="form-group w-75"> 
+                            <textarea id="delete_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required name="editordata"></textarea> 
+                        </div>
+                        <button disabled class="btn btn-primary" onclick="deleteBlog()">` + dict["settings.blog.delete"] + `</button>
                       </form>
                     </div>`)
     );
     
     $(function(){
         //code that needs to be executed when DOM is ready, after manipulation
-        // Using Summernote
+        // Using Summernote for adding blog
         $('#add_blog_text').summernote({
             inheritPlaceholder: true,
             disableResizeEditor: true,
@@ -101,7 +98,7 @@ function getTabsContent() {
         });
         
         
-        // Using Summernote
+        // Using Summernote for editing blog
         $('#edit_blog_text').summernote({
             inheritPlaceholder: true,
             disableResizeEditor: true,
@@ -113,11 +110,22 @@ function getTabsContent() {
             ],
         });
         
+        
+        // Using Summernote for deleting blog
+        $('#delete_blog_text').summernote({
+            inheritPlaceholder: true,
+            disableResizeEditor: true,
+            height: 200,
+            styleTags: [],
+            toolbar: [],
+        });
+        
         // Remove the resize bar
         $('.note-statusbar').hide() 
         
         // Disable the textbox for now
         $('#edit_blog_text').summernote('disable');
+        $('#delete_blog_text').summernote('disable');
         
         getBlogs(session_settings["user_id"]).then(blogs => addBlogsToSelect(blogs));
     });
@@ -189,8 +197,28 @@ function editBlog() {
     }
 }
 
-function deleteBlog() {
+function deleteBlog() {    
+    // The ID of the selected blog
+    var blog_id = $("#edit_blog_select option:selected")[0].value;
     
+    if (session_settings["loggedin"]) {
+    
+        // Form tries to reload the page before the post could return..
+        event.preventDefault();
+    
+        // Delete the blog from the database
+        deleteBlog(blog_id).then(function (result) {
+            // Let the user know it went right
+            alert(result);
+            
+            location.reload();
+        }).catch(function (result) {
+            // Show error if anything went wrong
+            alert(result);
+            
+            location.reload();
+        });
+    }
 }
 
 function addBlogsToSelect(blogs) {
@@ -214,6 +242,13 @@ function addBlogsToSelect(blogs) {
                     blogDate + " - " + blog.title +
                 '</option>'
             );
+
+        // Add the blog to the container
+        $("#delete_blog_select").append(
+                '<option value="' + blog.id + '">' + 
+                    blogDate + " - " + blog.title +
+                '</option>'
+            );
     }
 }
 
@@ -228,7 +263,20 @@ function onChangeEdit(option) {
             $('#edit_blog_text').summernote('enable');
             $('#edit_blog_text').summernote('code', blog.text);
             
+            // Enable the button
             $('#tabedit button').removeAttr('disabled')
+        }
+    });
+}
+
+function onChangeDelete(option) {
+    var option = $("#delete_blog_select option:selected")[0];
+    getBlog(option.value).then(function(blog) {
+        if (blog) {
+            // Update the text and enable the button
+            $('#delete_blog_text').summernote('code', blog.text);
+            
+            $('#tabdelete button').removeAttr('disabled')
         }
     });
 }

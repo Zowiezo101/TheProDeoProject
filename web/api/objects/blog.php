@@ -124,5 +124,37 @@ class Blog {
         return false;
 
     }
+
+    // update the product
+    function update(){
+
+        // update query
+        $query = "UPDATE
+                    " . $this->table_name . "
+                SET
+                    title=:title, text=:text
+                WHERE
+                    id = :id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->text = $this->text;
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // bind new values
+        $stmt->bindParam(":title", $this->title);
+        $stmt->bindParam(":text", $this->text);
+        $stmt->bindParam(':id', $this->id);
+
+        // execute the query
+        if($stmt->execute()){
+            return true;
+        }
+
+        return false;
+    }
 }
 ?>

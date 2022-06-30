@@ -50,7 +50,7 @@ function postData(table, data) {
 }
 
 function putData(table, id, data) {
-    var url = base_url + "/web/api/" + table + ".php";
+    var url = base_url + "/web/api/" + table + "/update.php";
     var params = getParams({"id": id, "data": data});
     
     return fetch(url, {
@@ -69,7 +69,7 @@ function putData(table, id, data) {
 }
 
 function deleteData(table, id) {
-    var url = base_url + "/web/api/" + table + ".php";
+    var url = base_url + "/web/api/" + table + "/delete.php";
     var params = getParams({"id": id});
     
     return fetch(url, {
@@ -130,7 +130,7 @@ function putBlog(id, title, text) {
 }
 
 function deleteBlog(id) {
-    
+    return deleteData("blog", id);
 }
 
 /**
