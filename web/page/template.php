@@ -81,9 +81,6 @@
 
             window.onload = function() {
                 // Set some default stuff
-                //onLoadDefault();
-
-                // Then run the function that is different per page
                 <?php echo "onLoad".ucfirst($id)."()"; ?>;
             };
         </script>

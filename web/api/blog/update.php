@@ -34,7 +34,7 @@ if($blog->update()){
     http_response_code(200);
   
     // tell the user
-    echo json_encode(array("message" => "Product was updated."));
+    echo json_encode(array("message" => "Blog was updated."));
 }
   
 // if unable to update the product, tell the user
@@ -44,6 +44,6 @@ else{
     http_response_code(503);
   
     // tell the user
-    echo json_encode(array("message" => "Unable to update product."));
+    echo json_encode(array("message" => "Unable to update blog."));
 }
 ?>

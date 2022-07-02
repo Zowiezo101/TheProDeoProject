@@ -41,7 +41,7 @@ if(
         http_response_code(201);
   
         // tell the user
-        echo json_encode(array("message" => "Product was created."));
+        echo json_encode(array("message" => "Blog was created."));
     }
   
     // if unable to create the product, tell the user
@@ -51,7 +51,7 @@ if(
         http_response_code(503);
   
         // tell the user
-        echo json_encode(array("message" => "Unable to create product."));
+        echo json_encode(array("message" => "Unable to create blog."));
     }
 }
   
@@ -62,6 +62,6 @@ else{
     http_response_code(400);
   
     // tell the user
-    echo json_encode(array("message" => "Unable to create product. Data is incomplete."));
+    echo json_encode(array("message" => "Unable to create blog. Data is incomplete."));
 }
 ?>

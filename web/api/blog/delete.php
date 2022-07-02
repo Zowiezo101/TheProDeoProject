@@ -8,29 +8,29 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
   
 // include database and object file
 include_once '../config/database.php';
-include_once '../objects/product.php';
+include_once '../objects/blog.php';
   
 // get database connection
-$database = new Database();
-$db = $database->getConnection();
+$db = new Database();
+$conn = $db->getConnection();
   
 // prepare product object
-$product = new Product($db);
+$blog = new Blog($conn);
   
 // get product id
 $data = json_decode(file_get_contents("php://input"));
   
 // set product id to be deleted
-$product->id = $data->id;
+$blog->id = $data->id;
   
 // delete the product
-if($product->delete()){
+if($blog->delete()){
   
     // set response code - 200 ok
     http_response_code(200);
   
     // tell the user
-    echo json_encode(array("message" => "Product was deleted."));
+    echo json_encode(array("message" => "Blog was deleted."));
 }
   
 // if unable to delete the product
@@ -40,6 +40,6 @@ else{
     http_response_code(503);
   
     // tell the user
-    echo json_encode(array("message" => "Unable to delete product."));
+    echo json_encode(array("message" => "Unable to delete blog."));
 }
 ?>

@@ -57,7 +57,7 @@ function getTabsContent() {
                         </div>
                         <!-- Text for the blog -->
                         <div class="form-group w-75"> 
-                            <textarea id="edit_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required name="editordata"></textarea> 
+                            <textarea id="edit_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required></textarea> 
                         </div>
                         <button disabled class="btn btn-primary" onclick="editBlog()">` + dict["settings.blog.edit"] + `</button>
                       </form>
@@ -76,9 +76,9 @@ function getTabsContent() {
                         </div>
                         <!-- Text for the blog -->
                         <div class="form-group w-75"> 
-                            <textarea id="delete_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required name="editordata"></textarea> 
+                            <textarea id="delete_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required></textarea> 
                         </div>
-                        <button disabled class="btn btn-primary" onclick="deleteBlog()">` + dict["settings.blog.delete"] + `</button>
+                        <button disabled class="btn btn-primary" onclick="removeBlog()">` + dict["settings.blog.delete"] + `</button>
                       </form>
                     </div>`)
     );
@@ -155,16 +155,18 @@ function addBlog() {
         // Post the blog to the database
         postBlog(blog_title, blog_text, blog_user, blog_date).then(function (result) {
             // Let the user know it went right
-            alert(result);
+            alert(dict["settings.blog.success.add"]);
             
             location.reload();
         }).catch(function (result) {
             // Show error if anything went wrong
-            alert(result);
+            alert(dict["settings.blog.error.add"]);
             
             location.reload();
         });
     }
+    
+    return;
 }
 
 function editBlog() {
@@ -185,21 +187,23 @@ function editBlog() {
         // Post the blog to the database
         putBlog(blog_id, blog_title, blog_text).then(function (result) {
             // Let the user know it went right
-            alert(result);
+            alert(dict["settings.blog.success.edit"]);
             
             location.reload();
         }).catch(function (result) {
             // Show error if anything went wrong
-            alert(result);
+            alert(dict["settings.blog.error.edit"]);
             
             location.reload();
         });
     }
+    
+    return true;
 }
 
-function deleteBlog() {    
+function removeBlog() {    
     // The ID of the selected blog
-    var blog_id = $("#edit_blog_select option:selected")[0].value;
+    var blog_id = $("#delete_blog_select option:selected")[0].value;
     
     if (session_settings["loggedin"]) {
     
@@ -209,16 +213,18 @@ function deleteBlog() {
         // Delete the blog from the database
         deleteBlog(blog_id).then(function (result) {
             // Let the user know it went right
-            alert(result);
+            alert(dict["settings.blog.success.delete"]);
             
             location.reload();
         }).catch(function (result) {
             // Show error if anything went wrong
-            alert(result);
+            alert(dict["settings.blog.error.delete"]);
             
             location.reload();
         });
     }
+    
+    return true;
 }
 
 function addBlogsToSelect(blogs) {
