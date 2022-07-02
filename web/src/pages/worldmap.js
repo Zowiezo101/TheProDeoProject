@@ -2,6 +2,8 @@
 /* global google, getWorldmap, markerClusterer */
 
 var map;
+var markers = [];
+var infoWindow = null;
 
 function getWorldmapContent(location) {
     // Go to the location and show more information about it
@@ -50,9 +52,7 @@ function showMap() {
 
     // Insert all the locations as markers to click
     getWorldmap().then(function(worldmap) {
-        if (worldmap) {
-            var markers = [];
-            
+        if (worldmap) {            
             worldmap.records.forEach(function (location) {
                 // Get the coordinates from the location object
                 var coords = location.coordinates.split(',')
@@ -68,6 +68,8 @@ function showMap() {
                     infoWindow.setContent(setContent(location));
                     infoWindow.open(map, marker);
                 });
+                
+                marker.id = location.id;
                 
                 markers.push(marker);
 
@@ -86,4 +88,12 @@ function setContent(location) {
     info += "<br><br>Click here for more information: <br>" + getLinkToItem("locations", location.id, "self");
     
     return info;
+}
+
+function getLinkToMap(id) {    
+    // Find the marker with this ID and click it
+    var marker = markers.find(marker => marker.id === id.toString());
+    new google.maps.event.trigger( marker, 'click' );
+    
+    return true;
 }

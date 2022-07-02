@@ -63,10 +63,19 @@ function getLinkToItem(type, id, text, classes="") {
         link = '#';
     }
     
-    return '<a href="' + link + '" ' + 
-        'class="' + classes + '">' + 
-            text + 
-    '</a>';
+    if (type === "worldmap") {
+        // Use a function to link to the item
+        return '<a href="javascript: void(0)" onclick="getLinkToMap(' + id + ')"' + 
+            'class="' + classes + '">' + 
+                text + 
+        '</a>';        
+    } else {
+        // Use an actual hyhperlink to the item
+        return '<a href="' + link + '" ' + 
+            'class="' + classes + '">' + 
+                text + 
+        '</a>';
+    }
 }
 
 function getGender(int) {
