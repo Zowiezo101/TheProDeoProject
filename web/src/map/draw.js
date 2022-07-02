@@ -102,7 +102,7 @@ function drawItem(group, item) {
         // Draw the rectangle
         link.rect(item.x_length, 
                   item.y_length)
-                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
+                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
                 .move(item.X, item.Y)
@@ -140,7 +140,7 @@ function drawItem(group, item) {
         // Draw the rectangle
         link.rect(item.y_length, 
                   item.x_length)
-                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'blue' : 'pink'))
+                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
                 .move(item.Y, item.X)
@@ -190,7 +190,7 @@ function drawLink(group, child) {
                             [child.X + child.x_length / 2, 
                              child.Y]])
                     .fill('none')
-                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
+                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'lightblue' : 'pink'),
                               width: 4, linecap: 'round', linejoin: 'round' });
             } else {
                 group.polyline([
@@ -203,7 +203,7 @@ function drawLink(group, child) {
                             [child.Y, 
                              child.X + child.x_length / 2]])
                     .fill('none')
-                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'blue' : 'pink'),
+                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'lightblue' : 'pink'),
                               width: 4, linecap: 'round', linejoin: 'round' });
                  
             }
