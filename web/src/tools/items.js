@@ -106,6 +106,10 @@ function getItemsContent() {
             case "timeline":
                 var getItemContent = getTimelineContent;
                 break;
+                
+            case "worldmap":
+                var getItemContent = getWorldmapContent;
+                break;
         }
         
         // Get the data of the current item

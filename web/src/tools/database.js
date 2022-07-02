@@ -228,6 +228,15 @@ function searchSpecials(filter) {
 }
 
 /**
+ * getWorldmap()
+ *  
+ *  @return {Promise}
+ */
+function getWorldmap() {
+    return getData("worldmap", "read", {});
+}
+
+/**
  * @param {{id: String, data: <*>, options: <*>}} params
  * */
 function getQuery(params) {

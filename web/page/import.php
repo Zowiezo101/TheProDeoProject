@@ -8,7 +8,7 @@
         <!-- Extra functionality per page -->
         <script src="/src/pages/<?php echo $id; ?>.js"></script>
         
-<?php if (in_array($id, ["books", "events", "peoples", "locations", "specials", "familytree", "timeline"])) { ?>
+<?php if (in_array($id, ["books", "events", "peoples", "locations", "specials", "familytree", "timeline", "worldmap"])) { ?>
         <!-- For the sidebar used with many pages -->
         <script src="/src/tools/items.js"></script>
 <?php } ?>
@@ -27,6 +27,9 @@
         <script src="/src/map/calc.js"></script>
         <script src="/src/map/draw.js"></script>
         <script src="/src/map/view.js"></script>
+<?php } else if (in_array($id, ["worldmap"])) { ?>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFq1pKyxT7asd87wAgr83_yWIrT-sz7E&v=weekly"></script>
+        <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 <?php } ?>
 
 <?php if (in_array($id, ["settings"])) { ?>
