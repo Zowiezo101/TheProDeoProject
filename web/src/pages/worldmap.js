@@ -1,5 +1,5 @@
 
-/* global google, getWorldmap, markerClusterer */
+/* global google, getWorldmap, markerClusterer, dict */
 
 var map;
 var markers = [];
@@ -40,14 +40,7 @@ function showMap() {
     // Show the entire map
     map = new google.maps.Map(document.getElementById("item_content"), {
         center: { lat: 0, lng: 0 },
-        //41.902782,12.496365
         zoom: 2,
-    });
-        
-    // The information window used by all markers
-    const infoWindow = new google.maps.InfoWindow({
-        content: "",
-        disableAutoPan: true,
     });
 
     // Insert all the locations as markers to click
@@ -55,7 +48,7 @@ function showMap() {
         if (worldmap) {            
             worldmap.records.forEach(function (location) {
                 // Get the coordinates from the location object
-                var coords = location.coordinates.split(',')
+                var coords = location.coordinates.split(',');
 
                 // The marker, positioned at the location
                 const marker = new google.maps.Marker({
@@ -64,7 +57,23 @@ function showMap() {
 
                 // markers can only be keyboard focusable when they have click listeners
                 // open info window when marker is clicked
-                marker.addListener("click", () => {
+                marker.addListener("click", () => {                    
+                    // Move to marker
+                    map.setCenter(marker.getPosition());
+                    map.setZoom(8);
+                    
+                    // Is there already a window open?
+                    if (infoWindow !== null) {
+                        infoWindow.close();
+                    }
+        
+                    // Create a new window and open it
+                    infoWindow = new google.maps.InfoWindow({
+                        content: "",
+                        disableAutoPan: true,
+                    });
+
+                    // Open the info window
                     infoWindow.setContent(setContent(location));
                     infoWindow.open(map, marker);
                 });
@@ -85,7 +94,7 @@ function setContent(location) {
     // The information to show when a marker is clicked
     var info = location.name;
     
-    info += "<br><br>Click here for more information: <br>" + getLinkToItem("locations", location.id, "self");
+    info += dict["worldmap.information"] + getLinkToItem("locations", location.id, "self");
     
     return info;
 }
