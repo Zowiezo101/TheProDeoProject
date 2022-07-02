@@ -34,6 +34,7 @@ var dict = {
 	"timeline.global": "Globale tijdslijn",
 	"familytree.overview": "Dit is nog onder verbouwing.. <i class='fa fa-wrench' aria-hidden='true'></i>",
 	"worldmap.overview": "Dit is nog onder verbouwing.. <i class='fa fa-wrench' aria-hidden='true'></i>",
+	"worldmap.information": "<br><br>Klik hier voor meer informatie: <br>",
 	"contact.overview": "Als je vragen, ideeen, feedback, klachten of iets anders voor de website of onze projecten hebt, voel je dan vrij om contact op te nemen met ons!<br><br>Je kan het formulier aan de rechterkant gebruiken om een anoniem bericht te sturen, of het onderstaande email adres gebruiken om een email te sturen met je standaard email client.",
 	"about_us.overview": "Op dit moment ben ik een team van 1 persoon, waarbij alles op een laag pitje gaat. Met een baan, een huishouden, een lieve man en een chronische ziekte heb ik ook niet enorm veel keuze dan om mijn leven goed in te delen. Toch blijf ik stapje voor stapje aan de website werken om er een mooi geheel van te maken. En wie weet komen er mensen om mijn pad om mij daarbij te helpen en dit team te versterken.<br><br>",
 	"about_prodeo.title": "Over Prodeo: <br>",
