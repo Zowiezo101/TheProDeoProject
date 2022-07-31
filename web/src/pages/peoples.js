@@ -35,8 +35,9 @@ function getPeopleContent(peoples) {
                                 insertDetail(peoples, 'book_end') +
                             `</tbody>
                         </table>
-                    </div>
-                </div>
+                    </div>` + 
+                    insertDetailMaps(peoples, 'familytree') + 
+                `</div>
             </div>
         `);
         

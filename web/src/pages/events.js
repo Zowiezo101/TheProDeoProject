@@ -29,8 +29,9 @@ function getEventContent(event) {
                                 insertDetail(event, 'book_end') + 
                             `</tbody>
                         </table>
-                    </div>
-                </div>
+                    </div>` + 
+                    insertDetailMaps(event, 'timeline') + 
+                `</div>
             </div>
         `);
         

@@ -137,5 +137,43 @@ class FamilyTree {
         $this->gender = $parent->gender;
         $this->items = $people_arr;
     }
+    
+    // search products
+    function search($filters){
+
+        // select all query
+        $query = "WITH RECURSIVE cte (p1, p2) AS 
+                    (
+                        SELECT people_id, parent_id FROM people_to_parent WHERE people_id = ?
+                        UNION ALL
+                        SELECT people_id, parent_id FROM people_to_parent JOIN cte ON people_id = p2
+                    )
+
+                SELECT DISTINCT id, name FROM (
+                    SELECT id, name FROM peoples 
+                        LEFT JOIN people_to_parent 
+                        ON peoples.id = people_to_parent.people_id 
+                        WHERE peoples.id IN (SELECT p2 FROM cte)
+                        AND parent_id IS NULL
+                    UNION ALL
+                    SELECT id, name FROM peoples 
+                        LEFT JOIN people_to_parent 
+                        ON peoples.id = people_to_parent.parent_id 
+                        WHERE parent_id = ? 
+                        AND people_id IS NOT NULL)
+                AS ancestor";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // bind
+        $stmt->bindParam(1, $filters);
+        $stmt->bindParam(2, $filters);
+
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
+    }
 }
 ?>

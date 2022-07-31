@@ -42,5 +42,7 @@ function showMap(timeline) {
         // We've got the people and the locations, now time to draw it!
         drawControlButtons();
         drawMapItems();
+        
+        panToItem(timeline);
     }
 }

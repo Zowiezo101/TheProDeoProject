@@ -3,6 +3,7 @@
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
+var pzInstance = null;
 
 function setSVG(svg) {
     
@@ -72,11 +73,6 @@ function drawControlButtons() {
 }
     
 function drawMapItems() {
-    
-    // The height and width of the SVG parent
-    var map = $("#map_div");
-    var outerHeight = map.outerHeight(true);
-    var outerWidth = map.outerWidth(true);
 
     // The root parent
     var group = g_svg.group({id: "map"});    
@@ -85,7 +81,11 @@ function drawMapItems() {
         drawItem(group, item);
     });
     
-    panzoom(group.node);
+    pzInstance = panzoom(group.node, {
+        bounds: true,
+        boundsPadding: 0.1,
+        transformOrigin: {x: 0.5, y: 0.5}
+    });
     
     // TODO:
 //    g_svg.text(dict["familytree.link"]).attr("id", "tooltip").hide();
@@ -102,7 +102,7 @@ function drawItem(group, item) {
         // Draw the rectangle
         link.rect(item.x_length, 
                   item.y_length)
-                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
+                .fill(["-1", "0"].includes(item.gender) ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
                 .move(item.X, item.Y)
@@ -140,7 +140,7 @@ function drawItem(group, item) {
         // Draw the rectangle
         link.rect(item.y_length, 
                   item.x_length)
-                .fill(item.gender === "-1" ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
+                .fill(["-1", "0"].includes(item.gender) ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
                 .move(item.Y, item.X)
@@ -190,7 +190,7 @@ function drawLink(group, child) {
                             [child.X + child.x_length / 2, 
                              child.Y]])
                     .fill('none')
-                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'lightblue' : 'pink'),
+                    .stroke({ color: ["-1", "0"].includes(parent.gender) ? 'lightgrey' : (parent.gender === "1" ? 'lightblue' : 'pink'),
                               width: 4, linecap: 'round', linejoin: 'round' });
             } else {
                 group.polyline([
@@ -203,7 +203,7 @@ function drawLink(group, child) {
                             [child.Y, 
                              child.X + child.x_length / 2]])
                     .fill('none')
-                    .stroke({ color: parent.gender === "-1" ? 'lightgrey' : (parent.gender === "1" ? 'lightblue' : 'pink'),
+                    .stroke({ color: ["-1", "0"].includes(parent.gender) ? 'lightgrey' : (parent.gender === "1" ? 'lightblue' : 'pink'),
                               width: 4, linecap: 'round', linejoin: 'round' });
                  
             }

@@ -39,8 +39,9 @@ function getItemsMenu() {
         <div class="row">
             <div class="col-md-12">
                 <div class="list-group text-center" id="item_list">
-                    <!-- We'll get the list as soon as we know the page and sort -->
-                </div>
+                    <!-- We'll get the list as soon as we know the page and sort -->` + 
+                    `<a class="list-group-item list-group-item-action invisible"> empty </a>`.repeat(pageSize) + 
+                `</div>
             </div>
         </div>
     
@@ -533,6 +534,92 @@ function insertDetailLink(item, detail) {
             item[detail] + 
         `</td>
     </tr>` : "";
+}
+
+function insertDetailMaps(item, type) {
+    
+    var map_div = `<div id="table_maps"></div>`;
+    
+    switch(type) {
+        case "timeline":
+            // The timeline consists of the global timeline and the separate timelines
+            // They don't overlap and thus there is always just two, 
+            // but we do want to pan to the timeline in case of the global timeline    
+            rows = `<tr>
+                        <td>` + 
+                            getLinkToItem(
+                                type,
+                                "-999",
+                                "Global",
+                                "",
+                                item.id) + 
+                        `</td>
+                    </tr>
+                    <tr>
+                        <td>` + 
+                            getLinkToItem(
+                                type, 
+                                item.id, 
+                                item.name) + 
+                        `</td>
+                    </tr>`;
+            
+            maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-borderless">
+                            <tbody>` +
+                                rows + 
+                            `</tbody>
+                        </table>
+                    </div>`;
+            
+            map_div = $(map_div).append(maps).html();
+            break;
+            
+        case "familytree":
+            // We need to find the corresponding familytrees this person is a part of
+            // Look for the ancestors and parents of this person
+            // If this person has no parents, check for children
+            // If this person has no children either, this person has no familytree
+            getItemsSearch("familytree", item.id).then(function(ancestors) {
+                if (ancestors.records) {
+                    var rows = "";
+                    ancestors.records.forEach(function(ancestor) {
+                        rows += (`<tr>
+                            <td>` + 
+                                getLinkToItem(
+                                    type,
+                                    ancestor.id,
+                                    ancestor.name,
+                                    "",
+                                    item.id) + 
+                            `</td>
+                        </tr>`);
+                    })
+            
+                    maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-borderless">
+                                    <tbody>` +
+                                        rows + 
+                                    `</tbody>
+                                </table>
+                            </div>`;
+
+                    map_div = $("#table_maps").append(maps);
+                } else {
+                    $("#table_maps").remove()
+                }
+            })
+            break;
+            
+        default:
+            // Nothing
+            break
+            
+    }
+    
+    return map_div;
 }
 
 

@@ -39,7 +39,7 @@ function toUpperCaseFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function getLinkToItem(type, id, text, classes="") {
+function getLinkToItem(type, id, text, classes="", panTo="") {
     // If any other classes are inserted
     if (typeof classes === "undefined" || classes === "") {
         classes = "font-weight-bold";
@@ -61,6 +61,10 @@ function getLinkToItem(type, id, text, classes="") {
     
     if (id === null) {
         link = '#';
+    }
+    
+    if (panTo !== "") {
+        link += '?panTo=' + panTo;
     }
     
     if (type === "worldmap") {

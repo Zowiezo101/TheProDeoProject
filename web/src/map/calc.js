@@ -273,7 +273,7 @@ function getChildren(id, calc) {
 
 function getMapItem(id) {
     var items = filterMapItems('id', id);
-    return items[0];
+    return items.length > 0 ? items[0] : null;
 }
 
 function getLeftLevelSibling(id) {
