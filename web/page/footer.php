@@ -12,7 +12,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        <p class="my-0">© 2014-2021 <?php echo $dict["globals.prodeo_copyright"] ?></p>
+                        <p class="my-0"><?php echo "© 2014-".date('Y')." ".$dict["globals.prodeo_copyright"] ?></p>
                     </div>
                 </div>
             </div>
