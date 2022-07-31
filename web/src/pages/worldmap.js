@@ -1,9 +1,10 @@
 
 /* global google, getWorldmap, markerClusterer, dict */
 
-var map;
+var map = null;
 var markers = [];
 var infoWindow = null;
+var markerClusterer = null;
 
 function getWorldmapContent(location) {
     // Go to the location and show more information about it
@@ -37,8 +38,11 @@ function getWorldmapContent(location) {
 }
 
 function showMap() {
+    
+    var div = $("<div id='google_maps' class='min-vh-75'>").appendTo("#item_content").get(0);
+    
     // Show the entire map
-    map = new google.maps.Map(document.getElementById("item_content"), {
+    map = new google.maps.Map(div, {
         center: { lat: 0, lng: 0 },
         zoom: 2,
     });
@@ -60,7 +64,8 @@ function showMap() {
                 marker.addListener("click", () => {                    
                     // Move to marker
                     map.setCenter(marker.getPosition());
-                    map.setZoom(8);
+                    var zoom = map.getZoom();
+                    map.setZoom(Math.max(8, zoom));
                     
                     // Is there already a window open?
                     if (infoWindow !== null) {
@@ -85,7 +90,7 @@ function showMap() {
             });
 
             // Add a marker clusterer to manage the markers.
-            const markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
+            markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
         }
     });
 }
