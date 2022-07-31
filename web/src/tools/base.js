@@ -51,7 +51,7 @@ function getLinkToItem(type, id, text, classes="", panTo="") {
         to_item = "map";
     }
     
-    var link = setParameters(to_table + "/" + to_item + "/" + id);
+    var link = setParameters(to_table + (id !== "-1" ? ("/" + to_item + "/" + id) : ""));
     if (text === "self") {
         text = link.substr(get_settings["lang"] ? 4 : 1);
     }
@@ -67,7 +67,7 @@ function getLinkToItem(type, id, text, classes="", panTo="") {
         link += '?panTo=' + panTo;
     }
     
-    if (type === "worldmap") {
+    if ((type === "worldmap") && id !== "-1") {
         // Use a function to link to the item
         return '<a href="javascript: void(0)" onclick="getLinkToMap(' + id + ')"' + 
             'class="' + classes + '">' + 
@@ -76,6 +76,7 @@ function getLinkToItem(type, id, text, classes="", panTo="") {
     } else {
         // Use an actual hyhperlink to the item
         return '<a href="' + link + '" ' + 
+            (type === "worldmap" ? 'data-toggle="tooltip" title="' + dict["items.details.worldmap"] + '"' : "") + 
             'class="' + classes + '">' + 
                 text + 
         '</a>';

@@ -613,6 +613,31 @@ function insertDetailMaps(item, type) {
             })
             break;
             
+        case "worldmap":
+            // Make a link to Google maps if there are coordinates
+            if (item.coordinates && item.coordinates != -1) {
+                var [CoordX, CoordY] = item.coordinates.split(",");
+                var Coords = [parseFloat(CoordX).toFixed(2),
+                              parseFloat(CoordY).toFixed(2)].join(", ");
+                
+                map_div = `<tr>
+                    <th scope="row">` + dict["items.coordinates"] + `</th>
+                    <td>` + 
+                        getLinkToItem(
+                            type,
+                            "-1",
+                            Coords,
+                            "",
+                            item.id) + 
+                    `</td>
+                </tr>`;
+            } else {
+                // No coordinates, nothing to show..
+                map_div = "";
+            }
+            
+            break;
+            
         default:
             // Nothing
             break

@@ -1,5 +1,5 @@
 
-/* global google, getWorldmap, markerClusterer, dict */
+/* global google, getWorldmap, markerClusterer, dict, get_settings */
 
 var map = null;
 var markers = [];
@@ -91,6 +91,14 @@ function showMap() {
 
             // Add a marker clusterer to manage the markers.
             markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
+        
+            if (get_settings.hasOwnProperty("panTo")) {
+                // Get the item to pan to
+                var id = get_settings["panTo"];
+    
+                // Pan to the item
+                getLinkToMap(id);
+            }
         }
     });
 }
