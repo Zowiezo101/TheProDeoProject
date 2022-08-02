@@ -16,6 +16,8 @@
 <?php if (in_array($id, ["search"])) { ?>
         <!-- Bootstrap slider -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
+        <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
 <?php } ?>
         
 <?php if (in_array($id, ["familytree", "timeline"])) { ?>

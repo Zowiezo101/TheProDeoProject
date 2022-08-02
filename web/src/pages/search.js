@@ -527,7 +527,7 @@ function getSearchContent() {
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <!-- Tab selection -->
-                    <ul class="nav nav-tabs font-weight-bold">
+                    <ul class="nav nav-tabs justify-content-center font-weight-bold">
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabbooks">` + dict["navigation.books"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabevents">` + dict["navigation.events"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabpeoples">` + dict["navigation.peoples"] + `</a> </li>
@@ -1314,6 +1314,14 @@ function insertItems(type, result) {
                 </table>
             </div>
         `);
+        
+        // This is to sort the results
+        $("#tab" + type + " table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "order": [[1, 'asc']]
+        });
     } else {
         // TODO:
         // Error melding geven dat database niet bereikt kan worden

@@ -7155,3 +7155,7 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+table.dataTable thead th {
+  text-align: center !important;
+}
