@@ -1315,12 +1315,14 @@ function insertItems(type, result) {
             </div>
         `);
         
+        var num_columns = table_header.split("><").length;
+        
         // This is to sort the results
         $("#tab" + type + " table").DataTable({
             "paging": false,
             "searching": false,
             "info": false,
-            "order": [[1, 'asc']]
+            "order": [[num_columns - (type === "books" ? 1 : 3), 'asc']]
         });
     } else {
         // TODO:
@@ -1359,7 +1361,7 @@ function insertData(type, name, data) {
         if (name === "name") {
             table_data = '<th scope="row">' + data["name"] + '</th>';
         } else if (name === "link") {
-            table_data = '<td>' + getLinkToItem(type, data["id"], "self") + '</td>';
+            table_data = '<td data-order="' + data["id"] + '">' + getLinkToItem(type, data["id"], "self") + '</td>';
         } else if (name === "length") {
             table_data = '<td>' + timeToString(data["length"]) + '</td>';
         } else if (name === "parent_age") {
@@ -1375,13 +1377,37 @@ function insertData(type, name, data) {
         } else if (name === "type") {
             table_data = '<td>' + ((type === "locations") ? getTypeLocation(data["type"]) : getTypeSpecial(data["type"])) + '</td>';
         } else if (name === "book_start") {
-            table_data = '<td>' + 
+            // Data to order by
+            var data_order =
+                        ((data["book_start_id"].length < 3) ? 
+                            ("0".repeat(3 - data["book_start_id"].length) + data["book_start_id"]) : 
+                                                                            data["book_start_id"]) + 
+                        ((data["book_start_chap"].length < 3) ? 
+                            ("0".repeat(3 - data["book_start_chap"].length) + data["book_start_chap"]) : 
+                                                                              data["book_start_chap"]) + 
+                        ((data["book_start_vers"].length < 3) ? 
+                            ("0".repeat(3 - data["book_start_vers"].length) + data["book_start_vers"]) : 
+                                                                              data["book_start_vers"]);
+                    
+            table_data = '<td data-order="' + data_order + '">' + 
                     dict["books.book_" + data["book_start_id"]] + 
                     " " + data["book_start_chap"] + 
                     ":" + data["book_start_vers"] + 
                 '</td>';
         } else if (name === "book_end") {
-            table_data = '<td>' + 
+            // Data to order by
+            var data_order =
+                        ((data["book_end_id"].length < 3) ? 
+                            ("0".repeat(3 - data["book_end_id"].length) + data["book_end_id"]) : 
+                                                                          data["book_end_id"]) + 
+                        ((data["book_end_chap"].length < 3) ? 
+                            ("0".repeat(3 - data["book_end_chap"].length) + data["book_end_chap"]) : 
+                                                                            data["book_end_chap"]) + 
+                        ((data["book_end_vers"].length < 3) ? 
+                            ("0".repeat(3 - data["book_end_vers"].length) + data["book_end_vers"]) : 
+                                                                            data["book_end_vers"]);
+                                                                      
+            table_data = '<td data-order="' + data_order + '">' + 
                     dict["books.book_" + data["book_end_id"]] + 
                     " " + data["book_end_chap"] + 
                     ":" + data["book_end_vers"] + 
