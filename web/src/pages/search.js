@@ -39,7 +39,7 @@ function getSearchMenu() {
             <hr class="my-1"/>
  
             <!-- Meaning name -->
-            <div class="row">
+            <div class="row people_prop location_prop special_prop">
                 <div class="col-md-12">
                     <label class="font-weight-bold">` + dict["items.meaning_name"] + `:
                     </label>
@@ -54,7 +54,7 @@ function getSearchMenu() {
             <hr class="my-1"/>
     
             <!-- Description -->
-            <div class="row">
+            <div class="row event_prop people_prop location_prop special_prop">
                 <div class="col-md-12">
                     <label class="font-weight-bold">` + dict["items.descr"] + `:
                     </label>
@@ -69,7 +69,7 @@ function getSearchMenu() {
             <hr class="my-1"/>
     
             <!-- First appearance -->    
-            <div class="row pb-2">
+            <div class="row pb-2 event_prop people_prop location_prop special_prop">
                 <div class="col-md-12">
                     <label class="font-weight-bold" id="item_start_label">` + dict["items.book_start"] + `:
                     </label>
@@ -158,7 +158,7 @@ function getSearchMenu() {
             <hr class="my-1"/>
     
             <!-- Last appearance -->
-            <div class="row pb-2">
+            <div class="row pb-2 event_prop people_prop location_prop special_prop">
                 <div class="col-md-12">
                     <label class="font-weight-bold" id="item_end_label">` + dict["items.book_end"] + `:
                     </label>
@@ -527,7 +527,7 @@ function getSearchContent() {
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <!-- Tab selection -->
-                    <ul class="nav nav-tabs justify-content-center font-weight-bold">
+                    <ul class="nav nav-tabs justify-content-center font-weight-bold" id="search_tabs">
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabbooks">` + dict["navigation.books"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabevents">` + dict["navigation.events"] + `</a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabpeoples">` + dict["navigation.peoples"] + `</a> </li>
@@ -673,30 +673,77 @@ function insertSpecifics() {
     if (type !== "-1") {
         // Option to remove the filter
         removeFilter("specific", "#item_specific_label");
+        
+        // Remove the tabs on the top to only show the selected specific item
+        $("#search_tabs").addClass("d-none");
+        
+        // Also, remove all the main filters that are not related to 
+        // the specific filter type..
+        $(".book_prop input, \n\
+           .event_prop input, \n\
+           .people_prop input, \n\
+           .location_prop input, \n\
+           .special_prop input").addClass("disabled").attr("disabled", "true");
+        $(".book_prop select, \n\
+           .event_prop select, \n\
+           .people_prop select, \n\
+           .location_prop select, \n\
+           .special_prop select").addClass("disabled").attr("disabled", "true");
     
         // Only show the selected specifics
         switch(type) {
             case "0":
                 // Books
                 $("#item_specifics_books").removeClass("d-none");
+                $(".book_prop input").removeClass("disabled").removeAttr("disabled");
+                $(".book_prop select").removeClass("disabled").removeAttr("disabled");
+                $("a[data-target='#tabbooks']").trigger('click');
                 break;
             case "1":
                 // Events
                 $("#item_specifics_events").removeClass("d-none");
+                $(".event_prop input").removeClass("disabled").removeAttr("disabled");
+                $(".event_prop select").removeClass("disabled").removeAttr("disabled");
+                $("a[data-target='#tabevents']").trigger('click');
                 break;
             case "2":
                 // Peoples
                 $("#item_specifics_peoples").removeClass("d-none");
+                $(".people_prop input").removeClass("disabled").removeAttr("disabled");
+                $(".people_prop select").removeClass("disabled").removeAttr("disabled");
+                $("a[data-target='#tabpeoples']").trigger('click');
                 break;
             case "3":
                 // Locations
                 $("#item_specifics_locations").removeClass("d-none");
+                $(".location_prop input").removeClass("disabled").removeAttr("disabled");
+                $(".location_prop select").removeClass("disabled").removeAttr("disabled");
+                $("a[data-target='#tablocations']").trigger('click');
                 break;
             case "4":
                 // Specials
                 $("#item_specifics_specials").removeClass("d-none");
+                $(".special_prop input").removeClass("disabled").removeAttr("disabled");
+                $(".special_prop select").removeClass("disabled").removeAttr("disabled");
+                $("a[data-target='#tabspecials']").trigger('click');
                 break;
         }
+    } else {
+        
+        // Show the tabs again
+        $("#search_tabs").removeClass("d-none");
+        
+        // Add back the main filters
+        $(".book_prop input, \n\
+           .event_prop input, \n\
+           .people_prop input, \n\
+           .location_prop input, \n\
+           .special_prop input").removeClass("disabled").removeAttr("disabled");
+        $(".book_prop select, \n\
+           .event_prop select, \n\
+           .people_prop select, \n\
+           .location_prop select, \n\
+           .special_prop select").removeClass("disabled").removeAttr("disabled");
     }
 }
 
