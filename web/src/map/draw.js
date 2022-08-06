@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings */
+/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings, onBeforeZoom, onBeforePan */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -15,11 +15,15 @@ function setSVG(svg) {
 
 function drawControlButtons() {
     
-//    // The height and width of the SVG parent
-//    var map = $("#map_div");
-//    var outerHeight = map.outerHeight(true);
-//    var outerWidth = map.outerWidth(true);
-//
+    // The height and width of the SVG parent
+    var div = $("#map_div").parent();
+    div.append(`<div style="position: absolute; top: 0; right: 0; padding: inherit;" class="btn-group">
+                    <button class="btn btn-primary" onclick="onZoomFit()" title="Zoom to fit"><i class="fa fa-expand" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" onclick="onZoomReset()" title="Reset zoom"><i class="fa fa-compress" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" onclick="onDownload()" title="Download familytree"><i class="fa fa-download" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" title="More information"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                </div>`);
+
 //    // Show the controls to move around in the SVG
 //    var group = svg.group({id: "controls"});
 //    
@@ -73,6 +77,9 @@ function drawControlButtons() {
 }
     
 function drawMapItems() {
+    
+    // Set the background of the entire thing
+    g_svg.addClass('bg-light');
 
     // The root parent
     var group = g_svg.group({id: "map"});    
@@ -81,10 +88,13 @@ function drawMapItems() {
         drawItem(group, item);
     });
     
-    pzInstance = panzoom(group.node, {
-        bounds: true,
-        boundsPadding: 0.1,
-        transformOrigin: {x: 0.5, y: 0.5}
+    pzInstance = svgPanZoom(g_svg.node, {
+        fit: false,
+        center: false,
+        maxZoom: 2,
+        minZoom: 0.01,
+        beforeZoom: onBeforeZoom,
+        beforePan: onBeforePan
     });
     
     // TODO:

@@ -1,4 +1,4 @@
-/* global get_settings, pzInstance, g_Options, ALIGNMENT_VERTICAL */
+/* global get_settings, pzInstance, g_Options, ALIGNMENT_VERTICAL, g_MapItems */
 
 ///* global session_settings, globalMapId, SVG */
 //
@@ -66,9 +66,59 @@
 //}
 //
 
-function panToItem(map) {
+// These two are used to get smooth zooming/panning
+// with the correct values, by taking over the actual
+// Zoom/pan function for a little while
+var onSmoothPanning = false;
+var onSmoothZooming = false;
+var intervalPan = null;
+var intervalZoom = null;
+var callbackPan = null;
+var callbackZoom = null;
+
+function onBeforePan(oldPan, newPan) {
+    if (onSmoothPanning === true) {
+        onSmoothPanning = false;
+        panSmooth(oldPan, newPan);
+        return false;
+    } else {
+        return true;  
+    }
+}
+
+function onBeforeZoom(oldZoom, newZoom) {
+    if (onSmoothZooming === true) {
+        onSmoothZooming = false;
+        zoomSmooth(oldZoom, newZoom);
+        return false;
+    } else {
+        return true;  
+    }
+}
+
+function onAfterPanZoom(f) {    
+    // These animations take a max of 400 ms
+    if (intervalZoom !== null || intervalPan !== null) {
+        // Still busy, use a callback
+        callbackZoom = function() {
+            // After the callback, check if the panning function is also done
+            if (intervalPan !== null) {
+                // Not yet done, use a callback
+                callbackPan = f;
+            } else {
+                // Done, execute it right away
+                f();
+            }
+        };
+    } else {
+        // Done, execute it right away
+        f();
+    }
+}
+
+function panToItem() {
     // Default ID to pan to is the first item of the timeline
-    var id = map.id;
+    var id = g_MapItems[0].id;
     if (get_settings.hasOwnProperty("panTo")) {
     
         // Get the item to pan to
@@ -96,9 +146,176 @@ function panToItem(map) {
         var newY = (outerHeight / 2) - (item.X + (g_Options.x_length / 2));     
     }
 
-    // Reset the SVG to 0,0 and then move to the desired location
-    pzInstance.moveTo(0, 0);
-    pzInstance.smoothMoveTo(newX, newY);
+    // Move to the desired location
+    panSmooth(pzInstance.getPan(), {x: newX, y: newY});
+}
+
+function panSmooth(oldPan, newPan) {
+    
+    cancel();
+    
+    // Where we come from
+    var source = {
+        x: oldPan.x,
+        y: oldPan.y
+    };
+    
+    // Where we are
+    var current = {
+        x: source.x, 
+        y: source.y
+    };
+    
+    // Where we were
+    var previous = {
+        x: source.x, 
+        y: source.y
+    };
+    
+    // Where we go to
+    var diff = {
+        x: newPan.x - source.x,
+        y: newPan.y - source.y
+    };
+    
+    // This is used for the easing in and out, making it more smooth
+    var bezierEasing = [
+        0,
+        0.025555679605604214,
+        0.07080587352390412,
+        0.136888414855361,
+        0.22067374458182937,
+        0.31429178469607527,
+        0.4085105913553958,
+        0.4967156399891718,
+        0.5758623175776229,
+        0.6453214475092404,
+        0.7056111253727028,
+        0.7576478399443315,
+        0.802403387584857,
+        0.8407733270130865,
+        0.8735391468536807,
+        0.9013677794477065,
+        0.9248240118839989,
+        0.9443858337485936,
+        0.960458978348974,
+        0.9733894877072984,
+        0.983474147668719,
+        0.990969002410069,
+        0.9960962541257425,
+        0.9990498476756933
+    ];
+
+    // Some settings for the interval
+    var animationTime = 400;
+    var animationSteps = 24;
+    var animationStepTime = animationTime / animationSteps;
+    var animationStep = 0;
+    
+    intervalPan = setInterval(function() {
+        var t = bezierEasing[animationStep];
+        current.x = diff.x * t + source.x;
+        current.y = diff.y * t + source.y;
+        
+        if (animationStep++ < animationSteps) {
+            pzInstance.panBy({
+                x: current.x - previous.x, 
+                y: current.y - previous.y
+            });
+
+            previous.x = current.x;
+            previous.y = current.y;
+        } else {
+            // Cancel interval
+            cancel();
+            
+            // Execute callback if set
+            if (callbackPan !== null && typeof callbackPan === "function") {
+                callbackPan();
+                callbackPan = null;
+            }
+        }
+    }, animationStepTime);
+    
+    function cancel() {
+        // Cancel interval
+        clearInterval(intervalPan);
+        intervalPan = null;
+    }
+}
+
+function zoomSmooth(oldZoom, newZoom) {
+    
+    cancel();
+    
+    // Where we come from
+    var source = oldZoom;
+    
+    // Where we are
+    var current = source;
+    
+    // Where we were
+    var previous = source;
+    
+    // Where we go to
+    var diff = newZoom - oldZoom;
+    
+    // This is used for the easing in and out, making it more smooth
+    var bezierEasing = [
+        0,
+        0.025555679605604214,
+        0.07080587352390412,
+        0.136888414855361,
+        0.22067374458182937,
+        0.31429178469607527,
+        0.4085105913553958,
+        0.4967156399891718,
+        0.5758623175776229,
+        0.6453214475092404,
+        0.7056111253727028,
+        0.7576478399443315,
+        0.802403387584857,
+        0.8407733270130865,
+        0.8735391468536807,
+        0.9013677794477065,
+        0.9248240118839989,
+        0.9443858337485936,
+        0.960458978348974,
+        0.9733894877072984,
+        0.983474147668719,
+        0.990969002410069,
+        0.9960962541257425,
+        0.9990498476756933
+    ];
+
+    // Some settings for the interval
+    var animationTime = 400;
+    var animationSteps = 24;
+    var animationStepTime = animationTime / animationSteps;
+    var animationStep = 0;
+    
+    intervalZoom = setInterval(function() {
+        var t = bezierEasing[animationStep];
+        current = diff * t + source;
+        
+        if (animationStep++ < animationSteps) {
+            pzInstance.zoom(current);
+        } else {
+            cancel();
+            
+            // Execute callback if set
+            if (callbackZoom !== null && typeof callbackZoom === "function") {
+                callbackZoom();
+                callbackZoom = null;
+            }
+        }
+    }, animationStepTime);
+    
+    function cancel() {
+        // Cancel interval
+        clearInterval(intervalZoom);
+        intervalZoom = null;
+    }
 }
 
 //function onZoomIn() {
@@ -130,43 +347,30 @@ function panToItem(map) {
 //    updateViewbox(newX, newY, newZoom);
 //}
 //
-//function onZoomFit() {
-//    var ItemMap = document.getElementById("item_info");
-//
-//    // To zoom out, we need to increase the size of the viewHeight and viewWidth
-//    // Keep the ratio between X and Y axis aligned
-//    // Find the biggest ratio and use that!
-//    var dX = ActualWidth / ItemMap.offsetWidth;
-//    var dY = ActualHeight / ItemMap.offsetHeight;
-//
-//    if (dX > dY) { 
-//        var newZoom = ItemMap.offsetWidth / ActualWidth;
-//
-//        // Now zoom out untill the whole family tree is visible
-//        updateViewbox(0, (ItemMap.offsetHeight - (ActualHeight * newZoom)) / 2, newZoom);
-//    } else {
-//        newZoom = ItemMap.offsetHeight / ActualHeight;
-//
-//        // Now zoom out untill the whole family tree is visible
-//        updateViewbox((ItemMap.offsetWidth - (ActualWidth * newZoom)) / 2, 0, newZoom);
-//    }
-//}
-//
-//function onZoomReset() {
-//    // Get the ID number
-//    // Could also be map id
-//    var ItemId = session_settings["id"] ? session_settings["id"] : session_settings["map"];
-//
-//    var newZoom = 1;
-//
-//    // Now pan to this item
-//    var Item = getItemById(Number(ItemId));
-//    panItem(Item);
-//
-//    // And zoom to the default zoom level (1)
-//    updateViewbox(-1, -1, newZoom);
-//}
-//
+function onZoomFit() {
+    // To make sure it always uses the right size
+    pzInstance.resize();
+    
+    onSmoothPanning = true;
+    onSmoothZooming = true;
+    pzInstance.fit();
+    
+    onAfterPanZoom(function () {
+        onSmoothPanning = true;
+        pzInstance.center();
+    });
+}
+
+function onZoomReset() {
+    onSmoothZooming = true;
+    onSmoothPanning = true;
+    pzInstance.resetZoom();
+    
+    onAfterPanZoom(function () {
+        panToItem();
+    });
+}
+
 //function onDownload () {
 //    // Get the SVG
 //    var SVG = document.getElementById("svg");

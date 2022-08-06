@@ -10,7 +10,7 @@ function getFamilytreeContent(familytree) {
                     <h1 class="mb-3">` + familytree.name + `</h1>
                 </div>
             </div>
-            <div class="row" style="height: 100%;">
+            <div class="row pb-5" style="height: 100%;">
                 <div class="col-lg-11 text-center">
                     <div id="map_div" style="height: 100%;">
                         
@@ -28,7 +28,7 @@ function getFamilytreeContent(familytree) {
 
 function showMap(familytree) {
     // Get the SVG
-    var draw = SVG().addTo('#map_div').size('100%', '100%');  
+    var draw = SVG().addTo('#map_div').size('100%', '100%');
     
     if(setSVG(draw)) {
         setMapItems(familytree);

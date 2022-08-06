@@ -23,8 +23,8 @@
 <?php if (in_array($id, ["familytree", "timeline"])) { ?>
         <!-- -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.1/svg.min.js"></script>
-        <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
-        
+        <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.5.0/dist/svg-pan-zoom.js"></script>
+  
         <!-- The family tree maker -->
         <script src="/src/map/calc.js"></script>
         <script src="/src/map/draw.js"></script>
