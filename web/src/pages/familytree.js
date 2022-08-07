@@ -15,6 +15,9 @@ function getFamilytreeContent(familytree) {
                     <div id="map_div" style="height: 100%;">
                         
                     </div>
+                    <div id="map_download" class="d-none">
+                        <!-- Used for downloading the SVG -->
+                    </div>
                 </div>
             </div>
         `);
@@ -37,8 +40,11 @@ function showMap(familytree) {
         calcMapItems();
 
         // We've got the people and the locations, now time to draw it!
-        drawControlButtons();
+        drawControlButtons(familytree);
         drawMapItems();
+        
+        // Set viewSettings
+        setViewSettings();
         
         panToItem(familytree);
     }

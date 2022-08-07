@@ -10,6 +10,14 @@ var g_MapItems = null;
 var g_Options = null;
 var g_ClashedItems = [];
 
+// The offsets
+var offsets = {
+    width_min: 0, 
+    width_max: 0, 
+    height_min: 0, 
+    height_max: 0
+};
+
 //function prep_DrawLegenda() {
 //    //Legenda
 //    var svgns = "http://www.w3.org/2000/svg";
@@ -218,8 +226,12 @@ function calcMapItems(options = new Object()) {
     // Sort the array by ancestors, since those need to be moved
     sortByAncestor();
     
-    // Try to solve all the clashes we found
+    // Try to solve all the clashes we found, 
+    // then get the heighest X and Y values 
+    // and use it to shift the entire thing
     g_ClashedItems.forEach(item => solveClash(item));
+    g_MapItems.forEach(item => getOffsets(item));
+    g_MapItems.forEach(item => setOffsets(item));
     
     return g_MapItems;
     
@@ -622,6 +634,30 @@ function solveClash(item) {
             console.log("Ancestor: ");
             console.log(ancestor);
         }
+    }
+}
+
+function getOffsets(item) {
+    if (g_Options.align === ALIGNMENT_VERTICAL) {
+        offsets.width_min = Math.min(item.X, offsets.width_min);
+        offsets.width_max = Math.max(item.X, offsets.width_max);
+        offsets.height_min = Math.min(item.Y, offsets.height_min);
+        offsets.height_max = Math.max(item.Y, offsets.height_max);
+    } else {
+        offsets.width_min = Math.min(item.Y, offsets.width_min);
+        offsets.width_max = Math.max(item.Y, offsets.width_max);
+        offsets.height_min = Math.min(item.X, offsets.height_min);
+        offsets.height_max = Math.max(item.X, offsets.height_max);
+    }   
+}
+
+function setOffsets(item) {
+    if (g_Options.align === ALIGNMENT_VERTICAL) {
+        item.X = item.X - offsets.width_min;
+        item.Y = item.Y - offsets.height_min;
+    } else {
+        item.X = item.X - offsets.height_min;
+        item.Y = item.Y - offsets.width_min;
     }
 }
 

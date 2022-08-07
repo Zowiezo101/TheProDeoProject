@@ -1,4 +1,4 @@
-/* global get_settings, pzInstance, g_Options, ALIGNMENT_VERTICAL, g_MapItems */
+/* global get_settings, pzInstance, g_Options, ALIGNMENT_VERTICAL, g_MapItems, g_svg, offsets */
 
 ///* global session_settings, globalMapId, SVG */
 //
@@ -66,6 +66,8 @@
 //}
 //
 
+var pzInstance = null;
+
 // These two are used to get smooth zooming/panning
 // with the correct values, by taking over the actual
 // Zoom/pan function for a little while
@@ -114,6 +116,36 @@ function onAfterPanZoom(f) {
         // Done, execute it right away
         f();
     }
+}
+
+function setViewSettings() {    
+    // Setting the panZoom settings
+    pzInstance = svgPanZoom(g_svg.node, {
+        fit: false,
+        center: false,
+        maxZoom: 2,
+        minZoom: 0.01,
+        beforeZoom: onBeforeZoom,
+        beforePan: onBeforePan
+    });
+    
+    // When resizing the window, 
+    // make sure the bouding box is recalculated and such.
+    $(window).resize(function() {
+        if (pzInstance !== null) {
+            // Get the current location and zoom
+            var pan = pzInstance.getPan();
+            var zoom = pzInstance.getZoom();
+            
+            // Reset and resize
+            pzInstance.reset();
+            pzInstance.resize();
+            
+            // Set the current location and zoom
+            pzInstance.pan(pan);
+            pzInstance.zoom(zoom);
+        }
+    });
 }
 
 function panToItem() {
@@ -318,39 +350,7 @@ function zoomSmooth(oldZoom, newZoom) {
     }
 }
 
-//function onZoomIn() {
-//    var map = $("#map_div");
-//    var outerHeight = map.outerHeight();
-//    var outerWidth = map.outerWidth();
-//    
-//    var matrix = SVG($("#map")[0]).transform();
-//    var ZoomFactor = matrix["a"];
-//    var viewX = matrix["e"];
-//    var viewY = matrix["f"];
-//    
-//    var factor = 1.4;
-//
-//    var newZoom = ZoomFactor * factor;
-//
-//    var newX = viewX*factor + (1 - factor)*(outerWidth / 2);
-//    var newY = viewY*factor + (1 - factor)*(outerHeight / 2);
-//    updateViewbox(newX, newY, newZoom);
-//}
-//
-//function onZoomOut() {
-//    var ItemMap = document.getElementById("item_info");
-//
-//    newZoom = ZoomFactor / factor;
-//
-//    newX = (viewX / factor) + (1 - (1 / factor))*(ItemMap.offsetWidth / 2);
-//    newY = (viewY / factor) + (1 - (1 / factor))*(ItemMap.offsetHeight / 2);
-//    updateViewbox(newX, newY, newZoom);
-//}
-//
-function onZoomFit() {
-    // To make sure it always uses the right size
-    pzInstance.resize();
-    
+function onZoomFit() {    
     onSmoothPanning = true;
     onSmoothZooming = true;
     pzInstance.fit();
@@ -371,132 +371,28 @@ function onZoomReset() {
     });
 }
 
-//function onDownload () {
-//    // Get the SVG
-//    var SVG = document.getElementById("svg");
-//    var Controls = document.getElementById("controls");
-//
-//    // Temporarily remove these..
-//    SVG.removeChild(Controls);
-//
-//    // Use an invisible SVG
-//    var svg = document.getElementById('hidden_svg');
-//
-//    svg.setAttribute("version", 1.1);
-//    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-//    svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-//
-//    // Get the entire SVG
-//    svg.setAttribute('width',  ActualWidth);
-//    svg.setAttribute('height', ActualHeight);    
-//
-//    updateViewbox(0, 0, 1);
-//
-//    if (window.navigator.msSaveOrOpenBlob !== undefined) {            
-//        // Temporary div to save the svg in
-//        var tempDiv = document.createElement("div");
-//        var svgParent = svg.parentNode;
-//
-//        // The child group of SVG
-//        var group = document.getElementById(session_settings["table"]);
-//
-//        // Get the group of SVG
-//        SVG.removeChild(group);
-//        svg.appendChild(group);
-//
-//        // And save it in svg
-//        svgParent.removeChild(svg);
-//        tempDiv.appendChild(svg);
-//
-//        var URL = tempDiv.innerHTML;
-//
-//        // We don't want these empty name spaces!
-//        var newURL = URL.replace(/ ?\S*NS1[^\d]\S*[>"] ?/g, ">");
-//
-//        // No links anymore for the downloaded file..
-//        newURL = newURL.replace(/<a[^>]*>/g, "");
-//        newURL = newURL.replace(/<\/a>+/g, "");
-//
-//        // Or double namespace..
-//        if (countOcurrences(newURL, "http://www.w3.org/2000/svg") > 1) {
-//            newURL = newURL.replace(' xmlns="http://www.w3.org/2000/svg"', '');
-//        }
-//
-//        // Clean up our mess
-//        newURL = newURL.replace(">>", ">");
-//
-//        // Get the link and download the file
-//        var topItem = getItemById(globalMapId);
-//        var blobObject = new Blob([newURL]);
-//        window.navigator.msSaveOrOpenBlob(blobObject, topItem.name + ".svg");
-//
-//        // Now get the group back
-//        svg.removeChild(group);
-//        SVG.appendChild(group);
-//
-//        // And the controls
-//        SVG.appendChild(Controls);
-//
-//        // And the link to the svg..
-//        tempDiv.removeChild(svg);
-//        svgParent.appendChild(svg);
-//
-//    } else {
-//
-//
-//        svg.innerHTML = SVG.innerHTML;
-//
-//        // No links anymore for the downloaded file..
-//        svg.innerHTML = svg.innerHTML.replace(/<a[^>]*>/g, "");
-//        svg.innerHTML = svg.innerHTML.replace(/<\/a>+/g, "");
-//
-//        // Now turn it into a URL for downloading
-//        var Serialilzer = new XMLSerializer();
-//        var string = Serialilzer.serializeToString(svg);
-//
-//        var URL = "data:image/svg+xml;base64," + b64EncodeUnicode(string);
-//
-//        // Release the link
-//        svg.innerHTML = "";
-//
-//        // Now add these back
-//        SVG.appendChild(Controls);
-//
-//        // Get the link and download the file
-//        var topItem = getItemById(globalMapId);
-//        var link = document.getElementById('hidden_a');
-//        link.href = URL;
-//        link.download = topItem.name + ".svg";
-//        link.click();
-//    }
-//
-//    // Reset the zoom to the selected people
-//    ZoomReset();
-//}
-//
-//// https://stackoverflow.com/questions/4009756/how-to-count-string-occurrence-in-string
-//function countOcurrences(str, value) {
-//    var regExp = new RegExp(value, "gi");
-//    return (str.match(regExp) || []).length;
-//}
-//
-//// https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
-//function b64EncodeUnicode(str) {
-//    // first we use encodeURIComponent to get percent-encoded UTF-8,
-//    // then we convert the percent encodings into raw bytes which
-//    // can be fed into btoa.
-//    var PercentEncoded = encodeURIComponent(str);
-//
-//    var RawBytes = PercentEncoded.replace(
-//        /%([0-9A-F]{2})/g,
-//        function (match, p1) {
-//            return String.fromCharCode('0x' + p1);
-//        }
-//    );
-//
-//    var BToAString = btoa(RawBytes);
-//
-//    return BToAString;
-//}
-//
-//
+function onDownload (title) {  
+            
+    // creates a new instance
+    var svgsaver = new SvgSaver();
+    
+    // Create a SVG element for downloading
+    var map_svg = $(g_svg.node).clone()
+            .attr("width", offsets.width_max - offsets.width_min + g_Options.x_length)
+            .attr("height", offsets.height_max - offsets.height_min + g_Options.y_length)
+            .css("overflow", "scroll");
+
+    // Add it to the invisble div
+    var map_div = $("#map_download").empty().append(map_svg);
+    
+    // Set the matrix to the default values
+    $("#map_download #map")
+            .attr("transform", "matrix(1, 0, 0, 1, 0, 0)")
+            .css("transform", "matrix(1, 0, 0, 1, 0, 0)");
+
+    // Wait for it to be added
+    $(function() {
+        // save as SVG
+        svgsaver.asSvg(map_svg.get(0), title + ".svg");
+    });
+}

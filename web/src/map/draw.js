@@ -3,7 +3,6 @@
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
-var pzInstance = null;
 
 function setSVG(svg) {
     
@@ -13,67 +12,15 @@ function setSVG(svg) {
     return g_svg !== null;
 }
 
-function drawControlButtons() {
-    
+function drawControlButtons(map) {    
     // The height and width of the SVG parent
     var div = $("#map_div").parent();
     div.append(`<div style="position: absolute; top: 0; right: 0; padding: inherit;" class="btn-group">
                     <button class="btn btn-primary" onclick="onZoomFit()" title="Zoom to fit"><i class="fa fa-expand" aria-hidden="true"></i></button>
                     <button class="btn btn-primary" onclick="onZoomReset()" title="Reset zoom"><i class="fa fa-compress" aria-hidden="true"></i></button>
-                    <button class="btn btn-primary" onclick="onDownload()" title="Download familytree"><i class="fa fa-download" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" onclick="onDownload('` + map.name + `')" title="Download familytree"><i class="fa fa-download" aria-hidden="true"></i></button>
                     <button class="btn btn-primary" title="More information"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
                 </div>`);
-
-//    // Show the controls to move around in the SVG
-//    var group = svg.group({id: "controls"});
-//    
-//    // The zoom-fit button in SVG
-//    var zoomfit = group.group({id: "zoomfit"});
-//    zoomfit.click(onZoomFit);
-//    zoomfit.mouseover(function() {this.first().stroke('red');});
-//    zoomfit.mouseout(function() {this.first().stroke('black');});
-//    zoomfit.rect(40, 40)
-//            .radius(10, 10)
-//            .fill('white')
-//            .stroke('black')
-//            .move(
-//                outerWidth - 65, 
-//                10);
-//    zoomfit.html('<i class="fa fa-expand" aria-hidden="true"></i>').font({size: 36}).move(
-//                outerWidth - 65, 
-//                4);
-//    
-//    // The zoom-reset button in SVG
-//    var zoomreset = group.group({id: "zoomreset"});
-//    zoomreset.click(onZoomReset);
-//    zoomreset.mouseover(function() {this.first().stroke('red');});
-//    zoomreset.mouseout(function() {this.first().stroke('black');});
-//    zoomreset.rect(40, 40)
-//            .radius(10, 10)
-//            .fill('white')
-//            .stroke('black')
-//            .move(
-//                outerWidth - 65, 
-//                60);
-//    zoomreset.html('<i class="fa fa-compress" aria-hidden="true"></i>').font({size: 36}).move(
-//                outerWidth - 65, 
-//                54);
-//    
-//    // The download button in SVG
-//    var download = group.group({id: "download"});
-//    download.click(onDownload);
-//    download.mouseover(function() {this.first().stroke('red');});
-//    download.mouseout(function() {this.first().stroke('black');});
-//    download.rect(40, 40)
-//            .radius(10, 10)
-//            .fill('white')
-//            .stroke('black')
-//            .move(
-//                outerWidth - 65, 
-//                110);
-//    download.text("Download").font({size: 36}).move(
-//                outerWidth - 65, 
-//                104);
 }
     
 function drawMapItems() {
@@ -86,15 +33,6 @@ function drawMapItems() {
     g_MapItems.forEach(function(item) {
         drawLink(group, item);
         drawItem(group, item);
-    });
-    
-    pzInstance = svgPanZoom(g_svg.node, {
-        fit: false,
-        center: false,
-        maxZoom: 2,
-        minZoom: 0.01,
-        beforeZoom: onBeforeZoom,
-        beforePan: onBeforePan
     });
     
     // TODO:
