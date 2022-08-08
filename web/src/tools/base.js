@@ -6,8 +6,6 @@
 
 /* global get_settings, dict */
 
-var pageSize = 10;
-
 function setParameters(url) {
     var newUrl = url;
     

@@ -1,4 +1,6 @@
 
+/* global get_settings, page_id, getBookContent, getEventContent, getPeopleContent, getLocationContent, getSpecialContent, getFamilytreeContent, getTimelineContent, getWorldmqapContent, getItem, dict, session_settings, getItemPage, getItemsSearch */
+
 /** 
  * This function generates the sidebar for an items page
  * Once it is done with the basic layout, it will insert
@@ -8,13 +10,18 @@
  * Selected sorting, pagination and items will be styled with class 'active'
  * */
 var pageCount = 0;
+var pageSize = 10;
 var focusPage = false;
 
 function getItemsMenu() {
-    var menu = $("<div>").addClass("col-md-4 col-lg-3").append(`
+    
+    // Change some things around
+    $("#content").removeClass("py-5").css("overflow", "hidden");
+    
+    var menu = $("<nav>").addClass("col-md-4 col-lg-2 py-3 shadow").append(`
         <!-- Search bar and sorting -->
         <div class="row mb-2">
-            <div class="col-8">
+            <div class="col-8 col-md-6">
                 <div class="input-group w-100">
                     <input type="text" class="form-control" id="item_search" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                     <div class="input-group-append">
@@ -25,7 +32,7 @@ function getItemsMenu() {
                 </div>
             </div>
     
-            <div class="col-4">
+            <div class="col-4 col-md-6">
                 <div class="btn-group w-100">
                     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> ` + dict["database.order"] + ` </button>
                     <div class="dropdown-menu" id="item_sort"> 
@@ -63,10 +70,37 @@ function getItemsMenu() {
     return menu;
 }
 
-function getContentDiv() {
-    return $("<div>")
-                    .addClass("col-md-8 col-lg-9")
-                    .attr("id", "item_content")
+function getContentDiv(collapsableMenu) {
+    // Have a default collapsable menu
+    if (typeof collapsableMenu === "undefined") {
+        collapsableMenu = true;
+    }
+    
+    var item_content = $("<div>")
+                .addClass("py-5 w-100 h-100")
+                .attr("id", "item_content")
+                .css({"padding-right": "15px",
+                      "padding-left": "15px",
+                      "position": "absolute"});
+                  
+    var menu_button = $("<button>")
+                .append("<<")
+                .addClass("btn btn-secondary")
+                .css({"margin-top": "15px",
+                      "position": "absolute",
+                      "border-top-left-radius": "0px",
+                      "border-bottom-left-radius": "0px"})
+                .click(toggleMenu);
+    
+    var div = $("<div>")
+                .addClass("col-md-8 col-lg-10 px-0")
+                .append(item_content);
+        
+    if(collapsableMenu) {
+        div.append(menu_button);
+    }
+    
+    return div;
 }
 
 /** 
@@ -114,7 +148,7 @@ function getItemsContent() {
         }
         
         // Get the data of the current item
-        getItem(page_id, get_settings["id"]).then(getItemContent)
+        getItem(page_id, get_settings["id"]).then(getItemContent);
     } else {
         // No item has been selected, show default information
         var content = $("#item_content").append(`
@@ -164,10 +198,10 @@ function insertSorts() {
 
     // The current sort is compare to the different sorting types
     // Only the corresponding sorting type will have the value set to 'true'
-    var sort_0_to_9 = currentSort == "0_to_9";
-    var sort_9_to_0 = currentSort == "9_to_0";
-    var sort_a_to_z = currentSort == "a_to_z";
-    var sort_z_to_a = currentSort == "z_to_a";
+    var sort_0_to_9 = currentSort === "0_to_9";
+    var sort_9_to_0 = currentSort === "9_to_0";
+    var sort_a_to_z = currentSort === "a_to_z";
+    var sort_z_to_a = currentSort === "z_to_a";
     
     // Insert the sorts and add the 'active' class 
     // if the corresponing sort is active
@@ -219,7 +253,7 @@ function insertPages() {
                     
                     // Add the active class if the current id 
                     // corresponds with the selected id
-                    var is_active = item_obj.id == get_settings["id"];
+                    var is_active = item_obj.id === get_settings["id"];
                     var active = is_active ? " active" : "";
                     
                     // Adding the item to the current page
@@ -336,7 +370,7 @@ function insertFirstPage() {
     // Currently selected page
     var currentPage = parseInt(session_settings["page"] ? 
                                session_settings["page"] : 0, 10);
-    var disabled = currentPage == 0 ? "disabled" : "";
+    var disabled = currentPage === 0 ? "disabled" : "";
                                
     // Insert the button to go the the first page
     $("#item_pages").append(`
@@ -352,7 +386,7 @@ function insertPrevPage() {
     // Currently selected page
     var currentPage = parseInt(session_settings["page"] ? 
                                session_settings["page"] : 0, 10);
-    var disabled = currentPage == 0 ? "disabled" : "";
+    var disabled = currentPage === 0 ? "disabled" : "";
                       
     // Insert the button to go the the previous page
     $("#item_pages").append(`
@@ -393,7 +427,7 @@ function insertPage() {
         }
     });
         
-    if (focusPage == true) {
+    if (focusPage === true) {
         $("#page_search").focus();
 
         // The focus forces the cursor at the beginning of the text
@@ -410,7 +444,7 @@ function insertNextPage() {
     // Currently selected page
     var currentPage = parseInt(session_settings["page"] ? 
                                session_settings["page"] : 0, 10);
-    var disabled = currentPage == (pageCount - 1) ? "disabled" : "";
+    var disabled = currentPage === (pageCount - 1) ? "disabled" : "";
                       
     // Insert the button to go the the next page
     $("#item_pages").append(`
@@ -426,7 +460,7 @@ function insertLastPage() {
     // Currently selected page
     var currentPage = parseInt(session_settings["page"] ? 
                                session_settings["page"] : 0, 10);
-    var disabled = currentPage == (pageCount - 1) ? "disabled" : "";
+    var disabled = currentPage === (pageCount - 1) ? "disabled" : "";
                                
     // Insert the button to go the the last page
     $("#item_pages").append(`
@@ -439,7 +473,7 @@ function insertLastPage() {
 }
 
 function insertDetail(item, detail) {
-    if ((detail == "book_start") && (item["book_start_id"])) {
+    if ((detail === "book_start") && (item["book_start_id"])) {
         var book_id = dict["books.book_" + item["book_start_id"]];
         var book_chap = item["book_start_chap"];
         var book_vers = item["book_start_vers"];
@@ -451,7 +485,7 @@ function insertDetail(item, detail) {
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
-    } else if ((detail == "book_end") && (item["book_end_id"])) {
+    } else if ((detail === "book_end") && (item["book_end_id"])) {
         var book_id = dict["books.book_" + item["book_end_id"]];
         var book_chap = item["book_end_chap"];
         var book_vers = item["book_end_vers"];
@@ -463,17 +497,17 @@ function insertDetail(item, detail) {
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
-    } else if (detail == "gender") {
+    } else if (detail === "gender") {
         item[detail] = getGender(item[detail]);
-    } else if (detail == "tribe") {
+    } else if (detail === "tribe") {
         item[detail] = getTribe(item[detail]);
-    } else if (detail == "type" && (page_id == "locations")) {
+    } else if (detail === "type" && (page_id === "locations")) {
         item[detail] = getTypeLocation(item[detail]);
-    } else if (detail == "type" && (page_id == "specials")) {
+    } else if (detail === "type" && (page_id === "specials")) {
         item[detail] = getTypeSpecial(item[detail]);
     }
     
-    return item[detail] && (item[detail] != -1) ? 
+    return item[detail] && (item[detail] !== -1) ? 
     `<tr>
         <th scope="row">` + dict["items." + detail] + `</th>
         <td>` + item[detail] + `</td>
@@ -504,8 +538,8 @@ function insertDetailLink(item, detail) {
                     break;
             }
             
-            if ((page_id == "peoples" && detail == "locations") || 
-                    (page_id == "locations" && detail == "peoples")) {
+            if ((page_id === "peoples" && detail === "locations") || 
+                    (page_id === "locations" && detail === "peoples")) {
                 // These two contain a type as well
                 data.name = data.name + getTypeLink(data.type);
             }
@@ -519,8 +553,8 @@ function insertDetailLink(item, detail) {
             );
         }
         
-        if ((detail == page_id) && 
-                ((detail == "peoples") || (detail == "locations"))) {
+        if ((detail === page_id) && 
+                ((detail === "peoples") || (detail === "locations"))) {
             detail = "aka";
         }
           
@@ -608,14 +642,14 @@ function insertDetailMaps(item, type) {
 
                     map_div = $("#table_maps").append(maps);
                 } else {
-                    $("#table_maps").remove()
+                    $("#table_maps").remove();
                 }
-            })
+            });
             break;
             
         case "worldmap":
             // Make a link to Google maps if there are coordinates
-            if (item.coordinates && item.coordinates != -1) {
+            if (item.coordinates && item.coordinates !== -1) {
                 var [CoordX, CoordY] = item.coordinates.split(",");
                 var Coords = [parseFloat(CoordX).toFixed(2),
                               parseFloat(CoordY).toFixed(2)].join(", ");
@@ -650,7 +684,7 @@ function insertDetailMaps(item, type) {
 
 function getLink(bookIdx, chapIdx, verseIdx) {
 
-    if (get_settings["lang"] == "nl") {
+    if (get_settings["lang"] === "nl") {
         // The abbriviation used by the website
         var bookList = ["GEN", "EXO", "LEV", "NUM", "DEU",
                        "JOS", "JDG", "RUT", "1SA", "2SA",
@@ -684,10 +718,14 @@ function getLink(bookIdx, chapIdx, verseIdx) {
                        "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy",
                        "Titus", "Philemon", "Hebrews", "James", "1 Peter",
                        "2 Peter", "1 John", "2 John", "3 John", "Jude",
-                       "Revelation",];
+                       "Revelation"];
                    
         var weblink = "https://www.biblegateway.com/passage/?search=" + bookList[bookIdx - 1] + "+" + chapIdx + ":" + verseIdx + "&version=NLT";
     }
 
     return weblink;
+}
+
+function toggleMenu() {
+    
 }
