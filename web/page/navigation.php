@@ -1,4 +1,4 @@
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <nav class="navbar navbar-expand-md navbar-light bg-light shadow">
             <a class="navbar-brand text-primary" href="<?php echo setParameters("home")?>">
                 <img src="/img/logo.bmp" class="d-inline-block align-top rounded" alt="" width="75" height="75" style="">
                 <b class="text-secondary" style=""> <?php echo $dict["globals.prodeo_database"] ?> </b>
