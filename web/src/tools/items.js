@@ -83,7 +83,7 @@ function getContentDiv(collapsableMenu) {
     
     // The button to hide/show the menu
     var menu_button = $("<button>")
-            .append("<<")
+            .html('<i class="fa fa-angle-double-left" aria-hidden="true"></i>')
             .addClass("btn btn-secondary show_menu")
             .attr("id", "toggle_menu")
             .css({"margin-top": "15px",
@@ -299,7 +299,7 @@ function insertPages() {
         } else {
             // TODO:
             // Error melding geven dat database niet bereikt kan worden
-            $("#item_list").append(result.error ? result.error : "No results found");
+            $("#item_list").append(result.error ? result.error : dict["database.no_results"]);
             
             // No pagination
             $("#item_pagination").css("display", "none");
@@ -747,7 +747,8 @@ function toggleMenu() {
         // Update the button
         button.addClass("hide_menu");
         button.removeClass("show_menu");
-        button.text(">>");
+        button.html('<i class="fa fa-angle-double-right" aria-hidden="true"></i>');
+
         
     } else if (button.hasClass("hide_menu")) {
         // Show the menu
@@ -756,7 +757,7 @@ function toggleMenu() {
         // Update the button
         button.addClass("show_menu");
         button.removeClass("hide_menu");
-        button.text("<<");
+        button.html('<i class="fa fa-angle-double-left" aria-hidden="true"></i>');
     } else {
         // ????
     }

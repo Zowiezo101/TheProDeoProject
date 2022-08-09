@@ -40,7 +40,7 @@ function showMap(familytree) {
         calcMapItems();
 
         // We've got the people and the locations, now time to draw it!
-        drawControlButtons(familytree);
+        drawControlButtons(familytree, "familytree");
         drawMapItems();
         
         // Set viewSettings

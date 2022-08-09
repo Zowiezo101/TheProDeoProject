@@ -50,7 +50,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="password"><?php echo $dict["settings.password"]; ?></label>
-                                            <input type="password" class="form-control <?php echo (!empty($password1_err)) ? 'is-invalid' : ((!empty($password1)) ? 'is-valid' : ''); ?>" name="password" id="password" value="<?php echo $param_password1; ?>" placeholder="Password">
+                                            <input type="password" class="form-control <?php echo (!empty($password1_err)) ? 'is-invalid' : ((!empty($password1)) ? 'is-valid' : ''); ?>" name="password" id="password" value="<?php echo $param_password1; ?>">
                                             <span class="invalid-feedback"><?php echo $dict[$password1_err]; ?></span>
                                         </div>
                                                     <!--- TODO! -->

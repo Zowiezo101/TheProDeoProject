@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings, onBeforeZoom, onBeforePan */
+/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings, onBeforeZoom, onBeforePan, dict */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -12,14 +12,14 @@ function setSVG(svg) {
     return g_svg !== null;
 }
 
-function drawControlButtons(map) {    
+function drawControlButtons(map, type) {    
     // The height and width of the SVG parent
     var div = $("#map_div").parent();
     div.append(`<div style="position: absolute; top: 0; right: 0; padding: inherit;" class="btn-group">
-                    <button class="btn btn-primary" onclick="onZoomFit()" title="Zoom to fit"><i class="fa fa-expand" aria-hidden="true"></i></button>
-                    <button class="btn btn-primary" onclick="onZoomReset()" title="Reset zoom"><i class="fa fa-compress" aria-hidden="true"></i></button>
-                    <button class="btn btn-primary" onclick="onDownload('` + map.name + `')" title="Download familytree"><i class="fa fa-download" aria-hidden="true"></i></button>
-                    <button class="btn btn-primary" title="More information"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" onclick="onZoomFit()" title="` + dict["map.zoom.fit"] + `"><i class="fa fa-expand" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" onclick="onZoomReset()" title="` + dict["map.zoom.reset"] + `"><i class="fa fa-compress" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" onclick="onDownload('` + map.name + `')" title="` + dict["map.download." + type] + `"><i class="fa fa-download" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" title="` + dict["map.info.controls"] + `"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
                 </div>`);
 }
     

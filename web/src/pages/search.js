@@ -1374,7 +1374,7 @@ function insertItems(type, result) {
     } else {
         // TODO:
         // Error melding geven dat database niet bereikt kan worden
-        $("#tab" + type).append(result.error ? result.error : "No results found");
+        $("#tab" + type).append(result.error ? result.error : dict["database.no_results"]);
     }
 }
 

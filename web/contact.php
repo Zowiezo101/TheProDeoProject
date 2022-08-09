@@ -83,7 +83,7 @@
             $mail->send();
             $_SESSION["sent"] = true;
         } catch (Exception $e) {
-            $_SESSION["error"] = "Mailer Error: " . $mail->ErrorInfo;
+            $_SESSION["error"] = $mail->ErrorInfo;
         }
         
         header('Location: '.filter_input(INPUT_SERVER, 'HTTP_REFERER'));

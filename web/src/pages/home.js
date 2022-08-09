@@ -11,7 +11,7 @@ function addBlogToContainer(container, blog) {
     var blogId = "blog_" + blog.id;
     var blogTitle = blog.title;
     var blogText = blog.text ? blog.text + (blog.text.endsWith('</p>') ? '<br>' : '<br><br>') : '';
-    var blogUser = blog.name === "undefined" ? "Zowiezo101" : blog.name;
+    var blogUser = blog.name === "undefined" ? dict["blogs.anonymous"] : blog.name;
     
     // Showing the correct date in the correct timezone
     var date = new Date(blog.date);

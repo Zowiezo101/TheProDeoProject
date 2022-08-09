@@ -13,9 +13,7 @@
                 $("<div>").addClass("row")
                     .append(`
                         <div class="col-md-12">
-                            <div class="row mb-5 pb-5 text-center">
-                                <div class="col-md-1">
-                                </div>
+                            <div class="row mb-5 pb-5 text-center justify-content-center">
                                 <div class="col-md-10">
                                     <h1 class="mb-3">` + dict["navigation.about_us"] + `</h1>
                                     <p class="lead">` + dict["about_us.overview"] + `</p>
