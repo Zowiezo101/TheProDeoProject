@@ -18,7 +18,7 @@ function addBlogToContainer(container, blog) {
     var blogDate = (!isNaN(Date.parse(blog.date))) ? " @ " + date.toLocaleString() : "";
         
     container.append(
-    '<div class="row">' + 
+    '<div class="row justify-content-center">' + 
     '    <div class="col-md-11 mb-3">' + 
     '        <h1 class="text-center pb-2 pt-2 mb-0" style="background-color: var(--dark-' + blogBgColor + ')">' + blogTitle + '</h1>' + 
     '        <div class="text-center pb-2 pt-2 mb-0 h5" style="word-break:break-word; background-color: var(--light-' + blogBgColor + ')" id="' + blogId + '">' + blogText + '</div>' + 
