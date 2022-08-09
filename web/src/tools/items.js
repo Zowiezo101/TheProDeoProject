@@ -1,5 +1,5 @@
 
-/* global get_settings, page_id, getBookContent, getEventContent, getPeopleContent, getLocationContent, getSpecialContent, getFamilytreeContent, getTimelineContent, getWorldmqapContent, getItem, dict, session_settings, getItemPage, getItemsSearch */
+/* global get_settings, page_id, getBookContent, getEventContent, getPeopleContent, getLocationContent, getSpecialContent, getFamilytreeContent, getTimelineContent, getWorldmapContent, getItem, dict, session_settings, getItemPage, getItemsSearch */
 
 /** 
  * This function generates the sidebar for an items page
@@ -16,9 +16,9 @@ var focusPage = false;
 function getItemsMenu() {
     
     // Change some things around
-    $("#content").removeClass("py-5").css("overflow", "hidden");
+    $("#content").removeClass("py-5");
     
-    var menu = $("<nav>").addClass("col-md-4 col-lg-2 py-3 shadow").append(`
+    var menu = $("<nav>").attr("id", "item_bar").addClass("col-md-4 col-lg-2 py-3 shadow").append(`
         <!-- Search bar and sorting -->
         <div class="row mb-2">
             <div class="col-8 col-md-6">
@@ -76,31 +76,40 @@ function getContentDiv(collapsableMenu) {
         collapsableMenu = true;
     }
     
+    // The item content
     var item_content = $("<div>")
-                .addClass("py-5 w-100 h-100")
-                .attr("id", "item_content")
-                .css({"padding-right": "15px",
-                      "padding-left": "15px",
-                      "position": "absolute"});
-                  
+            .addClass("col-12 h-100")
+            .attr("id", "item_content");
+    
+    // The button to hide/show the menu
     var menu_button = $("<button>")
-                .append("<<")
-                .addClass("btn btn-secondary")
-                .css({"margin-top": "15px",
-                      "position": "absolute",
-                      "border-top-left-radius": "0px",
-                      "border-bottom-left-radius": "0px"})
-                .click(toggleMenu);
-    
-    var div = $("<div>")
-                .addClass("col-md-8 col-lg-10 px-0")
-                .append(item_content);
+            .append("<<")
+            .addClass("btn btn-secondary show_menu")
+            .attr("id", "toggle_menu")
+            .css({"margin-top": "15px",
+                  "position": "absolute",
+                  "border-top-left-radius": "0px",
+                  "border-bottom-left-radius": "0px"})
+            .click(toggleMenu);
         
-    if(collapsableMenu) {
-        div.append(menu_button);
+    if (collapsableMenu !== true) {
+        menu_button.addClass("d-none");
     }
+        
+    // The row div to put the button and the item content in
+    var content_row = $("<div>")
+            .attr("id", "content_row")
+            .addClass("row h-100")
+            .append(item_content)
+            .append(menu_button);
+        
+    // The column div to put the button and the item content in
+    var content_col = $("<div>")
+            .attr("id", "content_col")
+            .addClass("col py-5")
+            .append(content_row);
     
-    return div;
+    return content_col;
 }
 
 /** 
@@ -152,7 +161,7 @@ function getItemsContent() {
     } else {
         // No item has been selected, show default information
         var content = $("#item_content").append(`
-            <div class="row mb-5 pb-5 text-center">
+            <div class="row mb-5 pb-5 text-center justify-content-center">
                 <div class="col-lg-11 px-lg-5 px-md-3">
                     <h1 class="mb-3">` + dict["navigation." + page_id] + `</h1>
                     <p class="lead">` + dict[page_id + ".overview"] + `.</p>
@@ -728,4 +737,29 @@ function getLink(bookIdx, chapIdx, verseIdx) {
 
 function toggleMenu() {
     
+    var button = $("#toggle_menu");
+    if (button.hasClass("show_menu")) {
+        // Hide the menu, make sure the window doesn't shift by 
+        // specifically setting the height
+        $("#content_col").css("height", $("#item_bar").css("height"));
+        $("#item_bar").addClass("d-none");
+        
+        // Update the button
+        button.addClass("hide_menu");
+        button.removeClass("show_menu");
+        button.text(">>");
+        
+    } else if (button.hasClass("hide_menu")) {
+        // Show the menu
+        $("#item_bar").removeClass("d-none");
+        
+        // Update the button
+        button.addClass("show_menu");
+        button.removeClass("hide_menu");
+        button.text("<<");
+    } else {
+        // ????
+    }
+    
+    return;
 }
