@@ -53,7 +53,6 @@
                                             <input type="password" class="form-control <?php echo (!empty($password1_err)) ? 'is-invalid' : ((!empty($password1)) ? 'is-valid' : ''); ?>" name="password" id="password" value="<?php echo $param_password1; ?>">
                                             <span class="invalid-feedback"><?php echo $dict[$password1_err]; ?></span>
                                         </div>
-                                                    <!--- TODO! -->
                                         <button type="submit" name="login" class="btn btn-primary"><?php echo $dict["settings.login"]; ?></button>
                                     </form>
                                 </div>

@@ -7,34 +7,7 @@ var infoWindow = null;
 var markerClusterer = null;
 
 function getWorldmapContent(location) {
-    // Go to the location and show more information about it
     
-//    if (timeline.name === "Global") {
-//        timeline.name = dict["timeline.global"];
-//    }
-//    
-//    if (timeline) {
-//        // An event has been selected, show its information
-//        $("#item_content").append(`
-//            <div class="row">
-//                <div class="col-lg-11 text-center">
-//                    <h1 class="mb-3">` + timeline.name + `</h1>
-//                </div>
-//            </div>
-//            <div class="row" style="height: 100%;">
-//                <div class="col-lg-11 text-center">
-//                    <div id="map_div" style="height: 100%;">
-//                        
-//                    </div>
-//                </div>
-//            </div>
-//        `);
-//        
-//        showMap(timeline);
-//
-//    } else {
-//        // TODO Foutmelding, niet kunnen vinden?
-//    }
 }
 
 function showMap() {
@@ -44,7 +17,7 @@ function showMap() {
     // Show the entire map
     map = new google.maps.Map(div, {
         center: { lat: 0, lng: 0 },
-        zoom: 2,
+        zoom: 2
     });
 
     // Insert all the locations as markers to click
@@ -56,7 +29,7 @@ function showMap() {
 
                 // The marker, positioned at the location
                 const marker = new google.maps.Marker({
-                    position: { lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) },
+                    position: { lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) }
                 });
 
                 // markers can only be keyboard focusable when they have click listeners
@@ -75,7 +48,7 @@ function showMap() {
                     // Create a new window and open it
                     infoWindow = new google.maps.InfoWindow({
                         content: "",
-                        disableAutoPan: true,
+                        disableAutoPan: true
                     });
 
                     // Open the info window

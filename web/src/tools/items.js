@@ -1,5 +1,5 @@
 
-/* global get_settings, page_id, getBookContent, getEventContent, getPeopleContent, getLocationContent, getSpecialContent, getFamilytreeContent, getTimelineContent, getWorldmapContent, getItem, dict, session_settings, getItemPage, getItemsSearch */
+/* global get_settings, page_id, getBookContent, getEventContent, getPeopleContent, getLocationContent, getSpecialContent, getFamilytreeContent, getTimelineContent, getWorldmapContent, getItem, dict, session_settings, getItemPage, getItemsSearch, parseFloat */
 
 /** 
  * This function generates the sidebar for an items page
