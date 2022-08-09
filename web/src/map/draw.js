@@ -34,18 +34,24 @@ function drawMapItems() {
         drawLink(group, item);
         drawItem(group, item);
     });
-    
-    // TODO:
-//    g_svg.text(dict["familytree.link"]).attr("id", "tooltip").hide();
-    group.element("title").words("Click to go to details page");
 }
 
 function drawItem(group, item) {
     
+    // The button to see the popover
+    var link = group.link("javascript: void(0)");
+//        link.target('_blank');
+
+    $(link.node).popover({
+        animation: true,
+        trigger: "hover",
+        placement: "top",
+        title: "Details on " + item.name,
+        content: setParameters("peoples/people/" + item.id)
+    });
+    
     // The link to the object
     if (g_Options.align === ALIGNMENT_VERTICAL) {
-        var link = group.link(setParameters("peoples/people/" + item.id));
-        link.target('_blank');
     
         // Draw the rectangle
         link.rect(item.x_length, 
@@ -53,71 +59,30 @@ function drawItem(group, item) {
                 .fill(["-1", "0"].includes(item.gender) ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
-                .move(item.X, item.Y)
-
-    //    // When the mouse hovers over the link
-    //    .mouseover(function() {
-    //        SVG("#tooltip").show().move(item.X, item.Y);
-    //    })
-    //    
-    //    // When the mouse no longer hovers over the link
-    //    .mouseout(function() {
-    //        SVG("#tooltip").hide();
-    //    });
+                .move(item.X, item.Y);
 
         //Insert the text
         link.text(item.name)
                 .font({size: 20})
                 .center(item.X + item.x_length / 2, 
-                        item.Y + item.y_length / 2)
-
-    //    // When the mouse hovers over the link
-    //    .mouseover(function() {
-    //        SVG("#tooltip").show().move(item.X, item.Y);
-    //    })
-    //    
-    //    // When the mouse no longer hovers over the link
-    //    .mouseout(function() {
-    //        SVG("#tooltip").hide();
-    //    });
+                        item.Y + item.y_length / 2);
+                        
     } else {
         // Turn it all counter clock wise
-        var link = group.link(setParameters("events/event/" + get_settings["id"]));
-        link.target('_blank');
-    
+            
         // Draw the rectangle
         link.rect(item.y_length, 
                   item.x_length)
                 .fill(["-1", "0"].includes(item.gender) ? 'lightgrey' : (item.gender === "1" ? 'lightblue' : 'pink'))
                 .stroke('black')
                 .radius(10, 10)
-                .move(item.Y, item.X)
-
-    //    // When the mouse hovers over the link
-    //    .mouseover(function() {
-    //        SVG("#tooltip").show().move(item.X, item.Y);
-    //    })
-    //    
-    //    // When the mouse no longer hovers over the link
-    //    .mouseout(function() {
-    //        SVG("#tooltip").hide();
-    //    });
+                .move(item.Y, item.X);
 
         //Insert the text
         link.text(item.name)
                 .font({size: 20})
                 .center(item.Y + item.y_length / 2, 
-                        item.X + item.x_length / 2)
-
-    //    // When the mouse hovers over the link
-    //    .mouseover(function() {
-    //        SVG("#tooltip").show().move(item.X, item.Y);
-    //    })
-    //    
-    //    // When the mouse no longer hovers over the link
-    //    .mouseout(function() {
-    //        SVG("#tooltip").hide();
-    //    });
+                        item.X + item.x_length / 2);
     }
     
 }
