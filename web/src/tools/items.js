@@ -762,5 +762,8 @@ function toggleMenu() {
         // ????
     }
     
+    // Toggle a window resize event
+    $(window).trigger('resize');
+    
     return;
 }
