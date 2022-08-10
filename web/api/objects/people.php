@@ -9,6 +9,7 @@ class People {
     private $conn;
     private $base;
     private $table_name = "peoples";
+    private $table_aka = "people_to_people";
     public $item_name = "People";
   
     // object properties
@@ -66,7 +67,7 @@ class People {
         // Filtering on a name
         $filter_sql = "";
         if (isset($filter)) {
-            $filter_sql = " WHERE name LIKE ? ";
+            $filter_sql = " AND name LIKE ? ";
             $filter = '%'.$filter.'%';
         }
 
@@ -75,6 +76,12 @@ class People {
                     p.id, p.name
                 FROM
                     " . $this->table_name . " p
+                LEFT JOIN 
+                    " . $this->table_aka . " p2p
+                ON
+                    p.id = p2p.people1_id
+                WHERE
+                    p.id not IN (SELECT people2_id FROM " . $this->table_aka . ")
                 ".$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";

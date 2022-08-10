@@ -19,6 +19,7 @@ function getPeopleContent(peoples) {
                         <table class="table table-striped table-borderless">
                             <tbody>` +
                                 insertDetail(peoples, 'meaning_name') + 
+                                insertDetailLink(peoples, 'aka') + 
                                 insertDetail(peoples, 'father_age') + 
                                 insertDetail(peoples, 'mother_age') +
                                 insertDetailLink(peoples, 'parents') +
