@@ -516,7 +516,7 @@ function insertDetail(item, detail) {
         item[detail] = getTypeSpecial(item[detail]);
     }
     
-    return item[detail] && (item[detail] !== -1) ? 
+    return item[detail] && ((item[detail] !== -1) && (item[detail] !== "-1")) ? 
     `<tr>
         <th scope="row">` + dict["items." + detail] + `</th>
         <td>` + item[detail] + `</td>
@@ -638,7 +638,7 @@ function insertDetailMaps(item, type) {
                                     item.id) + 
                             `</td>
                         </tr>`);
-                    })
+                    });
             
                     maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
                             <div class="table-responsive">
