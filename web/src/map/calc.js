@@ -55,6 +55,9 @@ function setMapItems (map) {
     var parent = {
         id: map.id,
         name: map.name,
+        meaning_name: map.hasOwnProperty('meaning_name') ? map.meaning_name : null,
+        descr: map.hasOwnProperty('descr') ? map.descr : null,
+        aka: map.hasOwnProperty('aka') ? map.aka : null,
         gender: map.hasOwnProperty('gender') ? map.gender : null,
         date: map.hasOwnProperty('date') ? map.date : null,
         length: map.hasOwnProperty('length') ? map.length : null,

@@ -13,6 +13,9 @@ class FamilyTree {
     // object properties
     public $id;
     public $name;
+    public $meaning_name;
+    public $descr;
+    public $aka;
     public $gender;
     public $items;
   
@@ -134,6 +137,9 @@ class FamilyTree {
         }
         
         $this->name = $parent->name;
+        $this->meaning_name = $parent->meaning_name;
+        $this->descr = $parent->description;
+        $this->aka = $parent->aka;
         $this->gender = $parent->gender;
         $this->items = $people_arr;
     }

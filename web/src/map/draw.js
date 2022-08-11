@@ -42,12 +42,22 @@ function drawItem(group, item) {
     var link = group.link("javascript: void(0)");
 //        link.target('_blank');
 
+    var popover = $("<div>")
+            .append("<table>" + 
+                insertDetail(item, "meaning_name") + 
+                insertDetail(item, "aka") + 
+                insertDetail(item, "descr") + 
+                insertDetail(item, "gender") + 
+                insertDetail(item, "type") + 
+                "Click on the link below" + 
+                "</table>");
+
     $(link.node).popover({
         animation: true,
         trigger: "hover",
         placement: "top",
-        title: "Details on " + item.name,
-        content: setParameters("peoples/people/" + item.id)
+        title: dict["map.info.details"] + item.name,
+        content: popover.get(0) //setParameters("peoples/people/" + item.id)
     });
     
     // The link to the object

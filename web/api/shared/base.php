@@ -425,13 +425,24 @@ class ItemBase {
     public function getFamilytreeToChildren($ids, $level) {
         // select all query
         $query = "SELECT
-                    p.id, p.name, p.descr, p.gender, p2p.parent_id,
+                    p.id, p.name, p.meaning_name, p.descr, 
+                    p.gender, p2p.parent_id, aka.people_name AS aka,
                     ".$level." as level, 0 as X, 0 as Y
                 FROM
                     " . $this->table_peoples . " p
                     LEFT JOIN
                         " . $this->table_p2pa . " p2p
                             ON p2p.people_id = p.id
+                    LEFT JOIN
+                        (SELECT people_id, group_concat(
+                            CASE
+                                WHEN meaning_name IS NOT NULL AND meaning_name != ''
+                                    THEN CONCAT(people_name, ' (', meaning_name, ')')
+                                ELSE 
+                                    people_name
+                            END SEPARATOR '<br/>'
+                        ) AS people_name FROM people_to_aka) AS aka
+                            ON aka.people_id = p.id
                 WHERE
                     p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
                 ORDER BY
