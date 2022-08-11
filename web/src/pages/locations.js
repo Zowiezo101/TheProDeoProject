@@ -19,9 +19,9 @@ function getLocationContent(locations) {
                         <table class="table table-striped table-borderless">
                             <tbody>` +
                                 insertDetail(locations, 'meaning_name') + 
+                                insertDetail(locations, 'aka') + 
                                 insertDetail(locations, 'type') + 
                                 insertDetailMaps(locations, 'worldmap') +
-                                insertDetailLink(locations, 'locations') +
                                 insertDetailLink(locations, 'events') +
                                 insertDetailLink(locations, 'peoples') +
                                 insertDetail(locations, 'book_start') +

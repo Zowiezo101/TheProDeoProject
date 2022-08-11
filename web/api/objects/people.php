@@ -9,7 +9,6 @@ class People {
     private $conn;
     private $base;
     private $table_name = "peoples";
-    private $table_aka = "people_to_people";
     public $item_name = "People";
   
     // object properties
@@ -29,7 +28,7 @@ class People {
     public $book_end_id;
     public $book_end_chap;
     public $book_end_vers;
-    public $peoples;
+    public $aka;
     public $parents;
     public $children;
     public $locations;
@@ -67,7 +66,7 @@ class People {
         // Filtering on a name
         $filter_sql = "";
         if (isset($filter)) {
-            $filter_sql = " AND name LIKE ? ";
+            $filter_sql = " WHERE name LIKE ? ";
             $filter = '%'.$filter.'%';
         }
 
@@ -76,12 +75,6 @@ class People {
                     p.id, p.name
                 FROM
                     " . $this->table_name . " p
-                LEFT JOIN 
-                    " . $this->table_aka . " p2p
-                ON
-                    p.id = p2p.people1_id
-                WHERE
-                    p.id not IN (SELECT people2_id FROM " . $this->table_aka . ")
                 ".$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
@@ -174,7 +167,7 @@ class People {
         $this->book_end_vers = $row['book_end_vers'];
         $this->parents = $this->base->getPeopleToParents($this->id);
         $this->children = $this->base->getPeopleToChildren($this->id);
-        $this->peoples = $this->base->getPeopleToPeoples($this->id);
+        $this->aka = $this->base->getPeopleToPeoples($this->id);
         $this->events = $this->base->getPeopleToEvents($this->id);
         $this->locations = $this->base->getPeopleToLocations($this->id);
     }

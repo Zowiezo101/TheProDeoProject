@@ -514,6 +514,15 @@ function insertDetail(item, detail) {
         item[detail] = getTypeLocation(item[detail]);
     } else if (detail === "type" && (page_id === "specials")) {
         item[detail] = getTypeSpecial(item[detail]);
+    } else if (detail === "aka") {
+        // This can be multiple names that this person is known as
+        var data = [];
+        for (var i = 0; i < item[detail].length; i++) {
+            data.push(item[detail][i].name);
+        }
+        
+        // Get them all and put them all together
+        item[detail] = data.join("<br>");
     }
     
     return item[detail] && ((item[detail] !== -1) && (item[detail] !== "-1")) ? 
@@ -561,12 +570,6 @@ function insertDetailLink(item, detail) {
                     data.name)
             );
         }
-        
-        if ((detail === page_id) && 
-                ((detail === "peoples") || (detail === "locations"))) {
-            detail = "aka";
-        }
-          
 
         item[detail] = links.join("<br>");
     }

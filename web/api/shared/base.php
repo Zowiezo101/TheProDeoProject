@@ -13,15 +13,15 @@ class ItemBase {
     public $table_peoples = "peoples";
     public $table_locations = "locations";
     public $table_speciacls = "locations";
-    public $table_a2a = "activity_to_activity";
+    public $table_a2pa = "activity_to_parent";
     public $table_a2e = "activity_to_event";
-    public $table_e2e = "event_to_event";
+    public $table_e2pa = "event_to_parent";
     public $table_p2a = "people_to_activity";
-    public $table_p2p = "people_to_people";
+    public $table_p2p = "people_to_aka";
     public $table_p2pa = "people_to_parent";
     private $table_p2l = "people_to_location";
     private $table_l2a = "location_to_activity";
-    private $table_l2l = "location_to_location";
+    private $table_l2l = "location_to_aka";
     private $table_s2a = "special_to_activity";
   
     // constructor with $db as database connection
@@ -138,10 +138,10 @@ class ItemBase {
                 FROM
                     " . $this->table_events . " e
                     LEFT JOIN
-                        " . $this->table_e2e . " e2e
-                            ON e2e.event2_id = e.id
+                        " . $this->table_e2pa . " e2pa
+                            ON e2pa.event_id = e.id
                 WHERE
-                    e2e.event1_id = ?
+                    e2pa.parent_id = ?
                 ORDER BY
                     e.id ASC";
 
@@ -164,10 +164,10 @@ class ItemBase {
                 FROM
                     " . $this->table_events . " e
                     LEFT JOIN
-                        " . $this->table_e2e . " e2e
-                            ON e2e.event1_id = e.id
+                        " . $this->table_e2pa . " e2pa
+                            ON e2pa.parent_id = e.id
                 WHERE
-                    e2e.event2_id = ?
+                    e2pa.event_id = ?
                 ORDER BY
                     e.id ASC";
 
@@ -242,35 +242,19 @@ class ItemBase {
     public function getPeopleToPeoples($id) {
         // select all query
         $query = "SELECT
-                    distinct(p.id) as id, p.name
+                    p2p.people_id as id, p2p.people_name as name
                 FROM
-                    " . $this->table_peoples . " p
-                    LEFT JOIN
-                        " . $this->table_p2p . " p2p
-                            ON p2p.people1_id = p.id
+                    " . $this->table_p2p . " p2p
                 WHERE
-                    p2p.people2_id = ?
+                    p2p.people_id = ?
                 ORDER BY
-                    p.id ASC
-                UNION
-                SELECT
-                    distinct(p.id) as id, p.name
-                FROM
-                    " . $this->table_peoples . " p
-                    LEFT JOIN
-                        " . $this->table_p2p . " p2p
-                            ON p2p.people2_id = p.id
-                WHERE
-                    p2p.people1_id = ?
-                ORDER BY
-                    p.id ASC";
+                    p2p.people_name ASC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         
         // bind variable values
         $stmt->bindParam(1, $id, PDO::PARAM_INT);
-        $stmt->bindParam(2, $id, PDO::PARAM_INT);
 
         // execute query
         $stmt->execute();
@@ -389,35 +373,19 @@ class ItemBase {
     public function getLocationToLocations($id) {
         // select all query
         $query = "SELECT
-                    distinct(l.id) as id, l.name
+                    l2l.location_id as id, l2l.location_name as name
                 FROM
-                    " . $this->table_locations . " l
-                    LEFT JOIN
-                        " . $this->table_l2l . " l2l
-                            ON l2l.location1_id = l.id
+                    " . $this->table_l2l . " l2l
                 WHERE
-                    l2l.location2_id = ?
+                    l2l.location_id = ?
                 ORDER BY
-                    l.id ASC
-                UNION
-                SELECT
-                    distinct(l.id) as id, l.name
-                FROM
-                    " . $this->table_locations . " l
-                    LEFT JOIN
-                        " . $this->table_l2l . " l2l
-                            ON l2l.location2_id = l.id
-                WHERE
-                    l2l.location1_id = ?
-                ORDER BY
-                    l.id ASC";
+                    l2l.location_name ASC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         
         // bind variable values
         $stmt->bindParam(1, $id, PDO::PARAM_INT);
-        $stmt->bindParam(2, $id, PDO::PARAM_INT);
 
         // execute query
         $stmt->execute();
@@ -487,16 +455,16 @@ class ItemBase {
         if ($level > 1) {
             // select all query
             $query = "SELECT
-                        e.id, e.name as name, e.length, e.date, e2e.event1_id as parent_id,
+                        e.id, e.name as name, e.length, e.date, e2pa.parent_id,
                         ".$level." as level, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
 
                         LEFT JOIN
-                            " . $this->table_e2e . " e2e
-                                ON e2e.event2_id = e.id
+                            " . $this->table_e2pa . " e2pa
+                                ON e2pa.event_id = e.id
                     WHERE
-                        e2e.event1_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
+                        e2pa.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
                     ORDER BY
                         e.id ASC, e.order_id ASC";
         } else {
@@ -508,10 +476,10 @@ class ItemBase {
                         " . $this->table_events . " e
 
                         LEFT JOIN
-                            " . $this->table_e2e . " e2e
-                                ON e2e.event2_id = e.id
+                            " . $this->table_e2pa . " e2pa
+                                ON e2pa.event_id = e.id
                     WHERE
-                        e2e.event1_id is null
+                        e2pa.parent_id is null
                     ORDER BY
                         e.id ASC, e.order_id ASC";
         }
@@ -535,18 +503,18 @@ class ItemBase {
         if ($level > 1) {
             // select all query
             $query = "SELECT
-                        a.id, a.descr as name, a.length, a.date, a2a.activity1_id as parent_id,
+                        a.id, a.descr as name, a.length, a.date, a2pa.parent_id,
                         ".$level." as level, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
 
                         LEFT JOIN
-                            " . $this->table_a2a . " a2a
-                                ON a2a.activity2_id = a.id
+                            " . $this->table_a2pa . " a2pa
+                                ON a2pa.activity_id = a.id
                     WHERE
-                        a2a.activity1_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
+                        a2pa.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
                     ORDER BY
-                        a2a.activity1_id ASC, a.order_id ASC";
+                        a2pa.parent_id ASC, a.order_id ASC";
         } else {
             // select all query
             $query = "SELECT
@@ -556,13 +524,13 @@ class ItemBase {
                         " . $this->table_activities . " a
 
                         LEFT JOIN
-                            " . $this->table_a2a . " a2a
-                                ON a2a.activity2_id = a.id
+                            " . $this->table_a2pa . " a2pa
+                                ON a2pa.activity_id = a.id
                         LEFT JOIN 
                             " . $this->table_a2e . " a2e
                                 ON a2e.activity_id = a.id
                     WHERE
-                        a2e.event_id = ? AND a2a.activity1_id is null
+                        a2e.event_id = ? AND a2pa.parent_id is null
                     ORDER BY
                         a2e.event_id ASC, a.order_id ASC";
         }

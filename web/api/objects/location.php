@@ -24,7 +24,7 @@ class Location {
     public $book_end_chap;
     public $book_end_vers;
     public $peoples;
-    public $locations;
+    public $aka;
     public $events;
   
     // constructor with $db as database connection
@@ -155,7 +155,7 @@ class Location {
         $this->book_end_vers = $row['book_end_vers'];
         $this->peoples = $this->base->getLocationToPeoples($this->id);
         $this->events = $this->base->getLocationToEvents($this->id);
-        $this->locations = $this->base->getLocationToLocations($this->id);
+        $this->aka = $this->base->getLocationToLocations($this->id);
     }
     
     // search products
