@@ -434,14 +434,13 @@ class ItemBase {
                         " . $this->table_p2pa . " p2p
                             ON p2p.people_id = p.id
                     LEFT JOIN
-                        (SELECT people_id, group_concat(
+                        (SELECT people_id, CONCAT('[', GROUP_CONCAT(
                             CASE
                                 WHEN meaning_name IS NOT NULL AND meaning_name != ''
-                                    THEN CONCAT(people_name, ' (', meaning_name, ')')
-                                ELSE 
-                                    people_name
-                            END SEPARATOR '<br/>'
-                        ) AS people_name FROM people_to_aka) AS aka
+                                    THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
+                                    ELSE CONCAT('{\"name\": \"', people_name, '\"}')
+                            END SEPARATOR ', '
+                        ), ']') AS people_name FROM people_to_aka) AS aka
                             ON aka.people_id = p.id
                 WHERE
                     p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
