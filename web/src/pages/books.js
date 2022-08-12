@@ -19,8 +19,6 @@ function getBookContent(book) {
                     <div class="table-responsive">
                         <table class="table table-striped table-borderless">
                             <tbody>` +
-                                insertDetail(book, "author") + 
-                                insertDetail(book, "written_in") + 
                                 insertDetail(book, "num_chapters") + 
                             `</tbody>
                         </table>

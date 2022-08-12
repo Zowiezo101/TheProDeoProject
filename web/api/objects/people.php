@@ -22,6 +22,7 @@ class People {
     public $gender;
     public $tribe;
     public $nationality;
+    public $profession;
     public $book_start_id;
     public $book_start_chap;
     public $book_start_vers;
@@ -125,9 +126,9 @@ class People {
 
         // query to read single record
         $query = "SELECT
-                    p.name, p.descr, p.meaning_name,
-                    p.father_age, p.mother_age, p.age,
-                    p.gender, p.tribe, p.nationality,
+                    p.name, p.descr, p.meaning_name, p.father_age, 
+                    p.mother_age, p.age, p.gender, p.tribe, 
+                    p.nationality, p.profession,
                     p.book_start_id, p.book_start_chap, p.book_start_vers, 
                     p.book_end_id, p.book_end_chap, p.book_end_vers
                 FROM
