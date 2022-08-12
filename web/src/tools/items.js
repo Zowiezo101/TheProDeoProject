@@ -481,64 +481,79 @@ function insertLastPage() {
     `);
 }
 
-function insertDetail(item, detail) {
-    if ((detail === "book_start") && (item["book_start_id"])) {
+function insertDetail(item, prop) {
+    var detail = "";
+    
+    if ((prop === "book_start") && (item["book_start_id"])) {
         var book_id = dict["books.book_" + item["book_start_id"]];
         var book_chap = item["book_start_chap"];
         var book_vers = item["book_start_vers"];
         
-        item["book_start"] = 
+        detail = 
                 "<a " + 
                     "href='" + getLink(item["book_start_id"], book_chap, book_vers) + "' " + 
                     "target='_blank' " + 
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
-    } else if ((detail === "book_end") && (item["book_end_id"])) {
+    } else if ((prop === "book_end") && (item["book_end_id"])) {
         var book_id = dict["books.book_" + item["book_end_id"]];
         var book_chap = item["book_end_chap"];
         var book_vers = item["book_end_vers"];
         
-        item["book_end"] = 
+        detail = 
                 "<a " + 
                     "href='" + getLink(item["book_end_id"], book_chap, book_vers) + "' " + 
                     "target='_blank' " + 
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
-    } else if (detail === "gender") {
-        item[detail] = getGender(item[detail]);
-    } else if (detail === "tribe") {
-        item[detail] = getTribe(item[detail]);
-    } else if (detail === "type" && (page_id === "locations")) {
-        item[detail] = getTypeLocation(item[detail]);
-    } else if (detail === "type" && (page_id === "specials")) {
-        item[detail] = getTypeSpecial(item[detail]);
-    } else if (detail === "aka") {
-        // This can be multiple names that this person is known as
-        var data = [];
-        for (var i = 0; i < item[detail].length; i++) {
-            data.push(item[detail][i].name);
-        }
+    } else if (prop === "gender") {
+        detail = getGender(item[prop]);
+    } else if (prop === "tribe") {
+        detail = getTribe(item[prop]);
+    } else if (prop === "type" && (page_id === "locations")) {
+        detail = getTypeLocation(item[prop]);
+    } else if (prop === "type" && (page_id === "specials")) {
+        detail = getTypeSpecial(item[prop]);
+    } else if (prop === "aka") {
         
-        // Get them all and put them all together
-        item[detail] = data.join("<br>");
+        if (item[prop] && item[prop].length > 0) {
+            // This can be multiple names that this person is known as
+            var data = [];
+            for (var i = 0; i < item[prop].length; i++) {
+                data.push(item[prop][i].name);
+            }
+            
+            // Get them all and put them all together
+            detail = data.join("<br>");
+        } else {
+            // No results, make sure not to use it
+            detail = -1;
+        }
+    } else {
+        detail = item[prop];
     }
     
-    return item[detail] && ((item[detail] !== -1) && (item[detail] !== "-1")) ? 
-    `<tr>
-        <th scope="row">` + dict["items." + detail] + `</th>
-        <td>` + item[detail] + `</td>
-    </tr>` : "";
+    if ((!detail) || (detail === "-1") || (detail === "") || (detail === -1)) {
+        detail = dict["items.unknown"];
+    }
+    
+    return `<tr>
+        <th scope="row">` + dict["items." + prop] + `</th>
+        <td>` + detail + `</td>
+    </tr>`;
 }
 
-function insertDetailLink(item, detail) {
+function insertDetailLink(item, prop) {
     
-    if (item[detail]) {
+    var detail = "";
+    
+    if (item[prop]) {
         var links = [];
-        for (var i = 0; i < item[detail].length; i++) {
-            var data = item[detail][i];
-            switch(detail) {
+        for (var i = 0; i < item[prop].length; i++) {
+            var data = item[prop][i];
+            switch(prop) {
                 case "children":
                 case "parents":
                 case "daughter":
@@ -552,12 +567,12 @@ function insertDetailLink(item, detail) {
                     break;
 
                 default:
-                    to_table = detail;
+                    to_table = prop;
                     break;
             }
             
-            if ((page_id === "peoples" && detail === "locations") || 
-                    (page_id === "locations" && detail === "peoples")) {
+            if ((page_id === "peoples" && prop === "locations") || 
+                    (page_id === "locations" && prop === "peoples")) {
                 // These two contain a type as well
                 data.name = data.name + getTypeLink(data.type);
             }
@@ -571,13 +586,13 @@ function insertDetailLink(item, detail) {
             );
         }
 
-        item[detail] = links.join("<br>");
+        detail = links.join("<br>");
     }
     
-    return item[detail] ? `<tr>
-        <th scope="row">` + dict["items." + detail] + `</th>
+    return detail ? `<tr>
+        <th scope="row">` + dict["items." + prop] + `</th>
         <td>` + 
-            item[detail] + 
+            detail + 
         `</td>
     </tr>` : "";
 }
