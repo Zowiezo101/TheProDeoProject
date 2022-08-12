@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings, onBeforeZoom, onBeforePan, dict */
+/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings, onBeforeZoom, onBeforePan, dict, g_Map */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -19,8 +19,26 @@ function drawControlButtons(map, type) {
                     <button class="btn btn-primary" onclick="onZoomFit()" title="` + dict["map.zoom.fit"] + `"><i class="fa fa-expand" aria-hidden="true"></i></button>
                     <button class="btn btn-primary" onclick="onZoomReset()" title="` + dict["map.zoom.reset"] + `"><i class="fa fa-compress" aria-hidden="true"></i></button>
                     <button class="btn btn-primary" onclick="onDownload('` + map.name + `')" title="` + dict["map.download." + type] + `"><i class="fa fa-download" aria-hidden="true"></i></button>
-                    <button class="btn btn-primary" title="` + dict["map.info.controls"] + `"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#infoModal" title="` + dict["map.info.controls"] + `"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
                 </div>`);
+    
+    // The modal for the information button
+    div.append(`
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModal" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">` + dict["map.info.controls"] + `</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ` + dict[type + ".overview"] + `<br><br>
+              </div>
+            </div>
+          </div>
+        </div>`);
 }
     
 function drawMapItems() {
@@ -38,30 +56,33 @@ function drawMapItems() {
 
 function drawItem(group, item) {
     
-    // The button to see the popover
-    var link = group.link("javascript: void(0)");
-//        link.target('_blank');
-
-    var popover = $("<div>")
-            .append("<table>" + 
-                insertDetail(item, "meaning_name") + 
-                insertDetail(item, "aka") + 
-                insertDetail(item, "descr") + 
-                insertDetail(item, "gender") + 
-                insertDetail(item, "type") + 
-                "Click on the link below" + 
-                "</table>");
-
-    $(link.node).popover({
-        animation: true,
-        trigger: "hover",
-        placement: "top",
-        title: dict["map.info.details"] + item.name,
-        content: popover.get(0) //setParameters("peoples/people/" + item.id)
-    });
-    
     // The link to the object
     if (g_Options.align === ALIGNMENT_VERTICAL) {
+    
+        // The button to see the popover
+        var link = group.link(setParameters("peoples/people/" + item.id));
+            link.target('_blank');
+
+        var popover = $("<div>")
+                .append("\
+                    <table class='table table-striped'>" + 
+                        "<tbody>" +
+                        insertDetail(item, "meaning_name") + 
+                        insertDetail(item, "aka") + 
+                        insertDetail(item, "descr") + 
+                        insertDetail(item, "gender") + 
+                        "</tbody>" + 
+                    "</table>" + 
+                    "<p class='font-weight-bold'>" + dict["map.info.details"] + "</p>");
+
+        $(link.node).popover({
+            animation: true,
+            trigger: "hover",
+            placement: "top",
+            title: dict["map.info.title"] + item.name,
+            html: true,
+            content: popover.get(0)
+        });
     
         // Draw the rectangle
         link.rect(item.x_length, 
@@ -78,8 +99,43 @@ function drawItem(group, item) {
                         item.Y + item.y_length / 2);
                         
     } else {
-        // Turn it all counter clock wise
+        // The link depends on whether it is a global timeline or not
+        var href = setParameters("events/event/" + (
+                    (get_settings["id"] === "-999") ? 
+                        item.id : 
+                        get_settings["id"]));
+        if (get_settings["id"] === item.id === "-999") {
+            href = "javascript: void(0)";
+        }
+    
+        // The button to see the popover
+        var link = group.link(href);
+            link.target('_blank');
+
+        // The popover itself
+        var popover = $("<div>")
+                .append("\
+                    <table class='table table-striped'>" + 
+                        "<tbody>" +
+                        insertDetail(item, "descr") + 
+                        "</tbody>" + 
+                    "</table>");
             
+        if (get_settings["id"] !== "-999" || item.id === "-999") {
+            // There actually is a link to go to
+            popover.append("<p class='font-weight-bold'>" + dict["map.info.details"] + "</p>");
+        }
+
+        $(link.node).popover({
+            animation: true,
+            trigger: "hover",
+            placement: "top",
+            title: dict["map.info.title"] + item.name,
+            html: true,
+            content: popover.get(0)
+        });
+        
+        // Turn it all counter clock wise
         // Draw the rectangle
         link.rect(item.y_length, 
                   item.x_length)

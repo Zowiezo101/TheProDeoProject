@@ -9,6 +9,7 @@ var PARENT_ID = 2;
 var g_MapItems = null;
 var g_Options = null;
 var g_ClashedItems = [];
+var g_Map = null;
 
 // The offsets
 var offsets = {
@@ -52,6 +53,8 @@ var offsets = {
 //
 
 function setMapItems (map) {
+    g_Map = map;
+    
     var parent = {
         id: map.id,
         name: map.name,
