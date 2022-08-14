@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options, ALIGNMENT_VERTICAL, get_settings, onBeforeZoom, onBeforePan, dict, g_Map */
+/* global g_MapItems, g_Options, get_settings, onBeforeZoom, onBeforePan, dict, g_Map, TYPE_FAMILYTREE */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -57,7 +57,7 @@ function drawMapItems() {
 function drawItem(group, item) {
     
     // The link to the object
-    if (g_Options.align === ALIGNMENT_VERTICAL) {
+    if (g_Options.type === TYPE_FAMILYTREE) {
     
         // The button to see the popover
         var link = group.link(setParameters("peoples/people/" + item.id));
@@ -158,7 +158,7 @@ function drawLink(group, child) {
         child.parents.forEach(function (parent_id) {
             var parent = getMapItem(parent_id);
 
-            if (g_Options.align === ALIGNMENT_VERTICAL) {
+            if (g_Options.type === TYPE_FAMILYTREE) {
                 group.polyline([
                             [parent.X + parent.x_length / 2, 
                              parent.Y + parent.y_length], 

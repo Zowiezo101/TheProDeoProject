@@ -1,10 +1,10 @@
 /* global onZoomIn, onZoomOut, onZoomFit, onZoomReset, onDownload */
 
-var ALIGNMENT_VERTICAL = 0;
-var ALIGNMENT_HORIZONTAL = 1;
+var TYPE_FAMILYTREE = "familytree";
+var TYPE_TIMELINE = "timeline";
 
 var PARENTS = 0;
-var PARENT_ID = 2;
+var PARENT_ID = 1;
 
 var g_MapItems = null;
 var g_Options = null;
@@ -12,7 +12,7 @@ var g_ClashedItems = [];
 var g_Map = null;
 
 // The offsets
-var offsets = {
+var g_Offsets = {
     width_min: 0, 
     width_max: 0, 
     height_min: 0, 
@@ -197,18 +197,14 @@ function getMapItems() {
 
 function calcMapItems(options = new Object()) {
     
-    // Standard settings if some are not set
-    if(!options || !options.hasOwnProperty('align')) 
-        options.align = ALIGNMENT_VERTICAL;
-    
     if(!options || !options.hasOwnProperty('width')) 
         // Length when horizontal
         // Width when vertical
-        options.x_length = options.align === ALIGNMENT_VERTICAL ? 100 : 50;
+        options.x_length = options.type === TYPE_FAMILYTREE ? 100 : 50;
     if(!options || !options.hasOwnProperty('height')) 
         // Width when horizontal
         // Length when vertical
-        options.y_length = options.align === ALIGNMENT_HORIZONTAL ? 300 : 50;
+        options.y_length = options.type === TYPE_TIMELINE ? 300 : 50;
     
     if(!options || !options.hasOwnProperty('x_dist')) 
         options.x_dist = 25;
@@ -392,7 +388,7 @@ function moveCommonAncestor(offset, parent) {
         
         // The actual items themselves
         var item = getMapItem(id);
-        if (g_Options.align === ALIGNMENT_VERTICAL) {
+        if (g_Options.type === TYPE_FAMILYTREE) {
             item.X = item.X + offset;
         } else {
             item.X = item.X - offset;
@@ -432,7 +428,7 @@ function moveCommonAncestor(offset, parent) {
                 }
                 
                 if (child || (siblingParents.indexOf(item.parent_id) !== -1)) {
-                    if (g_Options.align === ALIGNMENT_VERTICAL) {
+                    if (g_Options.type === TYPE_FAMILYTREE) {
                         item.X = item.X + offset;
                     } else {
                         item.X = item.X - offset;
@@ -480,7 +476,7 @@ function calcX(item) {
         var parent = getMapItem(item.parent_id);
         
         // Get the average X coordinate of the parents
-        if (g_Options.align === ALIGNMENT_VERTICAL) {
+        if (g_Options.type === TYPE_FAMILYTREE) {
             var avgX = parent.X;
         } else {
             var parentXs = [];
@@ -519,7 +515,7 @@ function calcX(item) {
                 // Are we on the right side of the middle?
                 // Place the block on the right side of parents X coordinate
                 var offset = index - middle;
-                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                if (g_Options.type === TYPE_FAMILYTREE) {
                     X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
                 } else {
                     X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
@@ -528,7 +524,7 @@ function calcX(item) {
                 // Are we on the left side of the middle?
                 // Place the block on the left side of parents X coordinate
                 var offset = middle - index;
-                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                if (g_Options.type === TYPE_FAMILYTREE) {
                     X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
                 } else {
                     X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
@@ -541,7 +537,7 @@ function calcX(item) {
                 // Are we on the right side of the middle?
                 // Place the block on the right side of parents X coordinate
                 var offset = index - middle;
-                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                if (g_Options.type === TYPE_FAMILYTREE) {
                     X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
                 } else {
                     X = (avgX - ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
@@ -550,7 +546,7 @@ function calcX(item) {
                 // Are we on the left side of the middle?
                 // Place the block on the left side of parents X coordinate
                 var offset = middle - index;
-                if (g_Options.align === ALIGNMENT_VERTICAL) {
+                if (g_Options.type === TYPE_FAMILYTREE) {
                     X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
                 } else {
                     X = (avgX - ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
@@ -564,7 +560,7 @@ function calcX(item) {
 
     if (sibling) {
         // The distance needed between left and right
-        if (g_Options.align === ALIGNMENT_VERTICAL) {
+        if (g_Options.type === TYPE_FAMILYTREE) {
             var offset = (sibling.X + (g_Options.x_length) + g_Options.x_dist) - X; 
         } else {
             var offset = X - (sibling.X - (g_Options.x_length + g_Options.x_dist)); 
@@ -609,7 +605,7 @@ function solveClash(item) {
     var right = getMapItem(item.right);
     
     // Make sure the clash is still present
-    if (g_Options.align === ALIGNMENT_VERTICAL) {
+    if (g_Options.type === TYPE_FAMILYTREE) {
         var offset = (left.X + (g_Options.x_length + g_Options.x_dist)) - right.X;
     } else {
         var offset = right.X - (left.X - (g_Options.x_length + g_Options.x_dist));
@@ -624,7 +620,7 @@ function solveClash(item) {
 
         // Step 3: Check again
         // The distance needed between left and right
-        if (g_Options.align === ALIGNMENT_VERTICAL) {
+        if (g_Options.type === TYPE_FAMILYTREE) {
             var new_offset = (left.X + (g_Options.x_length + g_Options.x_dist)) - right.X;
         } else {
             var new_offset = right.X - (left.X - (g_Options.x_length + g_Options.x_dist));
@@ -644,25 +640,25 @@ function solveClash(item) {
 }
 
 function getOffsets(item) {
-    if (g_Options.align === ALIGNMENT_VERTICAL) {
-        offsets.width_min = Math.min(item.X, offsets.width_min);
-        offsets.width_max = Math.max(item.X, offsets.width_max);
-        offsets.height_min = Math.min(item.Y, offsets.height_min);
-        offsets.height_max = Math.max(item.Y, offsets.height_max);
+    if (g_Options.type === TYPE_FAMILYTREE) {
+        g_Offsets.width_min = Math.min(item.X, g_Offsets.width_min);
+        g_Offsets.width_max = Math.max(item.X, g_Offsets.width_max);
+        g_Offsets.height_min = Math.min(item.Y, g_Offsets.height_min);
+        g_Offsets.height_max = Math.max(item.Y, g_Offsets.height_max);
     } else {
-        offsets.width_min = Math.min(item.Y, offsets.width_min);
-        offsets.width_max = Math.max(item.Y, offsets.width_max);
-        offsets.height_min = Math.min(item.X, offsets.height_min);
-        offsets.height_max = Math.max(item.X, offsets.height_max);
+        g_Offsets.width_min = Math.min(item.Y, g_Offsets.width_min);
+        g_Offsets.width_max = Math.max(item.Y, g_Offsets.width_max);
+        g_Offsets.height_min = Math.min(item.X, g_Offsets.height_min);
+        g_Offsets.height_max = Math.max(item.X, g_Offsets.height_max);
     }   
 }
 
 function setOffsets(item) {
-    if (g_Options.align === ALIGNMENT_VERTICAL) {
-        item.X = item.X - offsets.width_min;
-        item.Y = item.Y - offsets.height_min;
+    if (g_Options.type === TYPE_FAMILYTREE) {
+        item.X = item.X - g_Offsets.width_min;
+        item.Y = item.Y - g_Offsets.height_min;
     } else {
-        item.X = item.X - offsets.height_min;
-        item.Y = item.Y - offsets.width_min;
+        item.X = item.X - g_Offsets.height_min;
+        item.Y = item.Y - g_Offsets.width_min;
     }
 }

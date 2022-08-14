@@ -1,4 +1,4 @@
-/* global get_settings, pzInstance, g_Options, ALIGNMENT_VERTICAL, g_MapItems, g_svg, offsets */
+/* global get_settings, pzInstance, g_Options, g_MapItems, g_svg, g_Offsets */
 
 var pzInstance = null;
 
@@ -104,7 +104,7 @@ function panToItem() {
     var outerWidth = map.outerWidth(true);
 
     // Calculate the desired location
-    if (g_Options.align === ALIGNMENT_VERTICAL) {
+    if (g_Options.type === TYPE_FAMILYTREE) {
         var newX = (outerWidth / 2) - (item.X + (g_Options.x_length / 2));
         var newY = (outerHeight / 2) - (item.Y + (g_Options.y_length / 2));
     } else {
@@ -312,8 +312,8 @@ function onDownload (title) {
     
     // Create a SVG element for downloading
     var map_svg = $(g_svg.node).clone()
-            .attr("width", offsets.width_max - offsets.width_min + g_Options.x_length)
-            .attr("height", offsets.height_max - offsets.height_min + g_Options.y_length)
+            .attr("width", g_Offsets.width_max - g_Offsets.width_min + g_Options.x_length)
+            .attr("height", g_Offsets.height_max - g_Offsets.height_min + g_Options.y_length)
             .css("overflow", "scroll");
 
     // Add it to the invisble div

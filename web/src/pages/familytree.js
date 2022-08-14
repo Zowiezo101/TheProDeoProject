@@ -1,4 +1,4 @@
-/* global SVG */
+/* global SVG, TYPE_FAMILYTREE */
 
 function getFamilytreeContent(familytree) {
     
@@ -37,10 +37,10 @@ function showMap(familytree) {
         setMapItems(familytree);
         
         // Calculate all the locations of the familytree
-        calcMapItems();
+        calcMapItems({type: TYPE_FAMILYTREE});
 
         // We've got the people and the locations, now time to draw it!
-        drawControlButtons(familytree, "familytree");
+        drawControlButtons(familytree, TYPE_FAMILYTREE);
         drawMapItems();
         
         // Set viewSettings
