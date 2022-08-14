@@ -46,6 +46,9 @@ function showMap(timeline) {
         drawControlButtons(timeline, TYPE_TIMELINE);
         drawMapItems();
         
+        // Set viewSettings
+        setViewSettings();
+        
         panToItem(timeline);
     }
 }

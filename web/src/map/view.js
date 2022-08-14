@@ -34,13 +34,25 @@ function onBeforeZoom(oldZoom, newZoom) {
 
 function onAfterPanZoom(f) {    
     // These animations take a max of 400 ms
-    if (intervalZoom !== null || intervalPan !== null) {
+    if (intervalZoom !== null) {
         // Still busy, use a callback
         callbackZoom = function() {
             // After the callback, check if the panning function is also done
             if (intervalPan !== null) {
                 // Not yet done, use a callback
                 callbackPan = f;
+            } else {
+                // Done, execute it right away
+                f();
+            }
+        };
+    } else if(intervalPan !== null) {
+        // Still busy, use a callback
+        callbackPan = function() {
+            // After the callback, check if the panning function is also done
+            if (intervalZoom !== null) {
+                // Not yet done, use a callback
+                callbackZoom = f;
             } else {
                 // Done, execute it right away
                 f();
@@ -62,6 +74,8 @@ function setViewSettings() {
         beforeZoom: onBeforeZoom,
         beforePan: onBeforePan
     });
+    
+    jQuery.Color.hook("stroke");
     
     // When resizing the window, 
     // make sure the bouding box is recalculated and such.
@@ -114,6 +128,9 @@ function panToItem() {
 
     // Move to the desired location
     panSmooth(pzInstance.getPan(), {x: newX, y: newY});
+    onAfterPanZoom(function() {
+        focusOnRect(item.id);
+    });
 }
 
 function panSmooth(oldPan, newPan) {
@@ -328,5 +345,19 @@ function onDownload (title) {
     $(function() {
         // save as SVG
         svgsaver.asSvg(map_svg.get(0), title + ".svg");
+    });
+}
+
+function focusOnRect(id) {    
+    
+    // Get the correct rectangle to set focus on
+    $("#rect_" + id).animate({
+        "stroke": "red",
+        "stroke-width": "5px"
+    }, 100, function() {
+        $("#rect_" + id).animate({
+            "stroke": "black",
+            "stroke-width": "1px"
+        }, 2000);
     });
 }
