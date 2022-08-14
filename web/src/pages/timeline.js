@@ -13,7 +13,7 @@ function getTimelineContent(timeline) {
                     <h1 class="mb-3">` + timeline.name + `</h1>
                 </div>
             </div>
-            <div class="row" style="height: 100%;">
+            <div class="row pb-5" style="height: 100%;">
                 <div class="col-lg-11 text-center">
                     <div id="map_div" style="height: 100%;">
                         

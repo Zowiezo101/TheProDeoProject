@@ -19,39 +19,6 @@ var g_Offsets = {
     height_max: 0
 };
 
-//function prep_DrawLegenda() {
-//    //Legenda
-//    var svgns = "http://www.w3.org/2000/svg";
-//    var SVG = document.getElementById("svg");
-//    
-//    var Group = document.createElementNS(svgns, "g");    
-//    Group.id = "Legenda";
-//    
-//    var LegendaStr = ['s', 'i', 'h', 'd', 'w', 'm', 'y', 'D', 'C', 'M', 'a'];
-//    LegendaStr.forEach(function(str, idx) {
-//        var Rect = document.createElementNS(svgns, "rect");        
-//        Rect.setAttributeNS(null, 'width', 10);
-//        Rect.setAttributeNS(null, 'height', 10);
-//        Rect.setAttributeNS(null, 'x', 15 + (100*Math.floor(idx / 5)));
-//        Rect.setAttributeNS(null, 'y', 15*((idx % 5) + 1));
-//        Rect.setAttributeNS(null, 'stroke', 'black');
-//        Rect.setAttributeNS(null, 'fill', getItemColor(null, idx));
-//        
-//        var Text = document.createElementNS(svgns, "text");        
-//        Text.setAttributeNS(null, 'x', 30 + (100*Math.floor(idx / 5)));
-//        Text.setAttributeNS(null, 'y', 15*((idx % 5) + 1) + 10);
-//        Text.textContent = StringToType(str, 0);
-//        
-//        Group.appendChild(Rect);
-//        Group.appendChild(Text);
-//    });
-//    
-//    // Now add it to the screen
-//    SVG.appendChild(Group);
-//    showMap(PREP_DRAWLEGENDA);
-//}
-//
-
 function setMapItems (map) {
     g_Map = map;
     
