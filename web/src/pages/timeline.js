@@ -18,6 +18,9 @@ function getTimelineContent(timeline) {
                     <div id="map_div" style="height: 100%;">
                         
                     </div>
+                    <div id="map_download" class="d-none">
+                        <!-- Used for downloading the SVG -->
+                    </div>
                 </div>
             </div>
         `);
