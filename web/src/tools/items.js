@@ -292,7 +292,7 @@ function insertPages() {
                             page_id, 
                             item_obj.id, 
                             item_obj["name"], 
-                            'list-group-item list-group-item-action' + active)
+                            {"classes": 'list-group-item list-group-item-action' + active})
                     );
                 } else {
                     // Fill up the rest with invisible empty items
@@ -633,8 +633,8 @@ function insertDetailMaps(item, type) {
                                 type,
                                 "-999",
                                 "Global",
-                                "",
-                                item.id) + 
+                                {"openInNewTab": true,
+                                 "panToItem": item.id}) + 
                         `</td>
                     </tr>
                     <tr>
@@ -642,7 +642,8 @@ function insertDetailMaps(item, type) {
                             getLinkToItem(
                                 type, 
                                 item.id, 
-                                item.name) + 
+                                item.name,
+                                {"openInNewTab": true}) + 
                         `</td>
                     </tr>`;
             
@@ -673,8 +674,8 @@ function insertDetailMaps(item, type) {
                                     type,
                                     ancestor.id,
                                     ancestor.name,
-                                    "",
-                                    item.id) + 
+                                    {"openInNewTab": true,
+                                     "panToItem": item.id}) + 
                             `</td>
                         </tr>`);
                     });
@@ -709,8 +710,8 @@ function insertDetailMaps(item, type) {
                             type,
                             "-1",
                             Coords,
-                            "",
-                            item.id) + 
+                            {"openInNewTab": true,
+                             "panToItem": item.id}) + 
                     `</td>
                 </tr>`;
             } else {

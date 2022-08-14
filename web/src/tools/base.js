@@ -37,7 +37,11 @@ function toUpperCaseFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function getLinkToItem(type, id, text, classes="", panTo="") {
+function getLinkToItem(type, id, text, options) {
+    var newTab = options && options.hasOwnProperty("openInNewTab") ? options.openInNewTab : false;
+    var classes = options && options.hasOwnProperty("classes") ? options.classes : "";
+    var panTo = options && options.hasOwnProperty("panToItem") ? options.panToItem : "";
+    
     // If any other classes are inserted
     if (typeof classes === "undefined" || classes === "") {
         classes = "font-weight-bold";
@@ -73,7 +77,7 @@ function getLinkToItem(type, id, text, classes="", panTo="") {
         '</a>';        
     } else {
         // Use an actual hyhperlink to the item
-        return '<a href="' + link + '" ' + 
+        return '<a href="' + link + '" ' + (newTab ? 'target="_blank" ' : '') +
             (type === "worldmap" ? 'data-toggle="tooltip" title="' + dict["items.details.worldmap"] + '"' : "") + 
             'class="' + classes + '">' + 
                 text + 
