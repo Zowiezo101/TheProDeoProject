@@ -91,6 +91,19 @@ function getContentDiv(collapsableMenu) {
                   "border-top-left-radius": "0px",
                   "border-bottom-left-radius": "0px"})
             .click(toggleMenu);
+    
+    var loading_screen = $("<div>")
+            .append(`<p>` + (["familytree", "timeline", "worldmap"].includes(page_id) ? dict["loading." + page_id] : dict["loading.item"]) + `</p>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">` + dict["loading"] + `</span>
+                    </div>`)
+            .addClass("col-12 w-75 d-none text-center")
+            .attr("id", "loading_screen")
+            .css({"position": "absolute",
+                  "top": "50%",
+                  "left": "50%",
+                  "transform": "translate(-50%, -50%)",
+                  "-webkit-transform": "translate(-50%, -50%)"});
         
     if (collapsableMenu !== true) {
         menu_button.addClass("d-none");
@@ -101,6 +114,7 @@ function getContentDiv(collapsableMenu) {
             .attr("id", "content_row")
             .addClass("row h-100")
             .append(item_content)
+            .append(loading_screen)
             .append(menu_button);
         
     // The column div to put the button and the item content in
@@ -121,6 +135,8 @@ function getContentDiv(collapsableMenu) {
 function getItemsContent() {
     
     if (get_settings["id"]) {
+        showLoadingScreen();
+            
         // How the data of the current item should be displayed
         switch(page_id) {
             case "books":
@@ -157,7 +173,12 @@ function getItemsContent() {
         }
         
         // Get the data of the current item
-        getItem(page_id, get_settings["id"]).then(getItemContent);
+        getItem(page_id, get_settings["id"]).then(function(data) {
+            getItemContent(data);
+            
+            // Remove the loading screen
+            hideLoadingScreen();
+        });
     } else {
         // No item has been selected, show default information
         var content = $("#item_content").append(`
@@ -784,4 +805,15 @@ function toggleMenu() {
     $(window).trigger('resize');
     
     return;
+}
+
+function showLoadingScreen() {
+    // Make the loading screen visible and the item content invisible
+    $("#loading_screen").removeClass("d-none");
+    $("#item_content").addClass("invisible");
+}
+
+function hideLoadingScreen() {
+    $("#item_content").removeClass("invisible");
+    $("#loading_screen").fadeOut();
 }
