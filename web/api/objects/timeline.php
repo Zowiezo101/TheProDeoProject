@@ -128,6 +128,7 @@ class Timeline {
 
             $this->id = "-999";
             $this->name = "Global";
+            $this->length = null;
             $this->items = array_reduce($activity_arr, function ($carry, $var1) {
                 // Check if item is already in carry
                 $dupl_arr = array_filter($carry, function($var2) use ($var1) {
@@ -169,6 +170,7 @@ class Timeline {
 
             $this->id = "-999";
             $this->name = $parent->name;
+            $this->length = $parent->length;
             $this->items = array_reduce($activity_arr, function ($carry, $var1) {
                 // Check if item is already in carry
                 $dupl_arr = array_filter($carry, function($var2) use ($var1) {
