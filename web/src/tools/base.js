@@ -81,7 +81,7 @@ function getLinkToItem(type, id, text, classes="", panTo="") {
     }
 }
 
-function getGender(int) {
+function getGenderString(int) {
     var str = "";
     
     switch(int) {
@@ -293,7 +293,7 @@ function getLengthColor(length) {
     return color;
 }
 
-function getTribe(int) {
+function getTribeString(int) {
     var str = "";
     
     switch(int) {
@@ -366,7 +366,7 @@ function getTribe(int) {
     return str;
 }
 
-function getTypeLocation(int) {
+function getTypeLocationString(int) {
     var str = "";
     
     switch(int) {
@@ -424,7 +424,7 @@ function getTypeLocation(int) {
     return str;
 }
 
-function getTypeSpecial(int) {
+function getTypeSpecialString(int) {
     var str = "";
     
     switch(int) {
@@ -472,7 +472,7 @@ function getTypeSpecial(int) {
     return str;
 }
 
-function getTypeLink(int) {
+function getTypeLinkString(int) {
     var str = "";
     
     switch(int) {
