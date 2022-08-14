@@ -104,6 +104,195 @@ function getGender(int) {
     return str;
 }
 
+function getGenderColor(int) {
+    var color = "";
+    
+    switch(int) {
+        case -1:
+        case "-1":
+        case 0:
+        case "0":
+            color = "lightgrey";
+            break;
+            
+        case 1:
+        case "1":
+            color = "lightblue";
+            break;
+            
+        case 2:
+        case "2":
+            color = "pink";
+            break;
+    }
+    
+    return color;
+}
+
+function getLengthString(int) {
+    var str = "";
+    
+    // Different types of length
+    switch(int) {
+        case 0:
+        case "0":
+            // Around or less than an hour
+            str = dict["length.hour"];;
+            break;
+            
+        case 1:
+        case "1":
+            // Around or less than a day
+            str = dict["length.day"];
+            break;
+            
+        case 2:
+        case "2":
+            // Around or less than a week
+            str = dict["length.week"];
+            break
+            
+        case 3:
+        case "3":
+            // Around or less than a month
+            str = dict["length.month"];
+            break
+            
+        case 4:
+        case "4":
+            // Around or less than quarter of a year
+            str = dict["length.quarter"];
+            break
+            
+        case 5:
+        case "5":
+            // Around or less than half a year
+            str = dict["length.half"];
+            break
+            
+        case 6:
+        case "6":
+            // Around or less than a year
+            str = dict["length.year"];
+            break
+            
+        case 7:
+        case "7":
+            // Around or less than a decade
+            str = dict["length.decade"];
+            break
+            
+        case 8:
+        case "8":
+            // Around or less than a century
+            str = dict["length.century"];
+            break
+            
+        case 9:
+        case "9":
+            // Around or less than a millenium
+            str = dict["length.millennium"];
+            break
+            
+        case 10:
+        case "10":
+            // More than a millenium
+            str = dict["length.more"];
+            break
+            
+        case -1:
+        case "-1":
+        default:
+            // unknown/Other
+            str = dict["length.unknown"];
+            break 
+    }
+    
+    return str;
+}
+
+function getLengthColor(length) {
+    var color = "";
+    
+    // Different types of length
+    switch(length) {
+        case 0:
+        case "0":
+            // Around or less than an hour
+            color = "lightGreen";
+            break;
+            
+        case 1:
+        case "1":
+            // Around or less than a day
+            color = "lightCoral";
+            break;
+            
+        case 2:
+        case "2":
+            // Around or less than a week
+            color = "violet";
+            break
+            
+        case 3:
+        case "3":
+            // Around or less than a month
+            color = "lightSkyBlue";
+            break
+            
+        case 4:
+        case "4":
+            // Around or less than quarter of a year
+            color = "aquamarine";
+            break
+            
+        case 5:
+        case "5":
+            // Around or less than half a year
+            color = "lightSalmon";
+            break
+            
+        case 6:
+        case "6":
+            // Around or less than a year
+            color = "burlywood";
+            break
+            
+        case 7:
+        case "7":
+            // Around or less than a decennium
+            color = "orangeRed";
+            break
+            
+        case 8:
+        case "8":
+            // Around or less than a century
+            color = "yellowGreen";
+            break
+            
+        case 9:
+        case "9":
+            // Around or less than a millenium
+            color = "royalBlue";
+            break
+            
+        case 10:
+        case "10":
+            // More than a millenium
+            color = "seaShell";
+            break
+            
+        case -1:
+        case "-1":
+        default:
+            // unknown
+            color = "lightgrey";
+            break 
+    }
+    
+    return color;
+}
+
 function getTribe(int) {
     var str = "";
     
