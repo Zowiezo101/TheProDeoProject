@@ -78,9 +78,16 @@ function showMap() {
 
 function setContent(location) {
     // The information to show when a marker is clicked
-    var info = location.name;
-    
-    info += dict["worldmap.information"] + getLinkToItem("locations", location.id, "self");
+    var info = "<h2>" + location.name + "</h2>" + 
+        "<table class='table table-striped'>" + 
+            "<tbody>" +
+                insertDetail(location, "meaning_name") + 
+                insertDetail(location, "aka") + 
+                insertDetail(location, "descr") + 
+                insertDetail(location, "type") + 
+            "</tbody>" + 
+        "</table>" + 
+        "<p class='font-weight-bold'>" + dict["map.info.details"] + ":<br>" + getLinkToItem("locations", location.id, "self", {"openInNewTab": true}) + "</p>";
     
     return info;
 }

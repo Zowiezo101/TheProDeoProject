@@ -540,6 +540,11 @@ function insertDetail(item, prop) {
     } else if (prop === "aka") {
         
         if (item[prop] && item[prop].length > 0) {
+            // Could be that this is still in string format, make it JSON
+            if (typeof item[prop] === "string") {
+                item[prop] = JSON.parse(item[prop]);
+            }
+        
             // This can be multiple names that this person is known as
             var data = [];
             for (var i = 0; i < item[prop].length; i++) {

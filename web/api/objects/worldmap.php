@@ -114,9 +114,19 @@ class Worldmap {
         // select query
         $query = "SELECT
                     l.id, l.name, l.descr,
+                    l.meaning_name, aka.location_name as aka,
                     l.type, l.coordinates
                 FROM
                     " . $this->table_name . " l
+                LEFT JOIN
+                    (SELECT location_id, CONCAT('[', GROUP_CONCAT(
+                        CASE
+                            WHEN meaning_name IS NOT NULL AND meaning_name != ''
+                                THEN CONCAT('{\"name\": \"', location_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
+                                ELSE CONCAT('{\"name\": \"', location_name, '\"}')
+                        END SEPARATOR ', '
+                    ), ']') AS location_name FROM location_to_aka) AS aka
+                        ON aka.location_id = l.id
                 WHERE
                     coordinates IS NOT NULL AND
                     coordinates <> ''";
