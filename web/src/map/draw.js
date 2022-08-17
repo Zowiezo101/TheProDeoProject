@@ -119,10 +119,12 @@ function drawItem(group, item) {
                     <table class='table table-striped'>" + 
                         "<tbody>" +
                         insertDetail(item, "descr") + 
+                        insertDetail(item, "length") + 
+                        insertDetail(item, "date") + 
                         "</tbody>" + 
                     "</table>");
             
-        if (get_settings["id"] !== "-999" || item.id === "-999") {
+        if (get_settings["id"] !== "-999" || item.id !== "-999") {
             // There actually is a link to go to
             popover.append("<p class='font-weight-bold'>" + dict["map.info.details"] + "</p>");
         }

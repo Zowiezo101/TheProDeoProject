@@ -312,10 +312,10 @@ function insertPages() {
 
             if (pageCount > 1) {
                 // pagination
-                $("#item_pagination").css("display", "");
+                $("#item_pagination").addClass("visible");
             } else {
                 // No pagination
-                $("#item_pagination").css("display", "none");
+                $("#item_pagination").addClass("invisible");
             }
         } else {
             // TODO:
@@ -323,7 +323,7 @@ function insertPages() {
             $("#item_list").append(result.error ? result.error : dict["database.no_results"]);
             
             // No pagination
-            $("#item_pagination").css("display", "none");
+            $("#item_pagination").addClass("invisible");
         }
     });
 }

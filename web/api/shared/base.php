@@ -513,7 +513,7 @@ class ItemBase {
         if ($level > 1) {
             // select all query
             $query = "SELECT
-                        a.id, a.descr as name, a.length, a.date, a2pa.parent_id,
+                        a.id, a.name, a.descr, a.length, a.date, a2pa.parent_id,
                         ".$level." as level, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
@@ -528,7 +528,7 @@ class ItemBase {
         } else {
             // select all query
             $query = "SELECT
-                        a.id, a.descr as name, a.length, a.date, -999 as parent_id,
+                        a.id, a.name, a.descr, a.length, a.date, -999 as parent_id,
                         ".$level." as level, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
