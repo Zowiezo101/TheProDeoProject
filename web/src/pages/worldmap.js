@@ -5,6 +5,7 @@ var map = null;
 var markers = [];
 var infoWindow = null;
 var markerClusterer = null;
+var markersPerZoom = [];
 
 function getWorldmapContent(location) {
     
@@ -32,13 +33,30 @@ function showMap() {
                     position: { lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) }
                 });
 
-                // markers can only be keyboard focusable when they have click listeners
                 // open info window when marker is clicked
-                marker.addListener("click", () => {                    
-                    // Move to marker
-                    map.setCenter(marker.getPosition());
-                    var zoom = map.getZoom();
-                    map.setZoom(Math.max(8, zoom));
+                marker.addListener("click", () => {          
+                    
+                    // Did we come here via the sidebar?
+                    if (marker.button) {
+                        // Move to marker
+                        map.setCenter(marker.getPosition());
+                        
+                        // Ignore the existing zoom
+                        // TODO: Actually check the type that this location
+                        // is and use that to get the best suited zoom, take
+                        // the closest zoom
+                        map.setZoom(minZoomForMarker(marker.id));
+                        marker.button = false;
+                    } else {
+                        // Otherwise, stay at the same level as previous
+                        // Can't click this location anyway when in cluster
+                        // or it's already ideal zoom level.
+                        // TODO: Actually check the type that this location
+                        // is and use that to get the best suited zoom, take
+                        // the closest zoom
+                        var zoom = map.getZoom();
+                        map.setZoom(Math.max(minZoomForMarker(marker.id), zoom));
+                    }
                     
                     // Is there already a window open?
                     if (infoWindow !== null) {
@@ -57,21 +75,26 @@ function showMap() {
                 });
                 
                 marker.id = location.id;
+                marker.type = location.type;
                 
                 markers.push(marker);
 
             });
 
             // Add a marker clusterer to manage the markers.
-            markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
-        
-            if (get_settings.hasOwnProperty("panTo")) {
-                // Get the item to pan to
-                var id = get_settings["panTo"];
-    
-                // Pan to the item
-                getLinkToMap(id);
-            }
+            markerClusterer = new markerClusterer.MarkerClusterer({ map, markers });
+            
+            google.maps.event.addListenerOnce(markerClusterer, 'clusteringend', function() {
+                getMarkersPerZoom();
+                
+                if (get_settings.hasOwnProperty("panTo")) {
+                    // Get the item to pan to
+                    var id = get_settings["panTo"];
+
+                    // Pan to the item
+                    getLinkToMap(id);
+                }
+            });
         }
     });
 }
@@ -95,7 +118,45 @@ function setContent(location) {
 function getLinkToMap(id) {    
     // Find the marker with this ID and click it
     var marker = markers.find(marker => marker.id === id.toString());
-    new google.maps.event.trigger( marker, 'click' );
     
+    // Let the click event know we came here via button from the sidebar
+    marker.button = true;
+    
+    // Trigger the click
+    new google.maps.event.trigger( marker, 'click' );
     return true;
+}
+
+function markerInCluster(id) {
+    var clusters = markerClusterer.clusters;
+    var markerCluster = clusters.find(function(cluster) {
+        // Check if the marker is present in the current cluster
+        var marker = cluster.markers.find(marker => marker.id === id.toString());
+        return marker ? true : false;
+    });
+    
+    return markerCluster && markerCluster.markers.length > 1 ? markerCluster : null;
+}
+
+function minZoomForMarker(id) {
+    // Get the minimum zoom needed to have a marker seperate from the cluster
+    for (var zoom = 0; zoom < markersPerZoom.length; zoom++) {
+        var markers = markersPerZoom[zoom];
+        if (markers.includes(id)) {
+            break;
+        }
+    }
+    return zoom;
+}
+
+function getMarkersPerZoom () {
+    // Get the markers visible per zoom level
+    for(var i = 0; i <= markerClusterer.algorithm.maxZoom; i++) {
+        var visibleMarkers = markerClusterer.algorithm.superCluster.getClusters([-180, -90, 180, 90], i);
+        markersPerZoom.push(visibleMarkers.filter(function(marker) {
+            return !marker.hasOwnProperty("id");
+        }).map(function(marker) {
+            return marker.properties.marker.id;
+        }));
+    }
 }
