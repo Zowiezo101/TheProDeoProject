@@ -18,8 +18,12 @@ function showMap() {
     // Show the entire map
     map = new google.maps.Map(div, {
         center: { lat: 0, lng: 0 },
-        zoom: 2
+        zoom: 2,
+        streetViewControl: false,
+        fullscreenControl: false
     });
+    
+    drawInfoWorldMapButton();
 
     // Insert all the locations as markers to click
     getWorldmap().then(function(worldmap) {
@@ -160,4 +164,30 @@ function getMarkersPerZoom () {
             return marker.properties.marker.id;
         }));
     }
+}
+
+function drawInfoWorldMapButton() {    
+    // The height and width of the SVG parent
+    var div = $("#item_content");
+    div.append(`<div style="position: absolute; top: 10px; right: 10px; padding: inherit;" class="btn-group">
+                    <button class="btn btn-light" data-toggle="modal" data-target="#infoModal" title="` + dict["map.info.controls"] + `"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                </div>`);
+    
+    // The modal for the information button
+    div.append(`
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModal" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">` + dict["map.info.controls"] + `</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ` + dict["worldmap.overview"] + `<br><br>
+              </div>
+            </div>
+          </div>
+        </div>`);
 }
