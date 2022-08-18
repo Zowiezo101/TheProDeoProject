@@ -220,5 +220,25 @@ function drawInfoWorldMapButton() {
 }
 
 function minZoomForType(id) {
+    // TODO
+//    type_nr = -1
+//    if string.lower() == "bron" or string == "0":
+//        type_nr = 0
+//    elif string.lower() == "rivier" or string == "1":
+//        type_nr = 1
+//    elif string.lower() == "berg" or string == "2":
+//        type_nr = 2
+//    elif string.lower() == "vallei" or string == "3":
+//        type_nr = 3
+//    elif string.lower() == "land" or string == "4":
+//        type_nr = 4
+//    elif string.lower() == "streek" or string == "5":
+//        type_nr = 5
+//    elif string.lower() == "provincie" or string == "6":
+//        type_nr = 6
+//    elif string.lower() == "stad" or string == "7":
+//        type_nr = 7
+//    elif string.lower() == "object" or string == "8":
+//        type_nr = 8
     return 8;
 }
