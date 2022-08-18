@@ -99,7 +99,7 @@ function showMap() {
             // Add a marker clusterer to manage the markers.
             markerClusterer = new markerClusterer.MarkerClusterer({ map, markers });
             
-            google.maps.event.addListenerOnce(markerClusterer, 'clusteringend', function() {
+            google.maps.event.addListenerOnce(markerClusterer, "clusteringend", () => {
                 getMarkersPerZoom();
                 
                 if (get_settings.hasOwnProperty("panTo")) {
@@ -155,7 +155,7 @@ function getLinkToMap(id) {
     marker.button = true;
     
     // Trigger the click
-    new google.maps.event.trigger( marker, 'click' );
+    new google.maps.event.trigger(marker, "click");
     return true;
 }
 
