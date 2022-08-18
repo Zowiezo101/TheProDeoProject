@@ -46,6 +46,7 @@ function showMap() {
                         // is and use that to get the best suited zoom, take
                         // the closest zoom
                         map.setZoom(minZoomForMarker(marker.id));
+                        map.panBy(0, -Math.round($("#google_maps").height() / 6));
                         marker.button = false;
                     } else {
                         // Otherwise, stay at the same level as previous
