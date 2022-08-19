@@ -124,7 +124,7 @@ function getContentDiv() {
         // be to using maps
         var screen_to_small = $("<div>")
                 .append(`
-                    <div class="row mb-5 pb-5 text-center justify-content-center">
+                    <div class="row text-center justify-content-center">
                         <div class="col-lg-11 px-lg-5 px-md-3">
                             <h1 class="mb-3">` + dict["navigation." + page_id] + `</h1>
                             <p class="lead">` + dict["small_screen.descr"] + `</p>
@@ -134,7 +134,7 @@ function getContentDiv() {
                 .addClass("d-md-none");
         
         // These are not available for smaller screens
-        content_row.addClass("d-none d-md-block");
+        content_row.addClass("d-none d-md-flex");
         content_col.append(screen_to_small);
     }
     
@@ -204,7 +204,7 @@ function getItemsContent() {
     } else {
         // No item has been selected, show default information
         var content = $("#item_content").append(`
-            <div class="row mb-5 pb-5 text-center justify-content-center">
+            <div class="row text-center justify-content-center">
                 <div class="col-lg-11 px-lg-5 px-md-3">
                     <h1 class="mb-3">` + dict["navigation." + page_id] + `</h1>
                     <p class="lead">` + dict[page_id + ".overview"] + `.</p>

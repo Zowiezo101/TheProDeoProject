@@ -1,4 +1,4 @@
-        <div class="py-3 bg-light">
+        <footer class="py-3 bg-light mt-auto">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 text-center"> 
@@ -16,5 +16,5 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </footer>
 
