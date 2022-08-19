@@ -62,6 +62,11 @@ function getItemsMenu() {
         </div>
     `);
     
+    if (["timeline", "familytree", "worldmap"].includes(page_id)) {
+        // These are not available for smaller screens
+        menu.addClass("d-none d-md-block");
+    }
+    
     $(function(){
         //code that needs to be executed when DOM is ready, after manipulation
         insertAll();
@@ -70,12 +75,7 @@ function getItemsMenu() {
     return menu;
 }
 
-function getContentDiv(collapsableMenu) {
-    // Have a default collapsable menu
-    if (typeof collapsableMenu === "undefined") {
-        collapsableMenu = true;
-    }
-    
+function getContentDiv() {    
     // The item content
     var item_content = $("<div>")
             .addClass("col-12 h-100")
@@ -84,7 +84,7 @@ function getContentDiv(collapsableMenu) {
     // The button to hide/show the menu
     var menu_button = $("<button>")
             .html('<i class="fa fa-angle-double-left" aria-hidden="true"></i>')
-            .addClass("btn btn-secondary show_menu")
+            .addClass("btn btn-secondary show_menu d-none d-md-block")
             .attr("id", "toggle_menu")
             .css({"margin-top": "15px",
                   "position": "absolute",
@@ -105,10 +105,6 @@ function getContentDiv(collapsableMenu) {
                   "transform": "translate(-50%, -50%)",
                   "-webkit-transform": "translate(-50%, -50%)"});
         
-    if (collapsableMenu !== true) {
-        menu_button.addClass("d-none");
-    }
-        
     // The row div to put the button and the item content in
     var content_row = $("<div>")
             .attr("id", "content_row")
@@ -122,6 +118,25 @@ function getContentDiv(collapsableMenu) {
             .attr("id", "content_col")
             .addClass("col py-5")
             .append(content_row);
+    
+    if (["timeline", "familytree", "worldmap"].includes(page_id)) {
+        // Show this screen, when the screen is too small
+        // be to using maps
+        var screen_to_small = $("<div>")
+                .append(`
+                    <div class="row mb-5 pb-5 text-center justify-content-center">
+                        <div class="col-lg-11 px-lg-5 px-md-3">
+                            <h1 class="mb-3">` + dict["navigation." + page_id] + `</h1>
+                            <p class="lead">` + dict["small_screen.descr"] + `</p>
+                        </div>
+                    </div>
+                `)
+                .addClass("d-md-none");
+        
+        // These are not available for smaller screens
+        content_row.addClass("d-none d-md-block");
+        content_col.append(screen_to_small);
+    }
     
     return content_col;
 }
@@ -175,6 +190,13 @@ function getItemsContent() {
         // Get the data of the current item
         getItem(page_id, get_settings["id"]).then(function(data) {
             getItemContent(data);
+            
+            // Scroll to the data for smaller screens
+            if (window.innerWidth < 768) {
+                $("html, body").animate({
+                    scrollTop: $("#item_content").offset().top
+                }, 2000);
+            }
             
             // Remove the loading screen
             hideLoadingScreen();
