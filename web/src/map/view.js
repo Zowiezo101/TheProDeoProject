@@ -108,7 +108,7 @@ function panToItem() {
     // Get the item
     var item = getMapItem(id);
     if (item === null) {
-        // Let's assume the first item is on 0,0
+        // The first item is on 0,0
         item = {X: 0, Y: 0};
     } 
     
@@ -118,13 +118,8 @@ function panToItem() {
     var outerWidth = map.outerWidth(true);
 
     // Calculate the desired location
-    if (g_Options.type === TYPE_FAMILYTREE) {
-        var newX = (outerWidth / 2) - (item.X + (g_Options.x_length / 2));
-        var newY = (outerHeight / 2) - (item.Y + (g_Options.y_length / 2));
-    } else {
-        var newX = (outerWidth / 2) - (item.Y + (g_Options.y_length / 2));
-        var newY = (outerHeight / 2) - (item.X + (g_Options.x_length / 2));     
-    }
+    var newX = (outerWidth / 2) - (item.X + (g_Options.length.X / 2));
+    var newY = (outerHeight / 2) - (item.Y + (g_Options.length.Y / 2));
 
     // Move to the desired location
     panSmooth(pzInstance.getPan(), {x: newX, y: newY});
@@ -329,8 +324,8 @@ function onDownload (title) {
     
     // Create a SVG element for downloading
     var map_svg = $(g_svg.node).clone()
-            .attr("width", g_Offsets.width_max - g_Offsets.width_min + g_Options.x_length)
-            .attr("height", g_Offsets.height_max - g_Offsets.height_min + g_Options.y_length)
+            .attr("width", g_Offsets.width_max - g_Offsets.width_min + g_Options.length.X)
+            .attr("height", g_Offsets.height_max - g_Offsets.height_min + g_Options.length.Y)
             .css("overflow", "scroll");
 
     // Add it to the invisble div

@@ -3,6 +3,16 @@
 var TYPE_FAMILYTREE = "familytree";
 var TYPE_TIMELINE = "timeline";
 
+// The coordinate system is either {depth, offset} or {offset, depth}
+// depending on the type of map we're generating
+var DEPTH_COORD = {};
+DEPTH_COORD[TYPE_TIMELINE] = "X";
+DEPTH_COORD[TYPE_FAMILYTREE] = "Y";
+
+var OFFSET_COORD = {};
+OFFSET_COORD[TYPE_FAMILYTREE] = "X";
+OFFSET_COORD[TYPE_TIMELINE] = "Y";
+
 var PARENTS = 0;
 var PARENT_ID = 1;
 
@@ -140,8 +150,7 @@ function setMapItems (map) {
         }, []);
         
         // Now set the level indexes in that order
-        var level_index = 0;
-        items.forEach(child => child.level_index = level_index++);
+        items.forEach((child, index) => child.level_index = index);
     }
     
     // Reorder the mapItems by level and level index
@@ -164,29 +173,32 @@ function getMapItems() {
 
 function calcMapItems(options = new Object()) {
     
-    if(!options || !options.hasOwnProperty('width')) 
-        // Length when horizontal
-        // Width when vertical
-        options.x_length = options.type === TYPE_FAMILYTREE ? 100 : 50;
-    if(!options || !options.hasOwnProperty('height')) 
-        // Width when horizontal
-        // Length when vertical
-        options.y_length = options.type === TYPE_TIMELINE ? 300 : 50;
+    // The size of the items
+    if(!options || !options.hasOwnProperty('item_width')) 
+        options.item_width = options.type === TYPE_FAMILYTREE ? 100 : 300;
+    if(!options || !options.hasOwnProperty('item_height')) 
+        options.item_height = 50;
     
-    if(!options || !options.hasOwnProperty('x_dist')) 
-        options.x_dist = 25;
-    if(!options || !options.hasOwnProperty('y_dist')) 
-        options.y_dist = 30;
+    // The distance between the items
+    if(!options || !options.hasOwnProperty('hori_dist')) 
+        options.hori_dist = 25;
+    if(!options || !options.hasOwnProperty('vert_dist')) 
+        options.vert_dist = 30;
     
-    g_Options = options;
+    // The global settings used
+    g_Options = {
+        "length": {X: options.item_width, Y: options.item_height},
+        "dist": {X: options.hori_dist, Y: options.vert_dist},
+        "type": options.type
+    };
     
     g_MapItems.forEach(function(item) { 
         
-        item.x_length = g_Options.x_length;
-        item.y_length = g_Options.y_length;
+        item.width = options.item_width;
+        item.height = options.item_height;
         
-        item.X = calcX(item);
-        item.Y = calcY(item);
+        item[DEPTH_COORD[g_Options.type]] = calcDepth(item);
+        item[OFFSET_COORD[g_Options.type]] = calcOffset(item);
     
         // We calculated its coordinates
         item.calculated = true;
@@ -355,11 +367,7 @@ function moveCommonAncestor(offset, parent) {
         
         // The actual items themselves
         var item = getMapItem(id);
-        if (g_Options.type === TYPE_FAMILYTREE) {
-            item.X = item.X + offset;
-        } else {
-            item.X = item.X - offset;
-        }
+        item[OFFSET_COORD[g_Options.type]] = item[OFFSET_COORD[g_Options.type]] + offset;
         
         // Get the children as well (only the calculated ones)
         items = items.concat(getChildren(item.id, PARENT_ID));
@@ -395,11 +403,7 @@ function moveCommonAncestor(offset, parent) {
                 }
                 
                 if (child || (siblingParents.indexOf(item.parent_id) !== -1)) {
-                    if (g_Options.type === TYPE_FAMILYTREE) {
-                        item.X = item.X + offset;
-                    } else {
-                        item.X = item.X - offset;
-                    }
+                    item[OFFSET_COORD[g_Options.type]] = item[OFFSET_COORD[g_Options.type]] + offset;
                     newParents.push(sibling);
                 }
             }
@@ -416,10 +420,10 @@ function filterMapItems(prop, value) {
     });
 }
 
-function calcY(item) {
-    var Y = 0;
+function calcDepth(item) {    
+    var cDepth = 0;
     
-    // The Y depends on the parents
+    // The depth depends on the parents
     if(item.parents.length) {
         // Get the highest level parent
         var parent = item.parents.reduce(function(parent1, idx) {
@@ -428,44 +432,44 @@ function calcY(item) {
             return (parent1.level < parent2.level) ? parent2 : parent1;
         }, getMapItem(item.parents[0]));
         
-        // Get the parent Y coordinate, add the height to it 
-        // and the standard vertinal offset
-        Y = parent.Y + g_Options.y_length + g_Options.y_dist;
+        // Get the parent depth coordinate, add the height to it 
+        // and the standard vertical offset
+        cDepth = parent[DEPTH_COORD[g_Options.type]] + g_Options.length[DEPTH_COORD[g_Options.type]] + g_Options.dist[DEPTH_COORD[g_Options.type]];
     }
-    return Y;
+    return cDepth;
 }
 
-function calcX(item) {
-    var X = 0;
+function calcOffset(item) {
+    var cOffset = 0;
     
-    // The X depends on the parent
+    // The offset depends on the parent
     if(item.parent_id !== "-1") {
         var parent = getMapItem(item.parent_id);
         
-        // Get the average X coordinate of the parents
+        // Get the average offset coordinate of the parents
         if (g_Options.type === TYPE_FAMILYTREE) {
-            var avgX = parent.X;
+            var avgOffset = parent[OFFSET_COORD[g_Options.type]];
         } else {
-            var parentXs = [];
+            var parentOffsets = [];
             
             // Get all the parents for this child 
             // a.k.a search for every child with this id
-            var avgX = filterMapItems("children", item.id).reduce(function(carry, parent) {
+            var avgOffset = filterMapItems("children", item.id).reduce(function(carry, parent) {
                 // Is it directly above us? Use it's X coordinate
                 if ((parent.level + 1) === item.level) {
-                    carry += parseInt(parent.X, 10);
-                    parentXs.push(parent.X);
+                    carry += parseInt(parent[OFFSET_COORD[g_Options.type]], 10);
+                    parentOffsets.push(parent[OFFSET_COORD[g_Options.type]]);
                 }
                 return carry;
             }, 0);
             
-            if (parentXs.length > 0) {
+            if (parentOffsets.length > 0) {
                 // Parents directly above us
-                var avgX = avgX / parentXs.length;
+                var avgOffset = avgOffset / parentOffsets.length;
             } else {
                 // No parents directly above us?
                 var parent = getMapItem(item.parent_id);
-                avgX = parent.X;
+                avgOffset = parent[OFFSET_COORD[g_Options.type]];
             }
         }
         
@@ -476,62 +480,44 @@ function calcX(item) {
 
             if (index === middle) {
                 // Are we in the middle? 
-                // Then just use parents X coordinate
-                X = avgX;
+                // Then just use parents offset coordinate
+                cOffset = avgOffset;
             } else if (index > middle) {
                 // Are we on the right side of the middle?
-                // Place the block on the right side of parents X coordinate
+                // Place the block on the right side of parents offset coordinate
                 var offset = index - middle;
-                if (g_Options.type === TYPE_FAMILYTREE) {
-                    X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
-                } else {
-                    X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
-                }
+                cOffset = avgOffset + offset*(g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]]);
             } else {
                 // Are we on the left side of the middle?
                 // Place the block on the left side of parents X coordinate
                 var offset = middle - index;
-                if (g_Options.type === TYPE_FAMILYTREE) {
-                    X = avgX - offset*(g_Options.x_length + g_Options.x_dist);
-                } else {
-                    X = avgX + offset*(g_Options.x_length + g_Options.x_dist);
-                }  
+                cOffset = avgOffset - offset*(g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]]);
             }
         } else { // even
             var middle = parent.children.length / 2;
             var index = parent.children.indexOf(item.id);
             if (index >= middle) {
                 // Are we on the right side of the middle?
-                // Place the block on the right side of parents X coordinate
+                // Place the block on the right side of parents offset coordinate
                 var offset = index - middle;
-                if (g_Options.type === TYPE_FAMILYTREE) {
-                    X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
-                } else {
-                    X = (avgX - ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
-                }
+                cOffset = (avgOffset + ((g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]]) / 2)) + 
+                        offset*(g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]]);
             } else {
                 // Are we on the left side of the middle?
-                // Place the block on the left side of parents X coordinate
+                // Place the block on the left side of parents offset coordinate
                 var offset = middle - index;
-                if (g_Options.type === TYPE_FAMILYTREE) {
-                    X = (avgX + ((g_Options.x_length + g_Options.x_dist) / 2)) - offset*(g_Options.x_length + g_Options.x_dist);
-                } else {
-                    X = (avgX - ((g_Options.x_length + g_Options.x_dist) / 2)) + offset*(g_Options.x_length + g_Options.x_dist);
-                }
+                cOffset = (avgOffset + ((g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]]) / 2)) - 
+                        offset*(g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]]);
             }
         }
     }
     
-    // Does this  X coordinate cause an overlap with the left level sibling?
+    // Does this offset coordinate cause an overlap with the left level sibling?
     var sibling = getLeftLevelSibling(item.id);
 
     if (sibling) {
         // The distance needed between left and right
-        if (g_Options.type === TYPE_FAMILYTREE) {
-            var offset = (sibling.X + (g_Options.x_length) + g_Options.x_dist) - X; 
-        } else {
-            var offset = X - (sibling.X - (g_Options.x_length + g_Options.x_dist)); 
-        }
+        var offset = (sibling[OFFSET_COORD[g_Options.type]] + (g_Options.length[OFFSET_COORD[g_Options.type]]) + g_Options.dist[OFFSET_COORD[g_Options.type]]) - cOffset; 
         if (offset > 0) { 
             var ancestor = getCommonAncestor(sibling.id, item.id);
             
@@ -544,7 +530,7 @@ function calcX(item) {
         }
     }
     
-    return X;
+    return cOffset;
 }
 
 function sortByAncestor() {
@@ -572,11 +558,7 @@ function solveClash(item) {
     var right = getMapItem(item.right);
     
     // Make sure the clash is still present
-    if (g_Options.type === TYPE_FAMILYTREE) {
-        var offset = (left.X + (g_Options.x_length + g_Options.x_dist)) - right.X;
-    } else {
-        var offset = right.X - (left.X - (g_Options.x_length + g_Options.x_dist));
-    }
+    var offset = (left[OFFSET_COORD[g_Options.type]] + (g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]])) - right[OFFSET_COORD[g_Options.type]];
     if (offset > 0) {
         // Step 1: Find a common ancestor, and get the child on the 
         // right side of the clash
@@ -587,11 +569,7 @@ function solveClash(item) {
 
         // Step 3: Check again
         // The distance needed between left and right
-        if (g_Options.type === TYPE_FAMILYTREE) {
-            var new_offset = (left.X + (g_Options.x_length + g_Options.x_dist)) - right.X;
-        } else {
-            var new_offset = right.X - (left.X - (g_Options.x_length + g_Options.x_dist));
-        }
+        var new_offset = (left[OFFSET_COORD[g_Options.type]] + (g_Options.length[OFFSET_COORD[g_Options.type]] + g_Options.dist[OFFSET_COORD[g_Options.type]])) - right[OFFSET_COORD[g_Options.type]];
         if (new_offset > 0) {
             // Something's not right.. We've just moved right,
 			// and right is still not far enough..
@@ -607,25 +585,44 @@ function solveClash(item) {
 }
 
 function getOffsets(item) {
-    if (g_Options.type === TYPE_FAMILYTREE) {
-        g_Offsets.width_min = Math.min(item.X, g_Offsets.width_min);
-        g_Offsets.width_max = Math.max(item.X, g_Offsets.width_max);
-        g_Offsets.height_min = Math.min(item.Y, g_Offsets.height_min);
-        g_Offsets.height_max = Math.max(item.Y, g_Offsets.height_max);
-    } else {
-        g_Offsets.width_min = Math.min(item.Y, g_Offsets.width_min);
-        g_Offsets.width_max = Math.max(item.Y, g_Offsets.width_max);
-        g_Offsets.height_min = Math.min(item.X, g_Offsets.height_min);
-        g_Offsets.height_max = Math.max(item.X, g_Offsets.height_max);
-    }   
+    g_Offsets.width_min = Math.min(item.X, g_Offsets.width_min);
+    g_Offsets.width_max = Math.max(item.X, g_Offsets.width_max);
+    g_Offsets.height_min = Math.min(item.Y, g_Offsets.height_min);
+    g_Offsets.height_max = Math.max(item.Y, g_Offsets.height_max);
 }
 
 function setOffsets(item) {
-    if (g_Options.type === TYPE_FAMILYTREE) {
-        item.X = item.X - g_Offsets.width_min;
-        item.Y = item.Y - g_Offsets.height_min;
-    } else {
-        item.X = item.X - g_Offsets.height_min;
-        item.Y = item.Y - g_Offsets.width_min;
-    }
+    item.X = item.X - g_Offsets.width_min;
+    item.Y = item.Y - g_Offsets.height_min;
+}
+
+function calcPolyLineCoords(items) {
+    var child = items.child;
+    var parent = items.parent;
+
+        if (g_Options.type === TYPE_FAMILYTREE) {
+            var coords = [
+                [parent.X + parent.width / 2, 
+                 parent.Y + parent.height], 
+                [parent.X + parent.width / 2, 
+                 parent.Y + parent.height + g_Options.dist.Y / 3], 
+                [child.X + child.width / 2, 
+                 child.Y - g_Options.dist.Y / 3], 
+                [child.X + child.width / 2, 
+                 child.Y]
+            ];
+        } else {
+            coords = [
+                [parent.X + parent.width, 
+                 parent.Y + parent.height / 2], 
+                [parent.X + parent.width + g_Options.dist.X / 3, 
+                 parent.Y + parent.height / 2], 
+                [child.X - g_Options.dist.X / 3, 
+                 child.Y + child.height / 2], 
+                [child.X, 
+                 child.Y + child.height / 2]
+            ];
+        }
+        
+        return coords;
 }

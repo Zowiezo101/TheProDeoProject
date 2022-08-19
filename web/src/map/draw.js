@@ -85,8 +85,8 @@ function drawItem(group, item) {
         });
     
         // Draw the rectangle
-        link.rect(item.x_length, 
-                  item.y_length)
+        link.rect(item.width, 
+                  item.height)
                 .attr("id", "rect_" + item.id)
                 .fill(getGenderColor(item.gender))
                 .stroke('black')
@@ -96,8 +96,8 @@ function drawItem(group, item) {
         //Insert the text
         link.text(item.name)
                 .font({size: 20})
-                .center(item.X + item.x_length / 2, 
-                        item.Y + item.y_length / 2);
+                .center(item.X + item.width / 2, 
+                        item.Y + item.height / 2);
                         
     } else {
         // The link depends on whether it is a global timeline or not
@@ -140,19 +140,19 @@ function drawItem(group, item) {
         
         // Turn it all counter clock wise
         // Draw the rectangle
-        link.rect(item.y_length, 
-                  item.x_length)
+        link.rect(item.width, 
+                  item.height)
                 .attr("id", "rect_" + item.id)
                 .fill(getLengthColor(item.length))
                 .stroke('black')
                 .radius(10, 10)
-                .move(item.Y, item.X);
+                .move(item.X, item.Y);
 
         //Insert the text
         link.text(item.name)
                 .font({size: 20})
-                .center(item.Y + item.y_length / 2, 
-                        item.X + item.x_length / 2);
+                .center(item.X + item.width / 2, 
+                        item.Y + item.height / 2);
     }
     
 }
@@ -163,28 +163,12 @@ function drawLink(group, child) {
             var parent = getMapItem(parent_id);
 
             if (g_Options.type === TYPE_FAMILYTREE) {
-                group.polyline([
-                            [parent.X + parent.x_length / 2, 
-                             parent.Y + parent.y_length], 
-                            [parent.X + parent.x_length / 2, 
-                             parent.Y + parent.y_length + g_Options.y_dist / 3], 
-                            [child.X + child.x_length / 2, 
-                             child.Y - g_Options.y_dist / 3], 
-                            [child.X + child.x_length / 2, 
-                             child.Y]])
+                group.polyline(calcPolyLineCoords({"child": child, "parent": parent}))
                     .fill('none')
                     .stroke({ color: getGenderColor(parent.gender),
                               width: 4, linecap: 'round', linejoin: 'round' });
             } else {
-                group.polyline([
-                            [parent.Y + parent.y_length, 
-                             parent.X + parent.x_length / 2], 
-                            [parent.Y + parent.y_length + g_Options.y_dist / 3, 
-                             parent.X + parent.x_length / 2], 
-                            [child.Y - g_Options.y_dist / 3, 
-                             child.X + child.x_length / 2], 
-                            [child.Y, 
-                             child.X + child.x_length / 2]])
+                group.polyline(calcPolyLineCoords({"child": child, "parent": parent}))
                     .fill('none')
                     .stroke({ color: getLengthColor(parent.gender),
                               width: 4, linecap: 'round', linejoin: 'round' });
