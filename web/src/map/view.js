@@ -7,8 +7,8 @@ var pzInstance = null;
 // Zoom/pan function for a little while
 var onSmoothPanning = false;
 var onSmoothZooming = false;
-var intervalPan = null;
-var intervalZoom = null;
+var timeoutPan = null;
+var timeoutZoom = null;
 var callbackPan = null;
 var callbackZoom = null;
 
@@ -34,11 +34,11 @@ function onBeforeZoom(oldZoom, newZoom) {
 
 function onAfterPanZoom(f) {    
     // These animations take a max of 400 ms
-    if (intervalZoom !== null) {
+    if (timeoutZoom !== null) {
         // Still busy, use a callback
         callbackZoom = function() {
             // After the callback, check if the panning function is also done
-            if (intervalPan !== null) {
+            if (timeoutPan !== null) {
                 // Not yet done, use a callback
                 callbackPan = f;
             } else {
@@ -46,11 +46,11 @@ function onAfterPanZoom(f) {
                 f();
             }
         };
-    } else if(intervalPan !== null) {
+    } else if(timeoutPan !== null) {
         // Still busy, use a callback
         callbackPan = function() {
             // After the callback, check if the panning function is also done
-            if (intervalZoom !== null) {
+            if (timeoutZoom !== null) {
                 // Not yet done, use a callback
                 callbackZoom = f;
             } else {
@@ -184,13 +184,16 @@ function panSmooth(oldPan, newPan) {
         0.9990498476756933
     ];
 
-    // Some settings for the interval
+    // Some settings for the animation
     var animationTime = 400;
     var animationSteps = 24;
     var animationStepTime = animationTime / animationSteps;
     var animationStep = 0;
     
-    intervalPan = setInterval(function() {
+    // Start the first animation frame
+    timeoutPan = setTimeout(animationFrame, animationStepTime);
+    
+    function animationFrame() {
         var t = bezierEasing[animationStep];
         current.x = diff.x * t + source.x;
         current.y = diff.y * t + source.y;
@@ -203,8 +206,10 @@ function panSmooth(oldPan, newPan) {
 
             previous.x = current.x;
             previous.y = current.y;
+            
+            timeoutPan = setTimeout(animationFrame, animationStepTime);
         } else {
-            // Cancel interval
+            // Cancel timeout
             cancel();
             
             // Execute callback if set
@@ -213,12 +218,12 @@ function panSmooth(oldPan, newPan) {
                 callbackPan = null;
             }
         }
-    }, animationStepTime);
+    }
     
     function cancel() {
         // Cancel interval
-        clearInterval(intervalPan);
-        intervalPan = null;
+        clearTimeout(timeoutPan);
+        timeoutPan = null;
     }
 }
 
@@ -266,18 +271,23 @@ function zoomSmooth(oldZoom, newZoom) {
         0.9990498476756933
     ];
 
-    // Some settings for the interval
+    // Some settings for the animation
     var animationTime = 400;
     var animationSteps = 24;
     var animationStepTime = animationTime / animationSteps;
     var animationStep = 0;
     
-    intervalZoom = setInterval(function() {
+    // Start the first animation frame
+    timeoutZoom = setTimeout(animationFrame, animationStepTime);
+    
+    function animationFrame() {
         var t = bezierEasing[animationStep];
         current = diff * t + source;
         
         if (animationStep++ < animationSteps) {
             pzInstance.zoom(current);
+            
+            timeoutZoom = setTimeout(animationFrame, animationStepTime);
         } else {
             cancel();
             
@@ -287,12 +297,12 @@ function zoomSmooth(oldZoom, newZoom) {
                 callbackZoom = null;
             }
         }
-    }, animationStepTime);
+    }
     
     function cancel() {
-        // Cancel interval
-        clearInterval(intervalZoom);
-        intervalZoom = null;
+        // Cancel timeout
+        clearTimeout(timeoutZoom);
+        timeoutZoom = null;
     }
 }
 
