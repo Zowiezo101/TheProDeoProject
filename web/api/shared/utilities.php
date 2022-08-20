@@ -1,5 +1,8 @@
 <?php
 class Utilities{
+    
+    public $people_aka = "people_to_aka.people_name";
+    public $location_aka = "location_to_aka.location_name";
   
     public function getPaging($page, $total_rows, $records_per_page, $page_url){
   
@@ -98,8 +101,34 @@ class Utilities{
             } else {
         
                 if(property_exists($json_filters, 'name')) {
-                    $item_filters[] = "name LIKE ?";
                     $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                    if ($type === "peoples") {
+                        // Two extra columns, one for the AKA and one
+                        // to let us known wether we have a hit because aka
+                        $item_columns[] = "if(".$this->people_aka." LIKE ?, ".$this->people_aka.", '') AS aka";
+                        
+                        // One updated filter WITH aka
+                        $item_filters[] = "(name LIKE ? OR ".$this->people_aka." LIKE ?)";
+                        
+                        // Three extra values
+                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                    } elseif ($type === "locations") {
+                        // Two extra columns, one for the AKA and one
+                        // to let us known wether we have a hit because aka
+                        $item_columns[] = "if(".$this->location_aka." LIKE ?, ".$this->location_aka.", '') AS aka";
+                        
+                        // One updated filter WITH aka
+                        $item_filters[] = "(name LIKE ? OR ".$this->location_aka." LIKE ?)";
+                        
+                        // Three extra values
+                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
+                    } else {
+                        $item_filters[] = "name LIKE ?";
+                    }
                 }
                 if(property_exists($json_filters, 'meaning_name')) {
                     $item_filters[] = "meaning_name LIKE ?";

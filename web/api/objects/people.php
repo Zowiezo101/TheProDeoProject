@@ -184,8 +184,18 @@ class People {
         $query = "SELECT
                     " . $params["columns"] . "
                 FROM
-                    " . $this->table_name . " p
-                ". $params["filters"] ."
+                    " . $this->table_name . " p ";
+        if (strpos($params["columns"], $utilities->people_aka) !== false) {
+            // We need this extra table when AKA is needed
+            $query .= 
+                "LEFT JOIN people_to_aka
+                    ON people_to_aka.people_id = p.id 
+                    AND people_to_aka.people_name LIKE ?
+                ";
+        }
+         
+        $query .= 
+                $params["filters"]."
                 ORDER BY
                     p.order_id ASC";
 

@@ -1406,7 +1406,7 @@ function insertData(type, name, data) {
     var table_data = "";
     if (types.includes(type)) {
         if (name === "name") {
-            table_data = '<th scope="row">' + data["name"] + '</th>';
+            table_data = '<th scope="row">' + data["name"] + (data["aka"] ? " ("+data["aka"] +")" : "") + '</th>';
         } else if (name === "link") {
             table_data = '<td data-order="' + data["id"] + '">' + getLinkToItem(type, data["id"], "self") + '</td>';
         } else if (name === "length") {

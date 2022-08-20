@@ -169,8 +169,18 @@ class Location {
         $query = "SELECT
                     " . $params["columns"] . "
                 FROM
-                    " . $this->table_name . " l
-                ". $params["filters"] ."
+                    " . $this->table_name . " l ";
+        if (strpos($params["columns"], $utilities->location_aka) !== false) {
+            // We need this extra table when AKA is needed
+            $query .= 
+                "LEFT JOIN location_to_aka
+                    ON location_to_aka.location_id = l.id 
+                    AND location_to_aka.location_name LIKE ?
+                ";
+        }
+         
+        $query .= 
+                $params["filters"]."
                 ORDER BY
                     l.order_id ASC";
 
