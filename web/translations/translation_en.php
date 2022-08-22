@@ -155,6 +155,7 @@ $dict = array(
 	"items.aka"=>"Also known as",
 	"items.parents"=>"Parents",
 	"items.children"=>"Children",
+	"items.parent.familytree"=>" (Own familytree, only offspring)",
 	"items.type"=>"Type",
 	"items.unknown"=>"Unknown or not applicable",
 	"type.well"=>"Well",

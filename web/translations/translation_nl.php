@@ -155,6 +155,7 @@ $dict = array(
 	"items.aka"=>"Ook bekend als",
 	"items.parents"=>"Ouders",
 	"items.children"=>"Kinderen",
+	"items.parent.familytree"=>" (Eigen stamboom, alleen nakomelingen)",
 	"items.type"=>"Type",
 	"items.unknown"=>"Onbekend of niet van toepassing",
 	"type.well"=>"Bron",

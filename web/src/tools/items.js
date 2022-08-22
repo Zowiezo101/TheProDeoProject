@@ -706,6 +706,19 @@ function insertDetailMaps(item, type) {
                             `</td>
                         </tr>`);
                     });
+                    
+                    if (item.children.length > 0 && item.parents.length  > 0) {
+                        rows += (`<tr>
+                            <td>` + 
+                                getLinkToItem(
+                                    type,
+                                    item.id,
+                                    item.name + dict["items.parent.familytree"],
+                                    {"openInNewTab": true,
+                                     "panToItem": item.id}) + 
+                            `</td>
+                        </tr>`);
+                    }
             
                     maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
                             <div class="table-responsive">

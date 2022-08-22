@@ -165,11 +165,11 @@ class FamilyTree {
                     SELECT id, name FROM peoples 
                         LEFT JOIN people_to_parent p1
                         ON peoples.id = p1.parent_id 
-                        -- LEFT JOIN people_to_parent p2
-                        -- ON peoples.id = p2.people_id
+                        LEFT JOIN people_to_parent p2
+                        ON peoples.id = p2.people_id
                         WHERE p1.parent_id = ? 
                         AND p1.people_id IS NOT NULL
-                        -- AND p2.parent_id IS NULL
+                        AND p2.parent_id IS NULL
                         )
                 AS ancestor";
 
