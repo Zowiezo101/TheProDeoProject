@@ -295,10 +295,10 @@ function getRightLevelSiblings(id) {
 }
 
 function getLevelSiblings(id) {
-    // Get the item we want to siblings of on the right
+    // Get the item we want to siblings of
     var item = getMapItem(id);
     
-    // The items on the same level on the right (higher levelIndex)
+    // The items on the same level
     var items = filterMapItems('level', item.level);
     
     // Only get the ids of these items
@@ -380,36 +380,48 @@ function moveCommonAncestor(offset, parent) {
     var ancestors = getAncestors(parent.id);
     
     var siblingParents = [];
+    var trueAncestor = false;
     ancestors.forEach(function(id) {
-        // The siblings of these ancestors
-        var siblings = getRightLevelSiblings(id);
-        
-        // Only move when any has children
-        var child = false;        
-        var newParents = [];
-        
-        siblings.forEach(function(sibling) {
-            // Not the actual ancestor, just its siblings
-            if (!ancestors.includes(sibling)) {
-                // The actual items themselves
-                var item = getMapItem(sibling);
-                
-                // Check if they have children
-                var children = getChildren(item.id, PARENT_ID);
-                if (children.length > 0) {
-                    // Only update it when this item has children
-                    // Otherwise just leave it be
-                    child = true;
+        // As long as we haven't found the true ancestor yet
+        if (trueAncestor === false) {
+            // The siblings of these ancestors
+            var siblings = getRightLevelSiblings(id);
+
+            // Only move when any has children
+            var child = false;        
+            var newParents = [];
+
+            siblings.forEach(function(sibling) {
+                // Not the actual ancestor, just its siblings
+                if (!ancestors.includes(sibling)) {
+                    // The actual items themselves
+                    var item = getMapItem(sibling);
+
+                    // Check if they have children
+                    var children = getChildren(item.id, PARENT_ID);
+                    if (children.length > 0) {
+                        // Only update it when this item has children
+                        // Otherwise just leave it be
+                        child = true;
+                    }
+
+                    if (child || (siblingParents.indexOf(item.parent_id) !== -1)) {
+                        // This person has children, put them in the newParents
+                        // And set their offset
+                        item[OFFSET_COORD[g_Options.type]] = item[OFFSET_COORD[g_Options.type]] + offset;
+                        newParents.push(sibling);
+                    }
                 }
-                
-                if (child || (siblingParents.indexOf(item.parent_id) !== -1)) {
-                    item[OFFSET_COORD[g_Options.type]] = item[OFFSET_COORD[g_Options.type]] + offset;
-                    newParents.push(sibling);
-                }
+            });
+        
+            if (getLevelSiblings(id).length === 1) {
+                // No siblings to work with, 
+                // meaning that we reached the true ancestor
+                trueAncestor = true;
             }
-        });
         
-        siblingParents = newParents;
+            siblingParents = newParents;
+        }
     });
 }
 
