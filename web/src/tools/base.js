@@ -29,7 +29,7 @@ function setLanguage(language, base, uri) {
     // And update the language
     get_settings["lang"] = language;
     
-    // No reload the page
+    // Now reload the page
     window.location.href = base + setParameters(uri);
 }
 

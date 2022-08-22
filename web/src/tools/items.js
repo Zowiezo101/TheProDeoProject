@@ -207,7 +207,7 @@ function getItemsContent() {
             <div class="row text-center justify-content-center">
                 <div class="col-lg-11 px-lg-5 px-md-3">
                     <h1 class="mb-3">` + dict["navigation." + page_id] + `</h1>
-                    <p class="lead">` + dict[page_id + ".overview"] + `.</p>
+                    <p class="lead">` + dict[page_id + ".overview"] + `</p>
                 </div>
             </div>
         `);
