@@ -44,15 +44,6 @@ function showMap() {
                     if (marker.button) {
                         marker.button = false;
                         new google.maps.event.trigger(marker, "dblclick");
-                    } else {
-                        // Otherwise, stay at the same level as previous
-                        // Can't click this location anyway when in cluster
-                        // or it's already ideal zoom level.
-                        // TODO: Actually check the type that this location
-                        // is and use that to get the best suited zoom, take
-                        // the closest zoom
-                        var zoom = map.getZoom();
-                        map.setZoom(Math.max(minZoomForMarker(marker.id), zoom));
                     }
                     
                     // Is there already a window open?
@@ -79,7 +70,7 @@ function showMap() {
 
                     // Ignore the existing zoom
                     var minZoom = minZoomForMarker(marker.id);
-                    var typeZoom = minZoomForType(marker.id);
+                    var typeZoom = minZoomForType(marker.type);
                     
                     // Actually check the type that this location
                     // is and use that to get the best suited zoom, take
@@ -219,26 +210,72 @@ function drawInfoWorldMapButton() {
         </div>`);
 }
 
-function minZoomForType(id) {
-    // TODO
-//    type_nr = -1
-//    if string.lower() == "bron" or string == "0":
-//        type_nr = 0
-//    elif string.lower() == "rivier" or string == "1":
-//        type_nr = 1
-//    elif string.lower() == "berg" or string == "2":
-//        type_nr = 2
-//    elif string.lower() == "vallei" or string == "3":
-//        type_nr = 3
-//    elif string.lower() == "land" or string == "4":
-//        type_nr = 4
-//    elif string.lower() == "streek" or string == "5":
-//        type_nr = 5
-//    elif string.lower() == "provincie" or string == "6":
-//        type_nr = 6
-//    elif string.lower() == "stad" or string == "7":
-//        type_nr = 7
-//    elif string.lower() == "object" or string == "8":
-//        type_nr = 8
-    return 8;
+function minZoomForType(type) {
+    var zoom = "";
+    
+    switch(type) {
+        case 0:
+        case "0":
+            // Well
+            zoom = 15;
+            break;
+            
+        case 1:
+        case "1":
+            // River
+            zoom = 10;
+            break;
+            
+        case 2:
+        case "2":
+            // Mountain
+            zoom = 10;
+            break;
+            
+        case 3:
+        case "3":
+            // Valley
+            zoom = 9;
+            break;
+            
+        case 4:
+        case "4":
+            // Country
+            zoom = 7;
+            break;
+            
+        case 5:
+        case "5":
+            // District
+            zoom = 12;
+            break;
+            
+        case 6:
+        case "6":
+            // County
+            zoom = 9;
+            break;
+            
+        case 7:
+        case "7":
+            // City
+            zoom = 11;
+            break;
+            
+        case 8:
+        case "8":
+            // Object
+            zoom = 16;
+            break;
+            
+        case 9:
+        case "9":
+        case -1:
+        case "-1":
+            // Unknown
+            zoom = 8;
+            break;
+    }
+    
+    return zoom;
 }
