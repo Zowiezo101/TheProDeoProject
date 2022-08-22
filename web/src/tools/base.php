@@ -28,7 +28,7 @@ function insertLanguages() {
     global $base_url;
     
     // Get all the currently available languages
-    $languages = ["nl", "en"];
+    $languages = get_available_langs();
     
     // And everything from the base (except the first slash)
     $uri = substr(filter_input(INPUT_SERVER, 'REQUEST_URI'), 1);

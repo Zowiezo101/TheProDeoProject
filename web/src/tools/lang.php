@@ -1,15 +1,17 @@
 <?php
 
 // https://stackoverflow.com/questions/3770513/detect-browser-language-in-php    
-function prefered_language(array $available_languages, $http_accept_language) {
+function prefered_language(array $available_languages) {
 
+    $http_accept_language = filter_input(INPUT_SERVER, "HTTP_ACCEPT_LANGUAGE");
+    
     // Change the keys and values around.
     // The keys become the values (integer indexes in this case) and
     // the values become the keys (abbreviated languages)
     $available_languages_flipped = array_flip($available_languages);
 
     // Languages that are supported AND requested, including the priority values
-    $langs = null;
+    $langs = [];
     
     // The languages that are supported AND requested
     $langsSet = null;
@@ -130,7 +132,7 @@ if (filter_input(INPUT_GET, "lang") === null) {
     $available_languages = get_available_langs();
 
     // Language settings of the browser AND supported by the website
-    $langs = prefered_language($available_languages, filter_input(INPUT_SERVER, "HTTP_ACCEPT_LANGUAGE"));
+    $langs = prefered_language($available_languages);
     
     // Most prefered language, link to this language
     header("Location: ".$base_url."/".$langs[0]."/", true, 302);
