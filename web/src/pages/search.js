@@ -913,13 +913,13 @@ function insertSearch() {
             // Set the max and min values
             var slider_length = $("#item_length").slider({
                 formatter: function(values) {
-                    var timeString = ["", ""];
+                    var lengthString = ["", ""];
                     for (var i = 0; i < values.length; i++) {
                         var value = values[i];
 
-                        timeString[i] = timeToString(value);
+                        lengthString[i] = getLengthString(value, true);
                     }
-                    return timeString.join(" : ");
+                    return lengthString.join(" : ");
                 },
                 max: max,
                 min: min
@@ -1410,7 +1410,7 @@ function insertData(type, name, data) {
         } else if (name === "link") {
             table_data = '<td data-order="' + data["id"] + '">' + getLinkToItem(type, data["id"], "self") + '</td>';
         } else if (name === "length") {
-            table_data = '<td>' + timeToString(data["length"]) + '</td>';
+            table_data = '<td>' + getLengthString(data["length"], true) + '</td>';
         } else if (name === "parent_age") {
             if ((data["father_age"] !== "-1") && (data["mother_age"] !== "-1")) {
                 table_data = '<td>' + data["father_age"] + ', ' + data["mother_age"] + '</td>';
@@ -1517,38 +1517,5 @@ function getTypes(name) {
     }
     
     return types;
-}
-
-function timeToString(value) {
-    var day = 24;
-    var week = day*7;
-    var month = day*30;
-    var year = day*365;
-    var timeString = [];
-
-    // Count the amount of years
-    var years = Math.floor(value/year);
-    value = value - years*year;
-
-    // Count the amount of months
-    var months = Math.floor(value/month);
-    value = value - months*month;
-
-    // Count the amount of weeks
-    var weeks = Math.floor(value/week);
-    value = value - weeks*week;
-
-    // Count the amount of days
-    var days = Math.floor(value/day);
-    value = value - days*day;
-
-    timeString.push((value > 0) ? (value + " " + dict[value > 1 ? "length.hours" : "length.hour"]) : "");
-    timeString.push((days > 0) ? (days + " " + dict[days > 1 ? "length.days" : "length.day"]) : "");
-    timeString.push((weeks > 0) ? (weeks + " " + dict[weeks > 1 ? "length.weeks" : "length.week"]) : "");
-    timeString.push((months > 0) ? (months + " " + dict[months > 1 ? "length.months" : "length.month"]) : "");
-    timeString.push((years > 0) ? (years + " " + dict[years > 1 ? "length.years" : "length.year"]) : "");
-
-    // Filter out empty elements and join
-    return timeString.filter(n => n).join(', ');
 }
     

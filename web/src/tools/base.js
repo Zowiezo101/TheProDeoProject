@@ -133,7 +133,7 @@ function getGenderColor(int) {
     return color;
 }
 
-function getLengthString(int) {
+function getLengthString(int, short=false) {
     var str = "";
     
     // Different types of length
@@ -141,71 +141,73 @@ function getLengthString(int) {
         case 0:
         case "0":
             // Around or less than an hour
-            str = dict["length.hour"];;
+            str = dict["length." + (short ? "short." : "") + "hour"];
             break;
             
         case 1:
         case "1":
             // Around or less than a day
-            str = dict["length.day"];
+            str = dict["length." + (short ? "short." : "") + "day"];
             break;
             
         case 2:
         case "2":
             // Around or less than a week
-            str = dict["length.week"];
+            str = dict["length." + (short ? "short." : "") + "week"];
             break
             
         case 3:
         case "3":
             // Around or less than a month
-            str = dict["length.month"];
+            str = dict["length." + (short ? "short." : "") + "month"];
             break
             
         case 4:
         case "4":
             // Around or less than quarter of a year
-            str = dict["length.quarter"];
+            str = dict["length." + (short ? "short." : "") + "quarter"];
             break
             
         case 5:
         case "5":
             // Around or less than half a year
-            str = dict["length.half"];
+            str = dict["length." + (short ? "short." : "") + "half"];
             break
             
         case 6:
         case "6":
             // Around or less than a year
-            str = dict["length.year"];
+            str = dict["length." + (short ? "short." : "") + "year"];
             break
             
         case 7:
         case "7":
             // Around or less than a decade
-            str = dict["length.decade"];
+            str = dict["length." + (short ? "short." : "") + "decade"];
             break
             
         case 8:
         case "8":
             // Around or less than a century
-            str = dict["length.century"];
+            str = dict["length." + (short ? "short." : "") + "century"];
             break
             
         case 9:
         case "9":
             // Around or less than a millenium
-            str = dict["length.millennium"];
+            str = dict["length." + (short ? "short." : "") + "millennium"];
             break
             
         case 10:
         case "10":
             // More than a millenium
-            str = dict["length.more"];
+            str = dict["length." + (short ? "short." : "") + "more"];
             break
             
         case -1:
         case "-1":
+        case 11:
+        case "11":
         default:
             // unknown/Other
             str = dict["length.unknown"];
