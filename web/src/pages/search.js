@@ -905,8 +905,8 @@ function insertSearch() {
         // No errors and at least 1 item of data
         if (result.records) { 
             var data = result.records[0];
-            var max = parseInt(Math.max(data["max_length"], 1), 10);
-            var min = parseInt(Math.max(data["min_length"], 1), 10);
+            var max = parseInt(Math.min(data["max_length"], 11), 10);
+            var min = parseInt(Math.max(data["min_length"], 0), 10);
             
             console.log("Min: " + min + "\nMax: " + max);
             
