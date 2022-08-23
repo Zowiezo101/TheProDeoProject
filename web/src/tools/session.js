@@ -6,13 +6,7 @@
 
 /* global fetch, session_settings, base_url */
 
-function updateSession(parameters, clear=false) {
-    
-    if (clear === true) {
-        for (var i in session_settings) {
-            // TODO
-        }
-    }
+function updateSession(parameters) {
     
     // The base URL
     var url = base_url + '/web/src/tools/session.php';
