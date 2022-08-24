@@ -2,7 +2,7 @@
 
 require_once "../shared/base.php";
 
-class Timeline {
+class timeline {
   
     // database connection and table name
     private $conn;
@@ -19,7 +19,7 @@ class Timeline {
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
-        $this->base = new ItemBase($db);
+        $this->base = new base($db);
     }
 
     // read products with pagination
@@ -154,7 +154,7 @@ class Timeline {
             $activity_arr = array();
 
             // The parent
-            $parent = new Event($this->conn);
+            $parent = new event($this->conn);
             $parent->id = $this->id;
             $parent->readOne();
 
@@ -192,4 +192,3 @@ class Timeline {
         }
     }
 }
-?>

@@ -2,7 +2,7 @@
 
 require_once "../shared/base.php";
 
-class Worldmap {
+class worldmap {
   
     // database connection and table name
     private $conn;
@@ -19,7 +19,7 @@ class Worldmap {
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
-        $this->base = new ItemBase($db);
+        $this->base = new base($db);
     }
 
     // read products with pagination
@@ -141,4 +141,3 @@ class Worldmap {
         return $stmt;
     }
 }
-?>

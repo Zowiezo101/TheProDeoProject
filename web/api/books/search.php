@@ -9,11 +9,11 @@ include_once '../config/database.php';
 include_once '../objects/book.php';
   
 // get database connection
-$db = new Database();
+$db = new database();
 $conn = $db->getConnection();
   
 // prepare item object
-$item = new Book($conn);
+$item = new book($conn);
   
 // get keywords
 $filters = filter_input(INPUT_GET,'filter') !== null ? filter_input(INPUT_GET,'filter') : "";
@@ -62,4 +62,3 @@ else{
         array("message" => "No {$item->item_name}s found.")
     );
 }
-?>

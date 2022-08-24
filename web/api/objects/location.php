@@ -3,7 +3,7 @@
 require_once "../shared/base.php";
 require_once "../shared/utilities.php";
 
-class Location {
+class location {
   
     // database connection and table name
     private $conn;
@@ -30,7 +30,7 @@ class Location {
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
-        $this->base = new ItemBase($db);
+        $this->base = new base($db);
     }
 
     // read products with pagination
@@ -161,7 +161,7 @@ class Location {
     // search products
     function search($filters){
         // utilities
-        $utilities = new Utilities();
+        $utilities = new utilities();
         
         $params = $utilities->getParams($this->table_name, $filters);
 
@@ -199,4 +199,3 @@ class Location {
         return $stmt;
     }
 }
-?>

@@ -1,5 +1,5 @@
 <?php
-class Utilities{
+class utilities{
     
     public $people_aka = "people_to_aka.people_name";
     public $location_aka = "location_to_aka.location_name";
@@ -262,4 +262,3 @@ class Utilities{
     }
   
 }
-?>

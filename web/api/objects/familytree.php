@@ -2,7 +2,7 @@
 
 require_once "../shared/base.php";
 
-class FamilyTree {
+class familytree {
   
     // database connection and table name
     private $conn;
@@ -22,7 +22,7 @@ class FamilyTree {
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
-        $this->base = new ItemBase($db);
+        $this->base = new base($db);
     }
 
     // read products with pagination
@@ -121,7 +121,7 @@ class FamilyTree {
         $child_ids = array($this->id);
         $people_arr = array();
         
-        $parent = new People($this->conn);
+        $parent = new people($this->conn);
         $parent->id = $this->id;
         $parent->readOne();
         
@@ -186,4 +186,3 @@ class FamilyTree {
         return $stmt;
     }
 }
-?>

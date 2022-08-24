@@ -5,7 +5,7 @@ require_once "../objects/people.php";
 require_once "../objects/location.php";
 require_once "../objects/special.php";
 
-class ItemBase {
+class base {
     private $conn;
     
     public $table_activities = "activitys";
@@ -559,4 +559,3 @@ class ItemBase {
         return $this->getResults($stmt);
     }
 }
-?>

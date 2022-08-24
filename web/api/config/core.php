@@ -24,4 +24,3 @@ $from_record_num = $records_per_page * $page;
 
 $sort = filter_input(INPUT_GET, 'sort');
 $filter = filter_input(INPUT_GET, 'filter');
-?>

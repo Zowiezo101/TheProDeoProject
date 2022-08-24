@@ -3,7 +3,7 @@
 require_once "../shared/base.php";
 require_once "../shared/utilities.php";
 
-class Book {
+class book {
   
     // database connection and table name
     private $conn;
@@ -135,7 +135,7 @@ class Book {
     // search products
     function search($filters){
         // utilities
-        $utilities = new Utilities();
+        $utilities = new utilities();
         
         $params = $utilities->getParams($this->table_name, $filters);
 

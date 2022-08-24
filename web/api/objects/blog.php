@@ -1,5 +1,5 @@
 <?php
-class Blog {
+class blog {
   
     // database connection and table name
     private $conn;
@@ -117,11 +117,7 @@ class Blog {
         $stmt->bindParam(":date", $this->date);
 
         // execute query
-        if($stmt->execute()){
-            return true;
-        }
-
-        return false;
+        return $stmt->execute();
 
     }
 
@@ -150,11 +146,7 @@ class Blog {
         $stmt->bindParam(':id', $this->id);
 
         // execute the query
-        if($stmt->execute()){
-            return true;
-        }
-
-        return false;
+        return $stmt->execute();
     }
     
     // delete the product
@@ -173,11 +165,6 @@ class Blog {
         $stmt->bindParam(1, $this->id);
 
         // execute query
-        if($stmt->execute()){
-            return true;
-        }
-
-        return false;
+        return $stmt->execute();
     }
 }
-?>

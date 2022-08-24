@@ -8,11 +8,11 @@ include_once '../config/database.php';
 include_once '../objects/worldmap.php';
   
 // instantiate database and product object
-$db = new Database();
+$db = new database();
 $conn = $db->getConnection();
   
 // initialize object
-$Item = new Worldmap($conn);
+$Item = new worldmap($conn);
   
 // query worldmap
 $stmt = $Item->read();

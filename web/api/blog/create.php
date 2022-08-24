@@ -13,10 +13,10 @@ include_once '../config/database.php';
 // instantiate blog object
 include_once '../objects/blog.php';
   
-$db = new Database();
+$db = new database();
 $conn = $db->getConnection();
   
-$blog = new Blog($conn);
+$blog = new blog($conn);
   
 // get posted data
 $data = json_decode(file_get_contents("php://input"));
@@ -65,4 +65,3 @@ else{
     // tell the user
     echo json_encode(array("message" => "Unable to create blog. Data is incomplete."));
 }
-?>

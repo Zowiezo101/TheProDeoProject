@@ -1,5 +1,5 @@
 <?php
-class Activity{
+class activity{
   
     // database connection and table name
     private $conn;
@@ -20,4 +20,3 @@ class Activity{
         $this->conn = $db;
     }
 }
-?>

@@ -12,11 +12,11 @@ include_once '../config/database.php';
 include_once '../objects/blog.php';
   
 // get database connection
-$db = new Database();
+$db = new database();
 $conn = $db->getConnection();
   
 // prepare product object
-$blog = new Blog($conn);
+$blog = new blog($conn);
   
 // get id of product to be edited
 $data = json_decode(file_get_contents("php://input"));
@@ -47,4 +47,3 @@ else{
     // tell the user
     echo json_encode(array("message" => "Unable to update blog."));
 }
-?>

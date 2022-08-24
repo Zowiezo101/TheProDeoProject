@@ -8,11 +8,11 @@ include_once '../config/database.php';
 include_once '../objects/blog.php';
   
 // instantiate database and product object
-$db = new Database();
+$db = new database();
 $conn = $db->getConnection();
   
 // initialize object
-$blog = new Blog($conn);
+$blog = new blog($conn);
   
 // set ID property of record to read
 $blog->id = filter_input(INPUT_GET,'id') !== null ? filter_input(INPUT_GET,'id') : -1;

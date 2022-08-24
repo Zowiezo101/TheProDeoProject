@@ -11,11 +11,11 @@ include_once '../config/database.php';
 include_once '../objects/people.php';
   
 // get database connection
-$db = new Database();
+$db = new database();
 $conn = $db->getConnection();
   
 // prepare item object
-$item = new People($conn);
+$item = new people($conn);
   
 // set ID property of record to read
 $item->id = filter_input(INPUT_GET,'id') !== null ? filter_input(INPUT_GET,'id') : die();
@@ -41,4 +41,3 @@ else{
     // tell the user item does not exist
     echo json_encode(array("message" => $Item->item_name . " does not exist."));
 }
-?>

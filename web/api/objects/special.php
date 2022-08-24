@@ -3,7 +3,7 @@
 require_once "../shared/base.php";
 require_once "../shared/utilities.php";
 
-class Special {
+class special {
   
     // database connection and table name
     private $conn;
@@ -27,7 +27,7 @@ class Special {
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
-        $this->base = new ItemBase($db);
+        $this->base = new base($db);
     }
 
     // read products with pagination
@@ -155,7 +155,7 @@ class Special {
     // search products
     function search($filters){
         // utilities
-        $utilities = new Utilities();
+        $utilities = new utilities();
         
         $params = $utilities->getParams($this->table_name, $filters);
 
@@ -183,4 +183,3 @@ class Special {
         return $stmt;
     }
 }
-?>

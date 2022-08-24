@@ -1,7 +1,7 @@
 <?php
 require "../../../../settings.conf";
 
-class Database {
+class database {
   
     // specify your own database credentials
     private $host = "";

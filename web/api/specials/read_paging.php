@@ -10,14 +10,14 @@ include_once '../config/database.php';
 include_once '../objects/special.php';
   
 // utilities
-$utilities = new Utilities();
+$utilities = new utilities();
   
 // instantiate database and item object
-$db = new Database();
+$db = new database();
 $conn = $db->getConnection();
   
 // initialize object
-$item = new Special($conn);
+$item = new special($conn);
   
 // query items
 $stmt = $item->readPaging($from_record_num, $records_per_page, $sort, $filter);
@@ -62,4 +62,3 @@ else{
         array("message" => "No {$item->item_name}s found.")
     );
 }
-?>
