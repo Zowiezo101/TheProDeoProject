@@ -76,7 +76,7 @@
         
         <!-- Actual content of the page itself 
             This is defined in the corresponding php page -->
-        <div id="content" class="py-5" style="background-color: hsl(0, 100%, 99%)">
+        <div id="content" class="py-5 flex-grow-1" style="background-color: hsl(0, 100%, 99%)">
         </div>
         
 <?php require "page/footer.php"; ?>

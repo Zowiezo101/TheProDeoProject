@@ -17,12 +17,17 @@
         });
         
         // The container to add blogs to
-        var div_container = $("<div>").addClass("blogs").addClass("container").appendTo(content);
+        var div_container = $("<div>")
+                .addClass("container blogs")
+                .appendTo(content);
         
         // Get the blogs from the database
         getBlogs().then(function(blogs) {
             if (!blogs.records) {
                 // No blogs
+                div_container
+                        .addClass("text-center h1")
+                        .append(dict["settings.database_err"]);
                 return;
             }
             for(var i = 0; i < blogs.records.length; i++) {

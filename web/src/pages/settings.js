@@ -261,7 +261,7 @@ function addBlogsToSelect(blogs) {
 function onChangeEdit(option) {
     var option = $("#edit_blog_select option:selected")[0];
     getBlog(option.value).then(function(blog) {
-        if (blog) {
+        if (blog.id === option.value) {
             // Enable the textboxs for editing
             $("#edit_blog_title").removeAttr("disabled");
             $("#edit_blog_title").val(blog.title);
@@ -278,7 +278,7 @@ function onChangeEdit(option) {
 function onChangeDelete(option) {
     var option = $("#delete_blog_select option:selected")[0];
     getBlog(option.value).then(function(blog) {
-        if (blog) {
+        if (blog.id === option.value) {
             // Update the text and enable the button
             $('#delete_blog_text').summernote('code', blog.text);
             
