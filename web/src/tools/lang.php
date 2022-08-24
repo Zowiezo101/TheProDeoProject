@@ -79,7 +79,7 @@ function prefered_language(array $available_languages) {
         // prevent errors if there is no dash.
         // According to the example (fr-CH)
         // $a = 'fr'        $b = 'CH'
-        list($a, $b) = explode('-', $match[1]) + array('', '');
+        $a = (explode('-', $match[1]) + ['', ''])[0];
         $value = isset($match[2]) ? (float) $match[2] : 1.0;
 
         // If the requested language is in the list of supported languages
@@ -143,5 +143,3 @@ if (filter_input(INPUT_GET, "lang") === null) {
 // Get the correct translation file, that corresponds with the prefered language
 $page_lang = filter_input(INPUT_GET, "lang");
 require "translations/translation_".$page_lang.".php";
-
-?>

@@ -45,7 +45,7 @@
                                     <form class="text-left" action="login" method="post" name="login">
                                         <div class="form-group">
                                             <label for="email_username"><?php echo $dict["settings.username"]; ?></label>
-                                            <input type="text" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ((!empty($username)) ? 'is-valid' : ''); ?>" name="username" id="email_username" value="<?php echo $param_username; ?>" placeholder="ProdeoDatabase">
+                                            <input type="text" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ((!empty($username)) ? 'is-valid' : ''); ?>" name="username" id="email_username" value="<?php echo $param_username; ?>">
                                             <span class="invalid-feedback"><?php echo $dict[$username_err]; ?></span>
                                         </div>
                                         <div class="form-group">

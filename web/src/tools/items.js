@@ -550,6 +550,8 @@ function insertDetail(item, prop) {
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
+    } else if (prop === "length") {
+        detail = getLengthString(item[prop]);
     } else if (prop === "gender") {
         detail = getGenderString(item[prop]);
     } else if (prop === "tribe") {
@@ -653,7 +655,7 @@ function insertDetailMaps(item, type) {
             // The timeline consists of the global timeline and the separate timelines
             // They don't overlap and thus there is always just two, 
             // but we do want to pan to the timeline in case of the global timeline    
-            rows = `<tr>
+            var rows = `<tr>
                         <td>` + 
                             getLinkToItem(
                                 type,
@@ -673,7 +675,7 @@ function insertDetailMaps(item, type) {
                         `</td>
                     </tr>`;
             
-            maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
+            var maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
                     <div class="table-responsive">
                         <table class="table table-striped table-borderless">
                             <tbody>` +
@@ -719,7 +721,7 @@ function insertDetailMaps(item, type) {
                         </tr>`);
                     }
             
-                    maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
+                    var maps = `<p class="lead font-weight-bold mt-4">` + dict["items.details." + type] + `</p>
                             <div class="table-responsive">
                                 <table class="table table-striped table-borderless">
                                     <tbody>` +
