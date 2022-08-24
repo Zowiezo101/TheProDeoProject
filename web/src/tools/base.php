@@ -16,7 +16,7 @@ function setParameters($url) {
     global $base_url;
     $newUrl = $url;
     
-    // TODO: Get languague from window.location.url
+    // Get the language that is set
     if (filter_input(INPUT_GET, "lang")) {
         $newUrl = filter_input(INPUT_GET, "lang")."/".$url;
     }

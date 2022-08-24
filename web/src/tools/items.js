@@ -340,7 +340,6 @@ function insertPages() {
                 $("#item_pagination").addClass("invisible");
             }
         } else {
-            // TODO:
             // Error melding geven dat database niet bereikt kan worden
             $("#item_list").append(result.error ? result.error : dict["database.no_results"]);
             

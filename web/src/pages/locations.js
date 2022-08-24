@@ -33,10 +33,9 @@ function getLocationContent(locations) {
             </div>
         `);
         
-        // TODO: Insert detail links
-        
     } else {
-        // TODO Foutmelding, niet kunnen vinden?
+        // Error message, because database can't be reached
+        $("#item_content").append(dict["settings.database_err"]);
     }
     
     /*

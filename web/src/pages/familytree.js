@@ -1,4 +1,4 @@
-/* global SVG, TYPE_FAMILYTREE */
+/* global SVG, TYPE_FAMILYTREE, dict */
 
 function getFamilytreeContent(familytree) {
     
@@ -25,7 +25,8 @@ function getFamilytreeContent(familytree) {
         showMap(familytree);
 
     } else {
-        // TODO Foutmelding, niet kunnen vinden?
+        // Error message, because database can't be reached
+        $("#item_content").append(dict["settings.database_err"]);
     }
 }
 

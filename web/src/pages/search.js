@@ -1372,8 +1372,7 @@ function insertItems(type, result) {
             "order": [[num_columns - (type === "books" ? 1 : 3), 'asc']]
         });
     } else {
-        // TODO:
-        // Error melding geven dat database niet bereikt kan worden
+        // Error message, because database can't be reached
         $("#tab" + type).append(result.error ? result.error : dict["database.no_results"]);
     }
 }

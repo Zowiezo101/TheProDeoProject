@@ -39,19 +39,11 @@ function getPeopleContent(peoples) {
                     insertDetailMaps(peoples, 'familytree') + 
                 `</div>
             </div>
-        `);
-        
-        // TODO: Insert detail links
-        // Father Id
-        // Mother Id
-        // A.k.a.
-        // Place of birth
-        // Place of death
-        // Place of living
-        // Related events
+        `);        
         
     } else {
-        // TODO Foutmelding, niet kunnen vinden?
+        // Error message, because database can't be reached
+        $("#item_content").append(dict["settings.database_err"]);
     }
     
     /*

@@ -28,7 +28,8 @@ function getTimelineContent(timeline) {
         showMap(timeline);
 
     } else {
-        // TODO Foutmelding, niet kunnen vinden?
+        // Error message, because database can't be reached
+        $("#item_content").append(dict["settings.database_err"]);
     }
 }
 
