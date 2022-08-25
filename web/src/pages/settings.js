@@ -24,25 +24,25 @@ function getTabsContent() {
             // Tab for adding blogs
             .append(`
                     <div class="tab-pane fade show active" id="tabadd" role="tabpanel">
-                      <form class="">
+                      <form onsubmit="addBlog()">
                         <h2>` + dict["settings.blog.adding"].toUpperCase() + `</h2>
                         <!-- Title for the blog -->
                         <div class="form-group"> 
                             <label>` + dict["settings.blog.title"] + `</label> 
-                            <input id="add_blog_title" type="text" class="form-control w-75" placeholder="` + dict["settings.blog.title_placeholder"] + `" required> 
+                            <input id="add_blog_title" type="text" class="form-control w-75" placeholder="` + dict["settings.blog.title_placeholder"] + `" required/> 
                         </div>
                         <!-- Text for the blog -->
                         <div class="form-group w-75"> 
                             <label>` + dict["settings.blog.text"] + `</label> 
                             <textarea id="add_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required name="editordata"></textarea> 
                         </div>
-                        <button class="btn btn-primary" onclick="addBlog()">` + dict["settings.blog.add"] + `</button>
+                        <button class="btn btn-primary">` + dict["settings.blog.add"] + `</button>
                       </form>
                     </div>`)
             // Tab for editing blogs
             .append(`
                     <div class="tab-pane fade" id="tabedit" role="tabpanel">
-                      <form class="">
+                      <form onsubmit="editBlog()">
                         <h2>` + dict["settings.blog.editing"].toUpperCase() + `</h2>
                         <div class="form-group w-75">
                           <select class="form-control" id="edit_blog_select" onchange="onChangeEdit()">
@@ -53,19 +53,19 @@ function getTabsContent() {
                         </div>
                         <!-- Title for the blog -->
                         <div class="form-group"> 
-                            <input id="edit_blog_title" type="text" disabled class="form-control w-75" placeholder="` + dict["settings.blog.title_placeholder"] + `" required> 
+                            <input id="edit_blog_title" type="text" disabled class="form-control w-75" placeholder="` + dict["settings.blog.title_placeholder"] + `" required/> 
                         </div>
                         <!-- Text for the blog -->
                         <div class="form-group w-75"> 
                             <textarea id="edit_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required></textarea> 
                         </div>
-                        <button disabled class="btn btn-primary" onclick="editBlog()">` + dict["settings.blog.edit"] + `</button>
+                        <button disabled class="btn btn-primary">` + dict["settings.blog.edit"] + `</button>
                       </form>
                     </div>`)
             // Tab for deleting blogs
             .append(`
                     <div class="tab-pane fade" id="tabdelete" role="tabpanel">
-                      <form class="">
+                      <form onsubmit="removeBlog()">
                         <h2>` + dict["settings.blog.deleting"].toUpperCase() + `</h2>
                         <div class="form-group w-75">
                           <select class="form-control" id="delete_blog_select" onchange="onChangeDelete()">
@@ -78,7 +78,7 @@ function getTabsContent() {
                         <div class="form-group w-75"> 
                             <textarea id="delete_blog_text" class="form-control" placeholder="` + dict["settings.blog.text_placeholder"] + `" required></textarea> 
                         </div>
-                        <button disabled class="btn btn-primary" onclick="removeBlog()">` + dict["settings.blog.delete"] + `</button>
+                        <button disabled class="btn btn-primary">` + dict["settings.blog.delete"] + `</button>
                       </form>
                     </div>`)
     );
@@ -151,18 +151,24 @@ function addBlog() {
     
         // Form tries to reload the page before the post could return..
         event.preventDefault();
+        
+        if ($('#add_blog_text').summernote('isEmpty')) {
+            blog_text = "";
+        }
     
         // Post the blog to the database
         postBlog(blog_title, blog_text, blog_user, blog_date).then(function (result) {
-            // Let the user know it went right
-            alert(dict["settings.blog.success.add"]);
-            
-            location.reload();
+            if (result.message !== "settings.blog.success.add") {
+                // Show error if anything went wrong
+                alert(dict[result.message]);
+            } else {
+                // Let the user know it went right
+                alert(dict[result.message]);
+                location.reload();
+            }
         }).catch(function (result) {
             // Show error if anything went wrong
             alert(dict["settings.blog.error.add"]);
-            
-            location.reload();
         });
     }
     
@@ -183,18 +189,24 @@ function editBlog() {
     
         // Form tries to reload the page before the post could return..
         event.preventDefault();
+        
+        if ($('#edit_blog_text').summernote('isEmpty')) {
+            blog_text = "";
+        }
     
         // Post the blog to the database
         putBlog(blog_id, blog_title, blog_text).then(function (result) {
-            // Let the user know it went right
-            alert(dict["settings.blog.success.edit"]);
-            
-            location.reload();
+            if (result.message !== "settings.blog.success.edit") {
+                // Show error if anything went wrong
+                alert(dict[result.message]);
+            } else {
+                // Let the user know it went right
+                alert(dict[result.message]);
+                location.reload();
+            }
         }).catch(function (result) {
             // Show error if anything went wrong
             alert(dict["settings.blog.error.edit"]);
-            
-            location.reload();
         });
     }
     
@@ -213,9 +225,14 @@ function removeBlog() {
         // Delete the blog from the database
         deleteBlog(blog_id).then(function (result) {
             // Let the user know it went right
-            alert(dict["settings.blog.success.delete"]);
-            
-            location.reload();
+            if (result.message !== "settings.blog.success.delete") {
+                // Show error if anything went wrong
+                alert(dict[result.message]);
+            } else {
+                // Let the user know it went right
+                alert(dict[result.message]);
+                location.reload();
+            }
         }).catch(function (result) {
             // Show error if anything went wrong
             alert(dict["settings.blog.error.delete"]);

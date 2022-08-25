@@ -31,7 +31,7 @@ if($blog->delete()){
     http_response_code(200);
   
     // tell the user
-    echo json_encode(array("message" => "Blog was deleted."));
+    echo json_encode(array("message" => "settings.blog.success.delete"));
 }
   
 // if unable to delete the product
@@ -41,5 +41,5 @@ else{
     http_response_code(503);
   
     // tell the user
-    echo json_encode(array("message" => "Unable to delete blog."));
+    echo json_encode(array("message" => "settings.blog.error.delete"));
 }
