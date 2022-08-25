@@ -37,13 +37,25 @@ if ($num > 0) {
   
     // show products data in json format
     echo json_encode($blogs_arr);
-} else {
+}
+
+else if($num == 0){
+    // set response code - 200 OK
+    http_response_code(200);
+  
+    // tell the user no products found
+    echo json_encode(
+        array("message" => "No {$item->item_name} found.")
+    );
+}
+  
+else {
   
     // set response code - 404 Not found
     http_response_code(404);
   
     // tell the user no products found
     echo json_encode (
-        array("message" => "No ".$item->item_name." found.")
+        array("message" => "No {$item->item_name} found.")
     );
 }

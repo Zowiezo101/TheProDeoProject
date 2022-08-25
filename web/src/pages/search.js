@@ -1373,7 +1373,7 @@ function insertItems(type, result) {
         });
     } else {
         // Error message, because database can't be reached
-        $("#tab" + type).append(result.error ? result.error : dict["database.no_results"]);
+        $("#tab" + type).append(dict["database.no_results"]);
     }
 }
 

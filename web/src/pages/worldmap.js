@@ -27,7 +27,7 @@ function showMap() {
 
     // Insert all the locations as markers to click
     getWorldmap().then(function(worldmap) {
-        if (worldmap) {            
+        if (worldmap.records) {            
             worldmap.records.forEach(function (location) {
                 // Get the coordinates from the location object
                 var coords = location.coordinates.split(',');
