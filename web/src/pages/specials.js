@@ -3,7 +3,7 @@
 /* global dict */
 
 function getSpecialContent(specials) {
-    if (specials) {
+    if (specials.hasOwnProperty('id')) {
         // A special has been selected, show its information
         $("#item_content").append(`
             <div class="row">
@@ -32,7 +32,9 @@ function getSpecialContent(specials) {
         
     } else {
         // Error message, because database can't be reached
-        $("#item_content").append(dict["settings.database_err"]);
+        $("#item_content")
+                .addClass("text-center")
+                .append(dict["settings.database_err"]);
     }
     
     /*

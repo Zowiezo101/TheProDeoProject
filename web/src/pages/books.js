@@ -3,7 +3,7 @@
 /* global dict */
 
 function getBookContent(book) {
-    if (book) {
+    if (book.hasOwnProperty('id')) {
     
         // A book has been selected, show its information
         $("#item_content").append(`
@@ -29,6 +29,8 @@ function getBookContent(book) {
         
     } else {
         // Error message, because database can't be reached
-        $("#item_content").append(dict["settings.database_err"]);
+        $("#item_content")
+                .addClass("text-center")
+                .append(dict["settings.database_err"]);
     }
 }

@@ -51,6 +51,16 @@ if($num > 0){
     // make it json format
     echo json_encode($array);
 }
+
+else if($num == 0){
+    // set response code - 200 OK
+    http_response_code(200);
+  
+    // tell the user no products found
+    echo json_encode(
+        array("message" => "No {$item->item_name}s found.")
+    );
+}
   
 else{
   

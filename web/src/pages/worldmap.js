@@ -142,11 +142,13 @@ function getLinkToMap(id) {
     // Find the marker with this ID and click it
     var marker = markers.find(marker => marker.id === id.toString());
     
-    // Let the click event know we came here via button from the sidebar
-    marker.button = true;
-    
-    // Trigger the click
-    new google.maps.event.trigger(marker, "click");
+    if (marker) {
+        // Let the click event know we came here via button from the sidebar
+        marker.button = true;
+
+        // Trigger the click
+        new google.maps.event.trigger(marker, "click");
+    }
     return true;
 }
 

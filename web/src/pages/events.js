@@ -3,7 +3,7 @@
 /* global dict */
 
 function getEventContent(event) {
-    if (event) {
+    if (event.hasOwnProperty('id')) {
         // An event has been selected, show its information
         $("#item_content").append(`
             <div class="row">
@@ -36,7 +36,9 @@ function getEventContent(event) {
         `);
     } else {
         // Error message, because database can't be reached
-        $("#item_content").append(dict["settings.database_err"]);
+        $("#item_content")
+                .addClass("text-center")
+                .append(dict["settings.database_err"]);
     }
     
     /*

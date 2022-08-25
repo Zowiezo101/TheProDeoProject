@@ -3,7 +3,7 @@
 /* global dict */
 
 function getPeopleContent(peoples) {
-    if (peoples) {
+    if (peoples.hasOwnProperty('id')) {
         // A person has been selected, show its information
         $("#item_content").append(`
             <div class="row">
@@ -43,7 +43,9 @@ function getPeopleContent(peoples) {
         
     } else {
         // Error message, because database can't be reached
-        $("#item_content").append(dict["settings.database_err"]);
+        $("#item_content")
+                .addClass("text-center")
+                .append(dict["settings.database_err"]);
     }
     
     /*

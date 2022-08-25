@@ -12,10 +12,10 @@ $db = new database();
 $conn = $db->getConnection();
   
 // initialize object
-$Item = new worldmap($conn);
+$item = new worldmap($conn);
   
 // query worldmap
-$stmt = $Item->read();
+$stmt = $item->read();
 $num = $stmt->rowCount();
   
 // check if more than 0 record found
@@ -44,6 +44,6 @@ if ($num > 0) {
   
     // tell the user no products found
     echo json_encode (
-        array("message" => "No ".$Item->item_name." found.")
+        array("message" => "No ".$item->item_name." found.")
     );
 }

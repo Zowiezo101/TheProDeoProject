@@ -3,7 +3,7 @@
 /* global dict */
 
 function getLocationContent(locations) {
-    if (locations) {
+    if (locations.hasOwnProperty('id')) {
         // A location has been selected, show its information
         $("#item_content").append(`
             <div class="row">
@@ -35,7 +35,9 @@ function getLocationContent(locations) {
         
     } else {
         // Error message, because database can't be reached
-        $("#item_content").append(dict["settings.database_err"]);
+        $("#item_content")
+                .addClass("text-center")
+                .append(dict["settings.database_err"]);
     }
     
     /*
