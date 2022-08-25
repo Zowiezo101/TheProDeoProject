@@ -873,8 +873,6 @@ function insertSearch() {
             var max = parseInt(data["max_num_chapters"], 10);
             var min = parseInt(Math.max(data["min_num_chapters"], 1), 10);
             
-            console.log("Min: " + min + "\nMax: " + max);
-            
             // Set the max and min values
             var slider_num_chapters = $("#item_num_chapters").slider({
                 max: max,
@@ -907,8 +905,6 @@ function insertSearch() {
             var data = result.records[0];
             var max = parseInt(Math.min(data["max_length"], 11), 10);
             var min = parseInt(Math.max(data["min_length"], 0), 10);
-            
-            console.log("Min: " + min + "\nMax: " + max);
             
             // Set the max and min values
             var slider_length = $("#item_length").slider({

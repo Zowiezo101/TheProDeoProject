@@ -25,7 +25,7 @@ function getData(table, type, data) {
     ).then(
         response => response.text()
     ).then (function (response) {
-        console.log(response);
+//        console.log(response);
         return JSON.parse(response);
     });
 }
@@ -44,7 +44,7 @@ function postData(table, data) {
     ).then(
         response => response.text()
     ).then (function (response) {
-        console.log(response);
+//        console.log(response);
         return JSON.parse(response);
     });
 }
@@ -63,7 +63,7 @@ function putData(table, id, data) {
     ).then(
         response => response.text()
     ).then (function (response) {
-        console.log(response);
+//        console.log(response);
         return JSON.parse(response);
     });
 }
@@ -82,7 +82,7 @@ function deleteData(table, id) {
     ).then(
         response => response.text()
     ).then (function (response) {
-        console.log(response);
+//        console.log(response);
         return JSON.parse(response);
     });
 }

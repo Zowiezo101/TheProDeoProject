@@ -585,13 +585,13 @@ function solveClash(item) {
         if (new_offset > 0) {
             // Something's not right.. We've just moved right,
 			// and right is still not far enough..
-            console.log("There is an overlap detected! Again.." + "(offset: " + offset + ", new offset: " + new_offset + ")");
-            console.log("Left: ");
-            console.log(left);
-            console.log("Right: ");
-            console.log(right);
-            console.log("Ancestor: ");
-            console.log(ancestor);
+//            console.log("There is an overlap detected! Again.." + "(offset: " + offset + ", new offset: " + new_offset + ")");
+//            console.log("Left: ");
+//            console.log(left);
+//            console.log("Right: ");
+//            console.log(right);
+//            console.log("Ancestor: ");
+//            console.log(ancestor);
         }
     }
 }
