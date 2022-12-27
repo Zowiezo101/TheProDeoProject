@@ -44,17 +44,21 @@ function setMapItems (map) {
         parent_id: "-1",
         gen: 0,
         gen_index: 0,
+        level: 1,
         root: true
     };
     
     // Set the initial items
     g_MapItems = [parent].concat(map.items);
     
-    // Convert the generations to integers if they are strings
+    // Convert the generations and levels to integers if they are strings
     g_MapItems.forEach(function(item) {
         item.gen = parseInt(item.gen, 10);
+        item.level = parseInt(item.level, 10);
+    });
     
-        // Set the parents and the children
+    g_MapItems.forEach(function(item) {    
+        // Set the parents and the children/sublevels
         setParents(item.id, item.parent_id);
     });
     
@@ -141,8 +145,7 @@ function setMapItems (map) {
         
         // Now get the children
         var items = items.reduce(function (array, item) {
-            var children = getChildren(item.id, PARENTS)
-                                .map(child => getMapItem(child));           
+            var children = item.children.map(child => getMapItem(child));           
             return array.concat(
                 children.filter((child) => child.gen === (item.gen + 1))
             );
@@ -163,6 +166,9 @@ function setMapItems (map) {
         }
         return 0;
     });
+    
+    // Now remove the other levels from the official map items array
+    g_MapItems = filterMapItems('level', 1);
     
     return g_MapItems;
 }
@@ -229,6 +235,12 @@ function setParents(id, parent_id) {
             child.parents = [];
         if (!child.hasOwnProperty('children'))
             child.children = [];
+        
+        // SubParents.Children = When a child has a lower level then it's parent
+        if (!child.hasOwnProperty('subParents'))
+            child.subParents = [];
+        if (!child.hasOwnProperty('subChildren'))
+            child.subChildren = [];
 
         // Set the child of this parent
         var parents = filterMapItems('id', parent_id);
@@ -236,28 +248,58 @@ function setParents(id, parent_id) {
         // There might be duplicates
         parents.forEach(function(parent) {
             // Set the parents
-            if (!child.parents.includes(parent_id) && parent_id !== "-1") 
-                child.parents.push(parent_id);
+            if (!child.parents.includes(parent_id) && parent_id !== "-1") {
+                if (child.level === parent.level) {
+                    // We are the child of this parent
+                    child.parents.push(parent_id);
+                } else if (child.level < parent.level) {
+                    // Keep going up until the parent is found with a higher level and use that as the new parent_id
+                    child.parent_id = getSubParent(child.level, parent);
+                    if (!child.parents.includes(child.parent_id) && child.parent_id !== "-1") {
+                        child.parents.push(child.parent_id);
+                    }
+                    
+                    // Work with the new parent
+                    parent = getMapItem(child.parent_id);
+                } else {
+                    // We are a sub of this parent, don't add it as a child
+                    child.subParents.push(parent_id);
+                }
+            }
 
             if (parent) {
                 if (!parent.hasOwnProperty('parents'))
                     parent.parents = [];
                 if (!parent.hasOwnProperty('children'))
                     parent.children = [];
+                if (!parent.hasOwnProperty('subParents'))
+                    parent.subParents = [];
+                if (!parent.hasOwnProperty('subChildren'))
+                    parent.subChildren = [];
 
                 // Set the children
-                if (!parent.children.includes(id))
-                    parent.children.push(id);
+                if (!parent.children.includes(id)) {
+                    if (parent.level === child.level) {
+                        // We are the parent of this child
+                        parent.children.push(id);
+                    } else if (parent.level < child.level) {
+                        // This child is a sub of this parent, add it as a sub
+                        parent.subChildren.push(id);
+                    } else {
+                        // This parent is a sub and the child is not actually
+                        // a child. 
+                    }
+                }
             }
         });
     });
     
 }
 
-function getChildren(id, calc) {
+function getChildrenByParentId(id) {
     // Get the children of this item
     // First get all the items with this id as parent
-    var items = filterMapItems(calc === PARENTS ? 'parents' : 'parent_id', id);
+    var items = filterMapItems('parent_id', id);
     var children = items.map(item => item.id);
     
     // Return the (valid) children
@@ -348,7 +390,7 @@ function getCommonAncestor(leftId, rightId) {
     right.forEach(function(item) {
         // Is this ancestor of the left side of the clash also on the 
         // right side of the clash?
-        var ancestor = getChildren(commonAncestor, PARENT_ID).indexOf(item);
+        var ancestor = getChildrenByParentId(commonAncestor).indexOf(item);
         if ((ancestor !== -1) && (rightAncestor === -1)) {
             rightAncestor = item;
         }
@@ -370,7 +412,7 @@ function moveCommonAncestor(offset, parent) {
         item[OFFSET_COORD[g_Options.type]] = item[OFFSET_COORD[g_Options.type]] + offset;
         
         // Get the children as well (only the calculated ones)
-        items = items.concat(getChildren(item.id, PARENT_ID));
+        items = items.concat(getChildrenByParentId(item.id));
     }
     
     // Now offset the parents on the right as well until we've reached the 
@@ -398,7 +440,7 @@ function moveCommonAncestor(offset, parent) {
                     var item = getMapItem(sibling);
 
                     // Check if they have children
-                    var children = getChildren(item.id, PARENT_ID);
+                    var children = getChildrenByParentId(item.id);
                     if (children.length > 0) {
                         // Only update it when this item has children
                         // Otherwise just leave it be
@@ -429,6 +471,20 @@ function filterMapItems(prop, value) {
 //    return g_MapItems.filter(item => (prop == "parents") ? (item[prop].includes(value)) : (item[prop] === value));
     return g_MapItems.filter(function(item) {
         return ["parents", "children"].includes(prop) ? (item[prop].includes(value)) : (item[prop] === value);
+    });
+}
+
+function getSubParent(level, parent) {
+    while (parent.level !== level) {
+        parent = getMapItem(parent.parent_id);
+    }
+    return parent.id;
+}
+
+function getSubParents(level) {
+    // Find every parent with subchildren
+    return g_MapItems.filter(function(item) {
+        return item.subChildren.length > 0 && item.level === level;
     });
 }
 
