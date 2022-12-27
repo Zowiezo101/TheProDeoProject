@@ -427,7 +427,7 @@ class base {
         $query = "SELECT
                     p.id, p.name, p.meaning_name, p.descr, 
                     p.gender, p2p.parent_id, aka.people_name AS aka,
-                    ".$gen." as gen, 0 as X, 0 as Y
+                    1 as level, ".$gen." as gen, 0 as X, 0 as Y
                 FROM
                     " . $this->table_peoples . " p
                     LEFT JOIN
@@ -466,7 +466,7 @@ class base {
             // select all query
             $query = "SELECT
                         e.id, e.name as name, e.length, e.date, e2pa.parent_id,
-                        ".$gen." as gen, 0 as X, 0 as Y
+                        1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
 
@@ -481,7 +481,7 @@ class base {
             // select all query
             $query = "SELECT
                         e.id, e.name as name, e.length, e.date, -999 as parent_id,
-                        ".$gen." as gen, 0 as X, 0 as Y
+                        1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
 
