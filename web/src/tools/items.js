@@ -823,7 +823,7 @@ function toggleMenu() {
         // Hide the menu, make sure the window doesn't shift by 
         // specifically setting the height
         $("#content_col").css("height", $("#item_bar").css("height"));
-        $("#item_bar").addClass("d-none");
+        $("#item_bar").removeClass("d-md-block");
         
         // Update the button
         button.addClass("hide_menu");
@@ -833,7 +833,7 @@ function toggleMenu() {
         
     } else if (button.hasClass("hide_menu")) {
         // Show the menu
-        $("#item_bar").removeClass("d-none");
+        $("#item_bar").addClass("d-md-block");
         
         // Update the button
         button.addClass("show_menu");
