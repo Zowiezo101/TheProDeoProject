@@ -49,8 +49,10 @@ function drawMapItems() {
     // The root parent
     var group = g_svg.group({id: "map"});    
     g_MapItems.forEach(function(item) {
-        drawLink(group, item);
-        drawItem(group, item);
+        if (item.level === 1) {
+            drawLink(group, item);
+            drawItem(group, item);
+        }
     });
 }
 
@@ -100,18 +102,20 @@ function drawItem(group, item) {
                         item.Y + item.height / 2);
                         
     } else {
-        // The link depends on whether it is a global timeline or not
-        var href = setParameters("events/event/" + (
-                    (get_settings["id"] === "-999") ? 
-                        item.id : 
-                        get_settings["id"]));
-        if (get_settings["id"] === item.id === "-999") {
-            href = "javascript: void(0)";
+        if ((get_settings["id"] === "-999" && item.id === "-999") ||
+            (get_settings["id"] !== "-999" && item.id !== "-999")) {
+            var link = group.group();
+        } else {
+            // The link depends on whether it is a global timeline or not
+            var href = setParameters("events/event/" + (
+                        (get_settings["id"] === "-999") ? 
+                            item.id : 
+                            get_settings["id"]));
+                
+            // The button to see the popover
+            var link = group.link(href);
+                link.target('_blank');
         }
-    
-        // The button to see the popover
-        var link = group.link(href);
-            link.target('_blank');
 
         // The popover itself
         var popover = $("<div>")
@@ -124,9 +128,13 @@ function drawItem(group, item) {
                         "</tbody>" + 
                     "</table>");
             
-        if (get_settings["id"] !== "-999" || item.id !== "-999") {
+        if ((get_settings["id"] === "-999" && item.id !== "-999") ||
+            (get_settings["id"] !== "-999" && item.id === "-999")) {
             // There actually is a link to go to
             popover.append("<p class='font-weight-bold'>" + dict["map.info.details"] + "</p>");
+        } else if (get_settings["id"] !== "-999" && item.id !== "-999" && item.subChildren.length > 0) {
+            // There is a modal showing another sub timeline
+            popover.append("<p class='font-weight-bold'>" + dict["map.info.sub"] + "</p>");
         }
 
         $(link.node).popover({
@@ -138,13 +146,12 @@ function drawItem(group, item) {
             content: popover.get(0)
         });
         
-        // Turn it all counter clock wise
         // Draw the rectangle
         link.rect(item.width, 
                   item.height)
                 .attr("id", "rect_" + item.id)
                 .fill(getLengthColor(item.length))
-                .stroke('black')
+                .stroke({width: item.subChildren.length > 0 ? 5 : 1, color: 'black'})
                 .radius(10, 10)
                 .move(item.X, item.Y);
 
