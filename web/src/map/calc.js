@@ -42,24 +42,24 @@ function setMapItems (map) {
         date: map.hasOwnProperty('date') ? map.date : null,
         length: map.hasOwnProperty('length') ? map.length : null,
         parent_id: "-1",
-        level: 0,
-        level_index: 0,
+        gen: 0,
+        gen_index: 0,
         root: true
     };
     
     // Set the initial items
     g_MapItems = [parent].concat(map.items);
     
-    // Convert the levels to integers if they are strings
+    // Convert the generations to integers if they are strings
     g_MapItems.forEach(function(item) {
-        item.level = parseInt(item.level, 10);
+        item.gen = parseInt(item.gen, 10);
     
         // Set the parents and the children
         setParents(item.id, item.parent_id);
     });
     
-    // Max level
-    var topLevel = g_MapItems[g_MapItems.length - 1].level;
+    // Max generation
+    var maxGen = g_MapItems[g_MapItems.length - 1].gen;
     
     // Remove the duplicates
     g_MapItems = g_MapItems.reduce(function(mapItems, mapItem) {
@@ -71,9 +71,9 @@ function setMapItems (map) {
             // There are duplicutes, get the index of it
             var idx = mapItems.indexOf(dupl[0]);
 
-            // Get the element with the highest level
+            // Get the element with the highest generation
             mapItem = dupl.reduce(function(item, newItem) {
-                return item.level < newItem.level ? newItem : item;
+                return item.gen < newItem.gen ? newItem : item;
             }, mapItem);
             
             // Remove the duplicate from the array
@@ -87,56 +87,56 @@ function setMapItems (map) {
         return mapItems;
     }, []);
     
-    // Make sure parents and children have the highest level possible for the best readability in case of timelines
+    // Make sure parents and children have the highest generation possible for the best readability in case of timelines
     if(parent.id === "-999") {
-        // In this case it's a timeline, let's go by level
-        for (var i = 0; i < topLevel; i++) {
-            // Get all the parents of this level
-            var parents = filterMapItems('level', i);
+        // In this case it's a timeline, let's go by generation
+        for (var i = 0; i < maxGen; i++) {
+            // Get all the parents of this generation
+            var parents = filterMapItems('gen', i);
             
             parents.forEach(function(mapItem) {
                 if (mapItem.children.length !== 0) {
-                    var lowestLevelChild = mapItem.children.reduce(function(lowestLevel, childIdx) {
+                    var lowestGenChild = mapItem.children.reduce(function(lowestGen, childIdx) {
                         var child = getMapItem(childIdx);
-                        if (lowestLevel === -1) {
-                            return child.level;
+                        if (lowestGen === -1) {
+                            return child.gen;
                         } else {
-                            return child.level < lowestLevel ? child.level : lowestLevel;
+                            return child.gen < lowestGen ? child.gen : lowestGen;
                         }
                     }, -1);
                     
-                    mapItem.level = lowestLevelChild - 1;
+                    mapItem.gen = lowestGenChild - 1;
                 }
             });
         }
         
-        // In this case it's a timeline, let's go by level
-        for (var i = 0; i < topLevel; i++) {
-            // Get all the children of this level
-            var children = filterMapItems('level', i);
+        // In this case it's a timeline, let's go by generation
+        for (var i = 0; i < maxGen; i++) {
+            // Get all the children of this generation
+            var children = filterMapItems('gen', i);
             
             children.forEach(function(mapItem) {
                 if (mapItem.parents.length !== 0) {
-                    var highestLevelParent = mapItem.parents.reduce(function(highestLevel, parentIdx) {
+                    var highestGenParent = mapItem.parents.reduce(function(highestGen, parentIdx) {
                         var parent = getMapItem(parentIdx);
-                        if (highestLevel === -1) {
-                            return parent.level;
+                        if (highestGen === -1) {
+                            return parent.gen;
                         } else {
-                            return parent.level > highestLevel ? parent.level : highestLevel;
+                            return parent.gen > highestGen ? parent.gen : highestGen;
                         }
                     }, -1);
                     
-                    mapItem.level = highestLevelParent + 1;
+                    mapItem.gen = highestGenParent + 1;
                 }
             });
         }
     }
     
-    // Lets go per level
-    for (var i = 0; i < topLevel; i++) {
-        // Per level, check the level_index of the parents and sort by that
-        var items = filterMapItems('level', i).sort(function(a, b) {
-            return a.level_index - b.level_index;
+    // Lets go per generation
+    for (var i = 0; i < maxGen; i++) {
+        // Per generation, check the gen_index of the parents and sort by that
+        var items = filterMapItems('gen', i).sort(function(a, b) {
+            return a.gen_index - b.gen_index;
         });
         
         // Now get the children
@@ -144,21 +144,21 @@ function setMapItems (map) {
             var children = getChildren(item.id, PARENTS)
                                 .map(child => getMapItem(child));           
             return array.concat(
-                children.filter((child) => child.level === (item.level + 1))
+                children.filter((child) => child.gen === (item.gen + 1))
             );
     
         }, []);
         
-        // Now set the level indexes in that order
-        items.forEach((child, index) => child.level_index = index);
+        // Now set the gen indexes in that order
+        items.forEach((child, index) => child.gen_index = index);
     }
     
-    // Reorder the mapItems by level and level index
+    // Reorder the mapItems by generation and gen index
     g_MapItems = g_MapItems.sort(function(a, b) {
-        if ((a.level > b.level) || (a.level === b.level && a.level_index > b.level_index)) {
+        if ((a.gen > b.gen) || (a.gen === b.gen && a.gen_index > b.gen_index)) {
             return 1;
         }
-        if ((a.level < b.level) || (a.level === b.level && a.level_index < b.level_index)) {
+        if ((a.gen < b.gen) || (a.gen === b.gen && a.gen_index < b.gen_index)) {
             return -1;
         }
         return 0;
@@ -269,23 +269,23 @@ function getMapItem(id) {
     return items.length > 0 ? items[0] : null;
 }
 
-function getLeftLevelSibling(id) {
+function getLeftGenSibling(id) {
     // Get the item we want to siblings of on the left
     var item = getMapItem(id);
     
-    // The items on the same level on the left (lower levelIndex)
-    var items = filterMapItems('level', item.level).filter(levelSibling => levelSibling.level_index < item.level_index);
+    // The items on the same generation on the left (lower genIndex)
+    var items = filterMapItems('gen', item.gen).filter(genSibling => genSibling.gen_index < item.gen_index);
     
     // Return the most right sibling
     return items[items.length - 1]; 
 }
 
-function getRightLevelSiblings(id) {
+function getRightGenSiblings(id) {
     // Get the item we want to siblings of on the right
     var item = getMapItem(id);
     
-    // The items on the same level on the right (higher levelIndex)
-    var items = filterMapItems('level', item.level).filter(levelSibling => levelSibling.level_index >= item.level_index);
+    // The items on the same generation on the right (higher genIndex)
+    var items = filterMapItems('gen', item.gen).filter(genSibling => genSibling.gen_index >= item.gen_index);
     
     // Only get the ids of these items
     var siblings = items.map(item => item.id);
@@ -294,12 +294,12 @@ function getRightLevelSiblings(id) {
     return siblings; 
 }
 
-function getLevelSiblings(id) {
+function getGenSiblings(id) {
     // Get the item we want to siblings of
     var item = getMapItem(id);
     
-    // The items on the same level
-    var items = filterMapItems('level', item.level);
+    // The items on the same generation
+    var items = filterMapItems('gen', item.gen);
     
     // Only get the ids of these items
     var siblings = items.map(item => item.id);
@@ -359,7 +359,7 @@ function getCommonAncestor(leftId, rightId) {
 
 function moveCommonAncestor(offset, parent) {    
     // Start offsetting the parent and everything on the right
-    var items = getRightLevelSiblings(parent.id);
+    var items = getRightGenSiblings(parent.id);
     
     while (items.length > 0) {
         // The ids of the items
@@ -375,7 +375,7 @@ function moveCommonAncestor(offset, parent) {
     
     // Now offset the parents on the right as well until we've reached the 
     // true ancestor, unless none of these have children..
-    // Right side level siblings don't always need to be moved..
+    // Right side generation siblings don't always need to be moved..
     // Only those who have children and those on the right of these
     var ancestors = getAncestors(parent.id);
     
@@ -385,7 +385,7 @@ function moveCommonAncestor(offset, parent) {
         // As long as we haven't found the true ancestor yet
         if (trueAncestor === false) {
             // The siblings of these ancestors
-            var siblings = getRightLevelSiblings(id);
+            var siblings = getRightGenSiblings(id);
 
             // Only move when any has children
             var child = false;        
@@ -414,7 +414,7 @@ function moveCommonAncestor(offset, parent) {
                 }
             });
         
-            if (getLevelSiblings(id).length === 1) {
+            if (getGenSiblings(id).length === 1) {
                 // No siblings to work with, 
                 // meaning that we reached the true ancestor
                 trueAncestor = true;
@@ -437,11 +437,11 @@ function calcDepth(item) {
     
     // The depth depends on the parents
     if(item.parents.length) {
-        // Get the highest level parent
+        // Get the highest generation parent
         var parent = item.parents.reduce(function(parent1, idx) {
             var parent2 = getMapItem(idx);
             
-            return (parent1.level < parent2.level) ? parent2 : parent1;
+            return (parent1.gen < parent2.gen) ? parent2 : parent1;
         }, getMapItem(item.parents[0]));
         
         // Get the parent depth coordinate, add the height to it 
@@ -468,7 +468,7 @@ function calcOffset(item) {
             // a.k.a search for every child with this id
             var avgOffset = filterMapItems("children", item.id).reduce(function(carry, parent) {
                 // Is it directly above us? Use it's X coordinate
-                if ((parent.level + 1) === item.level) {
+                if ((parent.gen + 1) === item.gen) {
                     carry += parseInt(parent[OFFSET_COORD[g_Options.type]], 10);
                     parentOffsets.push(parent[OFFSET_COORD[g_Options.type]]);
                 }
@@ -524,8 +524,8 @@ function calcOffset(item) {
         }
     }
     
-    // Does this offset coordinate cause an overlap with the left level sibling?
-    var sibling = getLeftLevelSibling(item.id);
+    // Does this offset coordinate cause an overlap with the left generation sibling?
+    var sibling = getLeftGenSibling(item.id);
 
     if (sibling) {
         // The distance needed between left and right
@@ -547,18 +547,18 @@ function calcOffset(item) {
 
 function sortByAncestor() {
     g_ClashedItems.sort(function(left, right) {
-        // Get the levels
-        var levelL = getMapItem(left.ancestor).level;
-        var levelR = getMapItem(right.ancestor).level;
+        // Get the gens
+        var genL = getMapItem(left.ancestor).gen;
+        var genR = getMapItem(right.ancestor).gen;
         
-        // Get the level indexes
-        var indexL = getMapItem(left.ancestor).level_index;
-        var indexR = getMapItem(right.ancestor).level_index;
+        // Get the gen indexes
+        var indexL = getMapItem(left.ancestor).gen_index;
+        var indexR = getMapItem(right.ancestor).gen_index;
         
-        // Sort by level (desc) and then by level index (asc)
-        if (levelL !== levelR) {
-            return levelR - levelL;
-        } else if (levelL === levelR) {
+        // Sort by generation (desc) and then by gen index (asc)
+        if (genL !== genR) {
+            return genR - genL;
+        } else if (genL === genR) {
             return indexL - indexR;
         }
     });

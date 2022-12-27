@@ -116,11 +116,11 @@ class timeline {
             $child_ids = array($this->id);
             $activity_arr = array();
 
-            $level = 1;
+            $gen = 1;
 
             while (count($child_ids) > 0) {            
                 // query to read timeline
-                $children = $this->base->getTimelineEvents($child_ids, $level++);
+                $children = $this->base->getTimelineEvents($child_ids, $gen++);
                 $activity_arr = array_merge($activity_arr, $children);
 
                 $child_ids = array_map(function($child) { return $child["id"]; }, $children);
@@ -140,9 +140,9 @@ class timeline {
                     // No duplicate, add it to the carry
                     $carry[] = $var1;
                 } else {
-                    // There already is a duplicate, use the one with the highest level
+                    // There already is a duplicate, use the one with the highest gen
                     $dupl_idx = array_keys($dupl_arr)[0];
-                    $carry[$dupl_idx]["level"] = max($carry[$dupl_idx]["level"], $var1["level"]);
+                    $carry[$dupl_idx]["gen"] = max($carry[$dupl_idx]["gen"], $var1["gen"]);
                 }
                 
                 return $carry;                
@@ -158,11 +158,11 @@ class timeline {
             $parent->id = $this->id;
             $parent->readOne();
 
-            $level = 1;
+            $gen = 1;
 
             while (count($child_ids) > 0) {            
                 // query to read timeline
-                $children = $this->base->getTimelineActivities($child_ids, $level++);
+                $children = $this->base->getTimelineActivities($child_ids, $gen++);
                 $activity_arr = array_merge($activity_arr, $children);
 
                 $child_ids = array_map(function($child) { return $child["id"]; }, $children);
@@ -182,9 +182,9 @@ class timeline {
                     // No duplicate, add it to the carry
                     $carry[] = $var1;
                 } else {
-                    // There already is a duplicate, use the one with the highest level
+                    // There already is a duplicate, use the one with the highest gen
                     $dupl_idx = array_keys($dupl_arr)[0];
-                    $carry[$dupl_idx]["level"] = max($carry[$dupl_idx]["level"], $var1["level"]);
+                    $carry[$dupl_idx]["gen"] = max($carry[$dupl_idx]["gen"], $var1["gen"]);
                 }
                 
                 return $carry;                

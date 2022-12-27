@@ -422,12 +422,12 @@ class base {
         return $this->getResults($stmt);
     }
     
-    public function getFamilytreeToChildren($ids, $level) {
+    public function getFamilytreeToChildren($ids, $gen) {
         // select all query
         $query = "SELECT
                     p.id, p.name, p.meaning_name, p.descr, 
                     p.gender, p2p.parent_id, aka.people_name AS aka,
-                    ".$level." as level, 0 as X, 0 as Y
+                    ".$gen." as gen, 0 as X, 0 as Y
                 FROM
                     " . $this->table_peoples . " p
                     LEFT JOIN
@@ -461,12 +461,12 @@ class base {
         return $this->getResults($stmt);
     }
     
-    public function getTimelineEvents($ids, $level) {
-        if ($level > 1) {
+    public function getTimelineEvents($ids, $gen) {
+        if ($gen > 1) {
             // select all query
             $query = "SELECT
                         e.id, e.name as name, e.length, e.date, e2pa.parent_id,
-                        ".$level." as level, 0 as X, 0 as Y
+                        ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
 
@@ -481,7 +481,7 @@ class base {
             // select all query
             $query = "SELECT
                         e.id, e.name as name, e.length, e.date, -999 as parent_id,
-                        ".$level." as level, 0 as X, 0 as Y
+                        ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
 
@@ -508,13 +508,13 @@ class base {
         return $this->getResults($stmt);
     }
     
-    public function getTimelineActivities($ids, $level) {
+    public function getTimelineActivities($ids, $gen) {
         
-        if ($level > 1) {
+        if ($gen > 1) {
             // select all query
             $query = "SELECT
                         a.id, a.name, a.descr, a.length, a.date, a2pa.parent_id,
-                        ".$level." as level, 0 as X, 0 as Y
+                        a.level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
 
@@ -529,7 +529,7 @@ class base {
             // select all query
             $query = "SELECT
                         a.id, a.name, a.descr, a.length, a.date, -999 as parent_id,
-                        ".$level." as level, 0 as X, 0 as Y
+                        a.level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
 
