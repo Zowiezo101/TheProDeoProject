@@ -468,7 +468,6 @@ function moveCommonAncestor(offset, parent) {
 }
 
 function filterMapItems(prop, value) {
-//    return g_MapItems.filter(item => (prop == "parents") ? (item[prop].includes(value)) : (item[prop] === value));
     return g_MapItems.filter(function(item) {
         return ["parents", "children"].includes(prop) ? (item[prop].includes(value)) : (item[prop] === value);
     });
