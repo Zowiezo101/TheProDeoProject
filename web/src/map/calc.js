@@ -17,7 +17,9 @@ var PARENTS = 0;
 var PARENT_ID = 1;
 
 var g_MapItems = null;
-var g_Options = null;
+var g_ArchiveItems = null;
+var g_SubMapItems = null;
+var g_Options = {sub: false};
 var g_ClashedItems = [];
 var g_Map = null;
 
@@ -62,11 +64,78 @@ function setMapItems (map) {
         setParents(item.id, item.parent_id);
     });
     
-    // Max generation
-    var maxGen = g_MapItems[g_MapItems.length - 1].gen;
+    // Remove the duplicates
+    g_MapItems = removeDuplicates(g_MapItems);
+    
+    g_MapItems = sortMapItems(g_MapItems);
+    
+    // Archive the subs for later use
+    g_ArchiveItems = filterMapItems('level', 2);
+    
+    // Now remove the other levels from the official map items array
+    g_MapItems = filterMapItems('level', 1);
+    
+    return g_MapItems;
+}
+
+function setSubMapItems(id) {
+    var ancestor = getMapItem(id);
+    
+    var parent = {
+        id: ancestor.id,
+        name: ancestor.name,
+        meaning_name: ancestor.hasOwnProperty('meaning_name') ? ancestor.meaning_name : null,
+        descr: ancestor.hasOwnProperty('descr') ? ancestor.descr : null,
+        aka: ancestor.hasOwnProperty('aka') ? ancestor.aka : null,
+        gender: ancestor.hasOwnProperty('gender') ? ancestor.gender : null,
+        date: ancestor.hasOwnProperty('date') ? ancestor.date : null,
+        length: ancestor.hasOwnProperty('length') ? ancestor.length : null,
+        parent_id: "-1",
+        gen: 0,
+        gen_index: 0,
+        level: 2,
+        root: true,
+        parents: [],
+        children: Array.from(ancestor.subChildren),
+        subChildren: Array.from(ancestor.subChildren)
+    };
+    
+    g_SubMapItems = [parent];
+    
+    // The children of the item
+    var children = Array.from(parent.children);
+    var newChildren = null;
+    
+    while (children.length > 0) {
+        // The child to currently work with
+        var childId = children.shift();
+        var childItem = getArchiveItem(childId);
+        
+        // Add this child to the list
+        g_SubMapItems.push(childItem);
+        
+        // Find the next generation
+        var newChildren = childItem.children;
+        if (newChildren.length > 0) {
+            children = children.concat(newChildren);
+        }
+    }
     
     // Remove the duplicates
-    g_MapItems = g_MapItems.reduce(function(mapItems, mapItem) {
+    g_SubMapItems = removeDuplicates(g_SubMapItems);
+    
+    g_SubMapItems = sortMapItems(g_SubMapItems);
+    
+    return g_SubMapItems;
+}
+
+function getMapItems() {
+    return g_Options.sub ? g_SubMapItems : g_MapItems;
+}
+
+function removeDuplicates(mapItems) {
+    // Remove the duplicates
+    return mapItems.reduce(function(mapItems, mapItem) {
         
         // Get the duplicates
         var dupl = mapItems.filter(item => item.id === mapItem.id);
@@ -90,9 +159,14 @@ function setMapItems (map) {
         // Return the array for the new round
         return mapItems;
     }, []);
+}
+
+function sortMapItems(mapItems) {
+    // Max generation
+    var maxGen = Math.max(...mapItems.map(item => item.gen));
     
     // Make sure parents and children have the highest generation possible for the best readability in case of timelines
-    if(parent.id === "-999") {
+    if(g_Options.type === TYPE_TIMELINE) {
         // In this case it's a timeline, let's go by generation
         for (var i = 0; i < maxGen; i++) {
             // Get all the parents of this generation
@@ -157,7 +231,7 @@ function setMapItems (map) {
     }
     
     // Reorder the mapItems by generation and gen index
-    g_MapItems = g_MapItems.sort(function(a, b) {
+    return mapItems.sort(function(a, b) {
         if ((a.gen > b.gen) || (a.gen === b.gen && a.gen_index > b.gen_index)) {
             return 1;
         }
@@ -166,15 +240,6 @@ function setMapItems (map) {
         }
         return 0;
     });
-    
-    // Now remove the other levels from the official map items array
-    g_MapItems = filterMapItems('level', 1);
-    
-    return g_MapItems;
-}
-
-function getMapItems() {
-    return g_MapItems;
 }
 
 function calcMapItems(options = new Object()) {
@@ -195,10 +260,11 @@ function calcMapItems(options = new Object()) {
     g_Options = {
         "length": {X: options.item_width, Y: options.item_height},
         "dist": {X: options.hori_dist, Y: options.vert_dist},
-        "type": options.type
+        "type": options.type,
+        "sub": g_Options.sub
     };
     
-    g_MapItems.forEach(function(item) { 
+    getMapItems().forEach(function(item) { 
         
         item.width = options.item_width;
         item.height = options.item_height;
@@ -217,10 +283,10 @@ function calcMapItems(options = new Object()) {
     // then get the heighest X and Y values 
     // and use it to shift the entire thing
     g_ClashedItems.forEach(item => solveClash(item));
-    g_MapItems.forEach(item => getOffsets(item));
-    g_MapItems.forEach(item => setOffsets(item));
+    getMapItems().forEach(item => getOffsets(item));
+    getMapItems().forEach(item => setOffsets(item));
     
-    return g_MapItems;
+    return getMapItems();
     
 }
 
@@ -263,7 +329,7 @@ function setParents(id, parent_id) {
                     parent = getMapItem(child.parent_id);
                 } else {
                     // We are a sub of this parent, don't add it as a child
-                    child.subParents.push(parent_id);
+                    child.parents.push(parent_id);
                 }
             }
 
@@ -307,7 +373,21 @@ function getChildrenByParentId(id) {
 }
 
 function getMapItem(id) {
-    var items = filterMapItems('id', id);
+    // The order kinda depends on whether we are in sub more or not
+    var searchItems = g_Options.sub && g_SubMapItems ? 
+            g_SubMapItems.concat(g_MapItems) : 
+            g_MapItems.concat(g_SubMapItems);
+    
+    var items = searchItems.filter(function(item) {
+        return item !== null ? item.id === id : false;
+    });
+    return items.length > 0 ? items[0] : null;
+}
+
+function getArchiveItem(id) {    
+    var items = g_ArchiveItems.filter(function(item) {
+        return item !== null ? item.id === id : false;
+    });
     return items.length > 0 ? items[0] : null;
 }
 
@@ -468,7 +548,7 @@ function moveCommonAncestor(offset, parent) {
 }
 
 function filterMapItems(prop, value) {
-    return g_MapItems.filter(function(item) {
+    return getMapItems().filter(function(item) {
         return ["parents", "children"].includes(prop) ? (item[prop].includes(value)) : (item[prop] === value);
     });
 }
@@ -482,9 +562,13 @@ function getSubParent(level, parent) {
 
 function getSubParents(level) {
     // Find every parent with subchildren
-    return g_MapItems.filter(function(item) {
+    return getMapItems().filter(function(item) {
         return item.subChildren.length > 0 && item.level === level;
     });
+}
+
+function itemHasSubChildren(item) {
+    return item.hasOwnProperty("subChildren") ? item.subChildren.length > 0 : false;
 }
 
 function calcDepth(item) {    

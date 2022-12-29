@@ -1,6 +1,7 @@
-/* global get_settings, pzInstance, g_Options, g_MapItems, g_svg, g_Offsets, TYPE_FAMILYTREE */
+/* global get_settings, pzInstance, g_Options, g_MapItems, g_Offsets, TYPE_FAMILYTREE, getSVG */
 
 var pzInstance = null;
+var pzSubInstance = null;
 
 // These two are used to get smooth zooming/panning
 // with the correct values, by taking over the actual
@@ -66,7 +67,7 @@ function onAfterPanZoom(f) {
 
 function setViewSettings() {    
     // Setting the panZoom settings
-    pzInstance = svgPanZoom(g_svg.node, {
+    pzInstance = svgPanZoom(getSVG().node, {
         fit: false,
         center: false,
         maxZoom: 2,
@@ -78,7 +79,7 @@ function setViewSettings() {
     jQuery.Color.hook("stroke");
     
     // When resizing the window, 
-    // make sure the bouding box is recalculated and such.
+    // make sure the bounding box is recalculated and such.
     $(window).resize(function() {
         if (pzInstance !== null) {
             // Get the current location and zoom
@@ -96,6 +97,42 @@ function setViewSettings() {
     });
 }
 
+function setSubViewSettings() {
+    // Setting the panZoom settings
+    pzSubInstance = svgPanZoom(getSVG().node, {
+        fit: false,
+        center: false,
+        maxZoom: 2,
+        minZoom: 0.01,
+        beforeZoom: onBeforeZoom,
+        beforePan: onBeforePan
+    });
+    
+    jQuery.Color.hook("stroke");
+    
+    // When resizing the window, 
+    // make sure the bounding box is recalculated and such.
+    $(window).resize(function() {
+        if (pzSubInstance !== null) {
+            // Get the current location and zoom
+            var pan = pzSubInstance.getPan();
+            var zoom = pzSubInstance.getZoom();
+            
+            // Reset and resize
+            pzSubInstance.reset();
+            pzSubInstance.resize();
+            
+            // Set the current location and zoom
+            pzSubInstance.pan(pan);
+            pzSubInstance.zoom(zoom);
+        }
+    });
+}
+
+function getPZInstance() {
+    return g_Options.sub ? pzSubInstance : pzInstance;
+}
+
 function panToItem() {
     // Default ID to pan to is the first item of the timeline
     var id = g_MapItems[0].id;
@@ -105,6 +142,10 @@ function panToItem() {
         id = get_settings["panTo"];
     }
     
+    panToId(id);
+}
+
+function panToId(id) {
     // Get the item
     var item = getMapItem(id);
     if (item === null) {
@@ -113,7 +154,7 @@ function panToItem() {
     } 
     
     // The height and width of the SVG parent
-    var map = $("#map_div");
+    var map = getMapDiv();
     var outerHeight = map.outerHeight(true);
     var outerWidth = map.outerWidth(true);
 
@@ -122,7 +163,7 @@ function panToItem() {
     var newY = (outerHeight / 2) - (item.Y + (g_Options.length.Y / 2));
 
     // Move to the desired location
-    panSmooth(pzInstance.getPan(), {x: newX, y: newY});
+    panSmooth(getPZInstance().getPan(), {x: newX, y: newY});
     onAfterPanZoom(function() {
         focusOnRect(item.id);
     });
@@ -199,7 +240,7 @@ function panSmooth(oldPan, newPan) {
         current.y = diff.y * t + source.y;
         
         if (animationStep++ < animationSteps) {
-            pzInstance.panBy({
+            getPZInstance().panBy({
                 x: current.x - previous.x, 
                 y: current.y - previous.y
             });
@@ -285,7 +326,7 @@ function zoomSmooth(oldZoom, newZoom) {
         current = diff * t + source;
         
         if (animationStep++ < animationSteps) {
-            pzInstance.zoom(current);
+            getPZInstance().zoom(current);
             
             timeoutZoom = setTimeout(animationFrame, animationStepTime);
         } else {
@@ -309,18 +350,18 @@ function zoomSmooth(oldZoom, newZoom) {
 function onZoomFit() {    
     onSmoothPanning = true;
     onSmoothZooming = true;
-    pzInstance.fit();
+    getPZInstance().fit();
     
     onAfterPanZoom(function () {
         onSmoothPanning = true;
-        pzInstance.center();
+        getPZInstance().center();
     });
 }
 
 function onZoomReset() {
     onSmoothZooming = true;
     onSmoothPanning = true;
-    pzInstance.resetZoom();
+    getPZInstance().resetZoom();
     
     onAfterPanZoom(function () {
         panToItem();
@@ -333,7 +374,7 @@ function onDownload (title) {
     var svgsaver = new SvgSaver();
     
     // Create a SVG element for downloading
-    var map_svg = $(g_svg.node).clone()
+    var map_svg = $(getSVG().node).clone()
             .attr("width", g_Offsets.width_max - g_Offsets.width_min + g_Options.length.X)
             .attr("height", g_Offsets.height_max - g_Offsets.height_min + g_Options.length.Y)
             .css("overflow", "scroll");
@@ -362,7 +403,7 @@ function focusOnRect(id) {
     }, 100, function() {
         $("#rect_" + id).animate({
             "stroke": "black",
-            "stroke-width": "1px"
+            "stroke-width": itemHasSubChildren(getMapItem(id)) ? "5px" : "1px"
         }, 2000);
     });
 }
