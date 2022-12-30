@@ -64,16 +64,16 @@ function setMapItems (map) {
         setParents(item.id, item.parent_id);
     });
     
-    // Remove the duplicates
-    g_MapItems = removeDuplicates(g_MapItems);
-    
-    g_MapItems = sortMapItems(g_MapItems);
-    
     // Archive the subs for later use
     g_ArchiveItems = filterMapItems('level', 2);
     
     // Now remove the other levels from the official map items array
     g_MapItems = filterMapItems('level', 1);
+    
+    // Remove the duplicates
+    g_MapItems = removeDuplicates(g_MapItems);
+    
+    g_MapItems = sortMapItems(g_MapItems);
     
     return g_MapItems;
 }
@@ -165,8 +165,9 @@ function sortMapItems(mapItems) {
     // Max generation
     var maxGen = Math.max(...mapItems.map(item => item.gen));
     
-    // Make sure parents and children have the highest generation possible for the best readability in case of timelines
-    if(g_Options.type === TYPE_TIMELINE) {
+    // Make sure parents and children have the highest generation possible 
+    // for the best readability in case of timelines
+    if ((g_Options.type === TYPE_TIMELINE) || (mapItems[0].id === "-999")) {
         // In this case it's a timeline, let's go by generation
         for (var i = 0; i < maxGen; i++) {
             // Get all the parents of this generation
@@ -184,6 +185,8 @@ function sortMapItems(mapItems) {
                     }, -1);
                     
                     mapItem.gen = lowestGenChild - 1;
+                } else if (mapItem.parent_id !== "-1") {
+                    mapItem.gen = getMapItem(mapItem.parent_id).gen + 1;
                 }
             });
         }
