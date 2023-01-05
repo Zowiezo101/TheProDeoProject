@@ -145,8 +145,19 @@ function removeDuplicates(mapItems) {
             var idx = mapItems.indexOf(dupl[0]);
 
             // Get the element with the highest generation
-            mapItem = dupl.reduce(function(item, newItem) {
-                return item.gen < newItem.gen ? newItem : item;
+            // Make sure to copy it's (sub)children/(sub)parents
+            var mapItem = dupl.reduce(function(item, newItem) {
+                item.children = item.children.concat(newItem.children)
+                        .filter((value, index, self) => self.indexOf(value) === index);
+                item.parents  = item.parents.concat(newItem.parents)
+                        .filter((value, index, self) => self.indexOf(value) === index);
+                item.subChildren = item.subChildren.concat(newItem.subChildren)
+                        .filter((value, index, self) => self.indexOf(value) === index);
+                item.subParents = item.subParents.concat(newItem.subParents)
+                        .filter((value, index, self) => self.indexOf(value) === index);
+                item.gen = Math.max(item.gen, newItem.gen);
+                
+                return item;
             }, mapItem);
             
             // Remove the duplicate from the array
@@ -266,6 +277,8 @@ function calcMapItems(options = new Object()) {
         "type": options.type,
         "sub": g_Options.sub
     };
+    
+    g_ClashedItems = [];
     
     getMapItems().forEach(function(item) { 
         
