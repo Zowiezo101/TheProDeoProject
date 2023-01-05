@@ -622,11 +622,8 @@ function calcOffset(item) {
             // Get all the parents for this child 
             // a.k.a search for every child with this id
             var avgOffset = filterMapItems("children", item.id).reduce(function(carry, parent) {
-                // Is it directly above us? Use it's X coordinate
-                if ((parent.gen + 1) === item.gen) {
-                    carry += parseInt(parent[OFFSET_COORD[g_Options.type]], 10);
-                    parentOffsets.push(parent[OFFSET_COORD[g_Options.type]]);
-                }
+                carry += parseInt(parent[OFFSET_COORD[g_Options.type]], 10);
+                parentOffsets.push(parent[OFFSET_COORD[g_Options.type]]);
                 return carry;
             }, 0);
             
