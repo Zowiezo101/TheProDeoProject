@@ -12,8 +12,14 @@ class activity{
     public $descr;
     public $length;
     public $date;
-    public $start_verse;
-    public $end_verse;
+    public $level;
+    public $book_start_id;
+    public $book_start_chap;
+    public $book_start_vers;
+    public $book_end_id;
+    public $book_end_chap;
+    public $book_end_vers;
+    public $aka;
   
     // constructor with $db as database connection
     public function __construct($db) {

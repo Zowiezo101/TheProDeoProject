@@ -13,6 +13,9 @@ class timeline {
     // object properties
     public $id;
     public $name;
+    public $descr;
+    public $date;
+    public $length;
     public $gender;
     public $items;
   
@@ -170,6 +173,8 @@ class timeline {
 
             $this->id = "-999";
             $this->name = $parent->name;
+            $this->descr = $parent->descr;
+            $this->date = $parent->date;
             $this->length = $parent->length;
             $this->items = array_reduce($activity_arr, function ($carry, $var1) {
                 // Check if item is already in carry

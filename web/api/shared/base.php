@@ -12,7 +12,7 @@ class base {
     public $table_events = "events";
     public $table_peoples = "peoples";
     public $table_locations = "locations";
-    public $table_speciacls = "locations";
+    public $table_specials = "specials";
     public $table_a2pa = "activity_to_parent";
     public $table_a2e = "activity_to_event";
     public $table_e2pa = "event_to_parent";
@@ -54,12 +54,15 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(p2a.people_id) as id, p2a.people_name as name
+                    distinct(p2a.people_id) as id, p.name as name
                 FROM
                     " . $this->table_p2a . " p2a
                     LEFT JOIN
                         " . $this->table_a2e . " a2e
                             ON a2e.activity_id = p2a.activity_id
+                    LEFT JOIN
+                        " . $this->table_peoples . " p
+                            ON p2a.people_id = p.id
                 WHERE
                     a2e.event_id = ?
                 ORDER BY
@@ -81,12 +84,15 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(l2a.location_id) as id, l2a.location_name as name
+                    distinct(l2a.location_id) as id, l.name as name
                 FROM
                     " . $this->table_l2a . " l2a
                     LEFT JOIN
                         " . $this->table_a2e . " a2e
                             ON a2e.activity_id = l2a.activity_id
+                    LEFT JOIN
+                        " . $this->table_locations . " l
+                            ON l2a.location_id = l.id
                 WHERE
                     a2e.event_id = ?
                 ORDER BY
@@ -108,12 +114,15 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(s2a.special_id) as id, s2a.special_name as name
+                    distinct(s2a.special_id) as id, s.name as name
                 FROM
                     " . $this->table_s2a . " s2a
                     LEFT JOIN
                         " . $this->table_a2e . " a2e
                             ON a2e.activity_id = s2a.activity_id
+                    LEFT JOIN
+                        " . $this->table_specials . " s
+                            ON s2a.special_id = s.id
                 WHERE
                     a2e.event_id = ?
                 ORDER BY
@@ -242,7 +251,8 @@ class base {
     public function getPeopleToPeoples($id) {
         // select all query
         $query = "SELECT
-                    p2p.people_id as id, p2p.people_name as name
+                    p2p.people_id as id, p2p.people_name as name, 
+                    p2p.meaning_name as meaning_name
                 FROM
                     " . $this->table_p2p . " p2p
                 WHERE
@@ -465,7 +475,7 @@ class base {
         if ($gen > 1) {
             // select all query
             $query = "SELECT
-                        e.id, e.name as name, e.length, e.date, e2pa.parent_id,
+                        e.id, e.name, e.descr, e.length, e.date, e2pa.parent_id,
                         1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
@@ -480,7 +490,7 @@ class base {
         } else {
             // select all query
             $query = "SELECT
-                        e.id, e.name as name, e.length, e.date, -999 as parent_id,
+                        e.id, e.name, e.descr, e.length, e.date, -999 as parent_id,
                         1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e

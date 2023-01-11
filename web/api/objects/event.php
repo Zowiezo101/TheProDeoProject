@@ -28,6 +28,7 @@ class event {
     public $peoples;
     public $locations;
     public $specials;
+    public $aka;
   
     // constructor with $db as database connection
     public function __construct($db){
