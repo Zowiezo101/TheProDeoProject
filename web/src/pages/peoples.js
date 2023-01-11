@@ -9,7 +9,7 @@ function getPeopleContent(peoples) {
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <h1 class="mb-3">` + peoples.name + `</h1>
-                    <p class="lead">` + peoples.description + `</p>
+                    <p class="lead">` + peoples.descr + `</p>
                 </div>
             </div>
             <div class="row">

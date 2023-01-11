@@ -9,7 +9,7 @@ function getLocationContent(locations) {
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <h1 class="mb-3">` + locations.name + `</h1>
-                    <p class="lead">` + locations.description + `</p>
+                    <p class="lead">` + locations.descr + `</p>
                 </div>
             </div>
             <div class="row">

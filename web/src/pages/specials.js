@@ -9,7 +9,7 @@ function getSpecialContent(specials) {
             <div class="row">
                 <div class="col-lg-11 px-lg-5 px-md-3 text-center">
                     <h1 class="mb-3">` + specials.name + `</h1>
-                    <p class="lead">` + specials.description + `</p>
+                    <p class="lead">` + specials.descr + `</p>
                 </div>
             </div>
             <div class="row">

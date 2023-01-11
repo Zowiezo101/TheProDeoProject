@@ -13,7 +13,7 @@ class location {
   
     // object properties
     public $id;
-    public $description;
+    public $descr;
     public $meaning_name;
     public $type;
     public $coordinates;
@@ -143,7 +143,7 @@ class location {
 
         // set values to object properties
         $this->name = $row['name'];
-        $this->description = $row['descr'];
+        $this->descr = $row['descr'];
         $this->meaning_name = $row['meaning_name'];
         $this->type = $row['type'];
         $this->coordinates = $row['coordinates'];

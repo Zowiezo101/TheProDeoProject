@@ -13,7 +13,7 @@ class special {
   
     // object properties
     public $id;
-    public $description;
+    public $descr;
     public $meaning_name;
     public $type;
     public $book_start_id;
@@ -140,7 +140,7 @@ class special {
 
         // set values to object properties
         $this->name = $row['name'];
-        $this->description = $row['descr'];
+        $this->descr = $row['descr'];
         $this->meaning_name = $row['meaning_name'];
         $this->type = $row['type'];
         $this->book_start_id = $row['book_start_id'];

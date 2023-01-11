@@ -138,7 +138,7 @@ class familytree {
         
         $this->name = $parent->name;
         $this->meaning_name = $parent->meaning_name;
-        $this->descr = $parent->description;
+        $this->descr = $parent->descr;
         $this->aka = $parent->aka;
         $this->gender = $parent->gender;
         $this->items = $people_arr;

@@ -14,7 +14,7 @@ class people {
     // object properties
     public $id;
     public $name;
-    public $description;
+    public $descr;
     public $meaning_name;
     public $father_age;
     public $mother_age;
@@ -152,7 +152,7 @@ class people {
 
         // set values to object properties
         $this->name = $row['name'];
-        $this->description = $row['descr'];
+        $this->descr = $row['descr'];
         $this->meaning_name = $row['meaning_name'];
         $this->father_age = $row['father_age'];
         $this->mother_age = $row['mother_age'];

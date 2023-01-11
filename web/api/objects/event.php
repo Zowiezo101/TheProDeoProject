@@ -14,7 +14,7 @@ class event {
     // object properties
     public $id;
     public $name;
-    public $description;
+    public $descr;
     public $length;
     public $date;
     public $book_start_id;
@@ -145,7 +145,7 @@ class event {
 
         // set values to object properties
         $this->name = $row['name'];
-        $this->description = $row['descr'];
+        $this->descr = $row['descr'];
         $this->length = $row['length'];
         $this->date = $row['date'];
         $this->book_start_id = $row['book_start_id'];

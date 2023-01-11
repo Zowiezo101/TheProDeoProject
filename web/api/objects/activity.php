@@ -9,7 +9,7 @@ class activity{
   
     // object properties
     public $id;
-    public $description;
+    public $descr;
     public $length;
     public $date;
     public $start_verse;
