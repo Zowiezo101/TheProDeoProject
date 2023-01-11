@@ -1,4 +1,4 @@
-/* global SVG, TYPE_TIMELINE, dict, g_Options */
+/* global SVG, TYPE_TIMELINE, dict, g_Options, getMapItem */
 
 function getTimelineContent(timeline) {
     if (timeline.name === "Global") {

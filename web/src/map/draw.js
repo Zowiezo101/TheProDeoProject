@@ -132,8 +132,11 @@ function drawItem(group, item) {
         }
 
         // The popover itself
-        var popover = $("<div>")
-                .append("\
+        var popover = $("<div>");
+        if (item.id === "-999") {
+            popover.append("<p>" + dict["map.info.global"] + "</p>");
+        }
+        popover.append("\
                     <table class='table table-striped'>" + 
                         "<tbody>" +
                         insertDetail(item, "descr") + 
@@ -155,7 +158,7 @@ function drawItem(group, item) {
             animation: true,
             trigger: "hover",
             placement: "top",
-            title: dict["map.info.title"] + item.name,
+            title: dict["map.info.title"] + "\"" + item.name + "\"",
             html: true,
             content: popover.get(0)
         });
