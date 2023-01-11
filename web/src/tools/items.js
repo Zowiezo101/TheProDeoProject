@@ -550,8 +550,6 @@ function insertDetail(item, prop) {
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
-    } else if (prop === "length") {
-        detail = getLengthString(item[prop]);
     } else if (prop === "gender") {
         detail = getGenderString(item[prop]);
     } else if (prop === "tribe") {

@@ -133,167 +133,43 @@ function getGenderColor(int) {
     return color;
 }
 
-function getLengthString(int, short=false) {
-    var str = "";
+function getDataColor(object) {
+    var color = "lightgrey";
+    var colorCode = 0;
     
-    // Different types of length
-    switch(int) {
-        case 0:
-        case "0":
-            // Around or less than an hour
-            str = dict["length." + (short ? "short." : "") + "hour"];
-            break;
-            
-        case 1:
-        case "1":
-            // Around or less than a day
-            str = dict["length." + (short ? "short." : "") + "day"];
-            break;
-            
-        case 2:
-        case "2":
-            // Around or less than a week
-            str = dict["length." + (short ? "short." : "") + "week"];
-            break
-            
-        case 3:
-        case "3":
-            // Around or less than a month
-            str = dict["length." + (short ? "short." : "") + "month"];
-            break
-            
-        case 4:
-        case "4":
-            // Around or less than quarter of a year
-            str = dict["length." + (short ? "short." : "") + "quarter"];
-            break
-            
-        case 5:
-        case "5":
-            // Around or less than half a year
-            str = dict["length." + (short ? "short." : "") + "half"];
-            break
-            
-        case 6:
-        case "6":
-            // Around or less than a year
-            str = dict["length." + (short ? "short." : "") + "year"];
-            break
-            
-        case 7:
-        case "7":
-            // Around or less than a decade
-            str = dict["length." + (short ? "short." : "") + "decade"];
-            break
-            
-        case 8:
-        case "8":
-            // Around or less than a century
-            str = dict["length." + (short ? "short." : "") + "century"];
-            break
-            
-        case 9:
-        case "9":
-            // Around or less than a millenium
-            str = dict["length." + (short ? "short." : "") + "millennium"];
-            break
-            
-        case 10:
-        case "10":
-            // More than a millenium
-            str = dict["length." + (short ? "short." : "") + "more"];
-            break
-            
-        case -1:
-        case "-1":
-        case 11:
-        case "11":
-        default:
-            // unknown/Other
-            str = dict["length.unknown"];
-            break 
+    if (object.hasOwnProperty("descr") && ![null, "", "-1"].includes(object.descr)) {
+        colorCode += 1;
+    } if (object.hasOwnProperty("date") && ![null, "", "-1"].includes(object.date)) {
+        colorCode += 2;
+    } if (object.hasOwnProperty("length") && ![null, "", "-1"].includes(object.length)) {
+        colorCode += 4;
     }
     
-    return str;
-}
-
-function getLengthColor(length) {
-    var color = "";
-    
-    // Different types of length
-    switch(length) {
+    switch(colorCode) {
         case 0:
-        case "0":
-            // Around or less than an hour
-            color = "lightGreen";
-            break;
-            
-        case 1:
-        case "1":
-            // Around or less than a day
-            color = "lightCoral";
-            break;
-            
-        case 2:
-        case "2":
-            // Around or less than a week
-            color = "violet";
-            break
-            
-        case 3:
-        case "3":
-            // Around or less than a month
-            color = "lightSkyBlue";
-            break
-            
-        case 4:
-        case "4":
-            // Around or less than quarter of a year
-            color = "aquamarine";
-            break
-            
-        case 5:
-        case "5":
-            // Around or less than half a year
-            color = "lightSalmon";
-            break
-            
-        case 6:
-        case "6":
-            // Around or less than a year
-            color = "burlywood";
-            break
-            
-        case 7:
-        case "7":
-            // Around or less than a decennium
-            color = "orangeRed";
-            break
-            
-        case 8:
-        case "8":
-            // Around or less than a century
-            color = "yellowGreen";
-            break
-            
-        case 9:
-        case "9":
-            // Around or less than a millenium
-            color = "royalBlue";
-            break
-            
-        case 10:
-        case "10":
-            // More than a millenium
-            color = "seaShell";
-            break
-            
-        case -1:
-        case "-1":
-        default:
-            // unknown
             color = "lightgrey";
-            break 
+            break;
+        case 1:
+            color = "lightcoral";
+            break;
+        case 2:
+            color = "lightblue";
+            break;
+        case 3:
+            color = "mediumpurple";
+            break;
+        case 4:
+            color = "gold";
+            break;
+        case 5:
+            color = "lightsalmon";
+            break;
+        case 6:
+            color = "lightgreen";
+            break;
+        case 7:
+            color = "peru";
+            break;
     }
     
     return color;

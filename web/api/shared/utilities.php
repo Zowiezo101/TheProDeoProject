@@ -83,11 +83,6 @@ class utilities{
                     $item_columns[] = "max(num_chapters) as max_num_chapters";
                     $item_columns[] = "min(num_chapters) as min_num_chapters";
                 }
-                if(in_array('length', $json_filters->sliders)) {
-                    // Get the maximum and minimum chapters
-                    $item_columns[] = "max(length) as max_length";
-                    $item_columns[] = "min(length) as min_length";
-                }
                 if(in_array('age', $json_filters->sliders)) {
                     // Get the maximum and minimum chapters
                     $item_columns[] = "max(age) as max_age";
@@ -149,12 +144,8 @@ class utilities{
                     $item_values[] = $items[1];
                 }
                 if(property_exists($json_filters, 'length')) {
-                    $item_filters[] = "length BETWEEN ? AND ?";
-                    
-                    // The two lengths to set between
-                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->length)), 2);
-                    $item_values[] = $items[0];
-                    $item_values[] = $items[1];
+                    $item_filters[] = "length LIKE ?";
+                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->length))."%";
                     $item_columns[] = "length";
                 }
                 if(property_exists($json_filters, 'date')) {

@@ -167,7 +167,7 @@ function drawItem(group, item) {
         link.rect(item.width, 
                   item.height)
                 .attr("id", "rect_" + item.id)
-                .fill(getLengthColor(item.length))
+                .fill(getDataColor(item))
                 .stroke({width: itemHasSubChildren(item) ? 5 : 1, color: 'black'})
                 .radius(10, 10)
                 .move(item.X, item.Y);
@@ -194,7 +194,7 @@ function drawLink(group, child) {
             } else {
                 group.polyline(calcPolyLineCoords({"child": child, "parent": parent}))
                     .fill('none')
-                    .stroke({ color: getLengthColor(parent.gender),
+                    .stroke({ color: getDataColor(parent),
                               width: 4, linecap: 'round', linejoin: 'round' });
                  
             }

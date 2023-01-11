@@ -7,7 +7,6 @@ var elementInit = {
     "end": false,
     "specific": false,
     "num_chapters": false,
-    "length": false,
     "age": false,
     "age_parents": false
 };
@@ -15,7 +14,6 @@ var elementInit = {
 // The elements that can be disabled
 var elementEnabled = {
     "num_chapters": false,
-    "length": false,
     "age": false,
     "age_parents": false
 };
@@ -301,14 +299,9 @@ function getSearchMenu() {
                         </div>
 
                         <div class="col-md-12">
-                            <input  id="item_length" 
-                                    class="d-none"
-                                    type="text" 
-                                    value="" 
-                                    data-slider-id="slider_length"
-                                    data-slider-step="1"
-                                    data-slider-value="1"
-                                    data-slider-range="true" />
+                            <form class="form-inline">
+                                <input type="text" class="form-control w-100" id="item_length" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
+                            </form>
                         </div>
                     </div>
     
@@ -540,7 +533,7 @@ function getSearchContent() {
                         <!-- Search explanation -->
                         <div class="tab-pane fade show active" id="tabsearch" role="tabpanel">
                             <h1>` + dict["search.title"] + `</h1>
-                            <p>` + dict["search.description"] + `</p>
+                            <p>` + dict["search.descr"] + `</p>
                         </div>
     
                         <!-- Tab for books -->
@@ -782,7 +775,6 @@ function removeFilter(type, label, force) {
                 break
                 
             case "num_chapters":
-            case "length":
             case "age":
             case "parent_age":
                 // Reset the sliders
@@ -798,6 +790,7 @@ function removeFilter(type, label, force) {
                 elementEnabled[type] = false;
                 break;
                 
+            case "length":
             case "date":
             case "profession":
             case "nationality":
@@ -829,6 +822,9 @@ function insertSearch() {
     $("#item_descr").val(
             session_settings["search_descr"] ? 
             session_settings["search_descr"] : "");
+    $("#item_length").val(
+            session_settings["search_length"] ? 
+            session_settings["search_length"] : "");
     $("#item_date").val(
             session_settings["search_date"] ? 
             session_settings["search_date"] : "");
@@ -894,46 +890,6 @@ function insertSearch() {
                 // Initialize the sliders and set their values
                 slider_num_chapters.slider("setValue", 
                     [min, max]);
-            }
-        }
-    });
-    
-    searchEvents(JSON.stringify({'sliders': ["length"]})).then(function(result) {
-        
-        // No errors and at least 1 item of data
-        if (result.records) { 
-            var data = result.records[0];
-            var max = parseInt(Math.min(data["max_length"], 11), 10);
-            var min = parseInt(Math.max(data["min_length"], 0), 10);
-            
-            // Set the max and min values
-            var slider_length = $("#item_length").slider({
-                formatter: function(values) {
-                    var lengthString = ["", ""];
-                    for (var i = 0; i < values.length; i++) {
-                        var value = values[i];
-
-                        lengthString[i] = getLengthString(value, true);
-                    }
-                    return lengthString.join(" : ");
-                },
-                max: max,
-                min: min
-            });
-            
-            // Set the onSlideStop event
-            slider_length.on("slideStop", onSliderChangeLength);
-
-            if (session_settings["search_length"]) {
-                slider_length.slider('setValue',
-                  [parseInt(session_settings["search_length"].split('-')[0], 10),
-                   parseInt(session_settings["search_length"].split('-')[1], 10)]);
-                 
-                // Activate the onchange function
-                onSliderChangeLength({value: session_settings["search_length"].split("-")});
-            } else {
-                slider_length.slider('setValue',
-                  [min, max]);
             }
         }
     });
@@ -1039,14 +995,14 @@ function getFilters() {
     // Sliders
     var num_chapters =  session_settings["search_num_chapters"] ? 
                         session_settings["search_num_chapters"] : "";
-    var length =    session_settings["search_length"] ? 
-                    session_settings["search_length"] : "";
     var age =   session_settings["search_age"] ? 
                 session_settings["search_age"] : "";
     var parent_age =    session_settings["search_parent_age"] ? 
                         session_settings["search_parent_age"] : "";
             
     // String searches
+    var length =    session_settings["search_length"] ? 
+                    session_settings["search_length"] : "";
     var date =  session_settings["search_date"] ? 
                 session_settings["search_date"] : "";
     var profession =    session_settings["search_profession"] ? 
@@ -1170,6 +1126,7 @@ function searchItems() {
         "search_start_book": $("#item_start_book").val(),
         "search_end_book": $("#item_end_book").val(),
         "search_specific": $("#item_specific").val(),
+        "search_length": $("#item_length").val(),
         "search_date": $("#item_date").val(),
         "search_gender": $("#item_gender").val(),
         "search_tribe": $("#item_tribe").val(),
@@ -1185,13 +1142,6 @@ function searchItems() {
         params["search_num_chapters"] = 
                 elementEnabled["num_chapters"] ? 
                 num_chapters.join('-') : "";
-    }
-    
-    if (elementInit["length"]) {
-        var length = $("#item_length").slider('getValue');
-        params["search_length"] = 
-                elementEnabled["length"] ? 
-                length.join('-') : "";
     }
     
     if (elementInit["age"]) {
@@ -1227,9 +1177,6 @@ function searchItems() {
 
 function onSliderChangeNumChapters(value) {
     onSliderChange('num_chapters', value.value);
-}
-function onSliderChangeLength(value) {
-    onSliderChange('length', value.value);
 }
 
 function onSliderChangeAge(value) {
@@ -1405,7 +1352,7 @@ function insertData(type, name, data) {
         } else if (name === "link") {
             table_data = '<td data-order="' + data["id"] + '">' + getLinkToItem(type, data["id"], "self") + '</td>';
         } else if (name === "length") {
-            table_data = '<td>' + getLengthString(data["length"], true) + '</td>';
+            table_data = '<td>' + data["length"] + '</td>';
         } else if (name === "parent_age") {
             if ((data["father_age"] !== "-1") && (data["mother_age"] !== "-1")) {
                 table_data = '<td>' + data["father_age"] + ', ' + data["mother_age"] + '</td>';
