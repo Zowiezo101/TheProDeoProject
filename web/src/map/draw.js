@@ -159,9 +159,12 @@ function drawItem(group, item) {
             html: true,
             content: popover.get(0)
         });
-        $(link.node).attr("data-toggle", "modal");
-        $(link.node).attr("data-target", "#subMapModal");
-        $(link.node).attr("id", item.id);
+        
+        if (itemHasSubChildren(item)) {
+            $(link.node).attr("data-toggle", "modal");
+            $(link.node).attr("data-target", "#subMapModal");
+            $(link.node).attr("id", item.id);
+        }
         
         // Draw the rectangle
         link.rect(item.width, 

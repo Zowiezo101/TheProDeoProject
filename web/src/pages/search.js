@@ -1145,17 +1145,17 @@ function searchItems() {
     }
     
     if (elementInit["age"]) {
-        var length = $("#item_age").slider('getValue');
+        var age = $("#item_age").slider('getValue');
         params["search_age"] = 
                 elementEnabled["age"] ? 
-                length.join('-') : "";
+                age.join('-') : "";
     }
     
     if (elementInit["parent_age"]) {
-        var length = $("#item_parent_age").slider('getValue');
+        var parent_age = $("#item_parent_age").slider('getValue');
         params["search_parent_age"] = 
                 elementEnabled["parent_age"] ? 
-                length.join('-') : "";
+                parent_age.join('-') : "";
     }
     
     if (elementInit["start"]) {

@@ -821,7 +821,11 @@ function toggleMenu() {
         // Hide the menu, make sure the window doesn't shift by 
         // specifically setting the height
         $("#content_col").css("height", $("#item_bar").css("height"));
-        $("#item_bar").removeClass("d-md-block");
+        if (["timeline", "familytree", "worldmap"].includes(page_id)) {
+            $("#item_bar").removeClass("d-md-block");
+        } else {
+            $("#item_bar").addClass("d-none");
+        }
         
         // Update the button
         button.addClass("hide_menu");
@@ -831,7 +835,11 @@ function toggleMenu() {
         
     } else if (button.hasClass("hide_menu")) {
         // Show the menu
-        $("#item_bar").addClass("d-md-block");
+        if (["timeline", "familytree", "worldmap"].includes(page_id)) {
+            $("#item_bar").addClass("d-md-block");
+        } else {
+            $("#item_bar").removeClass("d-none");
+        }
         
         // Update the button
         button.addClass("show_menu");
