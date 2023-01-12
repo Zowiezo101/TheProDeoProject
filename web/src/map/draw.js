@@ -110,7 +110,7 @@ function drawItem(group, item) {
                 .move(item.X, item.Y);
 
         //Insert the text
-        link.text(item.name)
+        var text = link.text(item.name)
                 .font({size: 20})
                 .center(item.X + item.width / 2, 
                         item.Y + item.height / 2);
@@ -179,10 +179,28 @@ function drawItem(group, item) {
                 .move(item.X, item.Y);
 
         //Insert the text
-        link.text(item.name)
+        text = link.text(item.name)
                 .font({size: 20})
                 .center(item.X + item.width / 2, 
                         item.Y + item.height / 2);
+    }
+    
+    // The text is reaching outside of the bubble, 
+    // mask what is falling ouside of it and make sure it's left aligned now
+    if (text.length() > (item.width - 10)) {
+        var ellipse = link.text("...")
+                        .font({size: 20});
+                
+        var rect = group.rect(item.width - 10 - ellipse.length(),
+                              item.height)
+                             .move(item.X + 5, item.Y);
+        var clip = group.clip().add(rect);
+
+        text.clipWith(clip);
+        text.center(item.X + (text.length() / 2) + 5, 
+                    item.Y + (item.height / 2));
+        ellipse.center(item.X + (item.width - 5) - (ellipse.length() / 2), 
+                       item.Y + (item.height / 2));
     }
     
 }
