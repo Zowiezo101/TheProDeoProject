@@ -578,6 +578,21 @@ function insertDetail(item, prop) {
             // No results, make sure not to use it
             detail = -1;
         }
+    } else if (prop === "books") {
+        var book_id = dict["books.book_" + item["book_start_id"]];
+        var book_chap = item["book_start_chap"];
+        var book_vers = item["book_start_vers"];
+        detail = book_id + " " + book_chap + ":" + book_vers;
+        
+        if (item["book_start_id"] !== item["book_end_id"] ||
+            item["book_start_chap"] !== item["book_end_chap"] || 
+            item["book_start_vers"] !== item["book_end_vers"]) {
+            var book_id = dict["books.book_" + item["book_end_id"]];
+            var book_chap = item["book_end_chap"];
+            var book_vers = item["book_end_vers"];
+            detail = detail + " - " + book_id + " " + book_chap + ":" + book_vers;
+        }
+        
     } else {
         detail = item[prop];
     }

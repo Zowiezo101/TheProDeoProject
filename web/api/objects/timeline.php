@@ -17,7 +17,14 @@ class timeline {
     public $date;
     public $length;
     public $gender;
+    public $book_start_id;
+    public $book_start_chap;
+    public $book_start_vers;
+    public $book_end_id;
+    public $book_end_chap;
+    public $book_end_vers;
     public $items;
+    public $aka;
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -176,6 +183,12 @@ class timeline {
             $this->descr = $parent->descr;
             $this->date = $parent->date;
             $this->length = $parent->length;
+            $this->book_start_id = $parent->book_start_id;
+            $this->book_start_chap = $parent->book_start_chap;
+            $this->book_start_vers = $parent->book_start_vers;
+            $this->book_end_id = $parent->book_end_id;
+            $this->book_end_chap = $parent->book_end_chap;
+            $this->book_end_vers = $parent->book_end_vers;
             $this->items = array_reduce($activity_arr, function ($carry, $var1) {
                 // Check if item is already in carry
                 $dupl_arr = array_filter($carry, function($var2) use ($var1) {

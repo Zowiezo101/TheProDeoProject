@@ -476,6 +476,8 @@ class base {
             // select all query
             $query = "SELECT
                         e.id, e.name, e.descr, e.length, e.date, e2pa.parent_id,
+                        e.book_start_id, e.book_start_chap, e.book_start_vers,
+                        e.book_end_id, e.book_end_chap, e.book_end_vers,
                         1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
@@ -491,6 +493,8 @@ class base {
             // select all query
             $query = "SELECT
                         e.id, e.name, e.descr, e.length, e.date, -999 as parent_id,
+                        e.book_start_id, e.book_start_chap, e.book_start_vers,
+                        e.book_end_id, e.book_end_chap, e.book_end_vers,
                         1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_events . " e
@@ -524,6 +528,8 @@ class base {
             // select all query
             $query = "SELECT
                         a.id, a.name, a.descr, a.length, a.date, a2pa.parent_id,
+                        a.book_start_id, a.book_start_chap, a.book_start_vers,
+                        a.book_end_id, a.book_end_chap, a.book_end_vers,
                         a.level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a
@@ -539,6 +545,8 @@ class base {
             // select all query
             $query = "SELECT
                         a.id, a.name, a.descr, a.length, a.date, -999 as parent_id,
+                        a.book_start_id, a.book_start_chap, a.book_start_vers,
+                        a.book_end_id, a.book_end_chap, a.book_end_vers,
                         a.level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
                         " . $this->table_activities . " a

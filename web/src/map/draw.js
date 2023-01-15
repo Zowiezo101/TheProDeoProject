@@ -142,6 +142,7 @@ function drawItem(group, item) {
                         insertDetail(item, "descr") + 
                         insertDetail(item, "length") + 
                         insertDetail(item, "date") + 
+                        insertDetail(item, "books") + 
                         "</tbody>" + 
                     "</table>");
             
