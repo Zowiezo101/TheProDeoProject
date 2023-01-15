@@ -394,7 +394,9 @@ function onDownload (title) {
     });
 }
 
-function focusOnRect(id) {    
+function focusOnRect(id) {   
+    
+    var originalWidth = $("#rect_" + id).attr("stroke-width");
     
     // Get the correct rectangle to set focus on
     $("#rect_" + id).animate({
@@ -403,7 +405,7 @@ function focusOnRect(id) {
     }, 100, function() {
         $("#rect_" + id).animate({
             "stroke": "black",
-            "stroke-width": itemHasSubChildren(getMapItem(id)) ? "5px" : "1px"
+            "stroke-width": originalWidth
         }, 2000);
     });
 }

@@ -596,7 +596,7 @@ function getSubParents(level) {
 }
 
 function itemHasSubChildren(item) {
-    return item.hasOwnProperty("subChildren") ? item.subChildren.length > 0 : false;
+    return item.hasOwnProperty("subChildren") && g_Options.sub === false ? item.subChildren.length > 0 : false;
 }
 
 function calcDepth(item) {    
