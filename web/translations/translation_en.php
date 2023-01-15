@@ -176,6 +176,7 @@ $dict = array(
 	"items.coordinates"=>"Coordinates",
 	"items.book_start"=>"First appearance",
 	"items.book_end"=>"Last appearance",
+	"items.books"=>"Appearances",
 	"items.link"=>"Link to item",
 	"books.book"=>"Bible book",
 	"books.chapter"=>"Chapter",
