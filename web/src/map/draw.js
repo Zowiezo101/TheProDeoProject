@@ -157,11 +157,19 @@ function drawItem(group, item) {
 
         $(link.node).popover({
             animation: true,
-            trigger: "hover",
+            trigger: "manual",
             placement: "top",
             title: dict["map.info.title"] + "\"" + item.name + "\"",
             html: true,
             content: popover.get(0)
+        }).on("mouseenter", function() {
+            var _this = this;
+            $(this).popover("show");
+        }).on("mouseleave", function() {
+            var _this = this;
+            $(this).popover("hide");
+            
+            // Hier checken of de muis nog wel over de popover gaat
         });
         
         if (itemHasSubChildren(item)) {
