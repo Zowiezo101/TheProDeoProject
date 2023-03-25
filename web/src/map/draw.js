@@ -90,15 +90,6 @@ function drawItem(group, item) {
                         "</tbody>" + 
                     "</table>" + 
                     "<p class='font-weight-bold'>" + dict["map.info.details"] + "</p>");
-
-        $(link.node).popover({
-            animation: true,
-            trigger: "hover",
-            placement: "top",
-            title: dict["map.info.title"] + item.name,
-            html: true,
-            content: popover.get(0)
-        });
     
         // Draw the rectangle
         link.rect(item.width, 
@@ -154,23 +145,6 @@ function drawItem(group, item) {
             // There is a modal showing another sub timeline
             popover.append("<p class='font-weight-bold'>" + dict["map.info.sub"] + "</p>");
         }
-
-        $(link.node).popover({
-            animation: true,
-            trigger: "manual",
-            placement: "top",
-            title: dict["map.info.title"] + "\"" + item.name + "\"",
-            html: true,
-            content: popover.get(0)
-        }).on("mouseenter", function() {
-            var _this = this;
-            $(this).popover("show");
-        }).on("mouseleave", function() {
-            var _this = this;
-            $(this).popover("hide");
-            
-            // Hier checken of de muis nog wel over de popover gaat
-        });
         
         if (itemHasSubChildren(item)) {
             $(link.node).attr("data-toggle", "modal");
@@ -193,6 +167,28 @@ function drawItem(group, item) {
                 .center(item.X + item.width / 2, 
                         item.Y + item.height / 2);
     }
+    
+    var timerId = null;
+
+    $(link.node).popover({
+        animation: true,
+        placement: "top",
+        title: dict["map.info.title"] + "\"" + item.name + "\"",
+        html: true,
+        content: popover.get(0)
+    }).mouseenter(function() {
+        // Set a timer, after the selected time, the popover will be shown
+        timerId = setTimeout(function() {
+            // Hide all popovers
+            $(".popover").popover("hide");
+
+            // Show the selected popover
+            $(link.node).popover("show");
+        }, 250, link.node);
+    }).mouseleave(function() {
+        // Timer is cleared when mouse moves away
+        clearTimeout(timerId);
+    });
     
     // The text is reaching outside of the bubble, 
     // mask what is falling ouside of it and make sure it's left aligned now

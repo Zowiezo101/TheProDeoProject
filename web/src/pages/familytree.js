@@ -30,6 +30,12 @@ function getFamilytreeContent(familytree) {
                 .addClass("text-center")
                 .append(dict["settings.database_err"]);
     }
+
+    $("body").on("click", function(e) {
+        if ($(e.target).parents(".popover").length === 0) {
+            $(".popover").popover("hide");
+        }
+    });
 }
 
 function showMap(familytree) {
