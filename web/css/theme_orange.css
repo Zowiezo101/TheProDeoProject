@@ -4328,7 +4328,7 @@ a.close.disabled {
   left: 0;
   z-index: 1060;
   display: block;
-  max-width: 276px;
+  max-width: 500px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-style: normal;
   font-weight: 200;
@@ -4440,10 +4440,16 @@ a.close.disabled {
   border-top-right-radius: calc(0.3rem - 1px); }
   .popover-header:empty {
     display: none; }
+  .popover-header a:hover {
+      cursor: pointer;
+      text-color: #ffc280;
+  }
 
 .popover-body {
   padding: 0.5rem 0.75rem;
-  color: #333; }
+  color: #333;
+  max-height: 400px;
+  overflow: auto; }
 
 .carousel {
   position: relative; }
