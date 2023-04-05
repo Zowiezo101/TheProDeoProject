@@ -6,15 +6,18 @@ function getTimelineContent(timeline) {
     }
     
     if (timeline.hasOwnProperty('id')) {
+        // Remove the padding on top, we add our own using H1 margin
+        $("#content_col").removeClass("py-5").addClass("pb-5");
+        
         // An event has been selected, show its information
         $("#item_content").append(`
             <div class="row">
-                <div class="col-lg-11 text-center">
-                    <h1 class="mb-3">` + timeline.name + `</h1>
+                <div class="col text-center">
+                    <h1 class="my-3">` + timeline.name + `</h1>
                 </div>
             </div>
-            <div class="row pb-5" style="height: 100%;">
-                <div class="col-lg-11 text-center">
+            <div class="row min-vh-75">
+                <div class="col text-center">
                     <div id="map_div" style="height: 100%;">
                         
                     </div>
