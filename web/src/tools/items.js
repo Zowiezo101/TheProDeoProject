@@ -523,7 +523,11 @@ function insertLastPage() {
     `);
 }
 
-function insertDetail(item, prop) {
+function insertDetail(item, prop, hideUnknown) {
+    var unknown = false;
+    if (typeof hideUnknown === 'undefined') {
+        hideUnknown = false;
+    }
     var detail = "";
     
     if ((prop === "book_start") && (item["book_start_id"])) {
@@ -599,9 +603,10 @@ function insertDetail(item, prop) {
     
     if ((!detail) || (detail === "-1") || (detail === "") || (detail === -1)) {
         detail = dict["items.unknown"];
+        unknown = true;
     }
     
-    return `<tr>
+    return unknown & hideUnknown ? "" : `<tr>
         <th scope="row">` + dict["items." + prop] + `</th>
         <td>` + detail + `</td>
     </tr>`;

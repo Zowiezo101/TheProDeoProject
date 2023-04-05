@@ -90,10 +90,10 @@ function drawItem(group, item) {
         popover_body.append("\
                 <table class='table table-striped'>" + 
                     "<tbody>" +
-                    insertDetail(item, "meaning_name") + 
-                    insertDetail(item, "aka") + 
-                    insertDetail(item, "descr") + 
-                    insertDetail(item, "gender") + 
+                    insertDetail(item, "meaning_name", true) + 
+                    insertDetail(item, "aka", true) + 
+                    insertDetail(item, "descr", true) + 
+                    insertDetail(item, "gender", true) + 
                     "</tbody>" + 
                 "</table>" + 
                 "<p class='font-weight-bold'>" + 
@@ -140,10 +140,10 @@ function drawItem(group, item) {
         popover_body.append("\
                     <table class='table table-striped'>" + 
                         "<tbody>" +
-                        insertDetail(item, "descr") + 
-                        insertDetail(item, "length") + 
-                        insertDetail(item, "date") + 
-                        insertDetail(item, "books") + 
+                        insertDetail(item, "descr", true) + 
+                        insertDetail(item, "length", true) + 
+                        insertDetail(item, "date", true) + 
+                        insertDetail(item, "books", true) + 
                         "</tbody>" + 
                     "</table>");
             
