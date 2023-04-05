@@ -57,6 +57,10 @@ function getTimelineContent(timeline) {
     $(function() { 
         $('#subMapModal').on('shown.bs.modal', showSubMap);
         $('#subMapModal').on('hidden.bs.modal', hideSubMap);
+        $('#subMapModal').on('show.bs.modal', function() {
+            // Hide all popovers
+            $(".popover").popover("hide");
+        });
     });
 
     $("body").on("click", function(e) {
