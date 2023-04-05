@@ -257,5 +257,3 @@ function closePopover() {
     // Hide all popovers
     $(".popover").popover("hide");
 }
-
-
