@@ -84,10 +84,11 @@ function drawItem(group, item) {
     if (g_Options.type === TYPE_FAMILYTREE) {
     
         // The button to see the popover
-        var link = group.link(setParameters("peoples/people/" + item.id));
+        var href = setParameters("peoples/people/" + item.id);
+        var link = group.link(href);
             link.target('_blank');
 
-        popover_body.append("\
+        var popover_details = $("\
                 <table class='table table-striped'>" + 
                     "<tbody>" +
                     insertDetail(item, "meaning_name", true) + 
@@ -95,9 +96,18 @@ function drawItem(group, item) {
                     insertDetail(item, "descr", true) + 
                     insertDetail(item, "gender", true) + 
                     "</tbody>" + 
-                "</table>" + 
-                "<p class='font-weight-bold'>" + 
-                    dict["map.info.details"].replace("LINK", "<a href='" + setParameters("peoples/people/" + item.id) + "'>" + 
+                "</table>");
+            
+        if (popover_details.find("th").length === 0) {
+            // No available information on this event
+            popover_body.append("<p>" + dict["map.info.people.unknown"] + "</p>");
+        } else {
+            popover_body.append(popover_details);
+        }
+        
+        // Explain how to reach the detail page
+        popover_body.append("<p class='font-weight-bold'>" + 
+                    dict["map.info.people.details"].replace("LINK", "<a href='" + href + "' target='_blank'>" + 
                     dict["map.info.here"] + "</a>") + 
                 "</p>");
     
@@ -135,27 +145,38 @@ function drawItem(group, item) {
 
         // The popover itself
         if (item.id === "-999") {
+            // Global timeline
             popover_body.append("<p>" + dict["map.info.global"] + "</p>");
         }
-        popover_body.append("\
-                    <table class='table table-striped'>" + 
-                        "<tbody>" +
-                        insertDetail(item, "descr", true) + 
-                        insertDetail(item, "length", true) + 
-                        insertDetail(item, "date", true) + 
-                        insertDetail(item, "books", true) + 
-                        "</tbody>" + 
-                    "</table>");
+        
+        var popover_details = $("\
+                <table class='table table-striped'>" + 
+                    "<tbody>" +
+                    insertDetail(item, "descr", true) + 
+                    insertDetail(item, "length", true) + 
+                    insertDetail(item, "date", true) + 
+                    insertDetail(item, "books", true) + 
+                    "</tbody>" + 
+                "</table>");
+            
+        if (popover_details.find("th").length === 0) {
+            // No available information on this event
+            popover_body.append("<p>" + dict["map.info.event.unknown"] + "</p>");
+        } else {
+            popover_body.append(popover_details);
+        }
             
         if ((get_settings["id"] === "-999" && item.id !== "-999") ||
             (get_settings["id"] !== "-999" && item.id === "-999")) {
             // There actually is a link to go to
+            // Explain how to reach the detail page
             popover_body.append("<p class='font-weight-bold'>" + 
-                                    dict["map.info.details"].replace("LINK", "<a href='" + setParameters("locations/location/" + item.id) + "'>" +
+                                    dict["map.info.event.details"].replace("LINK", "<a href='" + href + "' target='_blank'>" +
                                     dict["map.info.here"] + "</a>") + 
                                 "</p>");
         } else if (get_settings["id"] !== "-999" && item.id !== "-999" && itemHasSubChildren(item)) {
             // There is a modal showing another sub timeline
+            // Explain how to reach the modal
             popover_body.append("<p class='font-weight-bold'>" + 
                                     dict["map.info.sub"].replace("LINK", "<a tabindex='-1' data-toggle='modal' data-target='#subMapModal' id='" + item.id + "'>" + 
                                     dict["map.info.here"] + "</a>") + 
@@ -251,9 +272,4 @@ function drawLink(group, child) {
             }
         });
     }
-}
-
-function closePopover() {
-    // Hide all popovers
-    $(".popover").popover("hide");
 }
