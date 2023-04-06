@@ -45,6 +45,7 @@ var dict = {
 	"map.info.title": "Informatie over ",
 	"map.info.event.details": "Klik LINK of op de gebeurtenis zelf om naar de detail pagina te gaan.",
 	"map.info.people.details": "Klik LINK of op de persoon zelf om naar de detail pagina te gaan.",
+	"map.info.location.details": "Klik om naar de detail pagina te gaan",
 	"map.info.sub": "klik LINK of op de activiteit zelf om deze activiteit als tijdlijn te zien",
 	"map.info.here": "HIER",
 	"map.info.event.unknown": "Helaas is er geen informatie bescikbaar over deze tijdlijn/gebeurtenis.",
