@@ -9,6 +9,8 @@ class people {
     private $conn;
     private $base;
     private $table_name = "peoples";
+    private $table_gender = "type_gender";
+    private $table_tribe = "type_tribe";
     public $item_name = "People";
   
     // object properties
@@ -127,12 +129,16 @@ class people {
         // query to read single record
         $query = "SELECT
                     p.name, p.descr, p.meaning_name, p.father_age, 
-                    p.mother_age, p.age, p.gender, p.tribe, 
+                    p.mother_age, p.age, t1.type_name as gender, t2.type_name as tribe, 
                     p.nationality, p.profession,
                     p.book_start_id, p.book_start_chap, p.book_start_vers, 
                     p.book_end_id, p.book_end_chap, p.book_end_vers
                 FROM
                     " . $this->table_name . " p
+                LEFT JOIN " . $this->table_gender . " AS t1 
+                    ON p.gender = t1.type_id
+                LEFT JOIN " . $this->table_tribe . " AS t2 
+                    ON p.tribe = t2.type_id
                 WHERE
                     p.id = ?
                 LIMIT

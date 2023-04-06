@@ -133,7 +133,7 @@ function setContent(location) {
                 insertDetail(location, "type") + 
             "</tbody>" + 
         "</table>" + 
-        "<p class='font-weight-bold'>" + dict["map.info.details"] + ":<br>" + getLinkToItem("locations", location.id, "self", {"openInNewTab": true}) + "</p>";
+        "<p class='font-weight-bold'>" + dict["map.info.location.details"] + ":<br>" + getLinkToItem("locations", location.id, "self", {"openInNewTab": true}) + "</p>";
     
     return info;
 }

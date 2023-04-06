@@ -554,14 +554,8 @@ function insertDetail(item, prop, hideUnknown) {
                     "class='font-weight-bold'>" + 
                     book_id + " " + book_chap + ":" + book_vers + 
                 "</a>";
-    } else if (prop === "gender") {
-        detail = getGenderString(item[prop]);
-    } else if (prop === "tribe") {
-        detail = getTribeString(item[prop]);
-    } else if (prop === "type" && (page_id === "locations")) {
-        detail = getTypeLocationString(item[prop]);
-    } else if (prop === "type" && (page_id === "specials")) {
-        detail = getTypeSpecialString(item[prop]);
+    } else if ((prop === "gender") || (prop === "tribe") || (prop === "type")) {
+        detail = getTypeString(item[prop]);
     } else if (prop === "aka") {
         
         if (item[prop] && item[prop].length > 0) {
@@ -641,7 +635,7 @@ function insertDetailLink(item, prop) {
             if ((page_id === "peoples" && prop === "locations") || 
                     (page_id === "locations" && prop === "peoples")) {
                 // These two contain a type as well
-                data.name = data.name + getTypeLinkString(data.type);
+                data.name = data.name + " (" + getTypeString(data.type) + ")";
             }
             
             // Get the link to the page

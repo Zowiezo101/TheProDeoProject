@@ -8,7 +8,8 @@ class special {
     // database connection and table name
     private $conn;
     private $base;
-    private $table_name = "specials";    
+    private $table_name = "specials";
+    private $table_type = "type_special";
     public $item_name = "Special";
   
     // object properties
@@ -116,11 +117,13 @@ class special {
         // query to read single record
         $query = "SELECT
                     s.name, s.descr, s.meaning_name,
-                    s.type,
+                    t.type_name as type,
                     s.book_start_id, s.book_start_chap, s.book_start_vers, 
                     s.book_end_id, s.book_end_chap, s.book_end_vers
                 FROM
                     " . $this->table_name . " s
+                LEFT JOIN " . $this->table_type . " AS t 
+                    ON s.type = t.type_id
                 WHERE
                     s.id = ?
                 LIMIT

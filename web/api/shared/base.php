@@ -23,6 +23,7 @@ class base {
     private $table_l2a = "location_to_activity";
     private $table_l2l = "location_to_aka";
     private $table_s2a = "special_to_activity";
+    private $table_gender = "type_gender";
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -436,7 +437,7 @@ class base {
         // select all query
         $query = "SELECT
                     p.id, p.name, p.meaning_name, p.descr, 
-                    p.gender, p2p.parent_id, aka.people_name AS aka,
+                    t.type_name as gender, p2p.parent_id, aka.people_name AS aka,
                     1 as level, ".$gen." as gen, 0 as X, 0 as Y
                 FROM
                     " . $this->table_peoples . " p
@@ -452,6 +453,8 @@ class base {
                             END SEPARATOR ', '
                         ), ']') AS people_name FROM people_to_aka) AS aka
                             ON aka.people_id = p.id
+                    LEFT JOIN " . $this->table_gender . " AS t 
+                        ON p.gender = t.type_id
                 WHERE
                     p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
                 ORDER BY

@@ -8,7 +8,8 @@ class location {
     // database connection and table name
     private $conn;
     private $base;
-    private $table_name = "locations";    
+    private $table_name = "locations";
+    private $table_type = "type_location";
     public $item_name = "Location";
   
     // object properties
@@ -119,11 +120,13 @@ class location {
         // query to read single record
         $query = "SELECT
                     l.name, l.descr, l.meaning_name,
-                    l.type, l.coordinates,
+                    t.type_name as type, l.coordinates,
                     l.book_start_id, l.book_start_chap, l.book_start_vers, 
                     l.book_end_id, l.book_end_chap, l.book_end_vers
                 FROM
                     " . $this->table_name . " l
+                LEFT JOIN " . $this->table_type . " AS t 
+                    ON l.type = t.type_id
                 WHERE
                     l.id = ?
                 LIMIT
