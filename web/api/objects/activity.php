@@ -9,7 +9,6 @@ class activity{
   
     // object properties
     public $id;
-    public $descr;
     public $length;
     public $date;
     public $level;
