@@ -3,6 +3,10 @@ class utilities{
     
     public $people_aka = "people_to_aka.people_name";
     public $location_aka = "location_to_aka.location_name";
+    private $gender_type = "type_gender";
+    private $tribe_type = "type_tribe";
+    private $location_type = "type_location";
+    private $special_type = "type_special";
   
     public function getPaging($page, $total_rows, $records_per_page, $page_url){
   
@@ -93,6 +97,28 @@ class utilities{
                     $item_columns[] = "greatest(max(father_age), max(mother_age)) as max_parent_age";
                     $item_columns[] = "greatest(min(father_age), min(mother_age)) as min_parent_age";
                 }
+            } 
+            
+            if(property_exists($json_filters, 'select')) {
+                $item_types = [];
+                
+                if(in_array('gender', $json_filters->select)) {
+                    // Get the gender types
+                    $item_types[] = "type_gender";
+                }
+                if(in_array('tribe', $json_filters->select)) {
+                    // Get the tribe types
+                    $item_types[] = "type_tribe";
+                }
+                if(in_array('type_location', $json_filters->select)) {
+                    // Get the location types
+                    $item_types[] = "type_location";
+                }
+                if(in_array('type_special', $json_filters->select)) {
+                    // Get the special types
+                    $item_types[] = "type_special";
+                }
+                $item_params["types"] = $item_types;
             } else {
         
                 if(property_exists($json_filters, 'name')) {

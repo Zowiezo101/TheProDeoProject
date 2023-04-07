@@ -181,13 +181,37 @@ class people {
     
     // search products
     function search($filters){
-        // If there are any types available, do these first!
-        $types = null;
-        
-        
         // utilities
         $utilities = new utilities();
         $params = $utilities->getParams($this->table_name, $filters, $this->conn);
+        
+        // If there are any types available, do these first!
+        $types = null;
+        if(array_key_exists("types", $params)) {
+            $types = array();
+            
+            foreach($params["types"] as $type) {
+                $types[$type] = array();
+                
+                $query = "SELECT
+                            type_id, type_name
+                        FROM
+                            ".$type;
+                
+                // prepare query statement
+                $stmt = $this->conn->prepare($query);
+
+                // execute query
+                $stmt->execute();
+                
+                // The amount of results
+                $num = strval($stmt->rowCount());
+
+                // get retrieved data
+                $types[$type] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $types[$type][] = ["type_id" => $num, "type_name" => "search.all"];
+            }
+        }
 
         // select all query
         $query = "SELECT
