@@ -379,10 +379,6 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_gender" onchange="onSelectChange('gender')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` /*+ getGenderString(0)*/ + `</option>
-                                <option value="1">` /*+ getGenderString(1)*/ + `</option>
-                                <option value="2">` /*+ getGenderString(2)*/ + `</option>
-                                <option value="3">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
@@ -398,20 +394,6 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_tribe" onchange="onSelectChange('tribe')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` /*+ getTribeString(0)*/ + `</option>
-                                <option value="1">` /*+ getTribeString(1)*/ + `</option>
-                                <option value="2">` /*+ getTribeString(2)*/ + `</option>
-                                <option value="3">` /*+ getTribeString(3)*/ + `</option>
-                                <option value="4">` /*+ getTribeString(4)*/ + `</option>
-                                <option value="5">` /*+ getTribeString(5)*/ + `</option>
-                                <option value="6">` /*+ getTribeString(6)*/ + `</option>
-                                <option value="7">` /*+ getTribeString(7)*/ + `</option>
-                                <option value="8">` /*+ getTribeString(8)*/ + `</option>
-                                <option value="9">` /*+ getTribeString(9)*/ + `</option>
-                                <option value="10">` /*+ getTribeString(10)*/ + `</option>
-                                <option value="11">` /*+ getTribeString(11)*/ + `</option>
-                                <option value="12">` /*+ getTribeString(12)*/ + `</option>
-                                <option value="13">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
@@ -847,12 +829,6 @@ function insertSearch() {
     $("#item_specific").val(
             session_settings["search_specific"] ? 
             session_settings["search_specific"] : -1);
-    $("#item_gender").val(
-            session_settings["search_gender"] ? 
-            session_settings["search_gender"] : -1);
-    $("#item_tribe").val(
-            session_settings["search_tribe"] ? 
-            session_settings["search_tribe"] : -1);
     $("#item_type_location").val(
             session_settings["search_type_location"] ? 
             session_settings["search_type_location"] : -1);
@@ -954,14 +930,29 @@ function insertSearch() {
                 slider_parent_age.slider('setValue',
                   [min2, max2]);
             }
+        }
+        
+        // These come from different tables and are an entirely different type
+        // of item, so putting them in the same array wasn't really possible
+        if (result.types) {
+            var data = result.types;
             
-            if (session_settings["search_gender"]) {
-                
-            }
+            var gender_types = data["type_gender"];
+            gender_types.forEach(function(type) {
+                $("#item_gender").append('<option value="' + type.type_id + '">' + dict[type.type_name] + '</option>');
+            });
             
-            if (session_settings["search_tribe"]) {
-                
-            }
+            var tribe_types = data["type_tribe"];
+            tribe_types.forEach(function(type) {
+                $("#item_tribe").append('<option value="' + type.type_id + '">' + dict[type.type_name] + '</option>');
+            });
+            
+            $("#item_gender").val(
+                    session_settings["search_gender"] ? 
+                    session_settings["search_gender"] : -1);
+            $("#item_tribe").val(
+                    session_settings["search_tribe"] ? 
+                    session_settings["search_tribe"] : -1);
         }
     });
 

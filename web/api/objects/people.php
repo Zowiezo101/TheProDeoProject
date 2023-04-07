@@ -226,6 +226,22 @@ class people {
                     AND people_to_aka.people_name LIKE ?
                 ";
         }
+        
+        if (strpos($params["columns"], "gender") !== false) {
+            // We need this extra table when gender is needed
+            $query .= 
+                "LEFT JOIN type_gender as g
+                    ON g.type_id = p.gender
+                ";
+        }
+        
+        if (strpos($params["columns"], "tribe") !== false) {
+            // We need this extra table when tribe is needed
+            $query .= 
+                "LEFT JOIN type_tribe as t
+                    ON t.type_id = p.tribe
+                ";
+        }
          
         $query .= 
                 $params["filters"]."

@@ -203,23 +203,57 @@ class utilities{
                 if(property_exists($json_filters, 'gender')) {
                     $item_filters[] = "gender = ?";
                     $item_values[] = htmlspecialchars(strip_tags($json_filters->gender));
-                    $item_columns[] = "gender";
+                    $item_columns[] = "g.type_name as gender";
                     
-                    if ($json_filters->gender == "3") {
+                    $query = "SELECT
+                                type_id
+                            FROM
+                                " .$this->gender_type;
+                    
+                    // prepare query statement
+                    $stmt = $conn->prepare($query);
+                    
+                    // execute query
+                    $stmt->execute();
+                    
+                    // The amount of results
+                    $num = strval($stmt->rowCount());
+                    
+                    if ($json_filters->gender == $num) {
+                        $genders = implode(", ", range(0, $num - 1, 1));
+
                         // We want all genders
-                        $item_filters[] = "gender in (0, 1, 2)";
+                        array_pop($item_filters);
                         array_pop($item_values);
+                        $item_filters[] = "gender in (".$genders.")";
                     }
                 }
                 if(property_exists($json_filters, 'tribe')) {
                     $item_filters[] = "tribe = ?";
                     $item_values[] = htmlspecialchars(strip_tags($json_filters->tribe));
-                    $item_columns[] = "tribe";
+                    $item_columns[] = "t.type_name as tribe";
                     
-                    if ($json_filters->tribe == "13") {
+                    $query = "SELECT
+                                type_id
+                            FROM
+                                " .$this->tribe_type;
+                    
+                    // prepare query statement
+                    $stmt = $conn->prepare($query);
+                    
+                    // execute query
+                    $stmt->execute();
+                    
+                    // The amount of results
+                    $num = strval($stmt->rowCount());
+                    
+                    if ($json_filters->tribe == $num) {
+                        $tribes = implode(", ", range(0, $num - 1, 1));
+
                         // We want all tribes
-                        $item_filters[] = "tribe in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)";
+                        array_pop($item_filters);
                         array_pop($item_values);
+                        $item_filters[] = "tribe in (".$tribes.")";
                     }
                 }
                 if(property_exists($json_filters, 'profession')) {
