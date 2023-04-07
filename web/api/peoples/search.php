@@ -19,7 +19,7 @@ $item = new people($conn);
 $filters = filter_input(INPUT_GET,'filter') !== null ? filter_input(INPUT_GET,'filter') : "";
   
 // query products
-$stmt = $item->search($filters);
+[$stmt, $types] = $item->search($filters);
 $num = $stmt->rowCount();
   
 // check if more than 0 record found
@@ -27,6 +27,10 @@ if($num > 0){
   
     // products array
     $array = array();
+    
+    if ($types !== null) {
+        $array["types"] = $types;
+    }
     $array["records"] = array();
   
     // retrieve our table contents

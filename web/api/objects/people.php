@@ -181,6 +181,10 @@ class people {
     
     // search products
     function search($filters){
+        // If there are any types available, do these first!
+        $types = null;
+        
+        
         // utilities
         $utilities = new utilities();
         
@@ -217,6 +221,6 @@ class people {
         // execute query
         $stmt->execute();
 
-        return $stmt;
+        return [$stmt, $types];
     }
 }
