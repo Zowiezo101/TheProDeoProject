@@ -506,7 +506,7 @@ function getSearchMenu() {
     `);
     
     $(function(){
-        //code that needs to be executed when DOM is ready, after manipulation
+        // Code that needs to be executed when DOM is ready, after manipulation
         // Insert the search terms from the session
         insertSearch();
     });
@@ -561,7 +561,7 @@ function getSearchContent() {
     `);
     
     $(function(){
-        //code that needs to be executed when DOM is ready, after manipulation        
+        // Code that needs to be executed when DOM is ready, after manipulation        
         // Insert the results with the search terms
         insertResults();
     });
@@ -603,10 +603,10 @@ function insertChapters(type) {
     } else {
         // When changing books, preset it to the first/last chapter
         $("#item_" + type + "_chap").val(type === "start" ? 1 : num_chapters);
-    }
         
-    // Take over the changes
-    $("#item_" + type + "_chap").change();
+        // Take over the changes
+        $("#item_" + type + "_chap").change();
+    }
     
     // Set the filter if a value is set
     if ($("#item_" + type + "_chap").val() !== -1 &&
