@@ -119,7 +119,7 @@ class utilities{
                     $item_types[] = "type_special";
                 }
                 $item_params["types"] = $item_types;
-            } else {
+            }
         
                 if(property_exists($json_filters, 'name')) {
                     $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
@@ -266,7 +266,6 @@ class utilities{
                     $item_filters[] = "book_end_chap <= ?";
                     $item_values[] = htmlspecialchars(strip_tags($json_filters->end_chap));
                 }
-            }
         }
         
         // Turn these arrays into strings
