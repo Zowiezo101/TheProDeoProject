@@ -43,7 +43,7 @@ class utilities{
         return $total_pages;
     }
     
-    public function getParams($type, $filters) {
+    public function getParams($type, $filters, $conn) {
         // The filters to be applied on the database
         $item_columns = array();
         $item_filters = array();

@@ -160,7 +160,7 @@ class special {
         // utilities
         $utilities = new utilities();
         
-        $params = $utilities->getParams($this->table_name, $filters);
+        $params = $utilities->getParams($this->table_name, $filters, $this->conn);
 
         // select all query
         $query = "SELECT
