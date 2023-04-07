@@ -1360,11 +1360,11 @@ function insertData(type, name, data) {
                 table_data = '<td>' + Math.max(data["father_age"], data["mother_age"]) + '</td>';
             } 
         } else if (name === "gender") {
-            table_data = '<td>' + getGenderString(data["gender"]) + '</td>';
+            table_data = '<td>' + getTypeString(data["gender"]) + '</td>';
         } else if (name === "tribe") {
-            table_data = '<td>' + getTribeString(data["tribe"]) + '</td>';
+            table_data = '<td>' + getTypeString(data["tribe"]) + '</td>';
         } else if (name === "type") {
-            table_data = '<td>' + ((type === "locations") ? getTypeLocationString(data["type"]) : getTypeSpecialString(data["type"])) + '</td>';
+            table_data = '<td>' + getTypeString(data["type"]) + '</td>';
         } else if (name === "book_start") {
             // Data to order by
             var data_order =
