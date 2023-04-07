@@ -27,10 +27,6 @@ if($num > 0){
   
     // products array
     $array = array();
-    
-    if ($types !== null) {
-        $array["types"] = $types;
-    }
     $array["records"] = array();
   
     // retrieve our table contents
@@ -38,6 +34,12 @@ if($num > 0){
     // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
         array_push($array["records"], $row);
+    }
+    
+    // If types are also requested
+    if ($types !== null) {
+        // Add these to the array
+        $array["types"] = $types;
     }
   
     // set response code - 200 OK
