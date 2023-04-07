@@ -379,10 +379,10 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_gender" onchange="onSelectChange('gender')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` + getGenderString(0) + `</option>
-                                <option value="1">` + getGenderString(1) + `</option>
-                                <option value="2">` + getGenderString(2) + `</option>
-                                <option value="3">` + dict["search.all"] + `</option>
+                                <option value="0">` /*+ getGenderString(0)*/ + `</option>
+                                <option value="1">` /*+ getGenderString(1)*/ + `</option>
+                                <option value="2">` /*+ getGenderString(2)*/ + `</option>
+                                <option value="3">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
@@ -398,20 +398,20 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_tribe" onchange="onSelectChange('tribe')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` + getTribeString(0) + `</option>
-                                <option value="1">` + getTribeString(1) + `</option>
-                                <option value="2">` + getTribeString(2) + `</option>
-                                <option value="3">` + getTribeString(3) + `</option>
-                                <option value="4">` + getTribeString(4) + `</option>
-                                <option value="5">` + getTribeString(5) + `</option>
-                                <option value="6">` + getTribeString(6) + `</option>
-                                <option value="7">` + getTribeString(7) + `</option>
-                                <option value="8">` + getTribeString(8) + `</option>
-                                <option value="9">` + getTribeString(9) + `</option>
-                                <option value="10">` + getTribeString(10) + `</option>
-                                <option value="11">` + getTribeString(11) + `</option>
-                                <option value="12">` + getTribeString(12) + `</option>
-                                <option value="13">` + dict["search.all"] + `</option>
+                                <option value="0">` /*+ getTribeString(0)*/ + `</option>
+                                <option value="1">` /*+ getTribeString(1)*/ + `</option>
+                                <option value="2">` /*+ getTribeString(2)*/ + `</option>
+                                <option value="3">` /*+ getTribeString(3)*/ + `</option>
+                                <option value="4">` /*+ getTribeString(4)*/ + `</option>
+                                <option value="5">` /*+ getTribeString(5)*/ + `</option>
+                                <option value="6">` /*+ getTribeString(6)*/ + `</option>
+                                <option value="7">` /*+ getTribeString(7)*/ + `</option>
+                                <option value="8">` /*+ getTribeString(8)*/ + `</option>
+                                <option value="9">` /*+ getTribeString(9)*/ + `</option>
+                                <option value="10">` /*+ getTribeString(10)*/ + `</option>
+                                <option value="11">` /*+ getTribeString(11)*/ + `</option>
+                                <option value="12">` /*+ getTribeString(12)*/ + `</option>
+                                <option value="13">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
@@ -460,17 +460,17 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_type_location" onchange="onSelectChange('type_location')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` + getTypeLocationString(0) + `</option>
-                                <option value="1">` + getTypeLocationString(1) + `</option>
-                                <option value="2">` + getTypeLocationString(2) + `</option>
-                                <option value="3">` + getTypeLocationString(3) + `</option>
-                                <option value="4">` + getTypeLocationString(4) + `</option>
-                                <option value="5">` + getTypeLocationString(5) + `</option>
-                                <option value="6">` + getTypeLocationString(6) + `</option>
-                                <option value="7">` + getTypeLocationString(7) + `</option>
-                                <option value="8">` + getTypeLocationString(8) + `</option>
-                                <option value="9">` + getTypeLocationString(9) + `</option>
-                                <option value="10">` + dict["search.all"] + `</option>
+                                <option value="0">` /*+ getTypeLocationString(0)*/ + `</option>
+                                <option value="1">` /*+ getTypeLocationString(1)*/ + `</option>
+                                <option value="2">` /*+ getTypeLocationString(2)*/ + `</option>
+                                <option value="3">` /*+ getTypeLocationString(3)*/ + `</option>
+                                <option value="4">` /*+ getTypeLocationString(4)*/ + `</option>
+                                <option value="5">` /*+ getTypeLocationString(5)*/ + `</option>
+                                <option value="6">` /*+ getTypeLocationString(6)*/ + `</option>
+                                <option value="7">` /*+ getTypeLocationString(7)*/ + `</option>
+                                <option value="8">` /*+ getTypeLocationString(8)*/ + `</option>
+                                <option value="9">` /*+ getTypeLocationString(9)*/ + `</option>
+                                <option value="10">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
@@ -489,15 +489,15 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_type_special" onchange="onSelectChange('type_special')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` + getTypeSpecialString(0) + `</option>
-                                <option value="1">` + getTypeSpecialString(1) + `</option>
-                                <option value="2">` + getTypeSpecialString(2) + `</option>
-                                <option value="3">` + getTypeSpecialString(3) + `</option>
-                                <option value="4">` + getTypeSpecialString(4) + `</option>
-                                <option value="5">` + getTypeSpecialString(5) + `</option>
-                                <option value="6">` + getTypeSpecialString(6) + `</option>
-                                <option value="7">` + getTypeSpecialString(7) + `</option>
-                                <option value="8">` + dict["search.all"] + `</option>
+                                <option value="0">` /*+ getTypeSpecialString(0)*/ + `</option>
+                                <option value="1">` /*+ getTypeSpecialString(1)*/ + `</option>
+                                <option value="2">` /*+ getTypeSpecialString(2)*/ + `</option>
+                                <option value="3">` /*+ getTypeSpecialString(3)*/ + `</option>
+                                <option value="4">` /*+ getTypeSpecialString(4)*/ + `</option>
+                                <option value="5">` /*+ getTypeSpecialString(5)*/ + `</option>
+                                <option value="6">` /*+ getTypeSpecialString(6)*/ + `</option>
+                                <option value="7">` /*+ getTypeSpecialString(7)*/ + `</option>
+                                <option value="8">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
