@@ -894,14 +894,21 @@ function insertSearch() {
         }
     });
     
-    searchPeoples(JSON.stringify({'sliders': 
+    // Sliders & Select
+    searchPeoples(JSON.stringify({
+        'sliders': 
             ["age",
-             "parent_age"]
+             "parent_age"],
+        'select':
+            ["gender",
+             "tribe"]
     })).then(function(result) {
         
         // No errors and at least 1 item of data
         if (result.records) { 
             var data = result.records[0];
+            
+            // The age & parent age sliders
             var max1 = parseInt(Math.max(data["max_age"], 1), 10);
             var min1 = parseInt(Math.max(data["min_age"], 1), 10);
             var max2 = parseInt(Math.max(data["max_parent_age"], 1), 10);
@@ -923,6 +930,7 @@ function insertSearch() {
             slider_age.on("slideStop", onSliderChangeAge);
             slider_parent_age.on("slideStop", onSliderChangeParentAge);
 
+            // Re-set the search settings that were already present
             if (session_settings["search_age"]) {
                 slider_age.slider('setValue',
                   [parseInt(session_settings["search_age"].split('-')[0], 10),
@@ -945,6 +953,14 @@ function insertSearch() {
             } else {
                 slider_parent_age.slider('setValue',
                   [min2, max2]);
+            }
+            
+            if (session_settings["search_gender"]) {
+                
+            }
+            
+            if (session_settings["search_tribe"]) {
+                
             }
         }
     });
