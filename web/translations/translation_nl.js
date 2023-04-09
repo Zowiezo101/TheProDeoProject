@@ -115,6 +115,7 @@ var dict = {
 	"items.details.familytree": "Bekijk deze persoon in de volgende stambomen:",
 	"items.details.worldmap": "Bekijk deze locatie in de wereldmap",
 	"items.descr": "Beschrijving",
+	"items.notes": "Informatie & notities",
 	"items.num_chapters": "Aantal hoofdstukken",
 	"items.length": "Lengte",
 	"length.unknown": "Lengte is onbekend/anders",

@@ -29,6 +29,7 @@ class event {
     public $locations;
     public $specials;
     public $aka;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -155,11 +156,13 @@ class event {
         $this->book_end_id = $row['book_end_id'];
         $this->book_end_chap = $row['book_end_chap'];
         $this->book_end_vers = $row['book_end_vers'];
+        $this->next = $this->base->getEventToChildren($this->id);
+        $this->previous = $this->base->getEventToParents($this->id);
         $this->peoples = $this->base->getEventToPeoples($this->id);
         $this->locations = $this->base->getEventToLocations($this->id);
         $this->specials = $this->base->getEventToSpecials($this->id);
-        $this->next = $this->base->getEventToChildren($this->id);
-        $this->previous = $this->base->getEventToParents($this->id);
+//    public $aka;
+        $this->notes = $this->base->getEventToNotes($this->id);
     }
     
     // search products

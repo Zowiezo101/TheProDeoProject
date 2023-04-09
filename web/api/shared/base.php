@@ -23,7 +23,12 @@ class base {
     private $table_l2a = "location_to_activity";
     private $table_l2l = "location_to_aka";
     private $table_s2a = "special_to_activity";
-    private $table_gender = "type_gender";
+    private $table_notes = "notes";
+    private $table_sources = "sources";
+    private $table_n2s = "note_to_source";
+    private $table_n2i = "note_to_item";
+    private $table_tn = "type_note";
+    private $table_ti = "type_item";
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -45,6 +50,43 @@ class base {
             // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                 array_push($array, $row);
+            }
+        }
+        return $array;
+        
+    }
+    
+    public function getNestedResults($stmt) {
+
+        $num = $stmt->rowCount();
+        
+        // array
+        $array = array();
+        
+        // check if more than 0 record found
+        if ($num > 0) {
+
+            // retrieve our table contents
+            // fetch() is faster than fetchAll()
+            // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                $id = $row["note_id"];
+                
+                if (!array_key_exists($id, $array)) {
+                    $array[$id] = array();
+                    
+                    // Push the entire result in here
+                    $array[$id] = [
+                        "type" => $row["type"],
+                        "id" => $row["id"],
+                        "note" => $row["note"],
+                        "sources" => array()
+                    ];
+                } 
+                if (!is_null($row["source"])) {
+                    // Push the new source in here
+                    array_push($array[$id]["sources"], $row["source"]);
+                }
             }
         }
         return $array;
@@ -191,6 +233,60 @@ class base {
         $stmt->execute();
         
         return $this->getResults($stmt);
+    }
+    
+    public function getEventToNotes($id) {
+        // select all query
+        $query = "
+            -- Event stuff
+            SELECT ti.type_name AS type, e.id, e.name, n.note, n.id AS note_id, s.source
+                FROM " . $this->table_events . " e
+                JOIN " . $this->table_ti . " ti
+                    ON ti.type_name = 'event'
+                JOIN " . $this->table_n2i . " n2i
+                    ON n2i.item_type = ti.type_id AND n2i.item_id = e.id
+                JOIN " . $this->table_notes . " n
+                    ON n2i.note_id = n.id
+                LEFT JOIN " . $this->table_n2s . " n2s
+                    ON n2s.note_id = n.id
+                LEFT JOIN " . $this->table_sources . " s
+                    ON s.id = n2s.source_id
+                WHERE
+                    e.id = ?
+            UNION
+            -- Activity stuff as well
+            SELECT ti.type_name AS type, a.id, a.name, n.note, n.id AS note_id, s.source
+                FROM events e
+                JOIN " . $this->table_ti . " ti
+                    ON ti.type_name = 'activity'
+                JOIN " . $this->table_a2e . " a2e
+                    ON a2e.event_id = e.id
+                JOIN " . $this->table_activities . " a
+                    ON a.id = a2e.activity_id
+                JOIN " . $this->table_n2i . " n2i
+                    ON n2i.item_type = ti.type_id and n2i.item_id = a.id
+                JOIN " . $this->table_notes . " n
+                    ON n2i.note_id = n.id
+                LEFT JOIN " . $this->table_n2s . " n2s
+                    ON n2s.note_id = n.id
+                LEFT JOIN " . $this->table_sources . " s
+                    ON s.id = n2s.source_id
+                WHERE
+                    e.id = ?
+                ORDER BY
+                    id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id, PDO::PARAM_INT);
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getNestedResults($stmt);
     }
     
     public function getPeopleToEvents($id) {

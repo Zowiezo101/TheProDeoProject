@@ -20,13 +20,13 @@ function getEventContent(event) {
                             <tbody>` +
                                 insertDetail(event, 'length') + 
                                 insertDetail(event, 'date') + 
+                                insertDetail(event, 'notes') + 
                                 insertDetailLink(event, 'peoples') + 
                                 insertDetailLink(event, 'locations') + 
                                 insertDetailLink(event, 'specials') + 
                                 insertDetailLink(event, 'previous') + 
                                 insertDetailLink(event, 'next') + 
-                                insertDetail(event, 'book_start') +
-                                insertDetail(event, 'book_end') + 
+                                insertDetail(event, 'books') +
                             `</tbody>
                         </table>
                     </div>` + 

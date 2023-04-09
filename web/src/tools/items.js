@@ -556,6 +556,27 @@ function insertDetail(item, prop, hideUnknown) {
                 "</a>";
     } else if ((prop === "gender") || (prop === "tribe") || (prop === "type")) {
         detail = getTypeString(item[prop]);
+    } else if (prop === "notes") {
+        var notes = Object.values(item[prop]);
+        var num_sources = 0;
+        
+        for(var i = 0; i < notes.length; i++) {
+            // Get the actual note
+            var note = "<p>" + notes[i].note;
+            
+            // Now add the sources to it
+            var sources = [];
+            for(var j = 0; j < notes[i].sources.length; j++) {
+                var source = " <sup class='font-weight-bold'><a target='_blank' href='" + notes[i].sources[j] + "'>" + (j + num_sources + 1) + "</a></sup>";
+                sources.push(source);
+            }
+            
+            note += sources.join(" ") + "</p>";
+            detail += note;
+            
+            // To make sure all the sources keep counting up and don't repeat
+            num_sources += notes[i].sources.length;
+        }
     } else if (prop === "aka") {
         
         if (item[prop] && item[prop].length > 0) {

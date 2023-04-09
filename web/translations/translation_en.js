@@ -115,6 +115,7 @@ var dict = {
 	"items.details.familytree": "View this person in the following familytrees:",
 	"items.details.worldmap": "View this location in the worldmap",
 	"items.descr": "Description",
+	"items.notes": "Information & notes",
 	"items.num_chapters": "Number of chapters",
 	"items.length": "Length",
 	"length.unknown": "Length is unknown/Other",
