@@ -269,18 +269,56 @@ class utilities{
                 if(property_exists($json_filters, 'type')) {
                     $item_filters[] = "type = ?";
                     $item_values[] = htmlspecialchars(strip_tags($json_filters->type));
-                    $item_columns[] = "type";
-                    
-                    if (($json_filters->type == "10") && ($type == "locations")) {
-                        // We want all tribes
-                        $item_filters[] = "type in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)";
-                        array_pop($item_values);
+                    $item_columns[] = "it.type_name as type";
+
+                    if ($type == "locations") {
+                        $query = "SELECT
+                                    type_id
+                                FROM
+                                    " .$this->location_type;
+
+                        // prepare query statement
+                        $stmt = $conn->prepare($query);
+
+                        // execute query
+                        $stmt->execute();
+
+                        // The amount of results
+                        $num = strval($stmt->rowCount());
+
+                        if ($json_filters->type == $num) {
+                            $tribes = implode(", ", range(0, $num - 1, 1));
+
+                            // We want all types
+                            array_pop($item_filters);
+                            array_pop($item_values);
+                            $item_filters[] = "type in (".$tribes.")";
+                        }
                     }
-                    
-                    if (($json_filters->type == "8") && ($type == "specials")) {
-                        // We want all tribes
-                        $item_filters[] = "type in (0, 1, 2, 3, 4, 5, 6, 7)";
-                        array_pop($item_values);
+
+                    if ($type == "specials") {
+                        $query = "SELECT
+                                    type_id
+                                FROM
+                                    " .$this->special_type;
+
+                        // prepare query statement
+                        $stmt = $conn->prepare($query);
+
+                        // execute query
+                        $stmt->execute();
+
+                        // The amount of results
+                        $num = strval($stmt->rowCount());
+
+                        if ($json_filters->type == $num) {
+                            $tribes = implode(", ", range(0, $num - 1, 1));
+
+                            // We want all types
+                            array_pop($item_filters);
+                            array_pop($item_values);
+                            $item_filters[] = "type in (".$tribes.")";
+                        }
                     }
                 }
             

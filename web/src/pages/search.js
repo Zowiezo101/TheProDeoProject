@@ -442,17 +442,6 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_type_location" onchange="onSelectChange('type_location')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` /*+ getTypeLocationString(0)*/ + `</option>
-                                <option value="1">` /*+ getTypeLocationString(1)*/ + `</option>
-                                <option value="2">` /*+ getTypeLocationString(2)*/ + `</option>
-                                <option value="3">` /*+ getTypeLocationString(3)*/ + `</option>
-                                <option value="4">` /*+ getTypeLocationString(4)*/ + `</option>
-                                <option value="5">` /*+ getTypeLocationString(5)*/ + `</option>
-                                <option value="6">` /*+ getTypeLocationString(6)*/ + `</option>
-                                <option value="7">` /*+ getTypeLocationString(7)*/ + `</option>
-                                <option value="8">` /*+ getTypeLocationString(8)*/ + `</option>
-                                <option value="9">` /*+ getTypeLocationString(9)*/ + `</option>
-                                <option value="10">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
@@ -471,15 +460,6 @@ function getSearchMenu() {
                         <div class="col-md-12">
                             <select class="custom-select" id="item_type_special" onchange="onSelectChange('type_special')">
                                 <option selected disabled value="-1">` + dict["search.select"] + `</option>
-                                <option value="0">` /*+ getTypeSpecialString(0)*/ + `</option>
-                                <option value="1">` /*+ getTypeSpecialString(1)*/ + `</option>
-                                <option value="2">` /*+ getTypeSpecialString(2)*/ + `</option>
-                                <option value="3">` /*+ getTypeSpecialString(3)*/ + `</option>
-                                <option value="4">` /*+ getTypeSpecialString(4)*/ + `</option>
-                                <option value="5">` /*+ getTypeSpecialString(5)*/ + `</option>
-                                <option value="6">` /*+ getTypeSpecialString(6)*/ + `</option>
-                                <option value="7">` /*+ getTypeSpecialString(7)*/ + `</option>
-                                <option value="8">` /*+ dict["search.all"]*/ + `</option>
                             </select>
                         </div>
                     </div>
@@ -515,7 +495,7 @@ function getSearchContent() {
                         <!-- Search explanation -->
                         <div class="tab-pane fade show active" id="tabsearch" role="tabpanel">
                             <h1>` + dict["search.title"] + `</h1>
-                            <p>` + dict["search.descr"] + `</p>
+                            <p>` + dict["search.description"] + `</p>
                         </div>
     
                         <!-- Tab for books -->
@@ -826,12 +806,6 @@ function insertSearch() {
             session_settings["search_end_book"] : -1);
     
     // Dropdown for specific stuff
-    $("#item_specific").val(
-            session_settings["search_specific"] ? 
-            session_settings["search_specific"] : -1);
-    $("#item_type_location").val(
-            session_settings["search_type_location"] ? 
-            session_settings["search_type_location"] : -1);
     $("#item_type_special").val(
             session_settings["search_type_special"] ? 
             session_settings["search_type_special"] : -1);
@@ -955,6 +929,50 @@ function insertSearch() {
                     session_settings["search_tribe"] : -1);
         }
     });
+    
+    // Selects
+    searchLocations(JSON.stringify({
+        'select':
+            ["type_location"]
+    })).then(function(result) {
+        
+        // These come from different tables and are an entirely different type
+        // of item, so putting them in the same array wasn't really possible
+        if (result.types) {
+            var data = result.types;
+            
+            var location_types = data["type_location"];
+            location_types.forEach(function(type) {
+                $("#item_type_location").append('<option value="' + type.type_id + '">' + dict[type.type_name] + '</option>');
+            });
+            
+            $("#item_type_location").val(
+                    session_settings["search_type_location"] ? 
+                    session_settings["search_type_location"] : -1);
+        }
+    });
+    
+    // Selects
+    searchSpecials(JSON.stringify({
+        'select':
+            ["type_special"]
+    })).then(function(result) {
+        
+        // These come from different tables and are an entirely different type
+        // of item, so putting them in the same array wasn't really possible
+        if (result.types) {
+            var data = result.types;
+            
+            var special_types = data["type_special"];
+            special_types.forEach(function(type) {
+                $("#item_type_special").append('<option value="' + type.type_id + '">' + dict[type.type_name] + '</option>');
+            });
+            
+            $("#item_type_special").val(
+                    session_settings["search_type_special"] ? 
+                    session_settings["search_type_special"] : -1);
+        }
+    });
 
     // On change for the different select boxes
     $("#item_start_book").change();
@@ -968,14 +986,40 @@ function insertSearch() {
 
 /** Insert the search results of the session */
 function insertResults() {
+    var specific = $("#item_specific").val();
     // Get the data of the books, events, peoples, locations & specials 
     // using the search terms
-    searchBooks(getSearchTerms("books")).then(function(result) { insertItems("books", result); });
-    searchEvents(getSearchTerms("events")).then(function(result) { insertItems("events", result); });
-    searchPeoples(getSearchTerms("peoples")).then(function(result) { insertItems("peoples", result); });
-    searchLocations(getSearchTerms("locations")).then(function(result) { insertItems("locations", result); });
-    searchSpecials(getSearchTerms("specials")).then(function(result) { insertItems("specials", result); });
-}
+    
+    switch(specific) {
+        case "0":
+            searchBooks(getSearchTerms("books")).then(function(result) { insertItems("books", result); });
+            break;
+            
+        case "1":
+            searchEvents(getSearchTerms("events")).then(function(result) { insertItems("events", result); });
+            break;
+            
+        case "2":
+            searchPeoples(getSearchTerms("peoples")).then(function(result) { insertItems("peoples", result); });
+            break;
+            
+        case "3":
+            searchLocations(getSearchTerms("locations")).then(function(result) { insertItems("locations", result); });
+            break;
+            
+        case "4":
+            searchSpecials(getSearchTerms("specials")).then(function(result) { insertItems("specials", result); });
+            break;
+            
+        default:
+            searchBooks(getSearchTerms("books")).then(function(result) { insertItems("books", result); });
+            searchEvents(getSearchTerms("events")).then(function(result) { insertItems("events", result); });
+            searchPeoples(getSearchTerms("peoples")).then(function(result) { insertItems("peoples", result); });
+            searchLocations(getSearchTerms("locations")).then(function(result) { insertItems("locations", result); });
+            searchSpecials(getSearchTerms("specials")).then(function(result) { insertItems("specials", result); });
+            break;
+    }
+            }
 
 /** Get all the filters in API compatible format */
 function getFilters() {

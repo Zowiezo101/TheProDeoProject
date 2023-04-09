@@ -230,7 +230,7 @@ class people {
         if (strpos($params["columns"], "gender") !== false) {
             // We need this extra table when gender is needed
             $query .= 
-                "LEFT JOIN type_gender as g
+                "LEFT JOIN " . $this->table_gender . " AS g
                     ON g.type_id = p.gender
                 ";
         }
@@ -238,7 +238,7 @@ class people {
         if (strpos($params["columns"], "tribe") !== false) {
             // We need this extra table when tribe is needed
             $query .= 
-                "LEFT JOIN type_tribe as t
+                "LEFT JOIN " . $this->table_tribe . " AS t
                     ON t.type_id = p.tribe
                 ";
         }

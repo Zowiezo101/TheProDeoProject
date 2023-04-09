@@ -19,7 +19,7 @@ $item = new location($conn);
 $filters = filter_input(INPUT_GET,'filter') !== null ? filter_input(INPUT_GET,'filter') : "";
   
 // query products
-$stmt = $item->search($filters);
+[$stmt, $types] = $item->search($filters);
 $num = $stmt->rowCount();
   
 // check if more than 0 record found
@@ -34,6 +34,12 @@ if($num > 0){
     // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
         array_push($array["records"], $row);
+    }
+    
+    // If types are also requested
+    if ($types !== null) {
+        // Add these to the array
+        $array["types"] = $types;
     }
   
     // set response code - 200 OK
