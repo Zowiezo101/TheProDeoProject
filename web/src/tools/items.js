@@ -611,6 +611,7 @@ function insertDetail(item, prop, hideUnknown) {
             var book_vers = item["book_end_vers"];
             detail = detail + " - " + book_id + " " + book_chap + ":" + book_vers;
         }
+        // TODO: AKA here as well
         
     } else {
         detail = item[prop];

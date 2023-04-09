@@ -97,7 +97,7 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(p2a.people_id) as id, p.name as name
+                    distinct(p2a.people_id) AS id, p.name AS name
                 FROM
                     " . $this->table_p2a . " p2a
                     LEFT JOIN
@@ -127,7 +127,7 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(l2a.location_id) as id, l.name as name
+                    distinct(l2a.location_id) AS id, l.name AS name
                 FROM
                     " . $this->table_l2a . " l2a
                     LEFT JOIN
@@ -157,7 +157,7 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(s2a.special_id) as id, s.name as name
+                    distinct(s2a.special_id) AS id, s.name AS name
                 FROM
                     " . $this->table_s2a . " s2a
                     LEFT JOIN
@@ -186,7 +186,7 @@ class base {
     public function getEventToChildren($id) {
         // select all query
         $query = "SELECT
-                    distinct(e.id) as id, e.name
+                    distinct(e.id) AS id, e.name
                 FROM
                     " . $this->table_events . " e
                     LEFT JOIN
@@ -212,7 +212,7 @@ class base {
     public function getEventToParents($id) {
         // select all query
         $query = "SELECT
-                    distinct(e.id) as id, e.name
+                    distinct(e.id) AS id, e.name
                 FROM
                     " . $this->table_events . " e
                     LEFT JOIN
