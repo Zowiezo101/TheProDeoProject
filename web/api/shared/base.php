@@ -625,6 +625,10 @@ class base {
     }
     
     public function getItemToNotes($id, $type) {
+        return $this->getItemsToNotes([$id], $type);
+    }
+    
+    public function getItemsToNotes($ids, $type) {
         
         $type_name = strtolower($type);
         $table = "";
@@ -669,7 +673,7 @@ class base {
                 LEFT JOIN " . $this->table_sources . " s
                     ON s.id = n2s.source_id
                 WHERE
-                    i.id = ?
+                    i.id in (".implode(", ", array_fill(0, count($ids), "?")).")
                 ORDER BY
                     id ASC";
         
@@ -693,7 +697,7 @@ class base {
                 LEFT JOIN " . $this->table_sources . " s
                     ON s.id = n2s.source_id
                 WHERE
-                    e.id = ?  
+                    e.id in (".implode(", ", array_fill(0, count($ids), "?")).")
             UNION
             ".$query;
         }
@@ -702,10 +706,15 @@ class base {
         $stmt = $this->conn->prepare($query);
         
         // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        $i = 1;
+        foreach ($ids as &$id) {
+            $stmt->bindParam($i++, $id);
+        }
         
         if ($type_name === "event") {
-            $stmt->bindParam(2, $id, PDO::PARAM_INT);
+            foreach ($ids as &$id) {
+                $stmt->bindParam($i++, $id);
+            }
         }
 
         // execute query
