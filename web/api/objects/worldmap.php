@@ -139,10 +139,10 @@ class worldmap {
         $location_arr = $this->base->getResults($stmt);
         $this->items = $location_arr;
         
-//        // Get the notes of all the locations as well
-//        $ids = array_map(function($location) { 
-//            return $$location["id"]; 
-//        }, $location_arr);
-//        $this->notes = $this->base->getItemsToNotes($ids, "location");
+        // Get the notes of all the locations as well
+        $ids = array_map(function($location) { 
+            return $location["id"]; 
+        }, $location_arr);
+        $this->notes = $this->base->getItemsToNotes($ids, "location");
     }
 }

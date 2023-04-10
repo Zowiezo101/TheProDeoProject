@@ -31,6 +31,17 @@ function showMap() {
             worldmap.items.forEach(function (location) {
                 // Get the coordinates from the location object
                 var coords = location.coordinates.split(',');
+                
+                if (worldmap.notes) {
+                    // Order the notes per ID
+                    var notes = worldmap.notes.filter(function(note) {
+                        return note !== null ? note.id === location.id : false;
+                    });
+                } else {
+                    notes = [];
+                }
+                
+                location.notes = notes;
 
                 // The marker, positioned at the location
                 const marker = new google.maps.Marker({
@@ -131,6 +142,7 @@ function setContent(location) {
                 insertDetail(location, "aka") + 
                 insertDetail(location, "descr") + 
                 insertDetail(location, "type") + 
+                insertDetail(location, "notes") + 
             "</tbody>" + 
         "</table>" + 
         "<p class='font-weight-bold'>" + dict["map.info.location.details"] + ":<br>" + getLinkToItem("locations", location.id, "self", {"openInNewTab": true}) + "</p>";
