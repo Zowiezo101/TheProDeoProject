@@ -21,6 +21,7 @@ function getLocationContent(locations) {
                                 insertDetail(locations, 'meaning_name') + 
                                 insertDetail(locations, 'aka') + 
                                 insertDetail(locations, 'type') + 
+                                insertDetail(locations, 'notes') + 
                                 insertDetailMaps(locations, 'worldmap') +
                                 insertDetailLink(locations, 'events') +
                                 insertDetailLink(locations, 'peoples') +

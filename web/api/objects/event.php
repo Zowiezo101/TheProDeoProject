@@ -162,7 +162,7 @@ class event {
         $this->locations = $this->base->getEventToLocations($this->id);
         $this->specials = $this->base->getEventToSpecials($this->id);
 //    public $aka;
-        $this->notes = $this->base->getEventToNotes($this->id);
+        $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
     }
     
     // search products

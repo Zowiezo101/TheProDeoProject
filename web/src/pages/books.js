@@ -20,6 +20,7 @@ function getBookContent(book) {
                         <table class="table table-striped table-borderless">
                             <tbody>` +
                                 insertDetail(book, "num_chapters") + 
+                                insertDetail(book, 'notes') + 
                             `</tbody>
                         </table>
                     </div>

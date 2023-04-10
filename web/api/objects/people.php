@@ -36,6 +36,7 @@ class people {
     public $children;
     public $locations;
     public $events;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -177,6 +178,7 @@ class people {
         $this->aka = $this->base->getPeopleToPeoples($this->id);
         $this->events = $this->base->getPeopleToEvents($this->id);
         $this->locations = $this->base->getPeopleToLocations($this->id);
+        $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
     }
     
     // search products

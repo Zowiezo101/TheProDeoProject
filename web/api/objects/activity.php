@@ -19,6 +19,7 @@ class activity{
     public $book_end_chap;
     public $book_end_vers;
     public $aka;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db) {

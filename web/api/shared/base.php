@@ -8,6 +8,7 @@ require_once "../objects/special.php";
 class base {
     private $conn;
     
+    public $table_books = "books";
     public $table_activities = "activitys";
     public $table_events = "events";
     public $table_peoples = "peoples";
@@ -233,60 +234,6 @@ class base {
         $stmt->execute();
         
         return $this->getResults($stmt);
-    }
-    
-    public function getEventToNotes($id) {
-        // select all query
-        $query = "
-            -- Event stuff
-            SELECT ti.type_name AS type, e.id, e.name, n.note, n.id AS note_id, s.source
-                FROM " . $this->table_events . " e
-                JOIN " . $this->table_ti . " ti
-                    ON ti.type_name = 'event'
-                JOIN " . $this->table_n2i . " n2i
-                    ON n2i.item_type = ti.type_id AND n2i.item_id = e.id
-                JOIN " . $this->table_notes . " n
-                    ON n2i.note_id = n.id
-                LEFT JOIN " . $this->table_n2s . " n2s
-                    ON n2s.note_id = n.id
-                LEFT JOIN " . $this->table_sources . " s
-                    ON s.id = n2s.source_id
-                WHERE
-                    e.id = ?
-            UNION
-            -- Activity stuff as well
-            SELECT ti.type_name AS type, a.id, a.name, n.note, n.id AS note_id, s.source
-                FROM events e
-                JOIN " . $this->table_ti . " ti
-                    ON ti.type_name = 'activity'
-                JOIN " . $this->table_a2e . " a2e
-                    ON a2e.event_id = e.id
-                JOIN " . $this->table_activities . " a
-                    ON a.id = a2e.activity_id
-                JOIN " . $this->table_n2i . " n2i
-                    ON n2i.item_type = ti.type_id and n2i.item_id = a.id
-                JOIN " . $this->table_notes . " n
-                    ON n2i.note_id = n.id
-                LEFT JOIN " . $this->table_n2s . " n2s
-                    ON n2s.note_id = n.id
-                LEFT JOIN " . $this->table_sources . " s
-                    ON s.id = n2s.source_id
-                WHERE
-                    e.id = ?
-                ORDER BY
-                    id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-        $stmt->bindParam(2, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getNestedResults($stmt);
     }
     
     public function getPeopleToEvents($id) {
@@ -674,5 +621,95 @@ class base {
         $stmt->execute();
         
         return $this->getResults($stmt);
+    }
+    
+    public function getItemToNotes($id, $type) {
+        
+        $type_name = strtolower($type);
+        $table = "";
+        
+        switch($type_name) {
+            case "book":
+                $table = $this->table_books;
+                break;
+                
+            case "event":
+                $table = $this->table_events;
+                break;
+                
+            case "activity":
+                $table = $this->table_activities;
+                break;
+            
+            case "people":
+                $table = $this->table_peoples;
+                break;
+            
+            case "location":
+                $table = $this->table_locations;
+                break;
+            
+            case "special":
+                $table = $this->table_specials;
+                break;
+        }
+        // select all query
+        $query = "
+            SELECT ti.type_name AS type, i.id, i.name, n.note, n.id AS note_id, s.source
+                FROM " . $table . " i
+                JOIN " . $this->table_ti . " ti
+                    ON ti.type_name = '".$type_name."'
+                JOIN " . $this->table_n2i . " n2i
+                    ON n2i.item_type = ti.type_id AND n2i.item_id = i.id
+                JOIN " . $this->table_notes . " n
+                    ON n2i.note_id = n.id
+                LEFT JOIN " . $this->table_n2s . " n2s
+                    ON n2s.note_id = n.id
+                LEFT JOIN " . $this->table_sources . " s
+                    ON s.id = n2s.source_id
+                WHERE
+                    i.id = ?
+                ORDER BY
+                    id ASC";
+        
+        if ($type_name === "event") {
+            $query = "
+            -- Activity stuff as well
+            SELECT ti.type_name AS type, a.id, a.name, n.note, n.id AS note_id, s.source
+                FROM events e
+                JOIN " . $this->table_ti . " ti
+                    ON ti.type_name = 'activity'
+                JOIN " . $this->table_a2e . " a2e
+                    ON a2e.event_id = e.id
+                JOIN " . $this->table_activities . " a
+                    ON a.id = a2e.activity_id
+                JOIN " . $this->table_n2i . " n2i
+                    ON n2i.item_type = ti.type_id and n2i.item_id = a.id
+                JOIN " . $this->table_notes . " n
+                    ON n2i.note_id = n.id
+                LEFT JOIN " . $this->table_n2s . " n2s
+                    ON n2s.note_id = n.id
+                LEFT JOIN " . $this->table_sources . " s
+                    ON s.id = n2s.source_id
+                WHERE
+                    e.id = ?  
+            UNION
+            ".$query;
+        }
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        
+        if ($type_name === "event") {
+            $stmt->bindParam(2, $id, PDO::PARAM_INT);
+        }
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getNestedResults($stmt);
     }
 }

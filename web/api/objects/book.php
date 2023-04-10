@@ -7,6 +7,7 @@ class book {
   
     // database connection and table name
     private $conn;
+    private $base;
     private $table_name = "books";
     public $item_name = "Book";
     
@@ -15,10 +16,12 @@ class book {
     public $name;
     public $num_chapters;
     public $summary;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
+        $this->base = new base($db);
     }
 
     // read products with pagination
@@ -130,6 +133,7 @@ class book {
         $this->name = $row['name'];
         $this->num_chapters = $row['num_chapters'];
         $this->summary = $row['summary'];
+        $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
     }
     
     // search products

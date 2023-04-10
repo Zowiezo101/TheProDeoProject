@@ -20,6 +20,7 @@ function getSpecialContent(specials) {
                             <tbody>` +
                                 insertDetail(specials, 'meaning_name') + 
                                 insertDetail(specials, 'type') + 
+                                insertDetail(specials, 'notes') + 
                                 insertDetailLink(specials, 'events') +
                                 insertDetail(specials, 'book_start') +
                                 insertDetail(specials, 'book_end') +

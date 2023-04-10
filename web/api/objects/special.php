@@ -24,6 +24,7 @@ class special {
     public $book_end_chap;
     public $book_end_vers;
     public $events;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -153,6 +154,7 @@ class special {
         $this->book_end_chap = $row['book_end_chap'];
         $this->book_end_vers = $row['book_end_vers'];
         $this->events = $this->base->getSpecialToEvents($this->id);
+        $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
     }
     
     // search products

@@ -27,6 +27,7 @@ class location {
     public $peoples;
     public $aka;
     public $events;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -159,6 +160,7 @@ class location {
         $this->peoples = $this->base->getLocationToPeoples($this->id);
         $this->events = $this->base->getLocationToEvents($this->id);
         $this->aka = $this->base->getLocationToLocations($this->id);
+        $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
     }
     
     // search products

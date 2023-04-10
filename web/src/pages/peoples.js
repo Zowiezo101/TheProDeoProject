@@ -22,6 +22,7 @@ function getPeopleContent(peoples) {
                                 insertDetail(peoples, 'aka') + 
                                 insertDetail(peoples, 'father_age') + 
                                 insertDetail(peoples, 'mother_age') +
+                                insertDetail(peoples, 'notes') + 
                                 insertDetailLink(peoples, 'parents') +
                                 insertDetailLink(peoples, 'children') +
                                 insertDetailLink(peoples, 'events') +
