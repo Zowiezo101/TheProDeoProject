@@ -30,6 +30,7 @@ class base {
     private $table_n2i = "note_to_item";
     private $table_tn = "type_note";
     private $table_ti = "type_item";
+    private $table_gender = "type_gender";
   
     // constructor with $db as database connection
     public function __construct($db){
