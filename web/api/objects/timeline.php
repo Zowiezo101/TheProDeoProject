@@ -25,6 +25,7 @@ class timeline {
     public $book_end_vers;
     public $items;
     public $aka;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db){

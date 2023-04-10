@@ -18,6 +18,7 @@ class familytree {
     public $aka;
     public $gender;
     public $items;
+    public $notes;
   
     // constructor with $db as database connection
     public function __construct($db){
