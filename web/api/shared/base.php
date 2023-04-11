@@ -1,5 +1,6 @@
 <?php
 
+include_once '../config/core.php';
 require_once "../objects/event.php";
 require_once "../objects/people.php";
 require_once "../objects/location.php";

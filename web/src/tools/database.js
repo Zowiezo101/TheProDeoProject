@@ -16,7 +16,7 @@
  * 
  */
 function getData(table, type, data) {
-    var url = base_url + "/web/api/" + table + "/" + type + ".php";
+    var url = base_url + setParameters("/web/api/" + table + "/" + type + ".php");
     var query = getQuery(data);
     
     return fetch(url + query, {

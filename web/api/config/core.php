@@ -11,7 +11,12 @@ $base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ?
                 "https://prodeodatabase.com";
   
 // home page url
+$lang = substr(filter_input(INPUT_GET, 'lang') ? filter_input(INPUT_GET, 'lang') : 'nl', 0, 2);
 $home_url = $base_url."/api/";
+
+if (!is_null($lang)) {
+    $home_url = $base_url."/".$lang."/api/";
+}
   
 // page given in URL parameter, default page is one
 $page = filter_input(INPUT_GET, 'page') !== null ? filter_input(INPUT_GET, 'page') : 0;
