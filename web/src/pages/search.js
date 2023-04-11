@@ -1019,7 +1019,7 @@ function insertResults() {
             searchSpecials(getSearchTerms("specials")).then(function(result) { insertItems("specials", result); });
             break;
     }
-            }
+}
 
 /** Get all the filters in API compatible format */
 function getFilters() {

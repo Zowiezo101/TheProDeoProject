@@ -110,9 +110,14 @@ function getDataColor(object) {
     var color = "lightgrey";
     var colorCode = 0;
     
-    if (object.hasOwnProperty("descr") && ![null, "", "-1"].includes(object.descr)) {
+    // Descr and notes kinda fall under the same categorie for me
+    if (object.hasOwnProperty("notes") && ![null, "", "-1", []].includes(object.notes) && object.notes.length !== 0) {
         colorCode += 1;
-    } if (object.hasOwnProperty("date") && ![null, "", "-1"].includes(object.date)) {
+    } else if (object.hasOwnProperty("descr") && ![null, "", "-1"].includes(object.descr)) {
+        colorCode += 1;
+    }
+    
+    if (object.hasOwnProperty("date") && ![null, "", "-1"].includes(object.date)) {
         colorCode += 2;
     } if (object.hasOwnProperty("length") && ![null, "", "-1"].includes(object.length)) {
         colorCode += 4;
