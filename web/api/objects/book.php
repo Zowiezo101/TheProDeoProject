@@ -9,6 +9,7 @@ class book {
     private $conn;
     private $base;
     private $table_name = "books";
+    private $table;
     public $item_name = "Book";
     
     // object properties
@@ -20,8 +21,31 @@ class book {
   
     // constructor with $db as database connection
     public function __construct($db){
+        global $lang;
         $this->conn = $db;
         $this->base = new base($db);
+        
+        // NL is the default language
+        $this->table = $this->table_name;
+        if ($lang !== "nl") {
+            // We have a different language, join the translation table
+            $this->table = 
+                "(SELECT 
+                    books.order_id,
+                    books.id, 
+                    IFNULL(books_lang.name, books.name) AS name,
+                    books.num_chapters, 
+                    IFNULL(books_lang.summary, books.summary) AS summary 
+                FROM 
+                    books 
+                LEFT JOIN
+                    books_lang 
+                ON 
+                    books.id = books_lang.book_id
+                WHERE
+                    lang = '".$lang."')";
+        }
+        
     }
 
     // read products with pagination
@@ -58,7 +82,7 @@ class book {
         $query = "SELECT
                     b.id, b.name
                 FROM
-                    " . $this->table_name . " b
+                    " . $this->table . " b
                 ".$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
@@ -111,7 +135,7 @@ class book {
         $query = "SELECT
                     b.name, b.num_chapters, b.summary
                 FROM
-                    " . $this->table_name . " b
+                    " . $this->table . " b
                 WHERE
                     b.id = ?
                 LIMIT
@@ -147,7 +171,7 @@ class book {
         $query = "SELECT
                     " . $params["columns"] . "
                 FROM
-                    " . $this->table_name . " b
+                    " . $this->table . " b
                 ". $params["filters"] ."
                 ORDER BY
                     b.order_id ASC";
