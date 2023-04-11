@@ -18,6 +18,7 @@ class familytree {
     public $aka;
     public $gender;
     public $items;
+    public $parent_notes;
     public $notes;
   
     // constructor with $db as database connection
@@ -140,9 +141,16 @@ class familytree {
         $this->name = $parent->name;
         $this->meaning_name = $parent->meaning_name;
         $this->descr = $parent->descr;
+        $this->parent_notes = $parent->notes;
         $this->aka = $parent->aka;
         $this->gender = $parent->gender;
         $this->items = $people_arr;
+        
+        // Get the notes of all the locations as well
+        $ids = array_map(function($event) { 
+            return $event["id"]; 
+        }, $this->items);
+        $this->notes = $this->base->getItemsToNotes($ids, "people");
     }
     
     // search products

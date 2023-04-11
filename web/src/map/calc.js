@@ -53,6 +53,7 @@ function setMapItems (map) {
         gen: 0,
         gen_index: 0,
         level: 1,
+        notes: map.hasOwnProperty("parent_notes") ? map.parent_notes : [],
         root: true
     };
     
@@ -63,6 +64,15 @@ function setMapItems (map) {
     g_MapItems.forEach(function(item) {
         item.gen = parseInt(item.gen, 10);
         item.level = parseInt(item.level, 10);
+                
+        // The notes should be ordered per item
+        item.notes = item.notes ? item.notes : 
+                    map.notes["activity" + item.id] ? 
+                    map.notes["activity" + item.id] : 
+                    map.notes["event" + item.id] ? 
+                    map.notes["event" + item.id] :
+                    map.notes["people" + item.id] ? 
+                    map.notes["people" + item.id] : [];
     });
     
     g_MapItems.forEach(function(item) {    
@@ -106,6 +116,7 @@ function setSubMapItems(id) {
         gen: 0,
         gen_index: 0,
         level: 2,
+        notes: ancestor.hasOwnProperty("notes") ? ancestor.notes : [],
         root: true,
         parents: [],
         children: Array.from(ancestor.subChildren),

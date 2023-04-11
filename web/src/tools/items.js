@@ -558,6 +558,13 @@ function insertDetail(item, prop, hideUnknown) {
         detail = getTypeString(item[prop]);
     } else if (prop === "notes") {
         var notes = Object.values(item[prop]);
+        
+        if (notes.length > 0 && Array.isArray(notes[0])) {
+            // We get a list with all the items and their corresponding notes
+            // We only need the first item, as this is a detail list for a single item
+            // This is not necessary when the notes are already sorted per item
+            var notes = notes[0];
+        }
         var num_sources = 0;
         
         for(var i = 0; i < notes.length; i++) {

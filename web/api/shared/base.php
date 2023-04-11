@@ -72,22 +72,25 @@ class base {
             // fetch() is faster than fetchAll()
             // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-                $id = $row["note_id"];
+                $id = $row["type"].$row["id"];
+                $note_id = $row["note_id"];
                 
                 if (!array_key_exists($id, $array)) {
+                    // This item isn't yet in the array
                     $array[$id] = array();
-                    
+                } 
+                if (!array_key_exists($note_id, $array[$id])) { 
+                    // The note for this item isn't yet in the array                    
                     // Push the entire result in here
-                    $array[$id] = [
-                        "type" => $row["type"],
-                        "id" => $row["id"],
+                    $array[$id][$note_id] = [
+                        "id" => $row["note_id"],
                         "note" => $row["note"],
                         "sources" => array()
                     ];
                 } 
                 if (!is_null($row["source"])) {
                     // Push the new source in here
-                    array_push($array[$id]["sources"], $row["source"]);
+                    array_push($array[$id][$note_id]["sources"], $row["source"]);
                 }
             }
         }

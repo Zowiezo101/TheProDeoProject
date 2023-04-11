@@ -25,6 +25,7 @@ class timeline {
     public $book_end_vers;
     public $items;
     public $aka;
+    public $parent_notes;
     public $notes;
   
     // constructor with $db as database connection
@@ -158,6 +159,12 @@ class timeline {
                 
                 return $carry;                
             }, []);
+        
+            // Get the notes of all the locations as well
+            $ids = array_map(function($event) { 
+                return $event["id"]; 
+            }, $this->items);
+            $this->notes = $this->base->getItemsToNotes($ids, "event");
             
         } else {
         
@@ -184,6 +191,7 @@ class timeline {
             $this->descr = $parent->descr;
             $this->date = $parent->date;
             $this->length = $parent->length;
+            $this->parent_notes = $parent->notes;
             $this->book_start_id = $parent->book_start_id;
             $this->book_start_chap = $parent->book_start_chap;
             $this->book_start_vers = $parent->book_start_vers;
@@ -208,6 +216,12 @@ class timeline {
                 
                 return $carry;                
             }, []);
+        
+            // Get the notes of all the locations as well
+            $ids = array_map(function($event) { 
+                return $event["id"]; 
+            }, $this->items);
+            $this->notes = $this->base->getItemsToNotes($ids, "activity");
         }
     }
 }

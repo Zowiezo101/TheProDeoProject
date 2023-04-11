@@ -32,16 +32,9 @@ function showMap() {
                 // Get the coordinates from the location object
                 var coords = location.coordinates.split(',');
                 
-                if (worldmap.notes) {
-                    // Order the notes per ID
-                    var notes = worldmap.notes.filter(function(note) {
-                        return note !== null ? note.id === location.id : false;
-                    });
-                } else {
-                    notes = [];
-                }
-                
-                location.notes = notes;
+                // The notes should be ordered per item
+                location.notes = worldmap.notes["location" + location.id] ? 
+                                 worldmap.notes["location" + location.id] : [];
 
                 // The marker, positioned at the location
                 const marker = new google.maps.Marker({

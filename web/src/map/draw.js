@@ -95,6 +95,7 @@ function drawItem(group, item) {
                     insertDetail(item, "aka", true) + 
                     insertDetail(item, "descr", true) + 
                     insertDetail(item, "gender", true) + 
+                    insertDetail(item, "notes", true) + 
                     "</tbody>" + 
                 "</table>");
             
@@ -155,6 +156,7 @@ function drawItem(group, item) {
                     insertDetail(item, "descr", true) + 
                     insertDetail(item, "length", true) + 
                     insertDetail(item, "date", true) + 
+                    insertDetail(item, "notes", true) + 
                     insertDetail(item, "books", true) + 
                     "</tbody>" + 
                 "</table>");
