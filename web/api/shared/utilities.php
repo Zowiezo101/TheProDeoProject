@@ -348,5 +348,172 @@ class utilities{
         
         return $item_params;
     }
+    
+    public function getTable($table_name) {
+        global $lang;
+        
+        // NL is the default language
+        $table = $table_name;
+        $item_name = substr($table_name, 0, strlen($table_name) - 1);
+        
+        // Only if we're not using the default level
+        if ($lang !== "nl") {
+            
+            switch($table_name) {
+                case "books":
+                    $columns = [
+                        "id" => false,
+                        "order_id" => false,
+                        "name" => true,
+                        "num_chapters" => false,
+                        "summary" => true,
+                    ];
+                    break;
+                
+                case "events":
+                    $columns = [
+                        "id" => false,
+                        "order_id" => false,
+                        "name" => true,
+                        "descr" => true,
+                        "length" => true,
+                        "date" => true,
+                        "book_start_id" => false,
+                        "book_start_chap" => false,
+                        "book_start_vers" => false,
+                        "book_end_id" => false,
+                        "book_end_chap" => false,
+                        "book_end_vers" => false,
+                    ];
+                    break;
+                
+                case "peoples":
+                    $columns = [
+                        "id" => false,
+                        "order_id" => false,
+                        "name" => true,
+                        "descr" => true,
+                        "meaning_name" => true,
+                        "father_age" => false,
+                        "mother_age" => false,
+                        "age" => false,
+                        "gender" => false,
+                        "tribe" => false,
+                        "profession" => true,
+                        "nationality" => true,
+                        "book_start_id" => false,
+                        "book_start_chap" => false,
+                        "book_start_vers" => false,
+                        "book_end_id" => false,
+                        "book_end_chap" => false,
+                        "book_end_vers" => false,
+                    ];
+                    break;
+                
+                case "locations":
+                    $columns = [
+                        "id" => false,
+                        "order_id" => false,
+                        "name" => true,
+                        "descr" => true,
+                        "meaning_name" => true,
+                        "type" => false,
+                        "coordinates" => false,
+                        "book_start_id" => false,
+                        "book_start_chap" => false,
+                        "book_start_vers" => false,
+                        "book_end_id" => false,
+                        "book_end_chap" => false,
+                        "book_end_vers" => false,
+                    ];
+                    break;
+                
+                case "specials":
+                    $columns = [
+                        "id" => false,
+                        "order_id" => false,
+                        "name" => true,
+                        "descr" => true,
+                        "meaning_name" => true,
+                        "type" => false,
+                        "book_start_id" => false,
+                        "book_start_chap" => false,
+                        "book_start_vers" => false,
+                        "book_end_id" => false,
+                        "book_end_chap" => false,
+                        "book_end_vers" => false,
+                    ];
+                    break;
+                
+                case "people_to_aka":
+                    $columns = [
+                        "people_id" => false,
+                        "people_name" => true,
+                        "meaning_name" => true,
+                    ];
+                    $item_name = "people";
+                    break;
+                
+                case "location_to_aka":
+                    $columns = [
+                        "location_id" => false,
+                        "location_name" => true,
+                        "meaning_name" => true,
+                    ];
+                    $item_name = "location";
+                    break;
+                
+                case "special_to_aka":
+                    $columns = [
+                        "special_id" => false,
+                        "special_name" => true,
+                        "meaning_name" => true,
+                    ];
+                    $item_name = "special";
+                    break;
+                
+                case "notes":
+                    $columns = [
+                        "id" => false,
+                        "note" => true,
+                        "type" => false,
+                    ];
+                    break;
+            }
+            
+            // Get either the translated version or the default version
+            // if the translated version is not available
+            $lang_columns = array_map(function($value, $key) {
+                $lang_column = "items.".$key;
+                
+                if ($value === true) {
+                    $lang_column = "IF(langs.".$key." > '', 
+                        langs.".$key.", 
+                        IF(items.".$key." > '', 
+                            CONCAT(items.".$key.", ' (NL)'), 
+                            '')) AS ".$key."";
+                }
+                
+                return $lang_column;
+            }, $columns, array_keys($columns));
+            
+            // The name of the ID to use, this should always be the first column
+            $item_id = array_keys($columns)[0];
+            
+            // We have a different language, join the translation table
+            $table = 
+                "(SELECT 
+                    ".implode(",\n\t", $lang_columns)."
+                FROM 
+                    ".$table_name." AS items
+                LEFT JOIN
+                    ".$table_name."_lang AS langs 
+                ON 
+                    items.".$item_id." = langs.". $item_name."_id
+                    AND lang = '".$lang."')";
+        }
+        
+        return $table;
+    }
   
 }

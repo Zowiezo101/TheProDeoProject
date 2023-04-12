@@ -9,6 +9,7 @@ class event {
     private $conn;
     private $base;
     private $table_name = "events";    
+    private $table;
     public $item_name = "Event";
   
     // object properties
@@ -35,6 +36,9 @@ class event {
     public function __construct($db){
         $this->conn = $db;
         $this->base = new base($db);
+        
+        $utilities = new utilities();
+        $this->table = $utilities->getTable($this->table_name);
     }
 
     // read products with pagination
@@ -71,7 +75,7 @@ class event {
         $query = "SELECT
                     e.id, e.name
                 FROM
-                    " . $this->table_name . " e
+                    " . $this->table . " e
                 ".$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
@@ -127,7 +131,7 @@ class event {
                     e.book_start_vers, e.book_end_id, e.book_end_chap,
                     e.book_end_vers
                 FROM
-                    " . $this->table_name . " e
+                    " . $this->table . " e
                 WHERE
                     e.id = ?
                 LIMIT
@@ -176,7 +180,7 @@ class event {
         $query = "SELECT
                     " . $params["columns"] . "
                 FROM
-                    " . $this->table_name . " e
+                    " . $this->table . " e
                 ". $params["filters"] ."
                 ORDER BY
                     e.order_id ASC";

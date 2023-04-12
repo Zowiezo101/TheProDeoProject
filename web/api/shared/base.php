@@ -8,6 +8,7 @@ require_once "../objects/special.php";
 
 class base {
     private $conn;
+    private $utilities;
     
     public $table_books = "books";
     public $table_activities = "activitys";
@@ -36,6 +37,7 @@ class base {
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
+        $this->utilities = new utilities();
     }
     
     public function getResults($stmt) {
@@ -100,6 +102,7 @@ class base {
     }
     
     public function getEventToPeoples($id) {
+        $table = $this->utilities->getTable($this->table_peoples);
 
         // select all query
         $query = "SELECT
@@ -110,7 +113,7 @@ class base {
                         " . $this->table_a2e . " a2e
                             ON a2e.activity_id = p2a.activity_id
                     LEFT JOIN
-                        " . $this->table_peoples . " p
+                        " . $table . " p
                             ON p2a.people_id = p.id
                 WHERE
                     a2e.event_id = ?
@@ -130,6 +133,7 @@ class base {
     }
     
     public function getEventToLocations($id) {
+        $table = $this->utilities->getTable($this->table_locations);
 
         // select all query
         $query = "SELECT
@@ -140,7 +144,7 @@ class base {
                         " . $this->table_a2e . " a2e
                             ON a2e.activity_id = l2a.activity_id
                     LEFT JOIN
-                        " . $this->table_locations . " l
+                        " . $table . " l
                             ON l2a.location_id = l.id
                 WHERE
                     a2e.event_id = ?
@@ -160,6 +164,7 @@ class base {
     }
     
     public function getEventToSpecials($id) {
+        $table = $this->utilities->getTable($this->table_specials);
 
         // select all query
         $query = "SELECT
@@ -170,7 +175,7 @@ class base {
                         " . $this->table_a2e . " a2e
                             ON a2e.activity_id = s2a.activity_id
                     LEFT JOIN
-                        " . $this->table_specials . " s
+                        " . $table . " s
                             ON s2a.special_id = s.id
                 WHERE
                     a2e.event_id = ?
@@ -190,37 +195,13 @@ class base {
     }
     
     public function getEventToChildren($id) {
+        $table = $this->utilities->getTable($this->table_events);
+        
         // select all query
         $query = "SELECT
                     distinct(e.id) AS id, e.name
                 FROM
-                    " . $this->table_events . " e
-                    LEFT JOIN
-                        " . $this->table_e2pa . " e2pa
-                            ON e2pa.event_id = e.id
-                WHERE
-                    e2pa.parent_id = ?
-                ORDER BY
-                    e.id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getEventToParents($id) {
-        // select all query
-        $query = "SELECT
-                    distinct(e.id) AS id, e.name
-                FROM
-                    " . $this->table_events . " e
+                    " . $table . " e
                     LEFT JOIN
                         " . $this->table_e2pa . " e2pa
                             ON e2pa.parent_id = e.id
@@ -241,12 +222,42 @@ class base {
         return $this->getResults($stmt);
     }
     
+    public function getEventToParents($id) {
+        $table = $this->utilities->getTable($this->table_events);
+        
+        // select all query
+        $query = "SELECT
+                    distinct(e.id) AS id, e.name
+                FROM
+                    " . $table . " e
+                    LEFT JOIN
+                        " . $this->table_e2pa . " e2pa
+                            ON e2pa.event_id = e.id
+                WHERE
+                    e2pa.parent_id = ?
+                ORDER BY
+                    e.id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getResults($stmt);
+    }
+    
     public function getPeopleToEvents($id) {
+        $table = $this->utilities->getTable($this->table_events);
+        
         // select all query
         $query = "SELECT
                     distinct(e.id), e.name
                 FROM
-                    " . $this->table_events . " e
+                    " . $table . " e
                     LEFT JOIN
                         " . $this->table_a2e . " a2e
                             ON a2e.event_id = e.id
@@ -271,12 +282,13 @@ class base {
     }
     
     public function getPeopleToLocations($id) {
+        $table = $this->utilities->getTable($this->table_locations);
 
         // select all query
         $query = "SELECT
                     distinct(l.id), l.name
                 FROM
-                    " . $this->table_locations . " l
+                    " . $table . " l
                     LEFT JOIN
                         " . $this->table_p2l . " p2l
                             ON p2l.location_id = l.id
@@ -298,12 +310,14 @@ class base {
     }
     
     public function getPeopleToPeoples($id) {
+        $table = $this->utilities->getTable($this->table_p2p);
+        
         // select all query
         $query = "SELECT
                     p2p.people_id as id, p2p.people_name as name, 
                     p2p.meaning_name as meaning_name
                 FROM
-                    " . $this->table_p2p . " p2p
+                    " . $table . " p2p
                 WHERE
                     p2p.people_id = ?
                 ORDER BY
@@ -322,11 +336,13 @@ class base {
     }
     
     public function getPeopleToParents($id) {
+        $table = $this->utilities->getTable($this->table_peoples);
+        
         // select all query
         $query = "SELECT
                     distinct(p.id) as id, p.name
                 FROM
-                    " . $this->table_peoples . " p
+                    " . $table . " p
                     LEFT JOIN
                         " . $this->table_p2pa . " p2p
                             ON p2p.parent_id = p.id
@@ -348,11 +364,13 @@ class base {
     }
     
     public function getPeopleToChildren($id) {
+        $table = $this->utilities->getTable($this->table_peoples);
+
         // select all query
         $query = "SELECT
                     distinct(p.id) as id, p.name, p.gender, p2p.parent_id
                 FROM
-                    " . $this->table_peoples . " p
+                    " . $table . " p
                     LEFT JOIN
                         " . $this->table_p2pa . " p2p
                             ON p2p.people_id = p.id
@@ -374,11 +392,13 @@ class base {
     }
     
     public function getLocationToEvents($id) {
+        $table = $this->utilities->getTable($this->table_events);
+        
         // select all query
         $query = "SELECT
                     distinct(e.id), e.name
                 FROM
-                    " . $this->table_events . " e
+                    " . $table . " e
                     LEFT JOIN
                         " . $this->table_a2e . " a2e
                             ON a2e.event_id = e.id
@@ -403,12 +423,13 @@ class base {
     }
     
     public function getLocationToPeoples($id) {
+        $table = $this->utilities->getTable($this->table_peoples);
 
         // select all query
         $query = "SELECT
                     distinct(p.id), p.name
                 FROM
-                    " . $this->table_peoples . " p
+                    " . $table . " p
                     LEFT JOIN
                         " . $this->table_p2l . " p2l
                             ON p2l.people_id = p.id
@@ -430,11 +451,13 @@ class base {
     }
     
     public function getLocationToLocations($id) {
+        $table = $this->utilities->getTable($this->table_l2l);
+        
         // select all query
         $query = "SELECT
                     l2l.location_id as id, l2l.location_name as name
                 FROM
-                    " . $this->table_l2l . " l2l
+                    " . $table . " l2l
                 WHERE
                     l2l.location_id = ?
                 ORDER BY
@@ -453,11 +476,13 @@ class base {
     }
     
     public function getSpecialToEvents($id) {
+        $table = $this->utilities->getTable($this->table_events);
+        
         // select all query
         $query = "SELECT
                     distinct(e.id), e.name
                 FROM
-                    " . $this->table_events . " e
+                    " . $table . " e
                     LEFT JOIN
                         " . $this->table_a2e . " a2e
                             ON a2e.event_id = e.id
@@ -482,13 +507,15 @@ class base {
     }
     
     public function getFamilytreeToChildren($ids, $gen) {
+        $table = $this->utilities->getTable($this->table_peoples);
+        
         // select all query
         $query = "SELECT
                     p.id, p.name, p.meaning_name, p.descr, 
                     t.type_name as gender, p2p.parent_id, aka.people_name AS aka,
                     1 as level, ".$gen." as gen, 0 as X, 0 as Y
                 FROM
-                    " . $this->table_peoples . " p
+                    " . $table . " p
                     LEFT JOIN
                         " . $this->table_p2pa . " p2p
                             ON p2p.people_id = p.id
@@ -523,6 +550,8 @@ class base {
     }
     
     public function getTimelineEvents($ids, $gen) {
+        $table = $this->utilities->getTable($this->table_events);
+        
         if ($gen > 1) {
             // select all query
             $query = "SELECT
@@ -531,7 +560,7 @@ class base {
                         e.book_end_id, e.book_end_chap, e.book_end_vers,
                         1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
-                        " . $this->table_events . " e
+                        " . $table . " e
 
                         LEFT JOIN
                             " . $this->table_e2pa . " e2pa
@@ -548,7 +577,7 @@ class base {
                         e.book_end_id, e.book_end_chap, e.book_end_vers,
                         1 as level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
-                        " . $this->table_events . " e
+                        " . $table . " e
 
                         LEFT JOIN
                             " . $this->table_e2pa . " e2pa
@@ -574,6 +603,7 @@ class base {
     }
     
     public function getTimelineActivities($ids, $gen) {
+        $table = $this->utilities->getTable($this->table_activities);
         
         if ($gen > 1) {
             // select all query
@@ -583,7 +613,7 @@ class base {
                         a.book_end_id, a.book_end_chap, a.book_end_vers,
                         a.level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
-                        " . $this->table_activities . " a
+                        " . $table . " a
 
                         LEFT JOIN
                             " . $this->table_a2pa . " a2pa
@@ -600,7 +630,7 @@ class base {
                         a.book_end_id, a.book_end_chap, a.book_end_vers,
                         a.level, ".$gen." as gen, 0 as X, 0 as Y
                     FROM
-                        " . $this->table_activities . " a
+                        " . $table . " a
 
                         LEFT JOIN
                             " . $this->table_a2pa . " a2pa
@@ -633,33 +663,36 @@ class base {
     }
     
     public function getItemsToNotes($ids, $type) {
+        $table_notes = $this->utilities->getTable($this->table_notes);
         
-        $type_name = strtolower($type);
-        $table = "";
-        
+        $type_name = strtolower($type);        
         switch($type_name) {
             case "book":
-                $table = $this->table_books;
+                $table = $this->utilities->getTable($this->table_books);
                 break;
                 
             case "event":
-                $table = $this->table_events;
+                $table = $this->utilities->getTable($this->table_events);
                 break;
                 
             case "activity":
-                $table = $this->table_activities;
+                $table = $this->utilities->getTable($this->table_activities);
                 break;
             
             case "people":
-                $table = $this->table_peoples;
+                $table = $this->utilities->getTable($this->table_peoples);
                 break;
             
             case "location":
-                $table = $this->table_locations;
+                $table = $this->utilities->getTable($this->table_locations);
                 break;
             
             case "special":
-                $table = $this->table_specials;
+                $table = $this->utilities->getTable($this->table_specials);
+                break;
+            
+            default:
+                $table = "";
                 break;
         }
         // select all query
@@ -670,7 +703,7 @@ class base {
                     ON ti.type_name = '".$type_name."'
                 JOIN " . $this->table_n2i . " n2i
                     ON n2i.item_type = ti.type_id AND n2i.item_id = i.id
-                JOIN " . $this->table_notes . " n
+                JOIN " . $table_notes . " n
                     ON n2i.note_id = n.id
                 LEFT JOIN " . $this->table_n2s . " n2s
                     ON n2s.note_id = n.id

@@ -9,6 +9,7 @@ class special {
     private $conn;
     private $base;
     private $table_name = "specials";
+    private $table;
     private $table_type = "type_special";
     public $item_name = "Special";
   
@@ -30,6 +31,9 @@ class special {
     public function __construct($db){
         $this->conn = $db;
         $this->base = new base($db);
+        
+        $utilities = new utilities();
+        $this->table = $utilities->getTable($this->table_name);
     }
 
     // read products with pagination
@@ -66,7 +70,7 @@ class special {
         $query = "SELECT
                     s.id, s.name
                 FROM
-                    " . $this->table_name . " s
+                    " . $this->table . " s
                 ".$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
@@ -122,7 +126,7 @@ class special {
                     s.book_start_id, s.book_start_chap, s.book_start_vers, 
                     s.book_end_id, s.book_end_chap, s.book_end_vers
                 FROM
-                    " . $this->table_name . " s
+                    " . $this->table . " s
                 LEFT JOIN " . $this->table_type . " AS t 
                     ON s.type = t.type_id
                 WHERE
@@ -195,7 +199,7 @@ class special {
         $query = "SELECT
                     " . $params["columns"] . "
                 FROM
-                    " . $this->table_name . " s";
+                    " . $this->table . " s";
          
         if (strpos($params["columns"], "type") !== false) {
             // We need this extra table when gender is needed

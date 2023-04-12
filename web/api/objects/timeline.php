@@ -8,6 +8,7 @@ class timeline {
     private $conn;
     private $base;
     private $table_name = "events";
+    private $table;
     public $item_name = "Timeline";
   
     // object properties
@@ -32,6 +33,9 @@ class timeline {
     public function __construct($db){
         $this->conn = $db;
         $this->base = new base($db);
+        
+        $utilities = new utilities();
+        $this->table = $utilities->getTable($this->table_name);
     }
 
     // read products with pagination
@@ -72,7 +76,7 @@ class timeline {
                         SELECT
                             e.id, e.name
                         FROM
-                            " . $this->table_name . " e
+                            " . $this->table . " e
                         ".$filter_sql."
                         ORDER BY ".$sort_sql." ) AS e2
                 ) AS e

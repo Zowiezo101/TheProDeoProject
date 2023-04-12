@@ -10,6 +10,7 @@ class location {
     private $base;
     private $table_name = "locations";
     private $table_type = "type_location";
+    private $table;
     public $item_name = "Location";
   
     // object properties
@@ -33,6 +34,9 @@ class location {
     public function __construct($db){
         $this->conn = $db;
         $this->base = new base($db);
+        
+        $utilities = new utilities();
+        $this->table = $utilities->getTable($this->table_name);
     }
 
     // read products with pagination
@@ -69,7 +73,7 @@ class location {
         $query = "SELECT
                     l.id, l.name
                 FROM
-                    " . $this->table_name . " l
+                    " . $this->table . " l
                 ".$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
@@ -125,7 +129,7 @@ class location {
                     l.book_start_id, l.book_start_chap, l.book_start_vers, 
                     l.book_end_id, l.book_end_chap, l.book_end_vers
                 FROM
-                    " . $this->table_name . " l
+                    " . $this->table . " l
                 LEFT JOIN " . $this->table_type . " AS t 
                     ON l.type = t.type_id
                 WHERE
@@ -202,7 +206,7 @@ class location {
         $query = "SELECT
                     " . $params["columns"] . "
                 FROM
-                    " . $this->table_name . " l ";
+                    " . $this->table . " l ";
         if (strpos($params["columns"], $utilities->location_aka) !== false) {
             // We need this extra table when AKA is needed
             $query .= 

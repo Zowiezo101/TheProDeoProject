@@ -21,31 +21,11 @@ class book {
   
     // constructor with $db as database connection
     public function __construct($db){
-        global $lang;
         $this->conn = $db;
         $this->base = new base($db);
         
-        // NL is the default language
-        $this->table = $this->table_name;
-        if ($lang !== "nl") {
-            // We have a different language, join the translation table
-            $this->table = 
-                "(SELECT 
-                    books.order_id,
-                    books.id, 
-                    IFNULL(books_lang.name, books.name) AS name,
-                    books.num_chapters, 
-                    IFNULL(books_lang.summary, books.summary) AS summary 
-                FROM 
-                    books 
-                LEFT JOIN
-                    books_lang 
-                ON 
-                    books.id = books_lang.book_id
-                WHERE
-                    lang = '".$lang."')";
-        }
-        
+        $utilities = new utilities();
+        $this->table = $utilities->getTable($this->table_name);
     }
 
     // read products with pagination

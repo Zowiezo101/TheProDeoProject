@@ -8,6 +8,7 @@ class worldmap {
     private $conn;
     private $base;
     private $table_name = "locations";
+    private $table;
     public $item_name = "Worldmap";
   
     // object properties
@@ -18,6 +19,9 @@ class worldmap {
     public function __construct($db){
         $this->conn = $db;
         $this->base = new base($db);
+        
+        $utilities = new utilities();
+        $this->table = $utilities->getTable($this->table_name);
     }
 
     // read products with pagination
@@ -54,7 +58,7 @@ class worldmap {
         $query = "SELECT
                     l.id, l.name
                 FROM
-                    " . $this->table_name . " l
+                    " . $this->table . " l
                 WHERE 
                     coordinates IS NOT NULL AND
                     coordinates <> ''
@@ -115,7 +119,7 @@ class worldmap {
                     l.meaning_name, aka.location_name AS aka,
                     l.type, l.coordinates
                 FROM
-                    " . $this->table_name . " l
+                    " . $this->table . " l
                 LEFT JOIN
                     (SELECT location_id, CONCAT('[', GROUP_CONCAT(
                         CASE

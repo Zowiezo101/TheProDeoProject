@@ -8,6 +8,7 @@ class familytree {
     private $conn;
     private $base;
     private $table_name = "peoples";
+    private $table;
     public $item_name = "Familytree";
   
     // object properties
@@ -25,6 +26,9 @@ class familytree {
     public function __construct($db){
         $this->conn = $db;
         $this->base = new base($db);
+        
+        $utilities = new utilities();
+        $this->table = $utilities->getTable($this->table_name);
     }
 
     // read products with pagination
@@ -61,7 +65,7 @@ class familytree {
         $query = "SELECT
                     p.id, p.name
                 FROM
-                    " . $this->table_name . " p
+                    " . $this->table . " p
                 WHERE 
                     id NOT IN (
                         SELECT people_id FROM people_to_parent WHERE parent_id IS NOT NULL)
@@ -165,13 +169,13 @@ class familytree {
                     )
 
                 SELECT DISTINCT id, name FROM (
-                    SELECT id, name FROM peoples 
+                    SELECT id, name FROM ".$this->table." 
                         LEFT JOIN people_to_parent 
                         ON peoples.id = people_to_parent.people_id 
                         WHERE peoples.id IN (SELECT p2 FROM cte)
                         AND parent_id IS NULL
                     UNION ALL
-                    SELECT id, name FROM peoples 
+                    SELECT id, name FROM ".$this->table." 
                         LEFT JOIN people_to_parent p1
                         ON peoples.id = p1.parent_id 
                         LEFT JOIN people_to_parent p2
