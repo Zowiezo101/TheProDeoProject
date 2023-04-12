@@ -713,31 +713,6 @@ class base {
                     i.id in (".implode(", ", array_fill(0, count($ids), "?")).")
                 ORDER BY
                     id ASC";
-        
-//        if ($type_name === "event") {
-//            $query = "
-//            -- Activity stuff as well
-//            SELECT ti.type_name AS type, a.id, a.name, n.note, n.id AS note_id, s.source
-//                FROM events e
-//                JOIN " . $this->table_ti . " ti
-//                    ON ti.type_name = 'activity'
-//                JOIN " . $this->table_a2e . " a2e
-//                    ON a2e.event_id = e.id
-//                JOIN " . $this->table_activities . " a
-//                    ON a.id = a2e.activity_id
-//                JOIN " . $this->table_n2i . " n2i
-//                    ON n2i.item_type = ti.type_id and n2i.item_id = a.id
-//                JOIN " . $this->table_notes . " n
-//                    ON n2i.note_id = n.id
-//                LEFT JOIN " . $this->table_n2s . " n2s
-//                    ON n2s.note_id = n.id
-//                LEFT JOIN " . $this->table_sources . " s
-//                    ON s.id = n2s.source_id
-//                WHERE
-//                    e.id in (".implode(", ", array_fill(0, count($ids), "?")).")
-//            UNION
-//            ".$query;
-//        }
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -747,12 +722,6 @@ class base {
         foreach ($ids as &$id) {
             $stmt->bindParam($i++, $id);
         }
-        
-//        if ($type_name === "event") {
-//            foreach ($ids as &$id) {
-//                $stmt->bindParam($i++, $id);
-//            }
-//        }
 
         // execute query
         $stmt->execute();
