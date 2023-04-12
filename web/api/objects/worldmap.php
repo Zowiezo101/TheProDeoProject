@@ -23,22 +23,22 @@ class worldmap {
     // read products with pagination
     public function readPaging($from_record_num, $records_per_page, $sort, $filter){        
         // The sorting for the pages
-        $sort_sql = "l.book_start_id asc, l.book_start_chap asc, l.book_start_vers asc";
+        $sort_sql = "l.book_start_id ASC, l.book_start_chap ASC, l.book_start_vers ASC";
         
         // If a sort different than the default is given
         if($sort !== null) { 
            switch($sort) {
                case '0_to_9':
-                   $sort_sql = "l.book_start_id asc, l.book_start_chap asc, l.book_start_vers asc";
+                   $sort_sql = "l.book_start_id ASC, l.book_start_chap ASC, l.book_start_vers ASC";
                    break;
                case '9_to_0':
-                   $sort_sql = "l.book_start_id desc, l.book_start_chap desc, l.book_start_vers desc";
+                   $sort_sql = "l.book_start_id DESC, l.book_start_chap DESC, l.book_start_vers DESC";
                    break;
                case 'a_to_z':
-                   $sort_sql = "l.name asc";
+                   $sort_sql = "l.name ASC";
                    break;
                case 'z_to_a':
-                   $sort_sql = "l.name desc";
+                   $sort_sql = "l.name DESC";
                    break;
            }
         }
@@ -112,7 +112,7 @@ class worldmap {
         // select query
         $query = "SELECT
                     l.id, l.name, l.descr,
-                    l.meaning_name, aka.location_name as aka,
+                    l.meaning_name, aka.location_name AS aka,
                     l.type, l.coordinates
                 FROM
                     " . $this->table_name . " l

@@ -57,16 +57,16 @@ class book {
         if($sort !== null) { 
            switch($sort) {
                case '0_to_9':
-                   $sort_sql = "b.order_id asc";
+                   $sort_sql = "b.order_id ASC";
                    break;
                case '9_to_0':
-                   $sort_sql = "b.order_id desc";
+                   $sort_sql = "b.order_id DESC";
                    break;
                case 'a_to_z':
-                   $sort_sql = "b.name asc";
+                   $sort_sql = "b.name ASC";
                    break;
                case 'z_to_a':
-                   $sort_sql = "b.name desc";
+                   $sort_sql = "b.name DESC";
                    break;
            }
         }

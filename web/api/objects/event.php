@@ -40,22 +40,22 @@ class event {
     // read products with pagination
     public function readPaging($from_record_num, $records_per_page, $sort, $filter){        
         // The sorting for the pages
-        $sort_sql = "e.book_start_id asc, e.book_start_chap asc, e.book_start_vers asc";
+        $sort_sql = "e.book_start_id ASC, e.book_start_chap ASC, e.book_start_vers ASC";
         
         // If a sort different than the default is given
         if($sort !== null) { 
            switch($sort) {
                case '0_to_9':
-                   $sort_sql = "e.book_start_id asc, e.book_start_chap asc, e.book_start_vers asc";
+                   $sort_sql = "e.book_start_id ASC, e.book_start_chap ASC, e.book_start_vers ASC";
                    break;
                case '9_to_0':
-                   $sort_sql = "e.book_start_id desc, e.book_start_chap desc, e.book_start_vers desc";
+                   $sort_sql = "e.book_start_id DESC, e.book_start_chap DESC, e.book_start_vers DESC";
                    break;
                case 'a_to_z':
-                   $sort_sql = "e.name asc";
+                   $sort_sql = "e.name ASC";
                    break;
                case 'z_to_a':
-                   $sort_sql = "e.name desc";
+                   $sort_sql = "e.name DESC";
                    break;
            }
         }

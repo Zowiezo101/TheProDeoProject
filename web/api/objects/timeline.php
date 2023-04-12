@@ -37,22 +37,22 @@ class timeline {
     // read products with pagination
     public function readPaging($from_record_num, $records_per_page, $sort, $filter){        
         // The sorting for the pages
-        $sort_sql = "e.book_start_id asc, e.book_start_chap asc, e.book_start_vers asc";
+        $sort_sql = "e.book_start_id ASC, e.book_start_chap ASC, e.book_start_vers ASC";
         
         // If a sort different than the default is given
         if($sort !== null) { 
            switch($sort) {
                case '0_to_9':
-                   $sort_sql = "e.book_start_id asc, e.book_start_chap asc, e.book_start_vers asc";
+                   $sort_sql = "e.book_start_id ASC, e.book_start_chap ASC, e.book_start_vers ASC";
                    break;
                case '9_to_0':
-                   $sort_sql = "e.book_start_id desc, e.book_start_chap desc, e.book_start_vers desc";
+                   $sort_sql = "e.book_start_id DESC, e.book_start_chap DESC, e.book_start_vers DESC";
                    break;
                case 'a_to_z':
-                   $sort_sql = "e.name asc";
+                   $sort_sql = "e.name ASC";
                    break;
                case 'z_to_a':
-                   $sort_sql = "e.name desc";
+                   $sort_sql = "e.name DESC";
                    break;
            }
         }
@@ -66,7 +66,7 @@ class timeline {
 
         // select query
         $query = "SELECT * FROM (
-                    SELECT * FROM (select -999 as id, 'Global' as name) as e1
+                    SELECT * FROM (SELECT -999 AS id, 'Global' as name) AS e1
                     UNION ALL
                     SELECT * FROM (
                         SELECT
@@ -74,8 +74,8 @@ class timeline {
                         FROM
                             " . $this->table_name . " e
                         ".$filter_sql."
-                        ORDER BY ".$sort_sql." ) as e2
-                ) as e
+                        ORDER BY ".$sort_sql." ) AS e2
+                ) AS e
                 LIMIT ?, ?";
 
         // prepare query statement
@@ -105,7 +105,7 @@ class timeline {
             $filter = '%'.$filter.'%';
         }
         
-        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . "
+        $query = "SELECT COUNT(*) AS total_rows FROM " . $this->table_name . "
                     ".$filter_sql;
 
         $stmt = $this->conn->prepare( $query );
