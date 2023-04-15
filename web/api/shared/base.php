@@ -21,10 +21,10 @@ class base {
     public $table_e2pa = "event_to_parent";
     public $table_p2a = "people_to_activity";
     public $table_p2p = "people_to_aka";
+    public $table_l2l = "location_to_aka";
     public $table_p2pa = "people_to_parent";
     private $table_p2l = "people_to_location";
     private $table_l2a = "location_to_activity";
-    private $table_l2l = "location_to_aka";
     private $table_s2a = "special_to_activity";
     private $table_notes = "notes";
     private $table_sources = "sources";

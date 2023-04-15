@@ -208,9 +208,11 @@ class location {
                 FROM
                     " . $this->table . " l ";
         if (strpos($params["columns"], $utilities->location_aka) !== false) {
+            $table = $utilities->getTable($this->base->table_l2l);
+            
             // We need this extra table when AKA is needed
             $query .= 
-                "LEFT JOIN location_to_aka
+                "LEFT JOIN " . $table . " as location_to_aka
                     ON location_to_aka.location_id = l.id 
                     AND location_to_aka.location_name LIKE ?
                 ";

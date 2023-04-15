@@ -387,6 +387,23 @@ class utilities{
                     ];
                     break;
                 
+                case "activitys":
+                    $columns = [
+                        "id" => false,
+                        "order_id" => false,
+                        "name" => true,
+                        "length" => true,
+                        "date" => true,
+                        "level" => false,
+                        "book_start_id" => false,
+                        "book_start_chap" => false,
+                        "book_start_vers" => false,
+                        "book_end_id" => false,
+                        "book_end_chap" => false,
+                        "book_end_vers" => false,
+                    ];
+                    break;
+                
                 case "peoples":
                     $columns = [
                         "id" => false,
@@ -461,15 +478,6 @@ class utilities{
                         "meaning_name" => true,
                     ];
                     $item_name = "location";
-                    break;
-                
-                case "special_to_aka":
-                    $columns = [
-                        "special_id" => false,
-                        "special_name" => true,
-                        "meaning_name" => true,
-                    ];
-                    $item_name = "special";
                     break;
                 
                 case "notes":
