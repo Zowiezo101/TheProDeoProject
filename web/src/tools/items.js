@@ -313,7 +313,7 @@ function insertPages() {
                         getLinkToItem(
                             page_id, 
                             item_obj.id, 
-                            item_obj["name"], 
+                            item_obj["name"] + (item_obj["aka"] ? " (" + item_obj["aka"] + ")" : ""), 
                             {"classes": 'list-group-item list-group-item-action' + active})
                     );
                 } else {

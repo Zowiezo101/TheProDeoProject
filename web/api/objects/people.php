@@ -72,18 +72,28 @@ class people {
         }
         
         // Filtering on a name
+        $column = "";
         $filter_sql = "";
+        $join = "";
         if (isset($filter)) {
-            $filter_sql = " WHERE name LIKE ? ";
+            // People AKA names
+            $utilities = new utilities();
+            $table = $utilities->getTable($this->base->table_p2p);
+        
+            $column = ", IF(people_name LIKE ?, people_name, '') AS aka";
+            $filter_sql = " WHERE name LIKE ? OR people_name LIKE ?";
             $filter = '%'.$filter.'%';
+            $join = " LEFT JOIN ".$table." p2p
+                        ON p2p.people_id = p.id
+                        AND p2p.people_name LIKE ?";
         }
 
         // select query
         $query = "SELECT
-                    p.id, p.name
+                    p.id, p.name".$column."
                 FROM
                     " . $this->table . " p
-                ".$filter_sql."
+                ".$join.$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
 
@@ -91,10 +101,13 @@ class people {
         $stmt = $this->conn->prepare( $query );
 
         // bind variable values
-        $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $from_record_num, PDO::PARAM_INT);
-        $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $records_per_page, PDO::PARAM_INT);
+        $stmt->bindParam(1 + (isset($filter) ? 4 : 0), $from_record_num, PDO::PARAM_INT);
+        $stmt->bindParam(2 + (isset($filter) ? 4 : 0), $records_per_page, PDO::PARAM_INT);
         if (isset($filter)) {
             $stmt->bindParam(1, $filter, PDO::PARAM_STR);
+            $stmt->bindParam(2, $filter, PDO::PARAM_STR);
+            $stmt->bindParam(3, $filter, PDO::PARAM_STR);
+            $stmt->bindParam(4, $filter, PDO::PARAM_STR);
         }
 
         // execute query

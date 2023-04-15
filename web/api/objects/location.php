@@ -63,18 +63,28 @@ class location {
         }
         
         // Filtering on a name
+        $column = "";
         $filter_sql = "";
+        $join = "";
         if (isset($filter)) {
-            $filter_sql = " WHERE name LIKE ? ";
+            // Location AKA names
+            $utilities = new utilities();
+            $table = $utilities->getTable($this->base->table_l2l);
+            
+            $column = ", IF(location_name LIKE ?, location_name, '') AS aka";
+            $filter_sql = " WHERE name LIKE ? OR location_name LIKE ?";
             $filter = '%'.$filter.'%';
+            $join = " LEFT JOIN ".$table." l2l
+                        ON l2l.location_id = l.id
+                        AND l2l.location_name LIKE ?";
         }
 
         // select query
         $query = "SELECT
-                    l.id, l.name
+                    l.id, l.name".$column."
                 FROM
                     " . $this->table . " l
-                ".$filter_sql."
+                ".$join.$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
 
@@ -82,10 +92,13 @@ class location {
         $stmt = $this->conn->prepare( $query );
 
         // bind variable values
-        $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $from_record_num, PDO::PARAM_INT);
-        $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $records_per_page, PDO::PARAM_INT);
+        $stmt->bindParam(1 + (isset($filter) ? 4 : 0), $from_record_num, PDO::PARAM_INT);
+        $stmt->bindParam(2 + (isset($filter) ? 4 : 0), $records_per_page, PDO::PARAM_INT);
         if (isset($filter)) {
             $stmt->bindParam(1, $filter, PDO::PARAM_STR);
+            $stmt->bindParam(2, $filter, PDO::PARAM_STR);
+            $stmt->bindParam(3, $filter, PDO::PARAM_STR);
+            $stmt->bindParam(4, $filter, PDO::PARAM_STR);
         }
 
         // execute query
