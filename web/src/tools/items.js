@@ -606,6 +606,8 @@ function insertDetail(item, prop, hideUnknown) {
             detail = -1;
         }
     } else if (prop === "books" && item["book_start_id"] && item["book_end_id"]) {
+        var details = [];
+        
         var book_id = dict["books.book_" + item["book_start_id"]];
         var book_chap = item["book_start_chap"];
         var book_vers = item["book_start_vers"];
@@ -620,6 +622,31 @@ function insertDetail(item, prop, hideUnknown) {
             detail = detail + " - " + book_id + " " + book_chap + ":" + book_vers;
         }
         // TODO: AKA here as well
+        if (item.hasOwnProperty("aka") && item.aka !== null && item.aka.length > 0) {
+            details.push(detail);
+            
+            for (var i = 0; i < item.aka.length; i++) {
+                var aka = item.aka[i];
+                
+                var book_id = dict["books.book_" + aka["book_start_id"]];
+                var book_chap = aka["book_start_chap"];
+                var book_vers = aka["book_start_vers"];
+                detail = book_id + " " + book_chap + ":" + book_vers;
+
+                if (aka["book_start_id"] !== aka["book_end_id"] ||
+                    aka["book_start_chap"] !== aka["book_end_chap"] || 
+                    aka["book_start_vers"] !== aka["book_end_vers"]) {
+                    var book_id = dict["books.book_" + aka["book_end_id"]];
+                    var book_chap = aka["book_end_chap"];
+                    var book_vers = aka["book_end_vers"];
+                    detail = detail + " - " + book_id + " " + book_chap + ":" + book_vers;
+                }
+                
+                details.push(detail);
+            }
+            
+            detail = details.join("<br>");
+        }
         
     } else {
         detail = item[prop];
