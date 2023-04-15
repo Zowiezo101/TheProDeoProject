@@ -63,7 +63,17 @@ class utilities{
                 $item_columns[] = "num_chapters";
                 $item_columns[] = "id";
                 break;
+            
             case "events":
+                $item_columns[] = "min_book_id as book_start_id";
+                $item_columns[] = "min_book_chap as book_start_chap";
+                $item_columns[] = "min_book_vers as book_start_vers";
+                $item_columns[] = "max_book_id as book_end_id";
+                $item_columns[] = "max_book_chap as book_end_chap";
+                $item_columns[] = "max_book_vers as book_end_vers";
+                $item_columns[] = "e.id";
+                break;
+            
             case "peoples":
             case "locations":
             case "specials":

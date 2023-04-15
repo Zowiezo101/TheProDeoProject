@@ -574,7 +574,7 @@ class base {
                             END SEPARATOR ', '
                         ), ']') AS people_name FROM people_to_aka) AS aka
                             ON aka.people_id = p.id
-                    LEFT JOIN " . $this->table_gender . " AS t 
+                    LEFT JOIN " . $this->table_tg . " AS t 
                         ON p.gender = t.type_id
                 WHERE
                     p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
@@ -741,6 +741,7 @@ class base {
                 $table = "";
                 break;
         }
+        
         // select all query
         $query = "
             SELECT ti.type_name AS type, i.id, i.name, n.note, n.id AS note_id, s.source
