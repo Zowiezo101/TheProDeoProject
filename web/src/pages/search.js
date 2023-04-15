@@ -43,7 +43,7 @@ function getSearchMenu() {
                     </label>
                 </div>
                 <div class="col-md-12">
-                    <form class="form-inline">
+                    <form class="form-inline" onSubmit="return false;">
                         <input type="text" class="form-control w-100" id="item_meaning_name" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                     </form>
                 </div>
@@ -58,7 +58,7 @@ function getSearchMenu() {
                     </label>
                 </div>
                 <div class="col-md-12">
-                    <form class="form-inline">
+                    <form class="form-inline" onSubmit="return false;">
                         <input type="text" class="form-control w-100" id="item_descr" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                     </form>
                 </div>
@@ -299,7 +299,7 @@ function getSearchMenu() {
                         </div>
 
                         <div class="col-md-12">
-                            <form class="form-inline">
+                            <form class="form-inline" onSubmit="return false;">
                                 <input type="text" class="form-control w-100" id="item_length" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                             </form>
                         </div>
@@ -315,7 +315,7 @@ function getSearchMenu() {
                         </div>
     
                         <div class="col-md-12">
-                            <form class="form-inline">
+                            <form class="form-inline" onSubmit="return false;">
                                 <input type="text" class="form-control w-100" id="item_date" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                             </form>
                         </div>
@@ -407,7 +407,7 @@ function getSearchMenu() {
                             </label>
                         </div>
                         <div class="col-md-12">
-                            <form class="form-inline">
+                            <form class="form-inline" onSubmit="return false;">
                                 <input type="text" class="form-control w-100" id="item_profession" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                             </form>
                         </div>
@@ -422,7 +422,7 @@ function getSearchMenu() {
                             </label>
                         </div>
                         <div class="col-md-12">
-                            <form class="form-inline">
+                            <form class="form-inline" onSubmit="return false;">
                                 <input type="text" class="form-control w-100" id="item_nationality" placeholder="` + dict["database.search"] + `" onkeyup="searchItems()">
                             </form>
                         </div>
