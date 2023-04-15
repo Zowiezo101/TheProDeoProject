@@ -34,7 +34,8 @@ class base {
     private $table_n2i = "note_to_item";
     private $table_tn = "type_note";
     private $table_ti = "type_item";
-    private $table_gender = "type_gender";
+    private $table_tg = "type_gender";
+    private $table_tp = "type_people";
   
     // constructor with $db as database connection
     public function __construct($db){
@@ -325,12 +326,15 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(l.id), l.name
+                    distinct(l.id), l.name, t.type_name as type
                 FROM
                     " . $table . " l
                     LEFT JOIN
                         " . $this->table_p2l . " p2l
                             ON p2l.location_id = l.id
+                    LEFT JOIN
+                        " . $this->table_tp . " t
+                            ON p2l.type = t.type_id
                 WHERE
                     p2l.people_id = ?
                 ORDER BY
@@ -466,12 +470,15 @@ class base {
 
         // select all query
         $query = "SELECT
-                    distinct(p.id), p.name
+                    distinct(p.id), p.name, t.type_name as type
                 FROM
                     " . $table . " p
                     LEFT JOIN
                         " . $this->table_p2l . " p2l
                             ON p2l.people_id = p.id
+                    LEFT JOIN
+                        " . $this->table_tp . " t
+                            ON p2l.type = t.type_id
                 WHERE
                     p2l.location_id = ?
                 ORDER BY
