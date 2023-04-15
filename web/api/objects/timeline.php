@@ -202,6 +202,7 @@ class timeline {
             $this->book_end_id = $parent->book_end_id;
             $this->book_end_chap = $parent->book_end_chap;
             $this->book_end_vers = $parent->book_end_vers;
+            $this->aka = $parent->aka;
             $this->items = array_reduce($activity_arr, function ($carry, $var1) {
                 // Check if item is already in carry
                 $dupl_arr = array_filter($carry, function($var2) use ($var1) {

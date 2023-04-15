@@ -16,8 +16,10 @@ class base {
     public $table_peoples = "peoples";
     public $table_locations = "locations";
     public $table_specials = "specials";
+    public $table_a2a = "activity_to_aka";
     public $table_a2pa = "activity_to_parent";
     public $table_a2e = "activity_to_event";
+    public $table_e2e = "event_to_aka";
     public $table_e2pa = "event_to_parent";
     public $table_p2a = "people_to_activity";
     public $table_p2p = "people_to_aka";
@@ -99,6 +101,43 @@ class base {
         }
         return $array;
         
+    }
+    
+    public function getEventToEvents($id) {
+        // select all query
+        $query = "SELECT
+                    distinct(e2e.event_id), e2e.book_start_id,
+                    e2e.book_start_chap, e2e.book_start_vers,
+                    e2e.book_end_id, e2e.book_end_chap, 
+                    e2e.book_end_vers
+                FROM
+                    " . $this->table_e2e . " e2e
+                WHERE
+                    e2e.event_id = ?
+                UNION    
+                SELECT
+                    distinct(e.id), e.book_start_id,
+                    e.book_start_chap, e.book_start_vers,
+                    e.book_end_id, e.book_end_chap, 
+                    e.book_end_vers
+                FROM
+                    " . $this->table_e2e . " e
+                WHERE
+                    e.id = ?
+                ORDER BY
+                    book_start_id ASC, book_start_chap ASC, book_start_vers ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id, PDO::PARAM_INT);
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getResults($stmt);
     }
     
     public function getEventToPeoples($id) {

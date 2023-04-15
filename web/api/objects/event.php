@@ -165,7 +165,7 @@ class event {
         $this->peoples = $this->base->getEventToPeoples($this->id);
         $this->locations = $this->base->getEventToLocations($this->id);
         $this->specials = $this->base->getEventToSpecials($this->id);
-//    public $aka;
+        $this->aka = $this->base->getEventToEvents($this->id);
         $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
     }
     
@@ -181,6 +181,54 @@ class event {
                     " . $params["columns"] . "
                 FROM
                     " . $this->table . " e
+            LEFT JOIN (SELECT 
+                    event_id, 
+                    book_start_id as min_book_id, 
+                    book_start_chap as min_book_chap, 
+                    book_start_vers as min_book_vers 
+                FROM (SELECT
+                    0 as id, id as event_id, book_start_id, 
+                    book_start_chap, book_start_vers
+                FROM
+                    events e
+                UNION
+                SELECT
+                    id, event_id, book_start_id, 
+                    book_start_chap, book_start_vers
+                FROM
+                    event_to_aka e2e
+                ORDER BY 
+                    event_id ASC, 
+                    book_start_id ASC, 
+                    book_start_chap ASC, 
+                    book_start_vers ASC) as event_books
+                GROUP BY event_id) as min_books
+                on min_books.event_id = e.id
+
+            LEFT JOIN (SELECT 
+                    event_id, 
+                    book_end_id as max_book_id, 
+                    book_end_chap as max_book_chap, 
+                    book_end_vers as max_book_vers 
+                FROM (SELECT
+                    0 as id, id as event_id, book_end_id, 
+                    book_end_chap, book_end_vers
+                FROM
+                    events e
+                UNION
+                SELECT
+                    id, event_id, book_end_id, 
+                    book_end_chap, book_end_vers
+                FROM
+                        event_to_aka e2e
+                ORDER BY 
+                    event_id ASC, 
+                    book_end_id DESC, 
+                    book_end_chap DESC, 
+                    book_end_vers DESC) as event_books
+                GROUP BY event_id) as max_books
+                on max_books.event_id = e.id
+
                 ". $params["filters"] ."
                 ORDER BY
                     e.order_id ASC";
