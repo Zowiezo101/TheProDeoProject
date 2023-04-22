@@ -75,7 +75,25 @@ class utilities{
                 break;
             
             case "peoples":
+                $item_columns[] = "book_start_id";
+                $item_columns[] = "book_start_chap";
+                $item_columns[] = "book_start_vers";
+                $item_columns[] = "book_end_id";
+                $item_columns[] = "book_end_chap";
+                $item_columns[] = "book_end_vers";
+                $item_columns[] = "p.id";
+                break;
+            
             case "locations":
+                $item_columns[] = "book_start_id";
+                $item_columns[] = "book_start_chap";
+                $item_columns[] = "book_start_vers";
+                $item_columns[] = "book_end_id";
+                $item_columns[] = "book_end_chap";
+                $item_columns[] = "book_end_vers";
+                $item_columns[] = "l.id";
+                break;
+            
             case "specials":
                 $item_columns[] = "book_start_id";
                 $item_columns[] = "book_start_chap";
@@ -83,7 +101,7 @@ class utilities{
                 $item_columns[] = "book_end_id";
                 $item_columns[] = "book_end_chap";
                 $item_columns[] = "book_end_vers";
-                $item_columns[] = "id";
+                $item_columns[] = "s.id";
                 break;
         }
         
