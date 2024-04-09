@@ -15,6 +15,7 @@
     require "src/phpmailer/SMTP.php";
     require "src/phpmailer/POP3.php";
     
+    // Import the login details to reach the mailer account
     require "../../settings.conf";
 
     use PHPMailer\PHPMailer\PHPMailer;
@@ -91,7 +92,7 @@
     }
     
     // Make it easier to copy/paste code or make a new file
-    // Less change of errors
+    // Less chance for errors
     $id = basename(filter_input(INPUT_SERVER, 'PHP_SELF'), '.php');
     require 'page/template.php';
 ?>
@@ -100,6 +101,7 @@
     // Function to load the content in the content div
     function onLoadContact() {
         if (session_settings["sent"] && session_settings["sent"] === '1') {
+            // This is shown when a message is sent successfully
             var contact_form = 
                             '<div class="mx-auto p-4 col-md-6">' +
                             '    <h2 class="mb-4">' + dict["contact.sent_title"] + '</h2>' + 
@@ -108,6 +110,7 @@
                                     
             updateSession({sent: null, error: null});
         } else if (session_settings["error"] && session_settings["error"] !== "") {
+            // This is shown when an error occured while sending a message
             contact_form = 
                         '<div class="mx-auto p-4 col-md-6">' + 
                         '    <h2 class="mb-4">' + dict["contact.error_title"] + '</h2>' + 
@@ -115,6 +118,7 @@
                         '</div>';
             updateSession({sent: null, error: null});
         } else {
+            // This is shown when no message is sent yet
             contact_form = 
                         '<div class="mx-auto p-4 col-md-6">' + 
                         '    <h2 class="mb-4">' + dict["contact.form"] + '</h2>' + 
@@ -142,6 +146,7 @@
                         '    </p>' + 
                         '</div>'
                     )
+                    // Either the contact form or success/error message
                     .append(contact_form)
             )
         );  

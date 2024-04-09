@@ -1,6 +1,6 @@
 <?php 
     // Make it easier to copy/paste code or make a new file
-    // Less change of errors
+    // Less chance for errors
     $id = basename(filter_input(INPUT_SERVER, 'PHP_SELF'), '.php');
     require 'page/template.php';
     include "src/tools/server.php";
@@ -28,10 +28,10 @@
                     .append(
                         $("<div>").addClass("col-3").append(`
                             <ul class="nav nav-pills flex-column">
-                                <li class="nav-item"> <a href="" class="active nav-link" data-toggle="pill" data-target="#tablogin"> <?php echo strtoupper($dict["settings.login"]); ?> <i class="fa fa-user-circle text-muted fa-lg"></i></a> </li>
+                                <li class="nav-item"> <a href="" class="active nav-link" data-toggle="pill" data-target="#tablogin"> <i class="fa fa-user-circle text-muted fa-lg"></i> <?php echo strtoupper($dict["settings.login"]); ?></a> </li>
                             </ul>
                         `))
-                    // The column with the selected tabs
+                    // The column with the tab contents
                     .append(
                         $("<div>").addClass("col-9").append(
                             $("<div>").addClass("tab-content").append(`
