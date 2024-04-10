@@ -98,7 +98,7 @@ var dict = {
 	"settings.pass2_err.empty": "Please confirm password",
 	"settings.pass2_err.invalid": "Password did not match",
 	"settings.login_err.username": "Please enter username",
-	"settings.login_err.password": "Please enter your password",
+	"settings.login_err.password": "Please enter password",
 	"settings.login_err.invalid": "Invalid username or password",
 	"contact.form": "Send an anonymous message:",
 	"contact.name": "Your name (optional)",
