@@ -1,5 +1,5 @@
 <?php    
-    require "src/tools/lang.php";
+    require "src/tools/server/lang.php";
     
 // Needed for testing purposes
 $base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ? 

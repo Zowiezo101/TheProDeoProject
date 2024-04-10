@@ -142,4 +142,4 @@ if (filter_input(INPUT_GET, "lang") === null) {
 
 // Get the correct translation file, that corresponds with the prefered language
 $page_lang = filter_input(INPUT_GET, "lang");
-require "translations/translation_".$page_lang.".php";
+require "locale/translation_".$page_lang.".php";
