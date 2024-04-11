@@ -90,11 +90,6 @@
         header('Location: '.filter_input(INPUT_SERVER, 'HTTP_REFERER'));
         exit;
     }
-    
-    // Make it easier to copy/paste code or make a new file
-    // Less chance for errors
-    $id = basename(filter_input(INPUT_SERVER, 'PHP_SELF'), '.php');
-    require 'src/template.php';
 ?>
 
 <script>

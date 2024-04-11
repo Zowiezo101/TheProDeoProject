@@ -16,7 +16,7 @@
  * 
  */
 function getData(table, type, data) {
-    var url = base_url + setParameters("/web/api/" + table + "/" + type + ".php");
+    var url = base_url + setParameters("/api/" + table + "/" + type + ".php");
     var query = getQuery(data);
     
     return fetch(url + query, {
@@ -31,7 +31,7 @@ function getData(table, type, data) {
 }
 
 function postData(table, data) {
-    var url = base_url + "/web/api/" + table + "/create.php";
+    var url = base_url + "/api/" + table + "/create.php";
     var params = getParams({"data": data});
     
     return fetch(url, {
@@ -50,7 +50,7 @@ function postData(table, data) {
 }
 
 function putData(table, id, data) {
-    var url = base_url + "/web/api/" + table + "/update.php";
+    var url = base_url + "/api/" + table + "/update.php";
     var params = getParams({"id": id, "data": data});
     
     return fetch(url, {
@@ -69,7 +69,7 @@ function putData(table, id, data) {
 }
 
 function deleteData(table, id) {
-    var url = base_url + "/web/api/" + table + "/delete.php";
+    var url = base_url + "/api/" + table + "/delete.php";
     var params = getParams({"id": id});
     
     return fetch(url, {

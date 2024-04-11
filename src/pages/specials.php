@@ -1,13 +1,9 @@
 <?php 
-    // Make it easier to copy/paste code or make a new file
-    // Less chance for errors
-    $id = basename(filter_input(INPUT_SERVER, 'PHP_SELF'), '.php');
-    require 'src/template.php';
 ?>
 
 <script>
     // Function to load the content in the content div
-    function onLoadWorldmap() {
+    function onLoadSpecials() {
         $("#content").append(
             $("<div>").addClass("container-fluid").append(
                 $("<div>").addClass("row")
@@ -18,7 +14,8 @@
             )
         );
         
-        // Show the WorldMap
-        showMap();
+        // Depending on the selected special, 
+        // we need to get information from the database first
+        getItemsContent();
     }
 </script>

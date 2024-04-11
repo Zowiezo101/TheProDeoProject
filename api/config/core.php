@@ -1,5 +1,5 @@
 <?php
-require "../../../../settings.conf";
+require "../../../settings.conf";
 
 // show error reporting
 ini_set('display_errors', 1);
