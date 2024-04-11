@@ -116,11 +116,11 @@ function get_available_langs() {
     // Check all the available translation files
     $langFiles = glob("./locale/*.php");
     foreach ($langFiles as $filename) {
-        // Take the two-letter language abbreviation
-        $lang = substr($filename, -6, 2);
+        // Take the language abbreviation
+        preg_match_all("/(?<=_).*(?=\.)/", $filename, $lang);
         
         // And add it to the list of available languages
-        $lang_set[] = $lang;
+        $lang_set[] = $lang[0][0];
     }
 
     return $lang_set;
