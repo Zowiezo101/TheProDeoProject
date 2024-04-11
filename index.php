@@ -137,7 +137,7 @@
         <script>
 
             window.onload = function() {
-                // Set some default stuff
+                // Load in the content that is page specific
                 <?php echo "onLoad".ucfirst($id)."()"; ?>;
             };
         </script>

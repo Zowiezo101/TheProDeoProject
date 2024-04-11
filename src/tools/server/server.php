@@ -1,5 +1,5 @@
 <?php
-require "../../settings.conf";
+require "../settings.conf";
 
 // initializing variables
 $username  = $username_err  = $param_username  = "";
