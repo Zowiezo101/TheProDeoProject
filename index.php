@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html>   
 <?php 
-    // This needs to be started at the very beginning
+    // This needs to be started at the beginning of every page
     if(session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
     }
-    
-    // The page id, this is taken from the link we are currently on. If there is no page id given, go to the home page
-    $id = filter_input(INPUT_GET,'page') !== null ? filter_input(INPUT_GET,'page') : "home";
     
     // All the basic stuff that is needed to make the website running
     // The javascript version is imported seperately
@@ -56,9 +53,6 @@
             $theme = "purple";
             break;
     }
-    
-    $required = "src/pages/".$id.".php";
-    require $required;
 ?>
     
     <head>
@@ -132,7 +126,7 @@
         <script src="/src/tools/client/database.js"></script>
 
         <!-- The translation files -->
-        <script src="/locale/translation_<?php echo filter_input(INPUT_GET, "lang"); ?>.js"></script>
+        <script src="/src/tools/client/lang.js"></script>
         
         <script>
 
