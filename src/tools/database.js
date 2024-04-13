@@ -6,6 +6,76 @@
 
 /* global fetch, base_url */
 
+TYPE_BLOG = "blogs";
+TYPE_BOOK = "books";
+TYPE_EVENT = "events";
+TYPE_FAMILYTREE = "familytree";
+TYPE_LOCATION = "locations";
+TYPE_PEOPLE = "peoples";
+TYPE_SPECIAL = "specials";
+TYPE_TIMELINE = "timeline";
+TYPE_WORLDMAP = "worldmap";
+
+function getItem(options) {
+    /*
+     * URL: api/[item]/[id]
+     * options: 
+     * - item_type
+     * - id
+     * - lang
+     */
+}
+
+function getPage(options) {
+    /*
+     * URL: api/[item]/pages/[id]
+     * options: 
+     * - item_type
+     * - id
+     * - lang
+     * - sort
+     * - filter
+     */
+}
+
+function getSearchResults(options) {
+    /*
+     * URL: api/[item]/search/results
+     * options: 
+     * - item_type
+     * - lang
+     * - filter
+     */
+}
+
+function accessDatabase(method, url, data) {
+    if (method === "GET") {
+        var response = fetch(url, {
+            method: method
+        });
+    } else {
+        response = fetch(url, {
+            method: method,
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify(data)
+        });
+    }
+   
+    return response.then(
+        response => response.text()
+    ).then (function (response) {
+//        console.log(response);
+        return JSON.parse(response);
+    });
+}
+
+function getQuery() {
+    
+}
+
+
 /**
  * getData(table, type, data)
  * @param {String} table

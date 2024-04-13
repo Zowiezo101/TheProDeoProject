@@ -9,7 +9,7 @@
 function updateSession(parameters) {
     
     // The base URL
-    var url = base_url + '/web/src/tools/session.php';
+    var url = base_url + '/src/tools/session.php';
     
     var query_arr = [];
     for (var key in parameters) {

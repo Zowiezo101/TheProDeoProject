@@ -135,7 +135,7 @@ if (filter_input(INPUT_GET, "lang") === null) {
     $langs = prefered_language($available_languages);
     
     // Most prefered language, link to this language
-    header("Location: ".$base_url."/".$langs[0]."/", true, 302);
+    header("Location: ".filter_input(INPUT_SERVER, "SERVER_NAME")."/".$langs[0]."/", true, 302);
     
     exit();
 }
@@ -143,3 +143,5 @@ if (filter_input(INPUT_GET, "lang") === null) {
 // Get the correct translation file, that corresponds with the prefered language
 $page_lang = filter_input(INPUT_GET, "lang");
 require "locale/translation_".$page_lang.".php";
+
+// TODO: htmlspecialchars this entire bitch
