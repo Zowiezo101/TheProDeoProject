@@ -19,7 +19,15 @@ RewriteRule ^([^/]+)/location/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 RewriteRule ^([^/]+)/special/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 RewriteRule ^([^/]+)/map/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 
+# This is for the API
+# api/[item]/all -> api/[item]/read_all.php
+# api/[item]/[id] -> api/[item]/read.php?id=id
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^(.*)/all $1/read_all [QSA,DPI]
+
+
 # This is for all the pages (as long as a page is available)
+RewriteCond %{REQUEST_URI} !^/api/
 RewriteRule ^([^/]+)?$ index.php?page=$1 [QSA,DPI]
 
 # Making sure things are redirected to php files
