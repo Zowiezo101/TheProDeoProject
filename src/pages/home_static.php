@@ -38,7 +38,7 @@
                     <div class="col-md-11 mb-3">
                         <h1 class="text-center pb-2 pt-2 mb-0" style="background-color: var(--dark-<?= $color; ?>)"><?= $title;?></h1>
                         <div class="text-center pb-2 pt-2 px-3 mb-0 h5" style="word-break:break-word; background-color: var(--light-<?= $color; ?>)" id="<?= $id; ?>"><?= $text;?></div>
-                        <h6 class="pb-2 text-center font-weight-bold" style="background-color: var(--light-<?= $color; ?>)"><?= $dict["blogs.posted_by"];?><a href="<?= setParameters("settings")?>" class="text-decoration-none text-body"><?= $user; ?></a> @ <?= $date?> (UTC)</h6>
+                        <h6 class="pb-2 text-center font-weight-bold" style="background-color: var(--light-<?= $color; ?>)"><?= $dict["blogs.posted_by"];?> <a href="<?= setParameters("settings")?>" class="text-decoration-none text-body"><?= $user; ?></a> @ <?= $date?> (UTC)</h6>
                     </div>
                 </div><?php
             }
