@@ -29,5 +29,3 @@ $from_record_num = $records_per_page * $page;
 
 $sort = filter_input(INPUT_GET, 'sort');
 $filter = filter_input(INPUT_GET, 'filter');
-
-// TODO: Put here all the checks for filters and options and reject the request whenever options aren't recognized
