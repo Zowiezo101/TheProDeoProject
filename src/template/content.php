@@ -1,9 +1,12 @@
 <?php 
     // All the pages that use the single window template
-    $single = ["login", "settings", "search", "aboutus", "contact"];
+    $single = ["search", "aboutus", "contact"];
     
     // All the pages that use the double window template
     $double = ["books", "events", "peoples", "locations", "specials"];
+    
+    // All the pages that use the tabs window template
+    $tabs = ["login", "settings"];
     
     // All the pages that use the map window template
     $map = ["timeline", "familytree", "worldmap"];
@@ -27,6 +30,9 @@
     } else if (array_search($id, $double) !== false) {
         // Double template for all pages that have a sidebar
         require "src/template/content_double.php";
+    } else if (array_search($id, $tabs) !== false) {
+        // Tabs template for all pages that use tabs
+        require "src/template/content_tabs.php";
     } else {
         // Just use single for anything else
         require "src/template/content_single.php";
