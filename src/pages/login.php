@@ -12,23 +12,28 @@
         }
         exit;
     }
+    
+    function onPageLoad() {
+        global $id;
+        return "onLoad".ucfirst($id)."();";
+    }
 ?>
 
 <script>
     $(function() {
         var username = {
-            param: "<?php echo $param_username; ?>",
-            err: "<?php echo $username_err; ?>",
-            attr: "<?php echo (!empty($username_err)) ? 'is-invalid' : ((!empty($username)) ? 'is-valid' : ''); ?>"
+            param: "<?= $param_username; ?>",
+            err: "<?= $username_err; ?>",
+            attr: "<?= (!empty($username_err)) ? 'is-invalid' : ((!empty($username)) ? 'is-valid' : ''); ?>"
         };
         
         var password = {
-            param: "<?php echo $param_password1; ?>",
-            err: "<?php echo $password1_err; ?>",
-            attr: "<?php echo (!empty($password1_err)) ? 'is-invalid' : ((!empty($password1)) ? 'is-valid' : ''); ?>"
+            param: "<?= $param_password1; ?>",
+            err: "<?= $password1_err; ?>",
+            attr: "<?= (!empty($password1_err)) ? 'is-invalid' : ((!empty($password1)) ? 'is-valid' : ''); ?>"
         };
         
-        var login_err = `<?php echo (!empty($login_err)) ? '<div class="alert alert-danger">' . $dict[$login_err] . '</div>' : ''; ?>`;
+        var login_err = `<?= (!empty($login_err)) ? '<div class="alert alert-danger">' . $dict[$login_err] . '</div>' : ''; ?>`;
     
         $("#content").append(
             $("<div>").addClass("container-fluid").append(
@@ -65,4 +70,17 @@
             )
         );
     });
+    
+    /* 
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Other/javascript.js to edit this template
+ */
+
+// Nothing yet
+function onLoadLogin() {
+    return true;
+}
+
+
+
 </script>
