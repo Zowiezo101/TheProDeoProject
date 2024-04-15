@@ -1,6 +1,10 @@
 <?php
 // required headers
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Origin: https://prodeodatabase.com");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
   
 // include database and object files
@@ -12,13 +16,11 @@ $db = new database();
 $conn = $db->getConnection();
   
 // initialize object
-$blog = new blog($conn);
-  
-// set ID property of record to read
-$blog->id = filter_input(INPUT_GET,'id') !== null ? filter_input(INPUT_GET,'id') : -1;
+$item = new blog($conn);
+$item->get_parameters("read_all");
   
 // query blogs
-$stmt = $blog->read();
+$stmt = $item->read_all();
 $num = $stmt->rowCount();
   
 // check if more than 0 record found

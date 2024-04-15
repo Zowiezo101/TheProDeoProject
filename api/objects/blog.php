@@ -5,6 +5,7 @@ class blog {
     private $conn;
     private $table_name = "blog";
     
+    // The item name in case of errors
     public $item_name = "Blog";
   
     // object properties
@@ -19,8 +20,24 @@ class blog {
         $this->conn = $db;
     }
     
+    public function get_parameters($action) {
+        // Not all parameters are allowed in all actions
+        switch($action) {
+            case "read_one":
+                // Only blog id is allowed
+                break;
+            
+            case "read_all":
+                // Only user id is allowed
+                if (null !== filter_input(INPUT_GET,"user")) {
+                    $this->user = filter_input(INPUT_GET,"user");
+                }
+                break;
+        }
+    }
+    
     // read blogs
-    function read(){
+    function read_all(){
 
         // select all query
         $query = "SELECT
@@ -32,7 +49,7 @@ class blog {
                 ON 
                     u.id = b.user";
             
-        if ($this->id !== -1) {
+        if (isset($this->user)) {
             $query = $query."
                 WHERE u.id = ?
                 ORDER BY
@@ -42,7 +59,7 @@ class blog {
             $stmt = $this->conn->prepare( $query );
 
             // bind id of product to be updated
-            $stmt->bindParam(1, $this->id);
+            $stmt->bindParam(1, $this->user);
             
         } else {
             $query = $query."
