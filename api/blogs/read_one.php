@@ -17,6 +17,7 @@ $conn = $db->getConnection();
   
 // prepare item object
 $item = new blog($conn);
+// TODO: Error handling when some parameters are missing with an understandable error message
 $item->get_parameters("read_one");
   
 // read the details of item to be edited

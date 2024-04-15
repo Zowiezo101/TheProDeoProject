@@ -1,5 +1,12 @@
 /* global get_settings, dict */
 
+var base_url = "https://prodeodatabase.com";
+if (location.hostname === "localhost" || 
+    location.hostname === "127.0.0.1" || 
+    location.hostname === "") {
+    base_url = "http://localhost";
+}
+
 function setParameters(url) {
     var newUrl = url;
     

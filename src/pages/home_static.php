@@ -28,11 +28,14 @@
                             $dict["blogs.anonymous"] : 
                             $blog->name;
                 
-                // Timezone of the server, convert it to UTC
-                $timezone = date_default_timezone_get();
-                $date_server = new DateTime($blog->date, new DateTimeZone($timezone));
-                $date_utc = $date_server->setTimezone(new DateTimeZone("UTC"));
-                $date = $date_utc->format("j-n-Y H:i:s");
+                // The date of the blog, saved in UTC timezone
+                $timezone = new DateTimeZone("UTC");
+                
+                // A datetime object
+                $datetime = new DateTime($blog->date, $timezone);
+                
+                // The date and time, formatted to a string
+                $date = $datetime->format("j-n-Y H:i:s");
                 
                 ?><div class="row justify-content-center">
                     <div class="col-md-11 mb-3">

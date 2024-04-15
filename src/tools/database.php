@@ -19,13 +19,11 @@ function getItem($type, $options) {
 }
 
 function getItems($type, $options=false) {    
-    global $base_url;
-    
     // Create the query
     $query = getQuery($options);
     
     // The URL to send the request to
-    $url = $base_url."/api/".$type."/all";
+    $url = setParameters("/api/".$type."/all");
     
     // Access the database
     return accessDatabase("GET", $url.$query);
