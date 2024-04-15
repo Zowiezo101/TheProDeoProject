@@ -16,17 +16,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- External Javascript and script files -->
-        <?php require "src/template/imports.php"; ?>
+<?php require "src/template/imports.php"; ?>
+
     </head>
     
     <body class="d-flex flex-column min-vh-100">
         <!-- Navigation bar on top of the page -->
-        <?php require "src/template/navigation.php"; ?>
+<?php require "src/template/navigation.php"; ?>
     
-        <!-- The content of this page -->
-        <?php require "src/template/content.php"; ?>
+        <!-- The content of this page, 
+            This is done using templates and will not always have correct indentation or spacing -->
+<?php require "src/template/content.php"; ?>
     
         <!-- The footer of this page -->
-        <?php require "src/template/footer.php"; ?>
+<?php require "src/template/footer.php"; ?>
     </body>
 </html>

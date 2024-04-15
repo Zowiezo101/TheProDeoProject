@@ -14,15 +14,14 @@
     $style = "background-color: hsl(0, 100%, 99%);";
     if ($id == "home") {
         // The home page style is the only exception
-        $style = $style .
-           "background-image: url(img/background_home.svg); 
+        $style = $style . "
+            background-image: url(img/background_home.svg); 
             background-position: top left; 
             background-size: 100% 32px;
             background-repeat: repeat-y";
     }
 ?>
-
-<div id="content" class="py-5 flex-grow-1" style="<?= $style; ?>">
+        <div id="content" class="py-5 flex-grow-1" style="<?= $style; ?>">
 <?php
     if (array_search($id, $map) !== false) {
         // Map template for all map pages
@@ -38,5 +37,5 @@
         require "src/template/content_single.php";
     }
 ?>
-</div>
+        </div>
         
