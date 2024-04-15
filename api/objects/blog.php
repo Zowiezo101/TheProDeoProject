@@ -25,6 +25,9 @@ class blog {
         switch($action) {
             case "read_one":
                 // Only blog id is allowed
+                if (null !== filter_input(INPUT_GET,"id")) {
+                    $this->id = filter_input(INPUT_GET,"id");
+                }
                 break;
             
             case "read_all":
@@ -77,7 +80,7 @@ class blog {
     }
     
     // used when filling up the update product form
-    function readOne(){
+    function read_one(){
 
         // query to read single record
         $query = "SELECT

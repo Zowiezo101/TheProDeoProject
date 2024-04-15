@@ -22,4 +22,21 @@
 
         <!-- The translation files -->
         <script src="/locale/translation_<?= filter_input(INPUT_GET, "lang"); ?>.js"></script>
+
+<?php
+switch($id) {
+    case "settings":?>
+        <!-- Main Summernote library -->
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script><?php
+        break;
+}
+?>
+        
+
+        <!-- Global variables -->
+        <script>
+            var base_url = "<?= $base_url; ?>";
+            var lang = "<?= filter_input(INPUT_GET, "lang"); ?>";
+        </script>
         

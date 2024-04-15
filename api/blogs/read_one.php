@@ -17,12 +17,10 @@ $conn = $db->getConnection();
   
 // prepare item object
 $item = new blog($conn);
-  
-// set ID property of record to read
-$item->id = filter_input(INPUT_GET,'id') !== null ? filter_input(INPUT_GET,'id') : die();
+$item->get_parameters("read_one");
   
 // read the details of item to be edited
-$item->readOne();
+$item->read_one();
   
 if($item->title!=null){
     // create array

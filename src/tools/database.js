@@ -16,14 +16,15 @@ TYPE_SPECIAL = "specials";
 TYPE_TIMELINE = "timeline";
 TYPE_WORLDMAP = "worldmap";
 
-function getItem(options) {
-    /*
-     * URL: api/[item]/[id]
-     * options: 
-     * - item_type
-     * - id
-     * - lang
-     */
+function getItem(type, id, options=false) {
+    // Create the query
+    var query = getQuery(options);
+    
+    // The URL to set the request to
+    var url = base_url + "/api/" + type + "/" + id;
+    
+    // Access the database
+    return accessDatabase("GET", url + query);
 }
 
 function getPage(options) {

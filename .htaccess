@@ -21,9 +21,12 @@ RewriteRule ^([^/]+)/map/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 
 # This is for the API
 # api/[item]/all -> api/[item]/read_all.php
-# api/[item]/[id] -> api/[item]/read.php?id=id
+# api/[item]/[id] -> api/[item]/read_one.php?id=id
 RewriteCond %{REQUEST_URI} ^/api/
 RewriteRule ^(.*)/all $1/read_all [QSA,DPI]
+
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^(.*)/([0-9]*)$ $1/read_one?id=$2 [QSA,DPI]
 
 
 # This is for all the pages (as long as a page is available)
