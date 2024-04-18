@@ -20,14 +20,29 @@ RewriteRule ^([^/]+)/special/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 RewriteRule ^([^/]+)/map/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 
 # This is for the API
+# api/[item]/new -> api/[item]/create.php
 # api/[item]/all -> api/[item]/read_all.php
-# api/[item]/[id] -> api/[item]/read_one.php?id=id
+# api/[item]/[id] -> api/[item]/read_one.php?id=[id]
+# api/[item]/[id] -> api/[item]/update.php?id=[id]
+# api/[item]/[id] -> api/[item]/delete.php?id=[id]
+
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^(.*)/new$ $1/create [QSA,DPI]
+
 RewriteCond %{REQUEST_URI} ^/api/
 RewriteRule ^(.*)/all $1/read_all [QSA,DPI]
 
 RewriteCond %{REQUEST_URI} ^/api/
+RewriteCond %{REQUEST_METHOD} GET
 RewriteRule ^(.*)/([0-9]*)$ $1/read_one?id=$2 [QSA,DPI]
 
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteCond %{REQUEST_METHOD} PUT
+RewriteRule ^(.*)/([0-9]*)$ $1/update?id=$2 [QSA,DPI]
+
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteCond %{REQUEST_METHOD} DELETE
+RewriteRule ^(.*)/([0-9]*)$ $1/delete?id=$2 [QSA,DPI]
 
 # This is for all the pages (as long as a page is available)
 RewriteCond %{REQUEST_URI} !^/api/

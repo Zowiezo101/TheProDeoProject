@@ -1,13 +1,8 @@
 <?php
-class blog {
-  
-    // database connection and table name
-    private $conn;
-    private $table_name = "blog";
+require "../shared/item.php";
+
+class blog extends item{
     
-    // The item name in case of errors
-    public $item_name = "Blog";
-  
     // object properties
     public $id;
     public $title;
@@ -16,31 +11,102 @@ class blog {
     public $date;
   
     // constructor with $db as database connection
-    public function __construct($db){
-        $this->conn = $db;
+    public function __construct(){
+        parent::__construct();
+        
+        $this->table_name = "blog";        
     }
     
     public function get_parameters($action) {
+        $allowed_params = [];
+        $required_params = [];
+        
         // Not all parameters are allowed in all actions
         switch($action) {
             case "read_one":
-                // Only blog id is allowed
-                if (null !== filter_input(INPUT_GET,"id")) {
-                    $this->id = filter_input(INPUT_GET,"id");
-                }
+                $required_params = [
+                    "id" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    // Nothing done with this, but still accepted
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
                 break;
             
             case "read_all":
-                // Only user id is allowed
-                if (null !== filter_input(INPUT_GET,"user")) {
-                    $this->user = filter_input(INPUT_GET,"user");
-                }
+                $allowed_params = [
+                    "user" => FILTER_VALIDATE_INT,
+                    // Nothing done with this, but still accepted
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "create":
+                $allowed_params = [
+                    // Nothing done with this, but still accepted
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "update":
+                $required_params = [
+                    "id" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    // Nothing done with this, but still accepted
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "delete":
+                $required_params = [
+                    "id" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    // Nothing done with this, but still accepted
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
                 break;
         }
+        
+        return $this->check_parameters($required_params, $allowed_params);
+    }
+    
+    public function get_body($action) {
+        $allowed_params = [];
+        $required_params = [];
+        
+        // Accepted body parameters
+        switch($action) {
+            case "create":
+                $required_params = [
+                    "title" => FILTER_DEFAULT,
+                    "text" => FILTER_DEFAULT,
+                    "user" => FILTER_SANITIZE_NUMBER_INT,
+                    "date" => FILTER_DEFAULT,
+                ];
+                break;
+            
+            case "update":
+                $required_params = [
+                    "title" => FILTER_DEFAULT,
+                    "text" => FILTER_DEFAULT,
+                ];
+                break;
+        }
+        
+        return $this->check_body($required_params, $allowed_params);
     }
     
     // read blogs
     function read_all(){
+        $this->get_parameters("read_all");
+        if ($this->error) {
+            return false;
+        }
 
         // select all query
         $query = "SELECT
@@ -72,19 +138,20 @@ class blog {
             // prepare query statement
             $stmt = $this->conn->prepare( $query );
         }
-
-        // execute query
-        $stmt->execute();
-
-        return $stmt;
+        
+        return $this->access_database($stmt);
     }
     
     // used when filling up the update product form
     function read_one(){
+        $this->get_parameters("read_one");
+        if ($this->error) {
+            return false;
+        }
 
         // query to read single record
         $query = "SELECT
-                    b.title, b.text, b.user, b.date
+                    b.id, b.title, b.text, b.user, b.date
                 FROM
                     " . $this->table_name . " b
                 WHERE
@@ -97,22 +164,24 @@ class blog {
 
         // bind id of product to be updated
         $stmt->bindParam(1, $this->id);
-
-        // execute query
-        $stmt->execute();
-
-        // get retrieved row
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // set values to object properties
-        $this->title = $row['title'];
-        $this->text = $row['text'];
-        $this->user = $row['user'];
-        $this->date = $row['date'];
+        
+        return $this->access_database($stmt);
     }
     
     // create product
-    function create(){
+    function create(){    
+        // A sucessful creation of a new item should return code '201'
+        $this->code = 201;
+        
+        $this->get_parameters("create");
+        if ($this->error) {
+            return false;
+        }
+        
+        $this->get_body("create");
+        if ($this->error) {
+            return false;
+        }
 
         // query to insert record
         $query = "INSERT INTO
@@ -131,18 +200,27 @@ class blog {
         $this->date = htmlspecialchars(strip_tags($this->date));
 
         // bind values
+        // TODO: Use these param names everywhere
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":text", $this->text);
         $stmt->bindParam(":user", $this->user);
         $stmt->bindParam(":date", $this->date);
-
-        // execute query
-        return $stmt->execute();
+        
+        return $this->access_database($stmt);
 
     }
 
     // update the product
     function update(){
+        $this->get_parameters("update");
+        if ($this->error) {
+            return false;
+        }
+        
+        $this->get_body("update");
+        if ($this->error) {
+            return false;
+        }
 
         // update query
         $query = "UPDATE
@@ -164,13 +242,16 @@ class blog {
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":text", $this->text);
         $stmt->bindParam(':id', $this->id);
-
-        // execute the query
-        return $stmt->execute();
+        
+        return $this->access_database($stmt);
     }
     
     // delete the product
     function delete(){
+        $this->get_parameters("delete");
+        if ($this->error) {
+            return false;
+        }
 
         // delete query
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
@@ -183,8 +264,7 @@ class blog {
 
         // bind id of record to delete
         $stmt->bindParam(1, $this->id);
-
-        // execute query
-        return $stmt->execute();
+        
+        return $this->access_database($stmt);
     }
 }

@@ -1,43 +1,22 @@
 <?php
-// required headers
+// Required headers
 header("Access-Control-Allow-Origin: http://localhost");
 header("Access-Control-Allow-Origin: https://prodeodatabase.com");
-header("Access-Control-Allow-Headers: access");
+header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET");
-header("Access-Control-Allow-Credentials: true");
-header('Content-Type: application/json');
+header("Access-Control-Allow-Headers: access");
   
-// include database and object files
-include_once '../config/database.php';
+// Include core and object files
+include_once '../config/core.php';
 include_once '../objects/blog.php';
   
-// get database connection
-$db = new database();
-$conn = $db->getConnection();
+// Initialize object
+$item = new blog();
   
-// prepare item object
-$item = new blog($conn);
-// TODO: Error handling when some parameters are missing with an understandable error message
-$item->get_parameters("read_one");
-  
-// read the details of item to be edited
-$item->read_one();
-  
-if($item->title!=null){
-    // create array
-    $array = (array) get_object_vars($item);
-  
-    // set response code - 200 OK
-    http_response_code(200);
-  
-    // make it json format
-    echo json_encode($array);
-}
-  
-else{
-    // set response code - 404 Not found
-    http_response_code(404);
-  
-    // tell the user item does not exist
-    echo json_encode(array("message" => $item->item_name . " does not exist."));
-}
+// Read the requested data
+$data = $item->read_one();
+
+// Prepare a message to be sent to the client
+$message = $item->prepare_message($data);
+http_response_code($message["code"]);
+echo json_encode($message["data"]);

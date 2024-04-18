@@ -16,15 +16,41 @@ TYPE_SPECIAL = "specials";
 TYPE_TIMELINE = "timeline";
 TYPE_WORLDMAP = "worldmap";
 
+function createItem(type, data) {    
+    // The URL to set the request to
+    var url = base_url + "/" + lang + "/api/" + type + "/new";
+    
+    // Access the database
+    return accessDatabase("POST", url, data);
+    
+}
+
 function getItem(type, id, options=false) {
     // Create the query
     var query = getQuery(options);
     
     // The URL to set the request to
-    var url = base_url + "/api/" + type + "/" + id;
+    var url = base_url + "/" + lang + "/api/" + type + "/" + id;
     
     // Access the database
     return accessDatabase("GET", url + query);
+}
+
+function updateItem(type, id, data) {    
+    // The URL to set the request to
+    var url = base_url + "/" + lang + "/api/" + type + "/" + id;
+    
+    // Access the database
+    return accessDatabase("PUT", url, data);
+    
+}
+
+function deleteItem(type, id) {
+    // The URL to set the request to
+    var url = base_url + "/" + lang + "/api/" + type + "/" + id;
+    
+    // Access the database
+    return accessDatabase("DELETE", url);    
 }
 
 function getPage(options) {
@@ -72,34 +98,27 @@ function accessDatabase(method, url, data) {
     });
 }
 
-function getQuery() {
+function getQuery(options) {
+    // The query that is built using the options
+    var query = "";
     
-}
-
-
-/**
- * getData(table, type, data)
- * @param {String} table
- * @param {String} type
- * @param {Object} data
- *  
- *  @return {Promise}
- * 
- */
-function getData(table, type, data) {
-    var url = base_url + setParameters("/api/" + table + "/" + type + ".php");
-    var query = getQuery(data);
-    
-    return fetch(url + query, {
-            method: 'GET'
+    // No options means no query
+    if (options !== false) {
+        var params = [];
+        
+        // Create the following syntax for each given option: options=value
+        for (var key in options) {
+            params.push(key + "=" + options[key]);
         }
-    ).then(
-        response => response.text()
-    ).then (function (response) {
-//        console.log(response);
-        return JSON.parse(response);
-    });
+        
+        // Add it all together to get parameters that can be added to an URL
+        query = "?" + params.join("&");
+    }
+    
+    return query;
 }
+
+
 
 function postData(table, data) {
     var url = base_url + "/api/" + table + "/create.php";

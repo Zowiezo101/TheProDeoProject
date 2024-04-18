@@ -7,39 +7,17 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
   
-// include database and object file
-include_once '../config/database.php';
+// Include core and object files
+include_once '../config/core.php';
 include_once '../objects/blog.php';
   
-// get database connection
-$db = new database();
-$conn = $db->getConnection();
-  
 // prepare product object
-$blog = new blog($conn);
-  
-// get product id
-$data = json_decode(file_get_contents("php://input"));
-  
-// set product id to be deleted
-$blog->id = $data->id;
-  
-// delete the product
-if($blog->delete()){
-  
-    // set response code - 200 ok
-    http_response_code(200);
-  
-    // tell the user
-    echo json_encode(array("message" => "settings.blog.success.delete"));
-}
-  
-// if unable to delete the product
-else{
-  
-    // set response code - 503 service unavailable
-    http_response_code(503);
-  
-    // tell the user
-    echo json_encode(array("message" => "settings.blog.error.delete"));
-}
+$item = new blog($conn);
+
+// Create the object with the given data and return the created object
+$data = $item->delete();
+
+// Prepare a message to be sent to the client
+$message = $item->prepare_message($data);
+http_response_code($message["code"]);
+echo json_encode($message["data"]);

@@ -16,6 +16,7 @@
         exit;
     }
     
+    // TODO: Make sure the tabs stay selected when refreshing the page
     function insertTabList() {
         // The list of tabs for this page
         global $dict;
@@ -61,6 +62,7 @@
     }
     
     function insertTabAdd() {
+        // TODO: When clicking submit without having filled in editordata, error occurs because it's not focusable
         global $dict;
         
         $tab = 
@@ -148,7 +150,7 @@
         
         // Collect the blogs if there are any
         $blogs = [];
-        if (isset($data->records)) {
+        if (isset($data->records) && ($data->records !== [])) {
             $blogs = $data->records;
         }
         

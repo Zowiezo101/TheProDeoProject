@@ -14,11 +14,18 @@ function createItem($type, $data) {
 
 }
 
-function getItem($type, $options) {
-
+function getItem($type, $id, $options=false) {
+    // Create the query
+    $query = getQuery($options);
+    
+    // The URL to send the request to
+    $url = setParameters("api/".$type."/".$id);
+    
+    // Access the database
+    return accessDatabase("GET", $url.$query);
 }
 
-function getItems($type, $options=false) {    
+function getItems($type, $options=false) {
     // Create the query
     $query = getQuery($options);
     
@@ -70,12 +77,12 @@ function accessDatabase($method, $url, $data=false) {
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     } else if ($method == "PUT") {
         // To update existing items
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     } else if ($method == "DELETE") {
         // To delete existing items
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DETE");
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DETE");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     }
@@ -92,9 +99,21 @@ function accessDatabase($method, $url, $data=false) {
 function getQuery($options) {    
     // The query that is built using the options
     $query = "";
+    $url = "";
+    
+    // No options means no query
     if ($options != false) {
+        $params = [];
         
+        // Create the following syntax for each given option: options=value
+        foreach($options as $option => $value) {
+            $params[] = $option."=".$value;
+        }
+        
+        // Add it all together to get parameters that can be added to an URL
+        $query = "?".implode("&", $params);
     }
+    
     return $query;
 }
 

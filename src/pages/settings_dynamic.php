@@ -44,44 +44,51 @@
         $('#delete_blog_text').summernote('disable');
     });
 
-    function addBlog() {
+    function addBlog() {        
         /* Title of a blog */
         var blog_title = $("#add_blog_title").val();
 
         /* The contents of a blog, done with SummerNote */
+        // TODO: Use double quotes everywhere for javascript and PHP
         var blog_text = $('#add_blog_text').summernote('code');
-
-        // The user depends on the logged-in user
-        var blog_user = session_settings["user_id"];
 
         // Date is the moment the blog was added
         var blog_date = new Date();
+        
+        // TODO: Make sure this is UTC
 
-        if (session_settings["loggedin"]) {
+<?php if (isset($_SESSION["loggedin"])) { ?>
+        // The user depends on the logged-in user
+        var blog_user = <?= $_SESSION["user_id"];?>;
+        
+        // Form tries to reload the page before the post could return..
+        event.preventDefault();
 
-            // Form tries to reload the page before the post could return..
-            event.preventDefault();
-
-            if ($('#add_blog_text').summernote('isEmpty')) {
-                blog_text = "";
-            }
-
-            // Post the blog to the database
-            postBlog(blog_title, blog_text, blog_user, blog_date).then(function (result) {
-                if (result.message !== "settings.blog.success.add") {
-                    // Show error if anything went wrong
-                    alert(dict[result.message]);
-                } else {
-                    // Let the user know it went right
-                    alert(dict[result.message]);
-                    location.reload();
-                }
-            }).catch(function (result) {
-                // Show error if anything went wrong
-                alert(dict["settings.blog.error.add"]);
-            });
+        if ($('#add_blog_text').summernote('isEmpty')) {
+            blog_text = "";
         }
 
+        // Post the blog to the database
+        createItem(TYPE_BLOG, {
+            "title": blog_title, 
+            "text": blog_text, 
+            "user": blog_user, 
+            "date": blog_date
+        }).then(function (result) {
+            if (result.error !== "") {
+                // Show error if anything went wrong
+                alert(dict["settings.blog.error.add"] + ": " + result.error);
+            } else {
+                // Let the user know it went right
+                alert(dict["settings.blog.success.add"]);
+                location.reload();
+            }
+        }).catch(function (result) {
+            // Show error if anything went wrong
+            alert(dict["settings.blog.error.add"]);
+        });
+        
+<?php } ?>
         return;
     }
 
@@ -95,31 +102,33 @@
 
         var blog_id = $("#edit_blog_select option:selected")[0].value;
 
-        if (session_settings["loggedin"]) {
+<?php if (isset($_SESSION["loggedin"])) { ?>
+        // Form tries to reload the page before the post could return..
+        event.preventDefault();
 
-            // Form tries to reload the page before the post could return..
-            event.preventDefault();
-
-            if ($('#edit_blog_text').summernote('isEmpty')) {
-                blog_text = "";
-            }
-
-            // Post the blog to the database
-            putBlog(blog_id, blog_title, blog_text).then(function (result) {
-                if (result.message !== "settings.blog.success.edit") {
-                    // Show error if anything went wrong
-                    alert(dict[result.message]);
-                } else {
-                    // Let the user know it went right
-                    alert(dict[result.message]);
-                    location.reload();
-                }
-            }).catch(function () {
-                // Show error if anything went wrong
-                alert(dict["settings.blog.error.edit"]);
-            });
+        if ($('#edit_blog_text').summernote('isEmpty')) {
+            blog_text = "";
         }
 
+        // Post the blog to the database
+        updateItem(TYPE_BLOG, blog_id, {
+            "title": blog_title, 
+            "text": blog_text
+        }).then(function (result) {
+            if (result.error !== "") {
+                // Show error if anything went wrong
+                alert(dict["settings.blog.error.edit"] + ": " + result.error);
+            } else {
+                // Let the user know it went right
+                alert(dict["settings.blog.success.edit"]);
+                location.reload();
+            }
+        }).catch(function () {
+            // Show error if anything went wrong
+            alert(dict["settings.blog.error.edit"]);
+        });
+        
+<?php } ?>
         return true;
     }
 
@@ -127,58 +136,67 @@
         // The ID of the selected blog
         var blog_id = $("#delete_blog_select option:selected")[0].value;
 
-        if (session_settings["loggedin"]) {
-
+<?php if (isset($_SESSION["loggedin"])) { ?>
             // Form tries to reload the page before the post could return..
             event.preventDefault();
 
             // Delete the blog from the database
-            deleteBlog(blog_id).then(function (result) {
+            deleteItem(TYPE_BLOG, blog_id).then(function (result) {
                 // Let the user know it went right
-                if (result.message !== "settings.blog.success.delete") {
+                if (result.error !== "") {
                     // Show error if anything went wrong
-                    alert(dict[result.message]);
+                    alert(dict["settings.blog.error.delete"] + ": " + result.error);
                 } else {
                     // Let the user know it went right
-                    alert(dict[result.message]);
+                    alert(dict["settings.blog.success.delete"]);
                     location.reload();
                 }
             }).catch(function () {
                 // Show error if anything went wrong
                 alert(dict["settings.blog.error.delete"]);
-
-                location.reload();
             });
-        }
-
+            
+<?php } ?>
         return true;
     }
 
     function onChangeEdit() {
         var option = $("#edit_blog_select option:selected")[0];
-        getItem(TYPE_BLOG, option.value).then(function(blog) {
-            if (blog.id === option.value) {
-                // Enable the textboxs for editing
-                $("#edit_blog_title").removeAttr("disabled");
-                $("#edit_blog_title").val(blog.title);
+        getItem(TYPE_BLOG, option.value).then(function(data) {
+            if (data.hasOwnProperty("records") && (data.records !== [])) {
+                // Take the first record
+                var blog = data.records[0];
+        
+                if (blog.id === option.value) {
+                    // Enable the textboxs for editing
+                    $("#edit_blog_title").removeAttr("disabled");
+                    $("#edit_blog_title").val(blog.title);
 
-                $('#edit_blog_text').summernote('enable');
-                $('#edit_blog_text').summernote('code', blog.text);
+                    $('#edit_blog_text').summernote('enable');
+                    $('#edit_blog_text').summernote('code', blog.text);
 
-                // Enable the button
-                $('#tabedit button').removeAttr('disabled');
+                    // Enable the button
+                    $('#tabedit button').removeAttr('disabled');
+                }
             }
+            
         });
     }
 
     function onChangeDelete() {
         var option = $("#delete_blog_select option:selected")[0];
-        getItem(TYPE_BLOG, option.value).then(function(blog) {
-            if (blog.id === option.value) {
-                // Update the text and enable the button
-                $('#delete_blog_text').summernote('code', blog.text);
+        getItem(TYPE_BLOG, option.value).then(function(data) {
+            if (data.hasOwnProperty("records") && (data.records !== [])) {
+                // Take the first record
+                var blog = data.records[0];
+                
+                if (blog.id === option.value) {
+                    // Update the text and enable the button
+                    $('#delete_blog_text').summernote('code', blog.text);
 
-                $('#tabdelete button').removeAttr('disabled');
+                    // Enable the button
+                    $('#tabdelete button').removeAttr('disabled');
+                }
             }
         });
     }

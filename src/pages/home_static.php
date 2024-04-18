@@ -3,7 +3,11 @@
     
     $data = getItems($TYPE_BLOG);
 
-    if (isset($data->records)) {
+    if (isset($data->error) && ($data->error != "")) {
+        ?><div class="container blogs text-center h1"><?php
+            echo $dict["settings.database_err"];
+        ?></div><?php
+    } else {
         ?><div class="container blogs"><?php
             $blogs = $data->records;
             foreach($blogs as $idx => $blog) {
@@ -16,12 +20,7 @@
                 
                 // If there is blog text, add either one or two breaklines
                 // The amount of breaklines depends on if the text ends with a paragraph
-                $text = $blog->text ? 
-                            $blog->text.
-                                (str_ends_with($blog->text, "</p>") ? 
-                                "<br>" : 
-                                "<br><br>") : 
-                            "";
+                $text = $blog->text;
                 
                 // If the user isn't defined for some reason, get it as anonymous
                 $user = $blog->name === "undefined" ? 
@@ -46,9 +45,5 @@
                 </div><?php
             }
         ?></div><?php
-    } else {
-        ?><div class="container blogs text-center h1"><?php
-            echo $dict["settings.database_err"];
-        ?></div><?php
-    } 
+    }
 ?>
