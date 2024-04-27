@@ -2,7 +2,14 @@
 
 require_once "utilities.php";
 
-$BOOKS_TO_NOTES = ["book" => "notes"];
+$BOOKS_TO_NOTES = ["book", "notes"];
+$EVENTS_TO_NEXT = ["event", "children"];
+$EVENTS_TO_PREV = ["event", "parents"];
+$EVENTS_TO_PEOPLES = ["event", "peoples"];
+$EVENTS_TO_LOCATIONS = ["event", "locations"];
+$EVENTS_TO_SPECIALS = ["event", "specials"];
+$EVENTS_TO_AKA = ["event", "events"];
+$EVENTS_TO_NOTES = ["event", "notes"];
 
 class item {
   
@@ -209,7 +216,11 @@ class item {
     }
     
     function get_linking_data($item) {
-        foreach($this->linking_tables as $table => $link) {
+        foreach($this->linking_tables as $link_table) {
+            // Get the table and link from the variable
+            $table = $link_table[0];
+            $link = $link_table[1];
+                    
             // Get the corresponding function for this table and the link
             $function = $this->utilities->getLinkingFunction($table, $link);
             if ($function !== "") {

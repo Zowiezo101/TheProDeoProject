@@ -132,7 +132,7 @@ class book extends item {
         }
         
         // Set other tables that we want to include in the result as well
-        $this->set_linking_tables($BOOKS_TO_NOTES);
+        $this->set_linking_tables([$BOOKS_TO_NOTES]);
 
         // query to read single record
         $query = "SELECT

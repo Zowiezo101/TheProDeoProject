@@ -11,6 +11,10 @@ class utilities{
     private $location_type = "type_location";
     private $special_type = "type_special";
     
+    public $table_events = "events";
+    public $table_peoples = "peoples";
+    public $table_locations = "locations";
+    public $table_specials = "specials";
     public $table_a2a = "activity_to_aka";
     public $table_a2pa = "activity_to_parent";
     public $table_a2e = "activity_to_event";
@@ -679,7 +683,7 @@ class utilities{
     }
     
     public function getEventToPeoples($id) {
-        $table = $this->utilities->getTable($this->table_peoples);
+        $table = $this->getTable($this->table_peoples);
 
         // select all query
         $query = "SELECT
@@ -710,7 +714,7 @@ class utilities{
     }
     
     public function getEventToLocations($id) {
-        $table = $this->utilities->getTable($this->table_locations);
+        $table = $this->getTable($this->table_locations);
 
         // select all query
         $query = "SELECT
@@ -741,7 +745,7 @@ class utilities{
     }
     
     public function getEventToSpecials($id) {
-        $table = $this->utilities->getTable($this->table_specials);
+        $table = $this->getTable($this->table_specials);
 
         // select all query
         $query = "SELECT
@@ -772,7 +776,7 @@ class utilities{
     }
     
     public function getEventToChildren($id) {
-        $table = $this->utilities->getTable($this->table_events);
+        $table = $this->getTable($this->table_events);
         
         // select all query
         $query = "SELECT
@@ -800,7 +804,7 @@ class utilities{
     }
     
     public function getEventToParents($id) {
-        $table = $this->utilities->getTable($this->table_events);
+        $table = $this->getTable($this->table_events);
         
         // select all query
         $query = "SELECT
@@ -1350,15 +1354,12 @@ class utilities{
     
     public function getLinkingFunction($type, $link) {
         $function = "";
-        
-        switch($link) {
-            case "notes":
-                $function_name = "get".ucfirst($type)."ToNotes";
-                $function = "get".ucfirst($type)."ToNotes";
-                if (method_exists($this, $function_name)) {
-                    $function = $function_name;
-                }
-                break;
+
+        // Get the function name by concatenating the type and link names
+        $function_name = "get".ucfirst($type)."To". ucfirst($link);
+        if (method_exists($this, $function_name)) {
+            // If it exists, return the value
+            $function = $function_name;
         }
         
         return $function;

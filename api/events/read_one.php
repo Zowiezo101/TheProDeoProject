@@ -1,43 +1,22 @@
 <?php
-// required headers
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: access");
+// Required headers
+header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Origin: https://prodeodatabase.com");
+header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET");
-header("Access-Control-Allow-Credentials: true");
-header('Content-Type: application/json');
+header("Access-Control-Allow-Headers: access");
   
-// include database and object files
-include_once '../config/database.php';
+// Include core and object files
+include_once '../config/core.php';
 include_once '../objects/event.php';
   
-// get database connection
-$db = new database();
-$conn = $db->getConnection();
-  
 // prepare item object
-$item = new event($conn);
-  
-// set ID property of record to read
-$item->id = filter_input(INPUT_GET,'id') !== null ? filter_input(INPUT_GET,'id') : die();
+$item = new event();
   
 // read the details of item to be edited
-$item->readOne();
-  
-if($item->name!=null){
-    // create array
-    $array = (array) get_object_vars($item);
-  
-    // set response code - 200 OK
-    http_response_code(200);
-  
-    // make it json format
-    echo json_encode($array);
-}
-  
-else{
-    // set response code - 404 Not found
-    http_response_code(404);
-  
-    // tell the user item does not exist
-    echo json_encode(array("message" => $item->item_name . " does not exist."));
-}
+$data = $item->read_one();
+
+// Prepare a message to be sent to the client
+$message = $item->prepare_message($data);
+http_response_code($message["code"]);
+echo json_encode($message["data"]);
