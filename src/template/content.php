@@ -1,4 +1,6 @@
 <?php 
+    require "content_base.php";
+    
     // All the pages that use the single window template
     $single = ["search", "aboutus", "contact"];
     
@@ -19,17 +21,22 @@
             background-position: top left; 
             background-size: 100% 32px;
             background-repeat: repeat-y";
+    } 
+    
+    $classes = "py-5 flex-grow-1";
+    if (array_search($page_id, $double) !== false) {
+        $classes = "flex-grow-1";
     }
 ?>
-        <div id="content" class="py-5 flex-grow-1" style="<?= $style; ?>">
+        <div id="content" class="<?= $classes; ?>" style="<?= $style; ?>">
 <?php
-    if (array_search($id, $map) !== false) {
+    if (array_search($page_id, $map) !== false) {
         // Map template for all map pages
         require "src/template/content_map.php";
-    } else if (array_search($id, $double) !== false) {
+    } else if (array_search($page_id, $double) !== false) {
         // Double template for all pages that have a sidebar
         require "src/template/content_double.php";
-    } else if (array_search($id, $tabs) !== false) {
+    } else if (array_search($page_id, $tabs) !== false) {
         // Tabs template for all pages that use tabs
         require "src/template/content_tabs.php";
     } else {

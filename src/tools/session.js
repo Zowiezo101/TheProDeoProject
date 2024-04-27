@@ -21,20 +21,6 @@ function updateSession(parameters) {
         query = "?" + query_arr.join("&");
     }
     
-    for (key in parameters) {
-        if (session_settings.hasOwnProperty(key)) {
-            if ((parameters[key] !== "") && (parameters[key] !== "null")) {
-                // Update the value
-                session_settings[key] = parameters[key];
-            } else {
-                // Delete the value
-                delete session_settings[key];
-            }
-        } else if ((parameters[key] !== "") && (parameters[key] !== "null")) {
-            session_settings[key] = parameters[key];
-        }
-    }
-    
     fetch(url + query, {
             method: 'GET'
         }
