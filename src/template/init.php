@@ -1,7 +1,7 @@
 <?php    
     
     // The page id, this is taken from the link we are currently on. If there is no page id given, go to the home page
-    $id = filter_input(INPUT_GET,'page') !== null ? filter_input(INPUT_GET,'page') : "home";
+    $page_id = filter_input(INPUT_GET,'page') !== null ? filter_input(INPUT_GET,'page') : "home";
     
     // Some basic stuff that we need to make everything work
     require "src/tools/lang.php";
@@ -14,12 +14,12 @@
 
     $dropdown = "";
     // Get the dropdown menu that needs to have it's button activated
-    if (in_array($id, ['books', 'events', 'peoples', 'locations', 'specials', 'search'])) {
+    if (in_array($page_id, ['books', 'events', 'peoples', 'locations', 'specials', 'search'])) {
         $dropdown = "database";
     }
 
     // The theme that is used for this page
-    switch($id) {
+    switch($page_id) {
         case 'home':
         case 'search':
         case 'settings':

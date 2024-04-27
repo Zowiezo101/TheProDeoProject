@@ -50,7 +50,7 @@
         $_SESSION["page_id_old"] = $_SESSION["page_id"];
 
         // The actual check for page change
-        if ($_SESSION["page_id_old"] !== $id) {
+        if ($_SESSION["page_id_old"] !== $page_id) {
             unset($_SESSION["sort"]);
             unset($_SESSION["search"]);
             unset($_SESSION["page"]);
@@ -58,6 +58,6 @@
     }
 
     // Save the page id
-    $_SESSION["page_id"] = $id;
+    $_SESSION["page_id"] = $page_id;
 
 ?>

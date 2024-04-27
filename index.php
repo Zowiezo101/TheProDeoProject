@@ -32,7 +32,7 @@
 <?php require "src/template/footer.php"; ?>
         
 <?php
-$page_dynamic = "src/pages/{$id}_dynamic.php";
+$page_dynamic = "src/pages/{$page_id}_dynamic.php";
 if (is_file($page_dynamic)) {
 ?>
         <!-- Javascript for dynamic content 

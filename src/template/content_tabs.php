@@ -1,4 +1,4 @@
-<?php require "src/pages/{$id}_static.php"; ?>
+<?php require "src/pages/{$page_id}_static.php"; // TODO: Use these brackets everywhere ?>
             <!-- This is for content that remains the same while using this page -->
             <div class="container-fluid">
                 <div class="row">

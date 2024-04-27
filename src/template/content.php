@@ -12,7 +12,7 @@
     $map = ["timeline", "familytree", "worldmap"];
     
     $style = "background-color: hsl(0, 100%, 99%);";
-    if ($id == "home") {
+    if ($page_id == "home") {
         // The home page style is the only exception
         $style = $style . "
             background-image: url(img/background_home.svg); 
