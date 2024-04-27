@@ -1,19 +1,38 @@
 <?php
 
+require_once "utilities.php";
+
+$BOOKS_TO_NOTES = ["book" => "notes"];
+
 class item {
   
     // database connection and table name
     protected $conn;
     protected $table_name;
     
+    // Language options
+    protected $lang;
+    protected $table_lang;
+    
+    // Utilities with extra functions
+    private $utilities;
+    protected $query;
+    
     // In case an error occurs
     protected $error = "";
     protected $code = 200;
+
+    // The default amount of records when asking for a page
+    protected $records_per_page = 10;
+    
+    // This is in case we need information from another table as well
+    private $linking_tables = [];
   
     // constructor with $db as database connection
     public function __construct(){
         global $conn;
         $this->conn = $conn;
+        $this->utilities = new utilities();
     }
     
     function check_parameters($required_params, $allowed_params) {
@@ -51,6 +70,11 @@ class item {
                     $this->$key = filter_var($value, $allowed_params[$key]);
                 }
             }
+        }
+        
+        // If the language is set, get the translation table as well
+        if (isset($this->lang)) {
+            $this->table_lang = $this->get_table_lang();
         }
                 
         return $result;
@@ -117,6 +141,8 @@ class item {
                     array_push($data, $row);
                 }
             }
+            
+            $data = array_map([$this, "get_linking_data"], $data);
         } catch (Exception $e) {
             $this->error = $e->getMessage();
             $this->code = 503;
@@ -125,21 +151,73 @@ class item {
         return $data;
     }
     
-    function prepare_message($data) {
+    function prepare_message($data, $include_paging=false) {
         $message = [
             "data" => [
                 "error" => $this->error,
-                "records" => []
+                "records" => [],
             ],
-            "code" => $this->code 
+            "code" => $this->code,
         ];
         
         // Data is supposed to be an array. 
         // When it is false, something happened while checking the parameters
         if($data !== false){
             $message["data"]["records"] = $data;
+        
+            if ($include_paging != false) {
+                // Include the amount of pages
+                $total_pages = ceil($this->count() / $this->records_per_page);
+                $message["data"]["paging"] = $total_pages;
+            }
         }
         
         return $message;
+    }
+    
+    public function get_table_lang() {
+        $this->utilities->setLanguage($this->lang);
+        return $this->utilities->getTable($this->table_name);
+    }
+    
+    // used for paging products
+    function count(){
+        
+        // Filtering on a name
+        $filter_sql = "";
+        if (isset($this->filter)) {
+            $filter_sql = " WHERE name LIKE ? ";
+            $filter = '%'.$this->filter.'%';
+        }
+        
+        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . $filter_sql;
+
+        $stmt = $this->conn->prepare( $query );
+        
+        if (isset($this->filter)) {
+            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row['total_rows'];
+    }
+    
+    function set_linking_tables($tables) {
+        $this->linking_tables = $tables;
+    }
+    
+    function get_linking_data($item) {
+        foreach($this->linking_tables as $table => $link) {
+            // Get the corresponding function for this table and the link
+            $function = $this->utilities->getLinkingFunction($table, $link);
+            if ($function !== "") {
+                // If the function exists, execute it to get the link for this item
+                $item[$link] = $this->utilities->$function($item["id"]);
+            }
+        }
+        
+        return $item;
     }
 }

@@ -53,16 +53,15 @@ function deleteItem(type, id) {
     return accessDatabase("DELETE", url);    
 }
 
-function getPage(options) {
-    /*
-     * URL: api/[item]/pages/[id]
-     * options: 
-     * - item_type
-     * - id
-     * - lang
-     * - sort
-     * - filter
-     */
+function getPage(type, page, options) {    
+    // Create the query
+    var query = getQuery(options);
+    
+    // The URL to set the request to
+    var url = base_url + "/" + lang + "/api/" + type + "/pages/" + page;
+    
+    // Access the database
+    return accessDatabase("GET", url + query);
 }
 
 function getSearchResults(options) {

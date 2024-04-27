@@ -1,16 +1,8 @@
 <?php
 
-require_once "../shared/base.php";
-require_once "../shared/utilities.php";
+require_once "../shared/item.php";
 
-class book {
-  
-    // database connection and table name
-    private $conn;
-    private $base;
-    private $table_name = "books";
-    private $table;
-    public $item_name = "Book";
+class book extends item {
     
     // object properties
     public $id;
@@ -18,104 +10,135 @@ class book {
     public $num_chapters;
     public $summary;
     public $notes;
+    
+    // Allowed options
+    protected $sort;
+    protected $filter;
+    protected $page;
   
     // constructor with $db as database connection
-    public function __construct($db){
-        $this->conn = $db;
-        $this->base = new base($db);
+    public function __construct(){
+        parent::__construct();
         
-        $utilities = new utilities();
-        $this->table = $utilities->getTable($this->table_name);
+        $this->table_name = "books";
+    }
+    
+    public function get_parameters($action) {
+        $allowed_params = [];
+        $required_params = [];
+        
+        // Not all parameters are allowed in all actions
+        switch($action) {
+            case "read_one":
+                $required_params = [
+                    "id" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "read_all":
+                $allowed_params = [
+                    "user" => FILTER_VALIDATE_INT,
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "read_page":
+                $required_params = [
+                    "page" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    "sort" => FILTER_SANITIZE_SPECIAL_CHARS,
+                    "filter" => FILTER_SANITIZE_SPECIAL_CHARS,
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+        }
+        
+        return $this->check_parameters($required_params, $allowed_params);
     }
 
     // read products with pagination
-    public function readPaging($from_record_num, $records_per_page, $sort, $filter){        
-        // The sorting for the pages
-        $sort_sql = "b.order_id ASC";
+    public function read_page(){     
+        $this->get_parameters("read_page");
+        if ($this->error) {
+            return false;
+        }
         
-        // If a sort different than the default is given
-        if($sort !== null) { 
-           switch($sort) {
-               case '0_to_9':
-                   $sort_sql = "b.order_id ASC";
-                   break;
-               case '9_to_0':
-                   $sort_sql = "b.order_id DESC";
-                   break;
-               case 'a_to_z':
-                   $sort_sql = "b.name ASC";
-                   break;
-               case 'z_to_a':
-                   $sort_sql = "b.name DESC";
-                   break;
-           }
+        // If a sort different then the default is given
+        switch($this->sort) {
+            case '9_to_0':
+                $sort_sql = "b.order_id DESC";
+                break;
+            case 'a_to_z':
+                $sort_sql = "b.name ASC";
+                break;
+            case 'z_to_a':
+                $sort_sql = "b.name DESC";
+                break;
+
+            case '0_to_9':
+            default:
+                $sort_sql = "b.order_id ASC";
+                break;      
         }
         
         // Filtering on a name
         $filter_sql = "";
-        if (isset($filter)) {
+        if (isset($this->filter)) {
             $filter_sql = " WHERE name LIKE ? ";
-            $filter = '%'.$filter.'%';
+            $filter = '%'.$this->filter.'%';
         }
 
         // select query
         $query = "SELECT
                     b.id, b.name
                 FROM
-                    " . $this->table . " b
+                    " . $this->table_lang . " b
                 ".$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
 
         // prepare query statement
         $stmt = $this->conn->prepare( $query );
+        
+        $this->query = $query;
+        
+        // This value is used in the SQL limit command
+        $record_page_start = $this->records_per_page * $this->page;
 
         // bind variable values
-        $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $from_record_num, PDO::PARAM_INT);
-        $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $records_per_page, PDO::PARAM_INT);
-        if (isset($filter)) {
-            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
-        }
-
-        // execute query
-        $stmt->execute();
-
-        // return values from database
-        return $stmt;
-    }
-    
-    // used for paging products
-    public function count($filter){
-        
-        // Filtering on a name
-        $filter_sql = "";
-        if (isset($filter)) {
-            $filter_sql = " WHERE name LIKE ? ";
-            $filter = '%'.$filter.'%';
-        }
-        
-        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . $filter_sql;
-
-        $stmt = $this->conn->prepare( $query );
-        
-        if (isset($filter)) {
+        // TODO: Use type of param everywhere when binding
+        $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $record_page_start, PDO::PARAM_INT);
+        $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $this->records_per_page, PDO::PARAM_INT);
+        if (isset($this->filter)) {
             $stmt->bindParam(1, $filter, PDO::PARAM_STR);
         }
         
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $row['total_rows'];
+        return $this->access_database($stmt);
     }
     
     // used when filling up the update product form
-    function readOne(){
+    function read_one(){
+        global $BOOKS_TO_NOTES;
+        
+        $this->get_parameters("read_one");
+        if ($this->error) {
+            return false;
+        }
+        
+        // Set other tables that we want to include in the result as well
+        $this->set_linking_tables($BOOKS_TO_NOTES);
 
         // query to read single record
         $query = "SELECT
-                    b.name, b.num_chapters, b.summary
+                    b.id, b.name, b.num_chapters, b.summary
                 FROM
-                    " . $this->table . " b
+                    " . $this->table_lang . " b
                 WHERE
                     b.id = ?
                 LIMIT
@@ -126,18 +149,8 @@ class book {
 
         // bind id of product to be updated
         $stmt->bindParam(1, $this->id);
-
-        // execute query
-        $stmt->execute();
-
-        // get retrieved row
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // set values to object properties
-        $this->name = $row['name'];
-        $this->num_chapters = $row['num_chapters'];
-        $this->summary = $row['summary'];
-        $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
+        
+        return $this->access_database($stmt);
     }
     
     // search products

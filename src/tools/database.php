@@ -44,8 +44,15 @@ function deleteItem($type, $data) {
 
 }
 
-function getPage($type, $options) {
-
+function getPage($type, $page, $options) {
+    // Create the query
+    $query = getQuery($options);
+    
+    // The URL to send the request to
+    $url = setParameters("/api/".$type."/pages/".$page);
+    
+    // Access the database
+    return accessDatabase("GET", $url.$query);
 }
 
 function getMap($type, $options) {
