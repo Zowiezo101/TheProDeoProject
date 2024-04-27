@@ -1,6 +1,6 @@
 <?php 
-    require "src/pages/{$page_id}_static.php"; 
     require "src/tools/database.php";
+    require "src/pages/{$page_id}_static.php"; 
     
     // Some basic stuff
     $page_count = 0;
@@ -19,7 +19,7 @@
     
     // The pagination for the sidebar.
     // Updates are done in javascript, but the initial loading is done in PHP
-    $data_page = getPage($$type, $page, [
+    $data_page = getPage($type, $page, [
         "filter" => $search,
         "sort" => $sort
     ]);
@@ -33,7 +33,7 @@
     
     $id = filter_input(INPUT_GET, "id");
     if ($id !== null) {
-        $data_item = getItem($$type, $id);
+        $data_item = getItem($type, $id);
     }
 ?>
             <!-- This is for content that remains the same while using this page -->

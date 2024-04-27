@@ -1,6 +1,6 @@
 <?php 
     // TODO: Enable all coding standard and try to adhere to them
-    $type = "TYPE_BOOK";
+    $type = $TYPE_BOOK;
     $page_base_url = "books/book";
     
     
