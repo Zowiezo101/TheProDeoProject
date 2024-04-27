@@ -106,7 +106,6 @@ function accessDatabase($method, $url, $data=false) {
 function getQuery($options) {    
     // The query that is built using the options
     $query = "";
-    $url = "";
     
     // No options means no query
     if ($options != false) {

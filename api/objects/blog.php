@@ -1,7 +1,7 @@
 <?php
 require "../shared/item.php";
 
-class blog extends item{
+class blog extends item {
     
     // object properties
     public $id;

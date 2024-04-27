@@ -18,10 +18,6 @@ function setParameters(url) {
     return newUrl;
 }
 
-function toUpperCaseFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 function getLinkToItem(type, id, text, options) {
     var newTab = options && options.hasOwnProperty("openInNewTab") ? options.openInNewTab : false;
     var classes = options && options.hasOwnProperty("classes") ? options.classes : "";
