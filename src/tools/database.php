@@ -30,7 +30,7 @@ function getItems($type, $options=false) {
     $query = getQuery($options);
     
     // The URL to send the request to
-    $url = setParameters("/api/".$type."/all");
+    $url = setParameters("api/".$type."/all");
     
     // Access the database
     return accessDatabase("GET", $url.$query);
@@ -49,7 +49,7 @@ function getPage($type, $page, $options) {
     $query = getQuery($options);
     
     // The URL to send the request to
-    $url = setParameters("/api/".$type."/pages/".$page);
+    $url = setParameters("api/".$type."/pages/".$page);
     
     // Access the database
     return accessDatabase("GET", $url.$query);
@@ -121,11 +121,6 @@ function getQuery($options) {
     }
     
     return $query;
-}
-
-function getBody($data) {
-    $body = "";
-    return $body;
 }
 ?>
 

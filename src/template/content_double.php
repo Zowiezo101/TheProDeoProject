@@ -158,16 +158,20 @@
                         <div id="content_row" class="row h-100">
                             <div id="item_content" class="col-12 h-100">
 <?php
-    if ($id == null) { ?>
+    if ($id == null) { 
+?>
                                 <div class="row text-center justify-content-center">
                                     <div class="col-lg-11 px-lg-5 px-md-3">
                                         <h1 class="mb-3"><?= $dict["navigation.{$page_id}"]; ?></h1>
                                         <p class="lead"><?= $dict["{$page_id}.overview"]; ?></p>
                                     </div>
                                 </div>
-    <?php } else { ?>
+<?php 
+    } else { 
+?>
                                 <?= insertContent($data_item); ?>
-    <?php }
+<?php 
+    }
 ?>
                             </div>
                             

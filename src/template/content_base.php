@@ -14,18 +14,15 @@
     function getKnownValues($data) {
         global $dict;
         
-        $plain_str = "";
         // If data isn't set, show an unknown message instead
         if (!isset($data) || 
                 ($data === "-1") || 
                 ($data === "") || 
                 ($data === -1)) {
-            $plain_str = $dict["items.unknown"];
-        } else {
-            $plain_str = $data;
+            $data = $dict["items.unknown"];
         }
         
-        return $plain_str;
+        return $data;
     }
     
     function getBooksString($data) {
@@ -127,7 +124,6 @@
     
     function getNotesString($data) {
         $notes = [];
-        $notes_str = "";
         
         // All the sources are inserted as little numbers, make sure no number
         // repeats itself to prevent confusion

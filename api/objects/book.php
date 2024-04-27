@@ -9,6 +9,8 @@ class book extends item {
     public $name;
     public $num_chapters;
     public $summary;
+    
+    // Properties from another table
     public $notes;
     
     // Allowed options
@@ -41,7 +43,6 @@ class book extends item {
             
             case "read_all":
                 $allowed_params = [
-                    "user" => FILTER_VALIDATE_INT,
                     "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
                 ];
                 break;
@@ -63,7 +64,7 @@ class book extends item {
     }
 
     // read products with pagination
-    public function read_page(){     
+    public function read_page(){
         $this->get_parameters("read_page");
         if ($this->error) {
             return false;

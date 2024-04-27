@@ -47,14 +47,16 @@
         $rows = [];
         
         // Row for number of chapters
-        $num_chapters_head = $dict["items.num_chapters"];
-        $num_chapters_data = $book->num_chapters;
-        array_push($rows, [$num_chapters_head, $num_chapters_data]);
+        array_push($rows, [
+            $dict["items.num_chapters"], 
+            $book->num_chapters
+        ]);
         
         // Row for notes about this book
-        $notes_head = $dict["items.notes"];
-        $notes_data = getNotesString($book->notes);
-        array_push($rows, [$notes_head, $notes_data]);
+        array_push($rows, [
+            $dict["items.notes"], 
+            getNotesString($book->notes)
+        ]);
         
         $table = "";
         foreach($rows as $row) {
