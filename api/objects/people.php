@@ -1,18 +1,8 @@
 <?php
 
-require_once "../shared/base.php";
-require_once "../shared/utilities.php";
+require_once "../shared/item.php";
 
-class people {
-  
-    // database connection and table name
-    private $conn;
-    private $base;
-    private $table_name = "peoples";
-    private $table;
-    private $table_gender = "type_gender";
-    private $table_tribe = "type_tribe";
-    public $item_name = "People";
+class people extends item {
   
     // object properties
     public $id;
@@ -32,57 +22,113 @@ class people {
     public $book_end_id;
     public $book_end_chap;
     public $book_end_vers;
+    
+    // Properties from another table
     public $aka;
     public $parents;
     public $children;
     public $locations;
     public $events;
     public $notes;
+    
+    // Allowed options
+    protected $sort;
+    protected $filter;
+    protected $page;
   
     // constructor with $db as database connection
-    public function __construct($db){
-        $this->conn = $db;
-        $this->base = new base($db);
+    public function __construct(){
+        parent::__construct();
         
-        $utilities = new utilities();
-        $this->table = $utilities->getTable($this->table_name);
+        $this->table_name = "peoples";
+    }
+    
+    public function get_parameters($action) {
+        $allowed_params = [];
+        $required_params = [];
+        
+        // Not all parameters are allowed in all actions
+        switch($action) {
+            case "read_one":
+                $required_params = [
+                    "id" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "read_page":
+                $required_params = [
+                    "page" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    "sort" => FILTER_SANITIZE_SPECIAL_CHARS,
+                    "filter" => FILTER_SANITIZE_SPECIAL_CHARS,
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "read_maps":
+                $required_params = [
+                    "id" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+                
+        }
+        
+        return $this->check_parameters($required_params, $allowed_params);
+        
     }
 
     // read products with pagination
-    public function readPaging($from_record_num, $records_per_page, $sort, $filter){        
-        // The sorting for the pages
-        $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
+    public function read_page(){  
+        $this->get_parameters("read_page");
+        if ($this->error) {
+            return false;
+        }
         
         // If a sort different than the default is given
-        if($sort !== null) { 
-           switch($sort) {
-               case '0_to_9':
-                   $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
-                   break;
-               case '9_to_0':
-                   $sort_sql = "p.book_start_id DESC, p.book_start_chap DESC, p.book_start_vers DESC";
-                   break;
-               case 'a_to_z':
-                   $sort_sql = "p.name ASC";
-                   break;
-               case 'z_to_a':
-                   $sort_sql = "p.name DESC";
-                   break;
-           }
+        switch($this->sort) {
+            case '0_to_9':
+                $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
+                break;
+            case '9_to_0':
+                $sort_sql = "p.book_start_id DESC, p.book_start_chap DESC, p.book_start_vers DESC";
+                break;
+            case 'a_to_z':
+                $sort_sql = "p.name ASC";
+                break;
+            case 'z_to_a':
+                $sort_sql = "p.name DESC";
+                break;
+
+            case '0_to_9':
+            default:
+                 $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
+                 break;
         }
         
         // Filtering on a name
         $column = "";
         $filter_sql = "";
         $join = "";
-        if (isset($filter)) {
+        if (isset($this->filter)) {
             // People AKA names
-            $utilities = new utilities();
-            $table = $utilities->getTable($this->base->table_p2p);
+            $table = $this->utilities->getTable($this->utilities->table_p2p);
         
+            // Normally we can insert the AKA names as soon as we have the results 
+            // from the regular table, but in this case we need them before
+            // hand, as they affect the results we get
             $column = ", IF(people_name LIKE ?, people_name, '') AS aka";
             $filter_sql = " WHERE name LIKE ? OR people_name LIKE ?";
-            $filter = '%'.$filter.'%';
+            $filter = '%'.$this->filter.'%';
             $join = " LEFT JOIN ".$table." p2p
                         ON p2p.people_id = p.id
                         AND p2p.people_name LIKE ?";
@@ -92,70 +138,68 @@ class people {
         $query = "SELECT
                     p.id, p.name".$column."
                 FROM
-                    " . $this->table . " p
+                    " . $this->table_lang . " p
                 ".$join.$filter_sql."
                 ORDER BY ".$sort_sql."
                 LIMIT ?, ?";
 
         // prepare query statement
         $stmt = $this->conn->prepare( $query );
+        
+        $this->query = $query;
+        
+        // This value is used in the SQL limit command
+        $record_page_start = $this->records_per_page * $this->page;
 
         // bind variable values
-        $stmt->bindParam(1 + (isset($filter) ? 4 : 0), $from_record_num, PDO::PARAM_INT);
-        $stmt->bindParam(2 + (isset($filter) ? 4 : 0), $records_per_page, PDO::PARAM_INT);
+        $stmt->bindParam(1 + (isset($filter) ? 4 : 0), $record_page_start, PDO::PARAM_INT);
+        $stmt->bindParam(2 + (isset($filter) ? 4 : 0), $this->records_per_page, PDO::PARAM_INT);
         if (isset($filter)) {
             $stmt->bindParam(1, $filter, PDO::PARAM_STR);
             $stmt->bindParam(2, $filter, PDO::PARAM_STR);
             $stmt->bindParam(3, $filter, PDO::PARAM_STR);
             $stmt->bindParam(4, $filter, PDO::PARAM_STR);
         }
-
-        // execute query
-        $stmt->execute();
-
-        // return values from database
-        return $stmt;
-    }
-    
-    // used for paging products
-    public function count($filter){
         
-        // Filtering on a name
-        $filter_sql = "";
-        if (isset($filter)) {
-            $filter_sql = " WHERE name LIKE ? ";
-            $filter = '%'.$filter.'%';
-        }
-        
-        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . $filter_sql;
-
-        $stmt = $this->conn->prepare( $query );
-        
-        if (isset($filter)) {
-            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
-        }
-        
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $row['total_rows'];
+        return $this->access_database($stmt);
     }
     
     // used when filling up the update product form
-    function readOne(){
+    function read_one(){
+        global  $PEOPLES_TO_PARENTS,
+                $PEOPLES_TO_CHILDREN,
+                $PEOPLES_TO_EVENTS,
+                $PEOPLES_TO_AKA,
+                $PEOPLES_TO_LOCATIONS,
+                $PEOPLES_TO_NOTES;
+        
+        $this->get_parameters("read_one");
+        if ($this->error) {
+            return false;
+        }
+        
+        // Set other tables that we want to include in the result as well
+        $this->set_linking_tables([
+                $PEOPLES_TO_PARENTS,
+                $PEOPLES_TO_CHILDREN,
+                $PEOPLES_TO_EVENTS,
+                $PEOPLES_TO_AKA,
+                $PEOPLES_TO_LOCATIONS,
+                $PEOPLES_TO_NOTES
+        ]);
 
         // query to read single record
         $query = "SELECT
-                    p.name, p.descr, p.meaning_name, p.father_age, 
+                    p.id, p.name, p.descr, p.meaning_name, p.father_age, 
                     p.mother_age, p.age, t1.type_name as gender, t2.type_name as tribe, 
                     p.nationality, p.profession,
                     p.book_start_id, p.book_start_chap, p.book_start_vers, 
                     p.book_end_id, p.book_end_chap, p.book_end_vers
                 FROM
-                    " . $this->table . " p
-                LEFT JOIN " . $this->table_gender . " AS t1 
+                    " . $this->table_lang . " p
+                LEFT JOIN type_gender AS t1 
                     ON p.gender = t1.type_id
-                LEFT JOIN " . $this->table_tribe . " AS t2 
+                LEFT JOIN type_tribe AS t2 
                     ON p.tribe = t2.type_id
                 WHERE
                     p.id = ?
@@ -167,35 +211,51 @@ class people {
 
         // bind id of product to be updated
         $stmt->bindParam(1, $this->id);
+        
+        return $this->access_database($stmt);
+    }
+    
+    // used when filling up the update product form
+    function read_maps(){
+        $this->get_parameters("read_maps");
+        if ($this->error) {
+            return false;
+        }
 
-        // execute query
-        $stmt->execute();
+        // select all query
+        $query = "WITH RECURSIVE cte (p1, p2) AS 
+                    (
+                        SELECT people_id, parent_id FROM people_to_parent WHERE people_id = ?
+                        UNION ALL
+                        SELECT people_id, parent_id FROM people_to_parent JOIN cte ON people_id = p2
+                    )
 
-        // get retrieved row
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                SELECT DISTINCT id, name FROM (
+                    SELECT id, name FROM ".$this->table_lang." p
+                        LEFT JOIN people_to_parent p2p
+                        ON p.id = p2p.people_id 
+                        WHERE p.id IN (SELECT p2 FROM cte)
+                        AND parent_id IS NULL
+                    UNION ALL
+                    SELECT id, name FROM ".$this->table_lang." p
+                        LEFT JOIN people_to_parent p1
+                        ON p.id = p1.parent_id 
+                        LEFT JOIN people_to_parent p2
+                        ON p.id = p2.people_id
+                        WHERE p1.parent_id = ? 
+                        AND p1.people_id IS NOT NULL
+                        AND p2.parent_id IS NULL
+                        )
+                AS ancestor";
 
-        // set values to object properties
-        $this->name = $row['name'];
-        $this->descr = $row['descr'];
-        $this->meaning_name = $row['meaning_name'];
-        $this->father_age = $row['father_age'];
-        $this->mother_age = $row['mother_age'];
-        $this->age = $row['age'];
-        $this->gender = $row['gender'];
-        $this->tribe = $row['tribe'];
-        $this->nationality = $row['nationality'];
-        $this->book_start_id = $row['book_start_id'];
-        $this->book_start_chap = $row['book_start_chap'];
-        $this->book_start_vers = $row['book_start_vers'];
-        $this->book_end_id = $row['book_end_id'];
-        $this->book_end_chap = $row['book_end_chap'];
-        $this->book_end_vers = $row['book_end_vers'];
-        $this->parents = $this->base->getPeopleToParents($this->id);
-        $this->children = $this->base->getPeopleToChildren($this->id);
-        $this->aka = $this->base->getPeopleToPeoples($this->id);
-        $this->events = $this->base->getPeopleToEvents($this->id);
-        $this->locations = $this->base->getPeopleToLocations($this->id);
-        $this->notes = $this->base->getItemToNotes($this->id, $this->item_name);
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // bind
+        $stmt->bindParam(1, $this->id);
+        $stmt->bindParam(2, $this->id);
+        
+        return $this->access_database($stmt);
     }
     
     // search products

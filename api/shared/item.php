@@ -10,6 +10,12 @@ $EVENTS_TO_LOCATIONS = ["event", "locations"];
 $EVENTS_TO_SPECIALS = ["event", "specials"];
 $EVENTS_TO_AKA = ["event", "events"];
 $EVENTS_TO_NOTES = ["event", "notes"];
+$PEOPLES_TO_PARENTS = ["people", "parents"];
+$PEOPLES_TO_CHILDREN = ["people", "children"];
+$PEOPLES_TO_EVENTS = ["people", "events"];
+$PEOPLES_TO_AKA = ["people", "aka"];
+$PEOPLES_TO_LOCATIONS = ["people", "locations"];
+$PEOPLES_TO_NOTES = ["people", "notes"];
 
 class item {
   
@@ -22,7 +28,7 @@ class item {
     protected $table_lang;
     
     // Utilities with extra functions
-    private $utilities;
+    protected $utilities;
     protected $query;
     
     // In case an error occurs

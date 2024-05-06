@@ -35,6 +35,9 @@ class utilities{
     private $table_ti = "type_item";
     private $table_tg = "type_gender";
     private $table_tp = "type_people";
+    private $table_tt = "type_tribe";
+    private $table_tl = "type_location";
+    private $table_ts = "type_special";
     
     public function __construct() {
         global $conn;
@@ -832,7 +835,7 @@ class utilities{
     }
     
     public function getPeopleToEvents($id) {
-        $table = $this->utilities->getTable($this->table_events);
+        $table = $this->getTable($this->table_events);
         
         // select all query
         $query = "SELECT
@@ -863,7 +866,7 @@ class utilities{
     }
     
     public function getPeopleToLocations($id) {
-        $table = $this->utilities->getTable($this->table_locations);
+        $table = $this->getTable($this->table_locations);
 
         // select all query
         $query = "SELECT
@@ -893,8 +896,8 @@ class utilities{
         return $this->getResults($stmt);
     }
     
-    public function getPeopleToPeoples($id) {
-        $table = $this->utilities->getTable($this->table_p2p);
+    public function getPeopleToAka($id) {
+        $table = $this->getTable($this->table_p2p);
         
         // select all query
         $query = "SELECT
@@ -920,7 +923,7 @@ class utilities{
     }
     
     public function getPeopleToParents($id) {
-        $table = $this->utilities->getTable($this->table_peoples);
+        $table = $this->getTable($this->table_peoples);
         
         // select all query
         $query = "SELECT
@@ -948,7 +951,7 @@ class utilities{
     }
     
     public function getPeopleToChildren($id) {
-        $table = $this->utilities->getTable($this->table_peoples);
+        $table = $this->getTable($this->table_peoples);
 
         // select all query
         $query = "SELECT

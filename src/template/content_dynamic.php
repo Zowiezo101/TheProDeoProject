@@ -160,7 +160,7 @@ function updatePage() {
     var page = parseInt($("#curr_page").val(), 10) - 1;
     
     // Get the page with the current settings
-    var type = <?= $type; ?>;
+    var type = "<?= $type; ?>";
     getPage(type, page, {
         "sort": sort,
         "filter": search
