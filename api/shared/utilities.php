@@ -977,7 +977,7 @@ class utilities{
     }
     
     public function getLocationToEvents($id) {
-        $table = $this->utilities->getTable($this->table_events);
+        $table = $this->getTable($this->table_events);
         
         // select all query
         $query = "SELECT
@@ -1008,7 +1008,7 @@ class utilities{
     }
     
     public function getLocationToPeoples($id) {
-        $table = $this->utilities->getTable($this->table_peoples);
+        $table = $this->getTable($this->table_peoples);
 
         // select all query
         $query = "SELECT
@@ -1038,8 +1038,8 @@ class utilities{
         return $this->getResults($stmt);
     }
     
-    public function getLocationToLocations($id) {
-        $table = $this->utilities->getTable($this->table_l2l);
+    public function getLocationToAka($id) {
+        $table = $this->getTable($this->table_l2l);
         
         // select all query
         $query = "SELECT

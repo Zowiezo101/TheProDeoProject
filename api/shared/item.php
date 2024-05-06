@@ -16,6 +16,10 @@ $PEOPLES_TO_EVENTS = ["people", "events"];
 $PEOPLES_TO_AKA = ["people", "aka"];
 $PEOPLES_TO_LOCATIONS = ["people", "locations"];
 $PEOPLES_TO_NOTES = ["people", "notes"];
+$LOCATIONS_TO_AKA = ["location", "aka"];
+$LOCATIONS_TO_PEOPLES = ["location", "peoples"];
+$LOCATIONS_TO_EVENTS = ["location", "events"];
+$LOCATIONS_TO_NOTES = ["location", "notes"];
 
 class item {
   
