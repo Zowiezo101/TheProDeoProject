@@ -92,37 +92,43 @@
         // Row for notes
         array_push($rows, [
             $dict["items.notes"], 
-            getNotesString($event->notes)
+            getNotesString($event->notes),
+            true
         ]);
         
         // Row for peoples related to this event
         array_push($rows, [
             $dict["items.peoples"], 
-            getLinksString($TYPE_PEOPLE, $event->peoples)
+            getLinksString($TYPE_PEOPLE, $event->peoples),
+            true
         ]);
         
         // Row for locations related to this event
         array_push($rows, [
             $dict["items.locations"], 
-            getLinksString($TYPE_LOCATION, $event->locations)
+            getLinksString($TYPE_LOCATION, $event->locations),
+            true
         ]);
         
         // Row for specials related to this event
         array_push($rows, [
             $dict["items.specials"], 
-            getLinksString($TYPE_SPECIAL, $event->specials)
+            getLinksString($TYPE_SPECIAL, $event->specials),
+            true
         ]);
         
         // Row for previous event
         array_push($rows, [
             $dict["items.previous"], 
-            getLinksString($TYPE_EVENT, $event->parents)
+            getLinksString($TYPE_EVENT, $event->parents),
+            true
         ]);
         
         // Row for next event
         array_push($rows, [
             $dict["items.next"], 
-            getLinksString($TYPE_EVENT, $event->children)
+            getLinksString($TYPE_EVENT, $event->children),
+            true
         ]);
         
         // Row for bible location

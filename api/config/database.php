@@ -9,13 +9,6 @@ class database {
     private $username = "";
     private $password = "";
     public $conn;
-    
-	// TODO: Remove this when not needed
-    // set number of records per page
-//    private $records_per_page = 10;
-
-    // calculate for the query LIMIT clause
-//    private $from_record_num = $this->records_per_page * $page;
   
     // get the database connection
     public function getConnection() {

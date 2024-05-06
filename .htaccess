@@ -53,7 +53,9 @@ RewriteCond %{REQUEST_METHOD} DELETE
 RewriteRule ^(.*)/([0-9]*)$ $1/delete?id=$2 [QSA,DPI]
 
 # This is for all the pages (as long as a page is available)
+# Ignore images for this part, just return the image itself
 RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} !(\.gif|\.jpg|\.png)$ [NC]
 RewriteRule ^([^/]+)?$ index.php?page=$1 [QSA,DPI]
 
 # Making sure things are redirected to php files

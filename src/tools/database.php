@@ -111,6 +111,7 @@ function accessDatabase($method, $url, $data=false) {
 }
 
 function getQuery($options) {    
+    // TODO: Use the htmlbuildquery function
     // The query that is built using the options
     $query = "";
     

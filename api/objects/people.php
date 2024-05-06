@@ -134,6 +134,7 @@ class people extends item {
                         AND p2p.people_name LIKE ?";
         }
 
+        // TODO: Something goes wrong here, we get Lamech (id = 12) twice? (10/12)
         // select query
         $query = "SELECT
                     p.id, p.name".$column."

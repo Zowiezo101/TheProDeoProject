@@ -134,8 +134,11 @@ if (filter_input(INPUT_GET, "lang") === null) {
     // Language settings of the browser AND supported by the website
     $langs = prefered_language($available_languages);
     
+    $lang = $langs[0];
+    $uri = filter_input(INPUT_SERVER, "REQUEST_URI");
+    
     // Most prefered language, link to this language
-    header("Location: ".filter_input(INPUT_SERVER, "SERVER_NAME")."/".$langs[0]."/", true, 302);
+    header("Location: /".$lang.$uri, true, 302);
     
     exit();
 }

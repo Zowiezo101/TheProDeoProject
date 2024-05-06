@@ -41,12 +41,6 @@ class book extends item {
                 ];
                 break;
             
-            case "read_all":
-                $allowed_params = [
-                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
-                ];
-                break;
-            
             case "read_page":
                 $required_params = [
                     "page" => FILTER_VALIDATE_INT,

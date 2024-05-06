@@ -4,17 +4,13 @@ class utilities{
     private $lang = "nl";
     private $conn;
     
-    public $people_aka = "people_to_aka.people_name";
-    public $location_aka = "location_to_aka.location_name";
-    private $gender_type = "type_gender";
-    private $tribe_type = "type_tribe";
-    private $location_type = "type_location";
-    private $special_type = "type_special";
-    
+    // The default tables
     public $table_events = "events";
     public $table_peoples = "peoples";
     public $table_locations = "locations";
     public $table_specials = "specials";
+    
+    // The linking tables
     public $table_a2a = "activity_to_aka";
     public $table_a2pa = "activity_to_parent";
     public $table_a2e = "activity_to_event";
@@ -31,6 +27,8 @@ class utilities{
     private $table_sources = "sources";
     private $table_n2s = "note_to_source";
     private $table_n2i = "note_to_item";
+    
+    // The type tables
     private $table_tn = "type_note";
     private $table_ti = "type_item";
     private $table_tg = "type_gender";
@@ -648,7 +646,7 @@ class utilities{
         
     }
     
-    public function getEventToEvents($id) {
+    public function getEventToAka($id) {
         // select all query
         $query = "SELECT
                     distinct(e2e.event_id), e2e.book_start_id,

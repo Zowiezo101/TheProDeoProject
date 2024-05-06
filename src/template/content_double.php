@@ -159,6 +159,7 @@
                             <div id="item_content" class="col-12 h-100">
 <?php
     if ($id == null) { 
+        // TODO: Explain about the dutch names when other language names aren't available
 ?>
                                 <div class="row text-center justify-content-center">
                                     <div class="col-lg-11 px-lg-5 px-md-3">

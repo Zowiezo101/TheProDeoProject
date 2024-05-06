@@ -2,6 +2,15 @@
     
     // The page id, this is taken from the link we are currently on. If there is no page id given, go to the home page
     $page_id = filter_input(INPUT_GET,'page') !== null ? filter_input(INPUT_GET,'page') : "home";
+    if ($page_id == "") {
+        // Go to the home page
+        if( headers_sent() ) { 
+            echo("<script>location.href='home'</script>"); 
+        } else { 
+            header("Location: home"); 
+        }
+        exit;
+    }
     
     // Some basic stuff that we need to make everything work
     require "src/tools/lang.php";
