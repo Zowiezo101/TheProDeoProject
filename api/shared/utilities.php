@@ -1064,7 +1064,7 @@ class utilities{
     }
     
     public function getSpecialToEvents($id) {
-        $table = $this->utilities->getTable($this->table_events);
+        $table = $this->getTable($this->table_events);
         
         // select all query
         $query = "SELECT

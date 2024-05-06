@@ -20,6 +20,8 @@ $LOCATIONS_TO_AKA = ["location", "aka"];
 $LOCATIONS_TO_PEOPLES = ["location", "peoples"];
 $LOCATIONS_TO_EVENTS = ["location", "events"];
 $LOCATIONS_TO_NOTES = ["location", "notes"];
+$SPECIALS_TO_EVENTS = ["special", "events"];
+$SPECIALS_TO_NOTES = ["special", "notes"];
 
 class item {
   
