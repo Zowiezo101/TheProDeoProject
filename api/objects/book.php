@@ -84,7 +84,7 @@ class book extends item {
         
         // Filtering on a name
         $filter_sql = "";
-        if (isset($this->filter)) {
+        if (isset($this->filter) && ($this->filter != "")) {
             $filter_sql = " WHERE name LIKE ? ";
             $filter = '%'.$this->filter.'%';
         }

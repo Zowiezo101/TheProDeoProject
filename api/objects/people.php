@@ -96,9 +96,6 @@ class people extends item {
         
         // If a sort different than the default is given
         switch($this->sort) {
-            case '0_to_9':
-                $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
-                break;
             case '9_to_0':
                 $sort_sql = "p.book_start_id DESC, p.book_start_chap DESC, p.book_start_vers DESC";
                 break;
@@ -119,7 +116,7 @@ class people extends item {
         $column = "";
         $filter_sql = "";
         $join = "";
-        if (isset($this->filter)) {
+        if (isset($this->filter) && ($this->filter != "")) {
             // People AKA names
             $table = $this->utilities->getTable($this->utilities->table_p2p);
         
@@ -134,7 +131,6 @@ class people extends item {
                         AND p2p.people_name LIKE ?";
         }
 
-        // TODO: Something goes wrong here, we get Lamech (id = 12) twice? (10/12)
         // select query
         $query = "SELECT
                     p.id, p.name".$column."
