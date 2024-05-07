@@ -44,7 +44,6 @@
     // Page is loaded server side, let's see if we changed to a different page id
     // The only reason for this is to decide whether we want to keep or ditch
     // the saved sort, search term and current page of the side bar
-    // TODO: Somehting else here possible so we can ditch this code?
     if (isset($_SESSION["page_id"])) {
         // Save the old page id
         $_SESSION["page_id_old"] = $_SESSION["page_id"];

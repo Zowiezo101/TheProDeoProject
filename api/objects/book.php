@@ -110,7 +110,7 @@ class book extends item {
         // TODO: Use type of param everywhere when binding
         $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $record_page_start, PDO::PARAM_INT);
         $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $this->records_per_page, PDO::PARAM_INT);
-        if (isset($this->filter)) {
+        if (isset($filter)) {
             $stmt->bindParam(1, $filter, PDO::PARAM_STR);
         }
         

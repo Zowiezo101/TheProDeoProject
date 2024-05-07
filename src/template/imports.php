@@ -46,7 +46,7 @@ switch($page_id) {
 }
 ?>
         
-
+        
         <!-- Global variables -->
         <script>
             var base_url = "<?= $base_url; ?>";

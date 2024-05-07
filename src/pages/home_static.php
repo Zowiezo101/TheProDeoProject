@@ -3,7 +3,7 @@
     
     $data = getItems($TYPE_BLOG);
 
-    if (isset($data->error) && ($data->error != "")) {
+    if (!isset($data->records) || (isset($data->error) && ($data->error != ""))) {
         ?><div class="container blogs text-center h1"><?php
             echo $dict["settings.database_err"];
         ?></div><?php

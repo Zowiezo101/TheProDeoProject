@@ -79,9 +79,9 @@
             getAkaString($location)
         ]);
         
-        // Row for age of father when this person was born
+        // Row for the type of location
         array_push($rows, [
-            $dict["items.father_age"], 
+            $dict["items.type"], 
             getTypeString($location->type)
         ]);
         

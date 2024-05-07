@@ -26,7 +26,7 @@
     
     $items = [];
     // There there was an error, keep the page empty
-    if (!isset($data_page->error) || ($data_page->error == "")) {
+    if (isset($data_page->records) && (!isset($data_page->error) || ($data_page->error == ""))) {
         $items = $data_page->records;
         $page_count = $data_page->paging;
     }
