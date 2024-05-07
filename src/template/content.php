@@ -24,7 +24,8 @@
     } 
     
     $classes = "py-5 flex-grow-1";
-    if (array_search($page_id, $double) !== false) {
+    if ((array_search($page_id, $double) !== false) ||
+        (array_search($page_id, $map) !== false)) {
         $classes = "flex-grow-1";
     }
 ?>

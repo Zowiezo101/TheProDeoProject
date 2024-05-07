@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options, get_settings, onBeforeZoom, onBeforePan, dict, g_Map, TYPE_FAMILYTREE, getMapItems, itemHasSubChildren */
+/* global g_MapItems, g_Options, get_settings, onBeforeZoom, onBeforePan, dict, g_Map, TYPE_FAMILYTREE, getMapItems, itemHasSubChildren, page_base_url */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -84,18 +84,19 @@ function drawItem(group, item) {
     if (g_Options.type === TYPE_FAMILYTREE) {
     
         // The button to see the popover
-        var href = setParameters("peoples/people/" + item.id);
+        var href = page_base_url + item.id;
         var link = group.link(href);
             link.target('_blank');
 
         var popover_details = $("\
                 <table class='table table-striped'>" + 
                     "<tbody>" +
-                    insertDetail(item, "meaning_name", true) + 
-                    insertDetail(item, "aka", true) + 
-                    insertDetail(item, "descr", true) + 
-                    insertDetail(item, "gender", true) + 
-                    insertDetail(item, "notes", true) + 
+                    // TODO:
+//                    insertDetail(item, "meaning_name", true) + 
+//                    insertDetail(item, "aka", true) + 
+//                    insertDetail(item, "descr", true) + 
+//                    insertDetail(item, "gender", true) + 
+//                    insertDetail(item, "notes", true) + 
                     "</tbody>" + 
                 "</table>");
             

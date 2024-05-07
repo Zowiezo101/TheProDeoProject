@@ -233,7 +233,27 @@ function updatePage() {
         }
         
     });
+}
     
+function showLoadingScreen() {
+    // Make the loading screen visible and the item content invisible
+    $("#loading_screen").removeClass("d-none");
+    $("#loading_screen").fadeIn();
+    $("#item_content").addClass("invisible");
     
 }
+
+function hideLoadingScreen() {
+    $("#item_content").removeClass("invisible");
+    $("#loading_screen").fadeOut();
+}
+
+$(function() {
+    // Scroll to the data for smaller screens
+    if (window.innerWidth < 768) {
+        $("html, body").animate({
+            scrollTop: $("#item_content").offset().top
+        }, 2000);
+    }
+});
 </script>

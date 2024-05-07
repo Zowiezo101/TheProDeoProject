@@ -1094,49 +1094,6 @@ class utilities{
         return $this->getResults($stmt);
     }
     
-    public function getFamilytreeToChildren($ids, $gen) {
-        $table = $this->utilities->getTable($this->table_peoples);
-        
-        // select all query
-        $query = "SELECT
-                    p.id, p.name, p.meaning_name, p.descr, 
-                    t.type_name as gender, p2p.parent_id, aka.people_name AS aka,
-                    1 as level, ".$gen." as gen, 0 as X, 0 as Y
-                FROM
-                    " . $table . " p
-                    LEFT JOIN
-                        " . $this->table_p2pa . " p2p
-                            ON p2p.people_id = p.id
-                    LEFT JOIN
-                        (SELECT people_id, CONCAT('[', GROUP_CONCAT(
-                            CASE
-                                WHEN meaning_name IS NOT NULL AND meaning_name != ''
-                                    THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
-                                    ELSE CONCAT('{\"name\": \"', people_name, '\"}')
-                            END SEPARATOR ', '
-                        ), ']') AS people_name FROM people_to_aka) AS aka
-                            ON aka.people_id = p.id
-                    LEFT JOIN " . $this->table_tg . " AS t 
-                        ON p.gender = t.type_id
-                WHERE
-                    p2p.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
-                ORDER BY
-                    p2p.parent_id ASC, p.order_id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        foreach($ids as $idx => $id) {
-            $stmt->bindValue($idx + 1, $id, PDO::PARAM_STR);
-        }
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
     public function getTimelineEvents($ids, $gen) {
         $table = $this->utilities->getTable($this->table_events);
         

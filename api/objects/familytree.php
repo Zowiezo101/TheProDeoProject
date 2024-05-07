@@ -1,71 +1,107 @@
 <?php
 
-require_once "../shared/base.php";
+require_once "../shared/item.php";
 
-class familytree {
-  
-    // database connection and table name
-    private $conn;
-    private $base;
-    private $table_name = "peoples";
-    private $table;
-    public $item_name = "Familytree";
+class familytree extends item {
   
     // object properties
     public $id;
     public $name;
     public $meaning_name;
     public $descr;
-    public $aka;
     public $gender;
-    public $items;
+    
+    // Properties from another table
+    public $aka;
     public $parent_notes;
+    
+    // The items of this map
+    public $items;
     public $notes;
+    
+    // Allowed options
+    protected $sort;
+    protected $filter;
+    protected $page;
   
     // constructor with $db as database connection
-    public function __construct($db){
-        $this->conn = $db;
-        $this->base = new base($db);
+    public function __construct(){
+        parent::__construct();
         
-        $utilities = new utilities();
-        $this->table = $utilities->getTable($this->table_name);
+        $this->table_name = "peoples";
+    }
+    
+    public function get_parameters($action) {
+        $allowed_params = [];
+        $required_params = [];
+        
+        // Not all parameters are allowed in all actions
+        switch($action) {
+            case "read_one":
+                $required_params = [
+                    "id" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+            
+            case "read_page":
+                $required_params = [
+                    "page" => FILTER_VALIDATE_INT,
+                ];
+                
+                $allowed_params = [
+                    "sort" => FILTER_SANITIZE_SPECIAL_CHARS,
+                    "filter" => FILTER_SANITIZE_SPECIAL_CHARS,
+                    "lang" => FILTER_SANITIZE_SPECIAL_CHARS,
+                ];
+                break;
+                
+        }
+        
+        return $this->check_parameters($required_params, $allowed_params);
+        
     }
 
     // read products with pagination
-    public function readPaging($from_record_num, $records_per_page, $sort, $filter){        
-        // The sorting for the pages
-        $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
-        
+    public function read_page(){        
+        $this->get_parameters("read_page");
+        if ($this->error) {
+            return false;
+        }
+
         // If a sort different than the default is given
-        if($sort !== null) { 
-           switch($sort) {
-               case '0_to_9':
-                   $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
-                   break;
-               case '9_to_0':
-                   $sort_sql = "p.book_start_id DESC, p.book_start_chap DESC, p.book_start_vers DESC";
-                   break;
-               case 'a_to_z':
-                   $sort_sql = "p.name ASC";
-                   break;
-               case 'z_to_a':
-                   $sort_sql = "p.name DESC";
-                   break;
-           }
+        switch($this->sort) {
+            case '9_to_0':
+                $sort_sql = "p.book_start_id DESC, p.book_start_chap DESC, p.book_start_vers DESC";
+                break;
+            case 'a_to_z':
+                $sort_sql = "p.name ASC";
+                break;
+            case 'z_to_a':
+                $sort_sql = "p.name DESC";
+                break;
+            
+            case '0_to_9':
+            default:
+                $sort_sql = "p.book_start_id ASC, p.book_start_chap ASC, p.book_start_vers ASC";
+                break;
         }
         
         // Filtering on a name
         $filter_sql = "";
-        if (isset($filter)) {
+        if (isset($this->filter)) {
             $filter_sql = " AND name LIKE ? ";
-            $filter = '%'.$filter.'%';
+            $filter = '%'.$this->filter.'%';
         }
 
         // select query
         $query = "SELECT
                     p.id, p.name
                 FROM
-                    " . $this->table . " p
+                    " . $this->table_lang . " p
                 WHERE 
                     id NOT IN (
                         SELECT people_id FROM people_to_parent WHERE parent_id IS NOT NULL)
@@ -77,84 +113,103 @@ class familytree {
 
         // prepare query statement
         $stmt = $this->conn->prepare( $query );
+        
+        $this->query = $query;
+        
+        // This value is used in the SQL limit command
+        $record_page_start = $this->records_per_page * $this->page;
 
         // bind variable values
-        $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $from_record_num, PDO::PARAM_INT);
-        $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $records_per_page, PDO::PARAM_INT);
-        if (isset($filter)) {
-            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
-        }
-
-        // execute query
-        $stmt->execute();
-
-        // return values from database
-        return $stmt;
-    }
-    
-    // used for paging products
-    public function count($filter){
-        
-        // Filtering on a name
-        $filter_sql = "";
-        if (isset($filter)) {
-            $filter_sql = " AND name LIKE ? ";
-            $filter = '%'.$filter.'%';
-        }
-        
-        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . " WHERE 
-                    id NOT IN (
-                        SELECT people_id FROM people_to_parent WHERE parent_id IS NOT NULL)
-                    AND  id IN (
-                        SELECT parent_id FROM people_to_parent WHERE parent_id IS NOT NULL)
-                    ".$filter_sql;
-
-        $stmt = $this->conn->prepare( $query );
-        
+        $stmt->bindParam(1 + (isset($filter) ? 1 : 0), $record_page_start, PDO::PARAM_INT);
+        $stmt->bindParam(2 + (isset($filter) ? 1 : 0), $this->records_per_page, PDO::PARAM_INT);
         if (isset($filter)) {
             $stmt->bindParam(1, $filter, PDO::PARAM_STR);
         }
         
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $row['total_rows'];
+        return $this->access_database($stmt);
     }
     
     // used when filling up the update product form
-    function readOne(){
+    function read_one(){
+        global $PEOPLES_TO_NOTES;
         
-        $child_ids = array($this->id);
-        $people_arr = array();
-        
-        $parent = new people($this->conn);
-        $parent->id = $this->id;
-        $parent->readOne();
-        
-        $gen = 1;
-        
-        while (count($child_ids) > 0) {            
-            // query to read familytree
-            $children = $this->base->getFamilytreeToChildren($child_ids, $gen);
-            $people_arr = array_merge($people_arr, $children);
-            
-            $child_ids = array_map(function($child) { return $child["id"]; }, $children);
-            $gen++;
+        $this->get_parameters("read_one");
+        if ($this->error) {
+            return false;
         }
         
-        $this->name = $parent->name;
-        $this->meaning_name = $parent->meaning_name;
-        $this->descr = $parent->descr;
-        $this->parent_notes = $parent->notes;
-        $this->aka = $parent->aka;
-        $this->gender = $parent->gender;
-        $this->items = $people_arr;
+        // Set other tables that we want to include in the result as well
+        $this->set_linking_tables([
+                $PEOPLES_TO_NOTES
+        ]);
         
-        // Get the notes of all the locations as well
-        $ids = array_map(function($event) { 
-            return $event["id"]; 
-        }, $this->items);
-        $this->notes = $this->base->getItemsToNotes($ids, "people");
+        // query to read a familytree, starting from a single id
+        // It uses a recursive function to keep finding children, until there
+        // are no more children to be found
+        $query = "WITH RECURSIVE ancestors AS 
+            (
+            SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
+                    t.type_name AS gender, -1 as parent_id, aka.people_name AS aka,
+                1 AS level, 0 AS gen, 0 AS x, 0 AS y
+            FROM 
+                    " . $this->table_lang . " p
+            LEFT JOIN
+                    (SELECT people_id, CONCAT('[', GROUP_CONCAT(
+                                        CASE
+                                            WHEN meaning_name IS NOT NULL AND meaning_name != ''
+                                                THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
+                                                ELSE CONCAT('{\"name\": \"', people_name, '\"}')
+                                        END SEPARATOR ', '
+                                    ), ']') AS people_name FROM people_to_aka
+                                    GROUP BY people_id) AS aka
+                            ON aka.people_id = p.id
+            LEFT JOIN
+                    type_gender AS t
+                            ON p.gender = t.type_id
+            WHERE
+                    p.id = ?
+
+            UNION ALL
+
+            SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
+                    t.type_name AS gender, p2p.parent_id, aka.people_name AS aka,
+                1 AS level, gen+1, 0 AS x, 0 AS y
+            FROM 
+                    " . $this->table_lang . " p
+            LEFT JOIN
+                    people_to_parent p2p
+                            ON p.id = p2p.people_id
+            JOIN
+                    ancestors a
+                            ON a.id = p2p.parent_id
+            LEFT JOIN
+                    (SELECT people_id, CONCAT('[', GROUP_CONCAT(
+                                        CASE
+                                            WHEN meaning_name IS NOT NULL AND meaning_name != ''
+                                                THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
+                                                ELSE CONCAT('{\"name\": \"', people_name, '\"}')
+                                        END SEPARATOR ', '
+                                    ), ']') AS people_name FROM people_to_aka
+                                    GROUP BY people_id) AS aka
+                            ON aka.people_id = p.id
+            LEFT JOIN
+                    type_gender AS t
+                            ON p.gender = t.type_id
+            )
+
+            SELECT distinct(order_id), id, name, meaning_name, descr,
+                    gender, parent_id, aka,
+                level, gen, x, y FROM ancestors
+            ORDER BY
+                    parent_id ASC, order_id ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare( $query );
+
+        // bind id of product to be updated
+        $stmt->bindParam(1, $this->id);
+        
+        return $this->access_database($stmt);
     }
     
     // search products

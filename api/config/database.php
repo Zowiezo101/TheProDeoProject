@@ -1,5 +1,4 @@
 <?php
-require "../../../settings.conf";
 
 class database {
   

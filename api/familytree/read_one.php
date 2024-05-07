@@ -7,18 +7,16 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: access");
   
 // Include core and object files
-include_once "../config/core.php";
+include_once '../config/core.php';
 include_once '../objects/familytree.php';
   
-// initialize object
+// prepare item object
 $item = new familytree();
   
-// query items
-$data = $item->read_page();
+// read the details of item to be edited
+$data = $item->read_one();
 
-// Prepare a message to be sent to the client, make sure to include paging
-$include_paging = true;
-
-$message = $item->prepare_message($data, $include_paging);
+// Prepare a message to be sent to the client
+$message = $item->prepare_message($data);
 http_response_code($message["code"]);
 echo json_encode($message["data"]);

@@ -12,12 +12,12 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 RewriteRule ^(en|nl|..)/(.*)$ $2?lang=$1 [QSA,DPI]
 
 # And this is for the items
-RewriteRule ^([^/]+)/book/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
-RewriteRule ^([^/]+)/event/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
-RewriteRule ^([^/]+)/people/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
-RewriteRule ^([^/]+)/location/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
-RewriteRule ^([^/]+)/special/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
-RewriteRule ^([^/]+)/map/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
+RewriteRule ^(.*)/book/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
+RewriteRule ^(.*)/event/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
+RewriteRule ^(.*)/people/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
+RewriteRule ^(.*)/location/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
+RewriteRule ^(.*)/special/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
+RewriteRule ^(.*)/map/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 
 # This is for the API
 # api/[item]/new -> api/[item]/create.php
