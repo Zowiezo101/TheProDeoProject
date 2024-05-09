@@ -258,7 +258,7 @@ function drawItem(group, item) {
 }
 
 function drawLink(group, child) {
-    if (child.root !== true) {
+    if (child.gen !== 0) {
         child.parents.forEach(function (parent_id) {
             var parent = getMapItem(parent_id);
 

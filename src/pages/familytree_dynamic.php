@@ -17,10 +17,9 @@
     // It's requesting the familytree from the REST API and inserts
     // it into the DOM
     $(function(){
-        var id = <?= $id; ?>;
-        getItem(TYPE_FAMILYTREE, id).then(function(data) {
+        getItem(TYPE_FAMILYTREE, map_id).then(function(data) {
             if (data.hasOwnProperty('records')) {
-                insertFamilytree(data);
+                insertFamilytree(data.records);
 
                 // Remove the loading screen
                 hideLoadingScreen();
@@ -46,10 +45,15 @@
     
     function insertFamilytree(data) {
         // Set up the SVG
-        var draw = SVG().addTo('#map_div').size('100%', '100%');
-
-        // Calculate the locations of the familytree items
-        var familytree = data.records;
+        var map = SVG().addTo('#map_div').size('100%', '100%');
+        
+//        // The mapmaker object, this will generate the map
+//        var mapmaker = new MapMaker({});
+//        mapmaker.setMap(map);
+//        mapmaker.setItems(data);
+//
+//        // Calculate the locations of the familytree items
+//        var familytree = data.records;
 
         // Draw the control buttons
 
@@ -59,20 +63,20 @@
 
         // Hide the loading screen
 
-        if(setSVG(draw)) {
-            setMapItems(familytree);
+        if(setSVG(map)) {
+            setMapItems(data);
 
             // Calculate all the locations of the familytree
             calcMapItems({type: TYPE_FAMILYTREE});
 
             // We've got the people and the locations, now time to draw it!
-            drawControlButtons(familytree, TYPE_FAMILYTREE);
+            drawControlButtons(data, TYPE_FAMILYTREE);
             drawMapItems();
 
             // Set viewSettings
             setViewSettings();
 
-            panToItem(familytree);
+            panToItem(data);
         }
     }
 </script>

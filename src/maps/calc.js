@@ -34,35 +34,8 @@ var g_Offsets = {
 function setMapItems (map) {
     g_Map = map;
     
-//    var parent = {
-//        id: map.id,
-//        name: map.name,
-//        meaning_name: map.hasOwnProperty('meaning_name') ? map.meaning_name : null,
-//        descr: map.hasOwnProperty('descr') ? map.descr : null,
-//        aka: map.hasOwnProperty('aka') ? map.aka : null,
-//        gender: map.hasOwnProperty('gender') ? map.gender : null,
-//        date: map.hasOwnProperty('date') ? map.date : null,
-//        length: map.hasOwnProperty('length') ? map.length : null,
-//        book_start_id: map.hasOwnProperty('book_start_id') ? map.book_start_id : null, 
-//        book_start_chap: map.hasOwnProperty('book_start_chap') ? map.book_start_chap : null,
-//        book_start_vers: map.hasOwnProperty('book_start_vers') ? map.book_start_vers : null,
-//        book_end_id: map.hasOwnProperty('book_end_id') ? map.book_end_id : null,
-//        book_end_chap: map.hasOwnProperty('book_end_chap') ? map.book_end_chap : null,
-//        book_end_vers: map.hasOwnProperty('book_end_vers') ? map.book_end_vers : null,
-//        parent_id: "-1",
-//        gen: 0,
-//        gen_index: 0,
-//        level: 1,
-//        notes: map.hasOwnProperty("parent_notes") ? map.parent_notes : [],
-//        root: true
-//    };
-
-    // The first element is the parent and the root of this map
-    var parent = map.shift();
-    parent.root = true;
-    
     // Set the parent back as the first item
-    g_MapItems = [parent].concat(map);
+    g_MapItems = map;
     
     // Convert the generations and levels to integers if they are strings
     g_MapItems.forEach(function(item) {
@@ -121,7 +94,6 @@ function setSubMapItems(id) {
         gen_index: 0,
         level: 2,
         notes: ancestor.hasOwnProperty("notes") ? ancestor.notes : [],
-        root: true,
         parents: [],
         children: Array.from(ancestor.subChildren),
         subChildren: Array.from(ancestor.subChildren)

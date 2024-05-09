@@ -13,11 +13,10 @@ class familytree extends item {
     
     // Properties from another table
     public $aka;
-    public $parent_notes;
+    public $notes;
     
     // The items of this map
     public $items;
-    public $notes;
     
     // Allowed options
     protected $sort;
@@ -147,61 +146,61 @@ class familytree extends item {
         // It uses a recursive function to keep finding children, until there
         // are no more children to be found
         $query = "WITH RECURSIVE ancestors AS 
-            (
-            SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
-                    t.type_name AS gender, -1 as parent_id, aka.people_name AS aka,
-                1 AS level, 0 AS gen, 0 AS x, 0 AS y
-            FROM 
-                    " . $this->table_lang . " p
-            LEFT JOIN
-                    (SELECT people_id, CONCAT('[', GROUP_CONCAT(
-                                        CASE
-                                            WHEN meaning_name IS NOT NULL AND meaning_name != ''
-                                                THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
-                                                ELSE CONCAT('{\"name\": \"', people_name, '\"}')
-                                        END SEPARATOR ', '
-                                    ), ']') AS people_name FROM people_to_aka
-                                    GROUP BY people_id) AS aka
-                            ON aka.people_id = p.id
-            LEFT JOIN
-                    type_gender AS t
+                (
+                    SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
+                        t.type_name AS gender, -1 as parent_id, aka.people_name AS aka,
+                        1 AS level, 0 AS gen, 0 AS x, 0 AS y
+                    FROM 
+                        " . $this->table_lang . " p
+                    LEFT JOIN
+                        (SELECT people_id, CONCAT('[', GROUP_CONCAT(
+                            CASE
+                                WHEN meaning_name IS NOT NULL AND meaning_name != ''
+                                    THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
+                                    ELSE CONCAT('{\"name\": \"', people_name, '\"}')
+                                    END SEPARATOR ', '
+                                ), ']') AS people_name FROM people_to_aka
+                            GROUP BY people_id) AS aka
+                                ON aka.people_id = p.id
+                    LEFT JOIN
+                        type_gender AS t
                             ON p.gender = t.type_id
-            WHERE
-                    p.id = ?
+                    WHERE
+                        p.id = ?
 
-            UNION ALL
+                    UNION DISTINCT
 
-            SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
-                    t.type_name AS gender, p2p.parent_id, aka.people_name AS aka,
-                1 AS level, gen+1, 0 AS x, 0 AS y
-            FROM 
-                    " . $this->table_lang . " p
-            LEFT JOIN
-                    people_to_parent p2p
+                    SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
+                        t.type_name AS gender, p2p.parent_id, aka.people_name AS aka,
+                        1 AS level, gen+1, 0 AS x, 0 AS y
+                    FROM 
+                        " . $this->table_lang . " p
+                    LEFT JOIN
+                        people_to_parent p2p
                             ON p.id = p2p.people_id
-            JOIN
-                    ancestors a
+                    JOIN
+                        ancestors a
                             ON a.id = p2p.parent_id
-            LEFT JOIN
-                    (SELECT people_id, CONCAT('[', GROUP_CONCAT(
-                                        CASE
-                                            WHEN meaning_name IS NOT NULL AND meaning_name != ''
-                                                THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
-                                                ELSE CONCAT('{\"name\": \"', people_name, '\"}')
-                                        END SEPARATOR ', '
-                                    ), ']') AS people_name FROM people_to_aka
-                                    GROUP BY people_id) AS aka
-                            ON aka.people_id = p.id
-            LEFT JOIN
-                    type_gender AS t
+                    LEFT JOIN
+                        (SELECT people_id, CONCAT('[', GROUP_CONCAT(
+                            CASE
+                                WHEN meaning_name IS NOT NULL AND meaning_name != ''
+                                    THEN CONCAT('{\"name\": \"', people_name, '\", \"meaning_name\": \"', meaning_name, '\"}')
+                                    ELSE CONCAT('{\"name\": \"', people_name, '\"}')
+                                    END SEPARATOR ', '
+                                ), ']') AS people_name FROM people_to_aka
+                            GROUP BY people_id) AS aka
+                                ON aka.people_id = p.id
+                    LEFT JOIN
+                        type_gender AS t
                             ON p.gender = t.type_id
-            )
+                )
 
-            SELECT distinct(order_id), id, name, meaning_name, descr,
+                SELECT distinct(order_id), id, name, meaning_name, descr,
                     gender, parent_id, aka,
-                level, gen, x, y FROM ancestors
-            ORDER BY
-                    parent_id ASC, order_id ASC";
+                    level, gen, x, y FROM ancestors
+                ORDER BY
+                    gen ASC, parent_id ASC, order_id ASC";
 
         // prepare query statement
         $stmt = $this->conn->prepare( $query );
