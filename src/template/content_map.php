@@ -89,6 +89,12 @@
             
             // The name to be shown in the sidebar
             $value = $item->name;
+            if ($value == "timeline.global") {
+                // In case of the timeline, there is a global timeline
+                // consisting of all the events
+                $value = $dict[$value];
+            }
+            
             if (isset($item->aka) && $item->aka != "") {
                 // The AKA value is only given when searching for a name and there is a hit
                 // with an AKA value.
@@ -167,6 +173,7 @@
                                         <p class="lead"><?= $dict["{$page_id}.overview"]; ?></p>
                                     </div>
                                 </div>
+                            </div>
 <?php 
     } else { 
 ?>
@@ -183,10 +190,10 @@
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="sr-only"><?= $dict["loading"]?></span>
                                 </div>
+                            </div>
 <?php 
     }
 ?>
-                            </div>
                             
                             <!-- This button is used to collapse the sidebar -->
                             <button id="toggle_menu" class="btn btn-secondary show_menu d-none d-md-block" onclick="onMenuToggle()" style="

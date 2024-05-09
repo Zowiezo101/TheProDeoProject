@@ -6,6 +6,7 @@ class utilities{
     
     // The default tables
     public $table_events = "events";
+    public $table_activities = "activitys";
     public $table_peoples = "peoples";
     public $table_locations = "locations";
     public $table_specials = "specials";
@@ -418,6 +419,7 @@ class utilities{
                         "id" => false,
                         "order_id" => false,
                         "name" => true,
+                        "descr" => true,
                         "length" => true,
                         "date" => true,
                         "level" => false,
@@ -664,7 +666,7 @@ class utilities{
                     e.book_end_id, e.book_end_chap, 
                     e.book_end_vers
                 FROM
-                    " . $this->table_e2e . " e
+                    " . $this->table_events . " e
                 WHERE
                     e.id = ?
                 ORDER BY
@@ -825,6 +827,43 @@ class utilities{
         
         // bind variable values
         $stmt->bindParam(1, $id, PDO::PARAM_INT);
+
+        // execute query
+        $stmt->execute();
+        
+        return $this->getResults($stmt);
+    }
+    
+    public function getActivityToAka($id) {
+        // select all query
+        $query = "SELECT
+                    distinct(a2a.activity_id), a2a.book_start_id,
+                    a2a.book_start_chap, a2a.book_start_vers,
+                    a2a.book_end_id, a2a.book_end_chap, 
+                    a2a.book_end_vers
+                FROM
+                    " . $this->table_a2a . " a2a
+                WHERE
+                    a2a.activity_id = ?
+                UNION    
+                SELECT
+                    distinct(a.id), a.book_start_id,
+                    a.book_start_chap, a.book_start_vers,
+                    a.book_end_id, a.book_end_chap, 
+                    a.book_end_vers
+                FROM
+                    " . $this->table_activities . " a
+                WHERE
+                    a.id = ?
+                ORDER BY
+                    book_start_id ASC, book_start_chap ASC, book_start_vers ASC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        
+        // bind variable values
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id, PDO::PARAM_INT);
 
         // execute query
         $stmt->execute();
@@ -1087,115 +1126,6 @@ class utilities{
         
         // bind variable values
         $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getTimelineEvents($ids, $gen) {
-        $table = $this->utilities->getTable($this->table_events);
-        
-        if ($gen > 1) {
-            // select all query
-            $query = "SELECT
-                        e.id, e.name, e.descr, e.length, e.date, e2pa.parent_id,
-                        e.book_start_id, e.book_start_chap, e.book_start_vers,
-                        e.book_end_id, e.book_end_chap, e.book_end_vers,
-                        1 as level, ".$gen." as gen, 0 as X, 0 as Y
-                    FROM
-                        " . $table . " e
-
-                        LEFT JOIN
-                            " . $this->table_e2pa . " e2pa
-                                ON e2pa.event_id = e.id
-                    WHERE
-                        e2pa.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
-                    ORDER BY
-                        e.id ASC, e.order_id ASC";
-        } else {
-            // select all query
-            $query = "SELECT
-                        e.id, e.name, e.descr, e.length, e.date, -999 as parent_id,
-                        e.book_start_id, e.book_start_chap, e.book_start_vers,
-                        e.book_end_id, e.book_end_chap, e.book_end_vers,
-                        1 as level, ".$gen." as gen, 0 as X, 0 as Y
-                    FROM
-                        " . $table . " e
-
-                        LEFT JOIN
-                            " . $this->table_e2pa . " e2pa
-                                ON e2pa.event_id = e.id
-                    WHERE
-                        e2pa.parent_id is null
-                    ORDER BY
-                        e.id ASC, e.order_id ASC";
-        }
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        foreach($ids as $idx => $id) {
-            $stmt->bindValue($idx + 1, $id, PDO::PARAM_STR);
-        }
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getTimelineActivities($ids, $gen) {
-        $table = $this->utilities->getTable($this->table_activities);
-        
-        if ($gen > 1) {
-            // select all query
-            $query = "SELECT
-                        a.id, a.name, a.length, a.date, a2pa.parent_id,
-                        a.book_start_id, a.book_start_chap, a.book_start_vers,
-                        a.book_end_id, a.book_end_chap, a.book_end_vers,
-                        a.level, ".$gen." as gen, 0 as X, 0 as Y
-                    FROM
-                        " . $table . " a
-
-                        LEFT JOIN
-                            " . $this->table_a2pa . " a2pa
-                                ON a2pa.activity_id = a.id
-                    WHERE
-                        a2pa.parent_id in (" . implode(',', array_fill(0, count($ids), '?')) . ")
-                    ORDER BY
-                        a2pa.parent_id ASC, a.order_id ASC";
-        } else {
-            // select all query
-            $query = "SELECT
-                        a.id, a.name, a.length, a.date, -999 as parent_id,
-                        a.book_start_id, a.book_start_chap, a.book_start_vers,
-                        a.book_end_id, a.book_end_chap, a.book_end_vers,
-                        a.level, ".$gen." as gen, 0 as X, 0 as Y
-                    FROM
-                        " . $table . " a
-
-                        LEFT JOIN
-                            " . $this->table_a2pa . " a2pa
-                                ON a2pa.activity_id = a.id
-                        LEFT JOIN 
-                            " . $this->table_a2e . " a2e
-                                ON a2e.activity_id = a.id
-                    WHERE
-                        a2e.event_id = ? AND a2pa.parent_id is null
-                    ORDER BY
-                        a2e.event_id ASC, a.order_id ASC";
-        }
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        foreach($ids as $idx => $id) {
-            $stmt->bindValue($idx + 1, $id, PDO::PARAM_STR);
-        }
 
         // execute query
         $stmt->execute();

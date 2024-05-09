@@ -168,6 +168,12 @@ class event extends item {
                     e.id = ?
                 LIMIT
                     0,1";
+        
+        if ($this->id === -999) {
+            // This is a "Global timeline" event
+            $query = "SELECT
+                    ? AS id, 'timeline.global' AS name";
+        }
 
         // prepare query statement
         $stmt = $this->conn->prepare( $query );

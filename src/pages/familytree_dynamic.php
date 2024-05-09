@@ -10,6 +10,9 @@
     // If an ID is given, load the familytree of this ID
     if ($id !== null) {
 ?>
+    // The Map ID
+    var map_id = <?= $id; ?>;
+    
     // This function is executed once the DOM is loaded
     // It's requesting the familytree from the REST API and inserts
     // it into the DOM

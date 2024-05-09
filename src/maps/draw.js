@@ -1,5 +1,5 @@
 
-/* global g_MapItems, g_Options, get_settings, onBeforeZoom, onBeforePan, dict, g_Map, TYPE_FAMILYTREE, getMapItems, itemHasSubChildren, page_base_url */
+/* global g_MapItems, g_Options, onBeforeZoom, onBeforePan, dict, g_Map, TYPE_FAMILYTREE, getMapItems, itemHasSubChildren, page_base_url */
 
 // The global variable for the SVG where everything will be drawn in
 var g_svg = null;
@@ -129,16 +129,16 @@ function drawItem(group, item) {
                         item.Y + item.height / 2);
                         
     } else {
-        if ((get_settings["id"] === "-999" && item.id === "-999") ||
-            (get_settings["id"] !== "-999" && item.id !== "-999")) {
+        if ((map_id === "-999" && item.id === "-999") ||
+            (map_id !== "-999" && item.id !== "-999")) {
             // We don't need a link when there's nothing to go to
             var link = group.group();
         } else {
             // The link depends on whether it is a global timeline or not
-            var href = setParameters("events/event/" + (
-                        (get_settings["id"] === "-999") ? 
-                            item.id : 
-                            get_settings["id"]));
+            href = page_base_url + map_id;
+            if (map_id === "-999") {
+                href = page_base_url + item.id;
+            }
                 
             // The button to see the popover
             var link = group.link(href);
@@ -154,11 +154,12 @@ function drawItem(group, item) {
         var popover_details = $("\
                 <table class='table table-striped'>" + 
                     "<tbody>" +
-                    insertDetail(item, "descr", true) + 
-                    insertDetail(item, "length", true) + 
-                    insertDetail(item, "date", true) + 
-                    insertDetail(item, "notes", true) + 
-                    insertDetail(item, "books", true) + 
+                    // TODO:
+//                    insertDetail(item, "descr", true) + 
+//                    insertDetail(item, "length", true) + 
+//                    insertDetail(item, "date", true) + 
+//                    insertDetail(item, "notes", true) + 
+//                    insertDetail(item, "books", true) + 
                     "</tbody>" + 
                 "</table>");
             
@@ -169,15 +170,15 @@ function drawItem(group, item) {
             popover_body.append(popover_details);
         }
             
-        if ((get_settings["id"] === "-999" && item.id !== "-999") ||
-            (get_settings["id"] !== "-999" && item.id === "-999")) {
+        if ((map_id === "-999" && item.id !== "-999") ||
+            (map_id !== "-999" && item.id === "-999")) {
             // There actually is a link to go to
             // Explain how to reach the detail page
             popover_body.append("<p class='font-weight-bold'>" + 
                                     dict["map.info.event.details"].replace("LINK", "<a href='" + href + "' target='_blank'>" +
                                     dict["map.info.here"] + "</a>") + 
                                 "</p>");
-        } else if (get_settings["id"] !== "-999" && item.id !== "-999" && itemHasSubChildren(item)) {
+        } else if (map_id !== "-999" && item.id !== "-999" && itemHasSubChildren(item)) {
             // There is a modal showing another sub timeline
             // Explain how to reach the modal
             popover_body.append("<p class='font-weight-bold'>" + 
