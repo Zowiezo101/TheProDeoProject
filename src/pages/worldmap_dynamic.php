@@ -1,48 +1,17 @@
-<?php 
-    function onPageLoad() {
-        global $id;
-        return "onLoad".ucfirst($id)."();";
-    }
-    
-    // Import the login details to reach the mailer account
-    require "../settings.conf";
-?>
-
-<!-- For the sidebar used with many pages -->
-<script src="/src/tools/items.js"></script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=<?= $API_key; ?>&v=weekly"></script>
-<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
-
-<script>
-    // Function to load the content in the content div
-    function onLoadWorldmap() {
-        $("#content").append(
-            $("<div>").addClass("container-fluid").append(
-                $("<div>").addClass("row")
-                    // The column with the menu
-                    .append(getItemsMenu())
-                    // The column with the selected content 
-                    .append(getContentDiv())
-            )
-        );
-        
-        // Show the WorldMap
-        showMap();
-    }
-    
-    
+<script>    
 /* global google, getWorldmap, markerClusterer, dict, get_settings */
+    
+var page_base_url = "<?= setParameters("locations/location/"); ?>";
 
 var map = null;
 var markers = [];
 var infoWindow = null;
-var markerClusterer = null;
+var markerClustererObj = null;
 var markersPerZoom = [];
 
-function getWorldmapContent(location) {
-    
-}
+$(function(){
+    showMap();
+});
 
 function showMap() {
     
@@ -59,15 +28,11 @@ function showMap() {
     drawInfoWorldMapButton();
 
     // Insert all the locations as markers to click
-    getWorldmap().then(function(worldmap) {
-        if (worldmap.items) {            
-            worldmap.items.forEach(function (location) {
+    getItems(TYPE_WORLDMAP).then(function(worldmap) {
+        if (worldmap.records) {            
+            worldmap.records.forEach(function (location) {
                 // Get the coordinates from the location object
                 var coords = location.coordinates.split(',');
-                
-                // The notes should be ordered per item
-                location.notes = worldmap.notes["location" + location.id] ? 
-                                 worldmap.notes["location" + location.id] : [];
 
                 // The marker, positioned at the location
                 const marker = new google.maps.Marker({
@@ -125,18 +90,19 @@ function showMap() {
             });
 
             // Add a marker clusterer to manage the markers.
-            markerClusterer = new markerClusterer.MarkerClusterer({ map, markers });
+            markerClustererObj = new markerClusterer.MarkerClusterer({ map, markers });
             
-            google.maps.event.addListenerOnce(markerClusterer, "clusteringend", () => {
+            google.maps.event.addListenerOnce(markerClustererObj, "clusteringend", () => {
                 getMarkersPerZoom();
                 
-                if (get_settings.hasOwnProperty("panTo")) {
-                    // Get the item to pan to
-                    var id = get_settings["panTo"];
-
-                    // Pan to the item
-                    getLinkToMap(id);
-                }
+//                TODO:
+//                if (get_settings.hasOwnProperty("panTo")) {
+//                    // Get the item to pan to
+//                    var id = get_settings["panTo"];
+//
+//                    // Pan to the item
+//                    getLinkToMap(id);
+//                }
             });
             
             map.addListener("zoom_changed", () => {
@@ -161,17 +127,27 @@ function showMap() {
 
 function setContent(location) {
     // The information to show when a marker is clicked
+    var text = "locations/location/" + location.id;
+    var href = page_base_url + location.id;
+    
     var info = "<h2>" + location.name + "</h2>" + 
         "<table class='table table-striped'>" + 
             "<tbody>" +
-                insertDetail(location, "meaning_name") + 
-                insertDetail(location, "aka") + 
-                insertDetail(location, "descr") + 
-                insertDetail(location, "type") + 
-                insertDetail(location, "notes") + 
+//            TODO:
+//                insertDetail(location, "meaning_name") + 
+//                insertDetail(location, "aka") + 
+//                insertDetail(location, "descr") + 
+//                insertDetail(location, "type") + 
+//                insertDetail(location, "notes") + 
             "</tbody>" + 
         "</table>" + 
-        "<p class='font-weight-bold'>" + dict["map.info.location.details"] + ":<br>" + getLinkToItem("locations", location.id, "self", {"openInNewTab": true}) + "</p>";
+        "<p class='font-weight-bold'>" + dict["map.info.location.details"] + ":<br>" + 
+            "<a href='" + href + "' target='_blank'" + 
+                "data-toggle='tooltip' title='" + dict["items.details.worldmap"] + "'" + 
+                "class='font-weight-bold'>" + 
+                text + 
+            "</a>" + 
+        "</p>";
     
     return info;
 }
@@ -191,7 +167,7 @@ function getLinkToMap(id) {
 }
 
 function markerInCluster(id) {
-    var clusters = markerClusterer.clusters;
+    var clusters = markerClustererObj.clusters;
     var markerCluster = clusters.find(function(cluster) {
         // Check if the marker is present in the current cluster
         var marker = cluster.markers.find(marker => marker.id === id.toString());
@@ -214,8 +190,8 @@ function minZoomForMarker(id) {
 
 function getMarkersPerZoom () {
     // Get the markers visible per zoom level
-    for(var i = 0; i <= markerClusterer.algorithm.maxZoom; i++) {
-        var visibleMarkers = markerClusterer.algorithm.superCluster.getClusters([-180, -90, 180, 90], i);
+    for(var i = 0; i <= markerClustererObj.algorithm.maxZoom; i++) {
+        var visibleMarkers = markerClustererObj.algorithm.superCluster.getClusters([-180, -90, 180, 90], i);
         markersPerZoom.push(visibleMarkers.filter(function(marker) {
             return !marker.hasOwnProperty("id");
         }).map(function(marker) {

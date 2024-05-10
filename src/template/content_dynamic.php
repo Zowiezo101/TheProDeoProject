@@ -178,6 +178,7 @@ function updatePage() {
         } else {
             // Some variables
             var page_size = <?= $page_size; ?>;
+            var page_id = "<?= $page_id; ?>";
             var page_base_url = "<?= setParameters($page_base_url); ?>";
             var curr_id = "<?= $id; ?>";
             
@@ -205,8 +206,18 @@ function updatePage() {
                         // with an AKA value.
                         value = value + " (" + item.aka + ")";
                     }
+            
+<?php if (array_search($page_id, $map) !== false) { ?>
+                    var onclick = "showLoadingScreen()";
+                    if (page_id === "worldmap") {
+                        onclick = "getLinkToMap(" + item.id + ")";
+                        href = "javascript: void(0)";
+                    }
+<?php } else { ?>
+                    var onclick = "";
+<?php } ?>
                     
-                    var option = '<a href="' + href + '" class="' + classes + '">' + value + '</a>';
+                    var option = '<a href="' + href + '" class="' + classes + '" onclick="' + onclick + '">' + value + '</a>';
                 }
                 
                 $("#item_list").append(option);

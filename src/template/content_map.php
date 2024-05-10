@@ -100,12 +100,21 @@
                 // with an AKA value.
                 $value = $value." ({$item->aka})";
             }
-?>
-                                    <a href="<?= $href; ?>" class="<?= $classes; ?>" onclick="showLoadingScreen()"><?= $value; ?></a>
-<?php 
-        } else { ?>
-                                    <a class="list-group-item list-group-item-action invisible"> empty </a>
-        <?php }
+            
+            $onclick = "showLoadingScreen()";
+            if ($page_id === "worldmap") {
+                $onclick = "getLinkToMap({$item->id})";
+                $href = "javascript: void(0)";
+            }
+            
+            $button = '
+                                    <a href="'.$href.'" class="'.$classes.'" onclick="'.$onclick.'">'.$value.'</a>';
+        } else {
+            $button = '
+                                    <a class="list-group-item list-group-item-action invisible"> empty </a>';
+        }
+        
+        echo $button;
     } 
 ?>    
                                 </div>
@@ -163,7 +172,7 @@
                     <div id="content_col" class="col pt-3 pb-5">
                         <div id="content_row" class="row h-100 d-none d-md-flex">
 <?php
-    if ($id == null) { 
+    if (($id == null) && ($page_id !== "worldmap")) { 
         // TODO: Explain about the dutch names when other language names aren't available
 ?>
                             <div id="item_content" class="col-12 h-100">
@@ -175,7 +184,12 @@
                                 </div>
                             </div>
 <?php 
-    } else { 
+    } else if ($page_id === "worldmap") {
+?>
+                            <div id="item_content" class="col-12 h-100">
+                            </div>
+<?php
+    } else {
 ?>
                             <div id="item_content" class="col-12 h-100 invisible">
                                 <?= insertContent($data_item); ?>

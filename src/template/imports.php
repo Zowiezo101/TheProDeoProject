@@ -44,6 +44,10 @@ switch($page_id) {
         <script src="/src/maps/draw.js"></script>
         <script src="/src/maps/view.js"></script><?php
         break;
+    case "worldmap":
+        require "../settings.conf";?>
+        <script src="https://maps.googleapis.com/maps/api/js?key=<?= $API_key; ?>&v=weekly"></script>
+        <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script><?php
 }
 ?>
         

@@ -36,6 +36,17 @@ function getItem(type, id, options=false) {
     return accessDatabase("GET", url + query);
 }
 
+function getItems(type, options=false) {
+    // Create the query
+    var query = getQuery(options);
+    
+    // The URL to set the request to
+    var url = base_url + "/" + lang + "/api/" + type + "/all";
+    
+    // Access the database
+    return accessDatabase("GET", url + query);
+}
+
 function updateItem(type, id, data) {    
     // The URL to set the request to
     var url = base_url + "/" + lang + "/api/" + type + "/" + id;
