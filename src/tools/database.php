@@ -11,7 +11,12 @@ $TYPE_TIMELINE = "timeline";
 $TYPE_WORLDMAP = "worldmap";
 
 function createItem($type, $data) {
-
+    
+    // The URL to send the request to
+    $url = setParameters("api/".$type."/new");
+    
+    // Access the database
+    return accessDatabase("POST", $url, $data);
 }
 
 function getItem($type, $id, $options=false) {
@@ -36,12 +41,23 @@ function getItems($type, $options=false) {
     return accessDatabase("GET", $url.$query);
 }
 
-function updateItem($type, $data) {
+function updateItem($type, $id, $data) {
+    
+    // The URL to send the request to
+    $url = setParameters("api/".$type."/".$id);
+    
+    // Access the database
+    return accessDatabase("PUT", $url, $data);
 
 }
 
-function deleteItem($type, $data) {
-
+function deleteItem($type, $id) {
+    
+    // The URL to send the request to
+    $url = setParameters("api/".$type."/".$id);
+    
+    // Access the database
+    return accessDatabase("DELETE", $url);
 }
 
 function getPage($type, $page, $options) {
@@ -53,10 +69,6 @@ function getPage($type, $page, $options) {
     
     // Access the database
     return accessDatabase("GET", $url.$query);
-}
-
-function getMap($type, $options) {
-
 }
 
 function getMaps($type, $id, $options=false) {

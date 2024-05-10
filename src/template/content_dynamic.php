@@ -201,6 +201,12 @@ function updatePage() {
                     
                     // The name to be shown in the sidebar
                     var value = item.name;
+                    if (value === "timeline.global") {
+                        // In case of the timeline, there is a global timeline
+                        // consisting of all the events
+                        $alue = dict[value];
+                    }
+                    
                     if (item.hasOwnProperty("aka") && item.aka !== "") {
                         // The AKA value is only given when searching for a name and there is a hit
                         // with an AKA value.

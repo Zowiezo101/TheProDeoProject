@@ -91,7 +91,7 @@ class familytree extends item {
         
         // Filtering on a name
         $filter_sql = "";
-        if (isset($this->filter)) {
+        if (isset($this->filter) && ($this->filter != "")) {
             $filter_sql = " AND name LIKE ? ";
             $filter = '%'.$this->filter.'%';
         }
@@ -126,6 +126,40 @@ class familytree extends item {
         }
         
         return $this->access_database($stmt);
+    }
+    
+    // used for paging products
+    function count(){
+        
+        // Filtering on a name
+        $filter_sql = "";
+        if (isset($this->filter) && ($this->filter != "")) {
+            $filter_sql = " AND name LIKE ? ";
+            $filter = '%'.$this->filter.'%';
+        }
+
+        // select query
+        $query = "SELECT
+                    COUNT(*) as total_rows
+                FROM
+                    " . $this->table_lang . " p
+                WHERE 
+                    id NOT IN (
+                        SELECT people_id FROM people_to_parent WHERE parent_id IS NOT NULL)
+                    AND  id IN (
+                        SELECT parent_id FROM people_to_parent WHERE parent_id IS NOT NULL)
+                    ".$filter_sql;
+
+        $stmt = $this->conn->prepare( $query );
+        
+        if (isset($filter)) {
+            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row['total_rows'];
     }
     
     // used when filling up the update product form

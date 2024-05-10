@@ -94,7 +94,7 @@ class item {
         }
         
         // If the language is set, get the translation table as well
-        if (isset($this->lang)) {
+        if (isset($this->lang) && ($this->lang !== "")) {
             $this->table_lang = $this->get_table_lang();
         }
                 
@@ -206,7 +206,7 @@ class item {
         
         // Filtering on a name
         $filter_sql = "";
-        if (isset($this->filter)) {
+        if (isset($this->filter) && ($this->filter != "")) {
             $filter_sql = " WHERE name LIKE ? ";
             $filter = '%'.$this->filter.'%';
         }
@@ -215,7 +215,7 @@ class item {
 
         $stmt = $this->conn->prepare( $query );
         
-        if (isset($this->filter)) {
+        if (isset($filter)) {
             $stmt->bindParam(1, $filter, PDO::PARAM_STR);
         }
         

@@ -41,7 +41,7 @@
                 <div class="row">
                     <!-- The column with the menu -->
                     <nav id="item_bar" class="col-md-4 col-lg-2 py-3 shadow d-none d-md-block">
-                         <!-- Search bar and sorting -->
+                        <!-- Search bar and sorting -->
                         <div class="row mb-2">
                             <div class="col-8 col-md-6">
                                 <div class="input-group w-100">

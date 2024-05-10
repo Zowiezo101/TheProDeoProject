@@ -75,6 +75,17 @@ function getPage(type, page, options) {
     return accessDatabase("GET", url + query);
 }
 
+function getMaps(type, id, options) {    
+    // Create the query
+    var query = getQuery(options);
+    
+    // The URL to set the request to
+    var url = base_url + "/" + lang + "/api/" + type + "/" + id + "/maps";
+    
+    // Access the database
+    return accessDatabase("GET", url + query);
+}
+
 function getSearchResults(options) {
     /*
      * URL: api/[item]/search/results

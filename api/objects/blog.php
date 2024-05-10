@@ -118,7 +118,7 @@ class blog extends item {
                 ON 
                     u.id = b.user";
             
-        if (isset($this->user)) {
+        if (isset($this->user) && ($this->user !== "")) {
             $query = $query."
                 WHERE u.id = ?
                 ORDER BY

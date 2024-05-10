@@ -97,7 +97,7 @@ class timeline extends item {
         
         // Filtering on a name
         $filter_sql = "";
-        if (isset($this->filter)) {
+        if (isset($this->filter) && ($this->filter != "")) {
             $filter_sql = " WHERE name LIKE ? ";
             $filter = '%'.$this->filter.'%';
         }
@@ -132,6 +132,42 @@ class timeline extends item {
         }
         
         return $this->access_database($stmt);
+    }
+    
+    // used for paging products
+    function count(){
+        
+        // Filtering on a name
+        $filter_sql = "";
+        if (isset($this->filter) && ($this->filter != "")) {
+            $filter_sql = " AND name LIKE ? ";
+            $filter = '%'.$this->filter.'%';
+        }
+
+        // select query
+        $query = "SELECT 
+                    COUNT(*) as total_rows
+                FROM (
+                    SELECT * FROM (SELECT -999 AS id, 'timeline.global' as name) AS e1
+                    UNION ALL
+                    SELECT * FROM (
+                        SELECT
+                            e.id, e.name
+                        FROM
+                            " . $this->table_lang . " e
+                        ".$filter_sql." ) AS e2
+                ) AS e";
+
+        $stmt = $this->conn->prepare( $query );
+        
+        if (isset($filter)) {
+            $stmt->bindParam(1, $filter, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row['total_rows'];
     }
     
     // used when filling up the update product form
