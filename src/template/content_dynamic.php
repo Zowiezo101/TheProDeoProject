@@ -1,3 +1,22 @@
+<?php
+// Check if this file exists
+$page_dynamic = "src/pages/{$page_id}_dynamic.php";
+if (is_file($page_dynamic) || 
+        (array_search($page_id, $double) !== false) ||
+        (array_search($page_id, $map) !== false)) {
+    // Show a comment explaining that this section is for dynamic stuff
+    // Mainly javascript functions
+}
+
+if (is_file($page_dynamic)) {
+    // If this file exists, require it
+    require $page_dynamic; 
+}
+
+if ((array_search($page_id, $double) !== false) ||
+    (array_search($page_id, $map) !== false))  {
+    // Some generic javascript functions to be used in case 
+    // of double or map templates?>
 
 <script>
 
@@ -274,3 +293,7 @@ $(function() {
     }
 });
 </script>
+
+<?php 
+}
+?>

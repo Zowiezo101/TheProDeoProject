@@ -1,23 +1,5 @@
 /* global get_settings, dict */
 
-var base_url = "https://prodeodatabase.com";
-if (location.hostname === "localhost" || 
-    location.hostname === "127.0.0.1" || 
-    location.hostname === "") {
-    base_url = "http://localhost";
-}
-
-function setParameters(url) {
-    var newUrl = url;
-    
-    // Get languague from window.location.url
-    if (get_settings.hasOwnProperty("lang") && get_settings["lang"]) {
-        newUrl = "/" + get_settings["lang"] + (url[0] === "/" ? "" : "/") + url;
-    }
-    
-    return newUrl;
-}
-
 function getLinkToItem(type, id, text, options) {
     var newTab = options && options.hasOwnProperty("openInNewTab") ? options.openInNewTab : false;
     var classes = options && options.hasOwnProperty("classes") ? options.classes : "";

@@ -387,6 +387,17 @@ class utilities{
         if ($this->lang !== "nl") {
             
             switch($table_name) {
+                // TODO: Get these names from the objects themselves
+                case "blog":
+                    $columns = [
+                        "id" => false,
+                        "title" => false,
+                        "text" => false,
+                        "user" => false,
+                        "date" => false
+                    ];
+                    break;
+                
                 case "books":
                     $columns = [
                         "id" => false,

@@ -23,13 +23,12 @@
         <!-- The translation files -->
         <script src="/locale/translation_<?= filter_input(INPUT_GET, "lang"); ?>.js"></script>
 
-<?php
-switch($page_id) {
+<?php switch($page_id) {
     case "settings":?>
         <!-- Main Summernote library -->
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script><?php
-        break;
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+        <?php break;
     case "familytree":
     case "timeline":?>
         <!-- Tools for navigating and downloading the map -->
@@ -42,16 +41,14 @@ switch($page_id) {
         <!-- The map maker -->
         <script src="/src/maps/calc.js"></script>
         <script src="/src/maps/draw.js"></script>
-        <script src="/src/maps/view.js"></script><?php
-        break;
+        <script src="/src/maps/view.js"></script>
+        <?php break;
     case "worldmap":
         require "../settings.conf";?>
         <script src="https://maps.googleapis.com/maps/api/js?key=<?= $API_key; ?>&v=weekly"></script>
-        <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script><?php
-}
-?>
-        
-        
+        <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+        <?php break;
+} ?>
         <!-- Global variables -->
         <script>
             var base_url = "<?= $base_url; ?>";
