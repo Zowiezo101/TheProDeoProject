@@ -33,7 +33,7 @@
         
         <!-- Javascript for dynamic content 
             (content that changes while using this page) -->
-<?php require "src/template/content_dynamic.php"; ?>
+<?php require "src/template/scripts.php"; ?>
        
     </body>
 </html>

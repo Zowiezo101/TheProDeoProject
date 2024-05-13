@@ -1,10 +1,10 @@
 <?php
 // Check if this file exists
-$page_dynamic = "src/pages/{$page_id}_dynamic.php";
+$page_dynamic = "src/scripts/{$page_id}.php";
 if (is_file($page_dynamic) || 
         (array_search($page_id, $double) !== false) ||
         (array_search($page_id, $map) !== false)) {
-    // Show a comment explaining that this section is for dynamic stuff
+    // TODO: Show a comment explaining that this section is for dynamic stuff
     // Mainly javascript functions
 }
 
