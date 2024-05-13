@@ -142,7 +142,3 @@ function getQuery($options) {
     
     return $query;
 }
-?>
-
-
-

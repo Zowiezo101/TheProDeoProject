@@ -83,4 +83,3 @@
         header('Location: '.filter_input(INPUT_SERVER, 'HTTP_REFERER'));
         exit;
     }
-?>

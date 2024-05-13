@@ -58,5 +58,3 @@
 
     // Save the page id
     $_SESSION["page_id"] = $page_id;
-
-?>
