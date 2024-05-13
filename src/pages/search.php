@@ -1,29 +1,16 @@
-<?php 
-    function onPageLoad() {
-        global $id;
-        return "onLoad".ucfirst($id)."();";
-    }
-?>
-
-<!-- Bootstrap slider -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css" type="text/css">
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
-
 <script>
     // Function to load the content in the content div
-    function onLoadSearch() {
-        $("#content").append(
-            $("<div>").addClass("container-fluid").append(
-                $("<div>").addClass("row")
-                    // The column with the menu
-                    .append(getSearchMenu())
-                    // The column with the selected content 
-                    .append(getSearchContent())
-            )
-        );
-    }
+//    function onLoadSearch() {
+//        $("#content").append(
+//            $("<div>").addClass("container-fluid").append(
+//                $("<div>").addClass("row")
+//                    // The column with the menu
+//                    .append(getSearchMenu())
+//                    // The column with the selected content 
+//                    .append(getSearchContent())
+//            )
+//        );
+//    }
     
     
 /* global dict, session_settings, searchBooks, searchEvents, searchPeoples, searchLocations, searchSpecials */
@@ -800,42 +787,6 @@ function removeFilter(type, label, force) {
 
 /** Insert the search term from the session */
 function insertSearch() {
-    
-    // Search strings
-    $("#item_name").val(
-            session_settings["search_name"] ? 
-            session_settings["search_name"] : "");
-    $("#item_meaning_name").val(
-            session_settings["search_meaning_name"] ? 
-            session_settings["search_meaning_name"] : "");
-    $("#item_descr").val(
-            session_settings["search_descr"] ? 
-            session_settings["search_descr"] : "");
-    $("#item_length").val(
-            session_settings["search_length"] ? 
-            session_settings["search_length"] : "");
-    $("#item_date").val(
-            session_settings["search_date"] ? 
-            session_settings["search_date"] : "");
-    $("#item_profession").val(
-            session_settings["search_profession"] ? 
-            session_settings["search_profession"] : "");
-    $("#item_nationality").val(
-            session_settings["search_nationality"] ? 
-            session_settings["search_nationality"] : "");
-            
-    // First and Last appearance books
-    $("#item_start_book").val(
-            session_settings["search_start_book"] ? 
-            session_settings["search_start_book"] : -1);
-    $("#item_end_book").val(
-            session_settings["search_end_book"] ? 
-            session_settings["search_end_book"] : -1);
-    
-    // Dropdown for specific stuff
-    $("#item_type_special").val(
-            session_settings["search_type_special"] ? 
-            session_settings["search_type_special"] : -1);
             
     // Sliders     
     searchBooks(JSON.stringify({"sliders": ["chapters"]})).then(function(result) {
@@ -1537,6 +1488,64 @@ function getTypes(name) {
     }
     
     return types;
+}
+
+function getTypeString(int) {
+    var str = "";
+    
+    if (typeof dict[int] !== "undefined") {
+        str = dict[int];
+    }
+    
+    return str;
+}
+
+function getLinkToItem(type, id, text, options) {
+    var newTab = options && options.hasOwnProperty("openInNewTab") ? options.openInNewTab : false;
+    var classes = options && options.hasOwnProperty("classes") ? options.classes : "";
+    var panTo = options && options.hasOwnProperty("panToItem") ? options.panToItem : "";
+    
+    // If any other classes are inserted
+    if (typeof classes === "undefined" || classes === "") {
+        classes = "font-weight-bold";
+    }
+    
+    var to_table = type;
+    var to_item = to_table.substr(0, to_table.length - 1);
+    if (["familytree", "timeline"].includes(type)) {
+        to_item = "map";
+    }
+    
+    var link = setParameters(to_table + (id !== "-1" ? ("/" + to_item + "/" + id) : ""));
+    if (text === "self") {
+        text = link.substr(get_settings["lang"] ? 4 : 1);
+    }
+    if (text === "Global") {
+        text = dict["timeline.global"];
+    }
+    
+    if (id === null) {
+        link = '#';
+    }
+    
+    if (panTo !== "") {
+        link += '?panTo=' + panTo;
+    }
+    
+    if ((type === "worldmap") && id !== "-1") {
+        // Use a function to link to the item
+        return '<a href="javascript: void(0)" onclick="getLinkToMap(' + id + ')"' + 
+            'class="' + classes + '">' + 
+                text + 
+        '</a>';        
+    } else {
+        // Use an actual hyhperlink to the item
+        return '<a href="' + link + '" ' + (newTab ? 'target="_blank" ' : '') +
+            (type === "worldmap" ? 'data-toggle="tooltip" title="' + dict["items.details.worldmap"] + '"' : "") + 
+            'class="' + classes + '">' + 
+                text + 
+        '</a>';
+    }
 }
     
 </script>

@@ -12,6 +12,10 @@
         exit;
     }
     
+    // A simple rule that counts for the entire website:
+    // 10 items per item page
+    $page_size = 10;
+    
     // Some basic stuff that we need to make everything work
     require "src/tools/lang.php";
     require "src/tools/base.php";
@@ -65,4 +69,3 @@
             break;
     }
     
-?>

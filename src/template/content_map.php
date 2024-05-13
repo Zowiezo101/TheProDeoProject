@@ -218,7 +218,7 @@
                                 <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <div class="d-md-none">
+                        <div id="small_screen" class="d-md-none">
                             <div class="row text-center justify-content-center">
                                 <div class="col-lg-11 px-lg-5 px-md-3">
                                     <h1 class="mb-3"><?= $dict["navigation.{$page_id}"]; ?></h1>

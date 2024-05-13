@@ -13,8 +13,7 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
-        <!-- Some basic functions we want everywhere -->
-        <script src="/src/tools/base.js"></script>
+        <!-- Being able to save and retrieve session settings -->
         <script src="/src/tools/session.js"></script>
 
         <!-- Accessing the database -->
@@ -51,7 +50,13 @@
 } ?>
         <!-- Global variables -->
         <script>
+            // This is the start of every url used for this website
             var base_url = "<?= $base_url; ?>";
+            
+            // The selected language
             var lang = "<?= filter_input(INPUT_GET, "lang"); ?>";
+            
+            // The page we're currently looking at
+            var page_id = "<?= $page_id; ?>";
         </script>
         

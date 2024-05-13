@@ -7,6 +7,8 @@
  */
 $sent = isset($_SESSION["sent"]) ? $_SESSION["sent"] : false;
 $error = isset($_SESSION["error"]) ? $_SESSION["error"] : false;
+
+// TODO: Does it work with emoticons too? And weird characters
 ?>
 
 <div class="container-fluid">
