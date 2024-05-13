@@ -277,3 +277,73 @@ function drawLink(group, child) {
         });
     }
 }
+
+
+
+function getGenderColor(int) {
+    var color = "";
+    
+    switch(int) {
+        case "gender.male":
+            color = "lightblue";
+            break;
+            
+        case "gender.female":
+            color = "pink";
+            break;
+            
+        case "gender.unknown":
+        default:
+            color = "lightgrey";
+            break;
+    }
+    
+    return color;
+}
+
+function getDataColor(object) {
+    var color = "lightgrey";
+    var colorCode = 0;
+    
+    // Descr and notes kinda fall under the same categorie for me
+    if (object.hasOwnProperty("notes") && ![null, "", "-1", []].includes(object.notes) && object.notes.length !== 0) {
+        colorCode += 1;
+    } else if (object.hasOwnProperty("descr") && ![null, "", "-1"].includes(object.descr)) {
+        colorCode += 1;
+    }
+    
+    if (object.hasOwnProperty("date") && ![null, "", "-1"].includes(object.date)) {
+        colorCode += 2;
+    } if (object.hasOwnProperty("length") && ![null, "", "-1"].includes(object.length)) {
+        colorCode += 4;
+    }
+    
+    switch(colorCode) {
+        case 0:
+            color = "lightgrey";
+            break;
+        case 1:
+            color = "lightcoral";
+            break;
+        case 2:
+            color = "lightblue";
+            break;
+        case 3:
+            color = "mediumpurple";
+            break;
+        case 4:
+            color = "gold";
+            break;
+        case 5:
+            color = "lightsalmon";
+            break;
+        case 6:
+            color = "lightgreen";
+            break;
+        case 7:
+            color = "peru";
+            break;
+    }
+    
+    return color;
+}
