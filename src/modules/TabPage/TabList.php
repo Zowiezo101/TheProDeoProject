@@ -1,7 +1,15 @@
 <?php
 
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
+    class TabList extends Module {
+        public function getContent() {
+            $content = '<!-- The column with the tabs -->
+                    <div class="col-3">
+                        <ul class="nav nav-pills flex-column">
+                            '.parent::getContent().'
+                        </ul>
+                    </div>';
+            
+            return $content;
+        }
+    }
 

@@ -1,6 +1,14 @@
 <?php
+    // Small shapes
     require "src/modules/Shapes/Descr.php";
     require "src/modules/Shapes/Table.php";
+    require "src/modules/Shapes/Text.php";
+    
+    // Bigger shapes (Parts)
+    require "src/modules/Parts/BlogList.php";
+    require "src/modules/Parts/PageList.php";
+    require "src/modules/Parts/ItemTable.php";
+    require "src/modules/Parts/MapTable.php";
 
     class Module {
         protected $content = [];
@@ -9,6 +17,7 @@
         public function addContent($module) {
             if (true) {
                 // TODO: Check if this module is a valid module to be added
+                // TODO: Or even a string with content
                 array_push($this->content, $module);
             } else {
                 // TODO: Throw an error when the module isn't a valid module
@@ -39,6 +48,16 @@
                 </div>
             </div>';
         }
+
+        // Functions to return modules
+        public function BlogList() {
+            return new BlogList();
+        }
+
+        // Functions to return modules
+        public function Text($params = []) {
+            return new Text($params);
+        }
         
         // Return all the contents of this module
         public function getContent() {
@@ -46,8 +65,14 @@
             
             // Get all the modules and insert their content
             foreach($this->content as $module) {
-                // insert the contents of this module
-                $content = $content.$module->getContent();
+                // Check if the module is text or Module class
+                if ($module instanceof Module) {
+                    // Insert the contents of this module
+                    $content = $content.$module->getContent();
+                } else {
+                    // Insert the contents
+                    $content .= $module;
+                }
             }
             
             return $content;

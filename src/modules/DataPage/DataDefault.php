@@ -1,6 +1,6 @@
 <?php
     
-    class ItemDefault extends Module {
+    class DataDefault extends Module {
         
         private $type;
         

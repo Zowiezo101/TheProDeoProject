@@ -1,5 +1,5 @@
 <?php
-    require "src/modules/Blogs/Blog.php";
+    require "src/modules/Parts/Blog.php";
 
     class BlogList extends Module {
 

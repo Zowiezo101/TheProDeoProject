@@ -4,6 +4,7 @@
     $ROW_NOTES = "notes";
     $ROW_AKA = "aka";
     $ROW_TYPE = "type";
+    $ROW_COORDS = "coords";
     $ROW_BOOK_START = "book_start";
     $ROW_BOOK_END = "book_end";
     $ROW_BOOKS = "books";
@@ -103,6 +104,7 @@
                    $ROW_NOTES,
                    $ROW_AKA,
                    $ROW_TYPE,
+                   $ROW_COORDS,
                    $ROW_BOOK_START,
                    $ROW_BOOK_END,
                    $ROW_BOOKS,
@@ -126,6 +128,10 @@
                     
                     case $ROW_TYPE:
                         $string = $this->getTypeString($data);
+                        break;
+                    
+                    case $ROW_COORDS:
+                        $string = $this->getWorldmapString($data);
                         break;
                     
                     case $ROW_BOOK_START:
@@ -373,6 +379,36 @@
             $aka_str = implode("<br>", $akas);
 
             return $aka_str;
+        }
+        
+        function getWorldmapString($data) {
+            global $dict;
+
+            $worldmap_string = "";
+
+            // Make a link to Google maps if there are coordinates
+            if (isset($data->coordinates) && $data->coordinates !== "") {
+                $coord_x = explode(",", $data->coordinates)[0];
+                $coord_y = explode(",", $data->coordinates)[1];
+
+                $coords = implode(", ", [
+                    number_format($coord_x, 2), 
+                    number_format($coord_y, 2)
+                    ]
+                );
+
+                // The general worldmap, but panned to this location
+                $href = setParameters("worldmap")."?panTo=".$data->id;
+
+                $worldmap_string = '
+                        <a href="'.$href.'" target="_blank" 
+                            data-toggle="tooltip" title="'.$dict["items.details.worldmap"].'" 
+                            class="font-weight-bold">
+                                '.$coords.' 
+                        </a>';
+            }
+
+            return $worldmap_string;
         }
 
         // TODO: Other instead of unknown. Unknown is already applied when no value is given

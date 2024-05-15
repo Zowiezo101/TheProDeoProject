@@ -1,23 +1,18 @@
 <?php
-    require "src/modules/Sidebar/PageList.php";
-    require "src/modules/ItemPage/ItemContent.php";
-    require "src/modules/Table/ItemTable.php";
-    require "src/modules/Table/MapTable.php";
+    require "src/modules/DataPage/DataContent.php";
+    require "src/modules/DataPage/DataDefault.php";
+    require "src/modules/DataPage/DataDetails.php";
 
-    class ItemPage extends Module {
-        private $pagelist;
-        private $item_content;
+    class DataPage extends Module {
+        private $page_list;
+        private $data_content;
 
         public function __construct($params = []) {   
             // The Page List
-            $this->pagelist = new PageList([
-                "hide" => false,
-            ]);
+            $this->page_list = new PageList();
             
-            // The Item Content
-            $this->item_content = new ItemContent([
-                "hide" => false
-            ]);
+            // The Data Content
+            $this->data_content = new DataContent();
             
             // Parse the parameters given
             $this->getParams($params);
@@ -26,6 +21,9 @@
         private function getParams($params) {
             foreach($params as $param => $value) {
                 switch($param) {
+                    case "hide":
+                        $this->setHide($value);
+                        break;
                     case "type":
                         $this->setType($value);
                         break;
@@ -39,11 +37,21 @@
             }
         }
 
+        public function setHide($hide) {
+            if (true) {
+                // Pass these parameters to the PageList and DataContent
+                $this->page_list->setHide($hide);
+                $this->data_content->setHide($hide);
+            } else {
+                // TODO: Throw an error
+            }
+        }
+
         public function setType($type) {
             if (true) {
-                // Pass these parameters to the PageList and ItemContent
-                $this->pagelist->setType($type);
-                $this->item_content->setType($type);
+                // Pass these parameters to the PageList and DataContent
+                $this->page_list->setType($type);
+                $this->data_content->setType($type);
             } else {
                 // TODO: Throw an error
             }
@@ -53,7 +61,7 @@
             if (true) {
                 // TODO: Check this is a valid value
                 // Pass these parameters to the PageList
-                $this->pagelist->setBaseUrl($url);
+                $this->page_list->setBaseUrl($url);
             } else {
                 // TODO: Throw an error
             }
@@ -62,9 +70,9 @@
         public function setId($id) {
             if (true) {
                 // TODO: Check this is a valid value
-                // Pass these parameters to the PageList and ItemContent
-                $this->pagelist->setId($id);
-                $this->item_content->setId($id);
+                // Pass these parameters to the PageList and DataContent
+                $this->page_list->setId($id);
+                $this->data_content->setId($id);
             } else {
                 // TODO: Throw an error
             }
@@ -85,24 +93,24 @@
             return new MapTable($params);
         }
         
-        // Add a module to the list of content for the ItemDefault Module
+        // Add a module to the list of content for the DataDefault Module
         // We're doing it from here to make it look nice
         public function addDefaultContent($module) {
-            $this->item_content->addDefaultContent($module);
+            $this->data_content->addDefaultContent($module);
         }
         
-        // Add a module to the list of content for the ItemDetails Module
+        // Add a module to the list of content for the DataDetails Module
         // We're doing it from here to make it look nice
         public function addDetailContent($module) {
-            $this->item_content->addDetailContent($module);
+            $this->data_content->addDetailContent($module);
         }
         
         // Return all the content of this module
         public function getContent() {
             $content = '<div class="row">
-                    '.$this->pagelist->getContent().'
+                    '.$this->page_list->getContent().'
                     
-                    '.$this->item_content->getContent().'
+                    '.$this->data_content->getContent().'
                 </div>';
             
             return $content;

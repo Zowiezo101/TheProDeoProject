@@ -1,8 +1,8 @@
 <?php
-    require "src/modules/Sidebar/Searchbar.php";
-    require "src/modules/Sidebar/PageListItem.php";
-    require "src/modules/Sidebar/Pagination.php";
-    require "src/modules/Sidebar/ToggleMenu.php";
+    require "src/modules/Parts/Searchbar.php";
+    require "src/modules/Parts/PageListItem.php";
+    require "src/modules/Parts/Pagination.php";
+    require "src/modules/Parts/ToggleMenu.php";
     
     $SORT_0_to_9 = "0_to_9";
     $SORT_9_to_0 = "9_to_0";

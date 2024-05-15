@@ -3,12 +3,10 @@
     require "src/tools/database.php";
     require "src/modules/Shapes/Module.php";
     
-    // Different kinds of larger items
-    require "src/modules/Blogs/BlogList.php";
+    // Different kinds of pages
     require "src/modules/ContactPage/ContactPage.php";
     require "src/modules/SearchPage/SearchPage.php";
-    require "src/modules/ItemPage/ItemPage.php";
-    require "src/modules/MapPage/MapPage.php";
+    require "src/modules/DataPage/DataPage.php";
     require "src/modules/TabPage/TabPage.php";
 
     class Page extends Module {
@@ -25,22 +23,29 @@
 
         // Setting the classes used for the container div
         public function setContainerClass($class) {
+            // - Home: <div class="py-5 container blogs">
+            // - Settings & Login <div class="container-fluid py-5">
+            // - Item: <div class="container-fluid">
+            // - Map: <div class="container-fluid">
+            // - Search: <div class="py-5 container-fluid">
+            // - About us: <div class="py-5 container-fluid">
+            // - Contact: <div class="py-5 container-fluid">
             $this->container_class = $class;
         }
 
         // Functions to return modules
-        public function BlogList() {
-            return new BlogList();
+        public function ContactPage($params = []) {
+            return new ContactPage($params);
         }
 
         // Functions to return modules
-        public function ItemPage($params = []) {
-            return new ItemPage($params);
+        public function DataPage($params = []) {
+            return new DataPage($params);
         }
 
         // Functions to return modules
-        public function MapPage() {
-            return new MapPage();
+        public function TabPage() {
+            return new TabPage();
         }
         
         // Get the content wrapped in the container div

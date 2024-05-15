@@ -1,8 +1,6 @@
 <?php
-    require "src/modules/ItemPage/ItemDefault.php";
-    require "src/modules/ItemPage/ItemDetails.php";
 
-    class ItemContent extends Module {
+    class DataContent extends Module {
         private $id;
         
         private $default;
@@ -11,10 +9,10 @@
         
         public function __construct($params = []) {
             // The content when no ID is given
-            $this->default = new ItemDefault();
+            $this->default = new DataDefault();
             
             // The content when an ID is given
-            $this->details = new ItemDetails();
+            $this->details = new DataDetails();
             
             // A toggle button to hide the PageList
             $this->toggle_menu = new ToggleMenu();
@@ -28,6 +26,9 @@
                 switch($param) {
                     case "id":
                         $this->setId($value);
+                        break;
+                    case "hide":
+                        $this->setHide($value);
                         break;
                     case "type":
                         $this->setType($value);
@@ -46,10 +47,21 @@
             }
         }
 
+        public function setHide($hide) {
+            if (true) {
+                // TODO: Check this is a valid value
+                // Pass these parameters to the DataDefault and DataDetails
+                $this->default->setHide($hide);
+                $this->details->setHide($hide);
+            } else {
+                // TODO: Throw an error
+            }
+        }
+
         public function setType($type) {
             if (true) {
                 // TODO: Check this is a valid value
-                // Pass these parameters to the ItemDefault and ItemDetails
+                // Pass these parameters to the DataDefault and DataDetails
                 $this->default->setType($type);
                 $this->details->setType($type);
             } else {
@@ -57,13 +69,13 @@
             }
         }
         
-        // Add a module to the list of content for the ItemDefault Module
+        // Add a module to the list of content for the DataDefault Module
         // We're doing it from here to make it look nice
         public function addDefaultContent($module) {
             $this->default->addContent($module);
         }
         
-        // Add a module to the list of content for the ItemDetails Module
+        // Add a module to the list of content for the DataDetails Module
         // We're doing it from here to make it look nice
         public function addDetailContent($module) {
             $this->details->addContent($module);
