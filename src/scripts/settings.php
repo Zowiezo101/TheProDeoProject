@@ -1,7 +1,7 @@
 <script>    
     $(function(){
         //code that needs to be executed when DOM is ready, after manipulation
-        // Using Summernote for adding blog
+        // Using Summernote for adding blogs
         $('#add_blog_text').summernote({
             inheritPlaceholder: true,
             disableResizeEditor: true,
@@ -14,7 +14,7 @@
         });
         
         
-        // Using Summernote for editing blog
+        // Using Summernote for editing blogs
         $('#edit_blog_text').summernote({
             inheritPlaceholder: true,
             disableResizeEditor: true,
@@ -27,7 +27,7 @@
         });
         
         
-        // Using Summernote for deleting blog
+        // Using Summernote for deleting blogs
         $('#delete_blog_text').summernote({
             inheritPlaceholder: true,
             disableResizeEditor: true,
@@ -176,7 +176,7 @@
                     $('#edit_blog_text').summernote('code', blog.text);
 
                     // Enable the button
-                    $('#tabedit button').removeAttr('disabled');
+                    $('#tab_edit button').removeAttr('disabled');
                 }
             }
             
@@ -195,9 +195,14 @@
                     $('#delete_blog_text').summernote('code', blog.text);
 
                     // Enable the button
-                    $('#tabdelete button').removeAttr('disabled');
+                    $('#tab_delete button').removeAttr('disabled');
                 }
             }
         });
+    }
+        
+    function onTabClick() {
+        // TODO: Save the clicked tab in the session settings, so it remains
+        // selected after a refresh
     }
 </script>

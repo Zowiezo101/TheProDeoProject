@@ -252,3 +252,22 @@ if (filter_input(INPUT_POST, 'logout') !== null) {
     }
     exit;
 }
+
+// If there is an error message, include it in this tab
+$message = (!empty($login_err)) ? '<div class="alert alert-danger">' . $dict[$login_err] . '</div>' : '';
+
+$username_value = $param_username;
+$username_feedback = (!empty($username_err)) ? 
+                        $dict[$username_err] : 
+                        "";
+$username_class = (!empty($username_err)) ? 
+                        "is-invalid" : 
+                        ((!empty($username)) ? "is-valid" : "");
+
+$password_value = $param_password1;
+$password_feedback = (!empty($password1_err)) ? 
+                        $dict[$password1_err] : 
+                        "";
+$password_class = (!empty($password1_err)) ? 
+                        "is-invalid" : 
+                        ((!empty($password1)) ? "is-valid" : "");
