@@ -3,12 +3,6 @@
     require "src/modules/Shapes/Descr.php";
     require "src/modules/Shapes/Table.php";
     require "src/modules/Shapes/Text.php";
-    
-    // Bigger shapes (Parts)
-    require "src/modules/Parts/BlogList.php";
-    require "src/modules/Parts/PageList.php";
-    require "src/modules/Parts/ItemTable.php";
-    require "src/modules/Parts/MapTable.php";
 
     class Module {
         protected $content = [];

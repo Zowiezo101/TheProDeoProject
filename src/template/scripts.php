@@ -1,20 +1,27 @@
 <?php
+
+// All the pages that use the ItemPage Module
+$item_module = ["books", "events", "peoples", "locations", "specials"];
+
+// All the pages that use the MapPage Module
+$map_module = ["timeline", "familytree", "worldmap"];
+
 // Check if this file exists
-$page_dynamic = "src/scripts/{$page_id}.php";
-if (is_file($page_dynamic) || 
-        (array_search($page_id, $double) !== false) ||
-        (array_search($page_id, $map) !== false)) {
+$page_script = "src/scripts/{$page_id}.php";
+if (is_file($page_script) || 
+        (array_search($page_id, $item_module) !== false) ||
+        (array_search($page_id, $map_module) !== false)) {
     // TODO: Show a comment explaining that this section is for dynamic stuff
     // Mainly javascript functions
 }
 
-if (is_file($page_dynamic)) {
+if (is_file($page_script)) {
     // If this file exists, require it
-    require $page_dynamic; 
+    require $page_script; 
 }
 
-if ((array_search($page_id, $double) !== false) ||
-    (array_search($page_id, $map) !== false))  {
+if ((array_search($page_id, $item_module) !== false) ||
+    (array_search($page_id, $map_module) !== false))  {
     // Some generic javascript functions to be used in case 
     // of double or map templates?>
 
@@ -27,7 +34,7 @@ function onMenuToggle() {
         // Hide the menu, make sure the window doesn't shift by 
         // specifically setting the height
         $("#content_col").css("height", $("#item_bar").css("height"));
-<?php if (array_search($page_id, $map)) { ?>
+<?php if (array_search($page_id, $map_module)) { ?>
         $("#item_bar").removeClass("d-md-block");
 <?php } else { ?>
         $("#item_bar").addClass("d-none");
@@ -39,7 +46,7 @@ function onMenuToggle() {
         button.html('<i class="fa fa-angle-double-right" aria-hidden="true"></i>');
     } else if (button.hasClass("hide_menu")) {
         // Show the menu
-<?php if (array_search($page_id, $map)) { ?>
+<?php if (array_search($page_id, $map_module)) { ?>
         $("#item_bar").addClass("d-md-block");
 <?php } else { ?>
         $("#item_bar").removeClass("d-none");
@@ -232,7 +239,7 @@ function updatePage() {
                         value = value + " (" + item.aka + ")";
                     }
             
-<?php if (array_search($page_id, $map) !== false) { ?>
+<?php if (array_search($page_id, $map_module) !== false) { ?>
                     var onclick = "showLoadingScreen()";
                     if (page_id === "worldmap") {
                         onclick = "getLinkToMap(" + item.id + ")";

@@ -26,8 +26,9 @@
     
         <!-- The content of this page, 
             This is done using templates and will not always have correct indentation or spacing -->
-<?php require "src/template/content_static.php"; ?>
+        <?php require "src/content/{$page_id}.php"; ?>
     
+        
         <!-- The footer of this page -->
 <?php require "src/template/footer.php"; ?>
         
