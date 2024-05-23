@@ -1,12 +1,12 @@
 <?php
     // The Parts used by this Page
-    require "src/modules/TabPage/Parts/Tab.php";
     require "src/modules/TabPage/Parts/TabList.php";
     require "src/modules/TabPage/Parts/TabListItem.php";
     require "src/modules/TabPage/Parts/TabContent.php";
     require "src/modules/TabPage/Parts/TabContentItem.php";
     
     // The different tabs
+    require "src/modules/TabPage/Tabs/Tab.php";
     require "src/modules/TabPage/Tabs/TabAdd.php";
     require "src/modules/TabPage/Tabs/TabEdit.php";
     require "src/modules/TabPage/Tabs/TabDelete.php";
