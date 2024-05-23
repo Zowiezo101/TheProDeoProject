@@ -4,12 +4,15 @@
  * and open the template in the editor.
  */
 
-/* global fetch, session_settings, base_url */
+/* global fetch */
 
 function updateSession(parameters) {
+    // The base URL is stored in the body of the page
+    // TODO: Check if relative URL is enough
+    var base_url = $("body").attr("data-base-url");
     
     // The base URL
-    var url = base_url + '/src/tools/session.php';
+    var url = 'src/tools/session.php';
     
     var query_arr = [];
     for (var key in parameters) {

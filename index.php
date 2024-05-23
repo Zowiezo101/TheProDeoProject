@@ -20,7 +20,11 @@
 
     </head>
     
-    <body class="d-flex flex-column min-vh-100">
+    <!-- A few global variables are stored in the body, to make sure it's
+        available all throughout the code -->
+    <body class="d-flex flex-column min-vh-100"
+          data-base-url="<?= $base_url; ?>"
+          data-page-lang="<?= filter_input(INPUT_GET, "lang"); ?>">
         <!-- Navigation bar on top of the page -->
 <?php require "src/template/navigation.php"; ?>
     

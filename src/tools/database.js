@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* global fetch, base_url */
+/* global fetch */
 
 TYPE_BLOG = "blogs";
 TYPE_BOOK = "books";
@@ -18,7 +18,7 @@ TYPE_WORLDMAP = "worldmap";
 
 function createItem(type, data) {    
     // The URL to set the request to
-    var url = base_url + "/" + lang + "/api/" + type + "/new";
+    var url = "api/" + type + "/new";
     
     // Access the database
     return accessDatabase("POST", url, data);
@@ -30,7 +30,7 @@ function getItem(type, id, options=false) {
     var query = getQuery(options);
     
     // The URL to set the request to
-    var url = base_url + "/" + lang + "/api/" + type + "/" + id;
+    var url = "api/" + type + "/" + id;
     
     // Access the database
     return accessDatabase("GET", url + query);
@@ -41,7 +41,7 @@ function getItems(type, options=false) {
     var query = getQuery(options);
     
     // The URL to set the request to
-    var url = base_url + "/" + lang + "/api/" + type + "/all";
+    var url = "api/" + type + "/all";
     
     // Access the database
     return accessDatabase("GET", url + query);
@@ -49,7 +49,7 @@ function getItems(type, options=false) {
 
 function updateItem(type, id, data) {    
     // The URL to set the request to
-    var url = base_url + "/" + lang + "/api/" + type + "/" + id;
+    var url = "api/" + type + "/" + id;
     
     // Access the database
     return accessDatabase("PUT", url, data);
@@ -58,7 +58,7 @@ function updateItem(type, id, data) {
 
 function deleteItem(type, id) {
     // The URL to set the request to
-    var url = base_url + "/" + lang + "/api/" + type + "/" + id;
+    var url = "api/" + type + "/" + id;
     
     // Access the database
     return accessDatabase("DELETE", url);    
@@ -69,7 +69,7 @@ function getPage(type, page, options) {
     var query = getQuery(options);
     
     // The URL to set the request to
-    var url = base_url + "/" + lang + "/api/" + type + "/pages/" + page;
+    var url = "api/" + type + "/pages/" + page;
     
     // Access the database
     return accessDatabase("GET", url + query);
@@ -80,7 +80,7 @@ function getMaps(type, id, options) {
     var query = getQuery(options);
     
     // The URL to set the request to
-    var url = base_url + "/" + lang + "/api/" + type + "/" + id + "/maps";
+    var url = "api/" + type + "/" + id + "/maps";
     
     // Access the database
     return accessDatabase("GET", url + query);
@@ -97,6 +97,14 @@ function getSearchResults(options) {
 }
 
 function accessDatabase(method, url, data) {
+    // The base URL and page language are stored in the body of the page
+    // TODO: Check if relative URL is enough
+    var base_url = $("body").attr("data-base-url");
+    var page_lang = $("body").attr("data-page-lang");
+    
+    // Prepend these to the given URL
+    url = base_url + "/" + page_lang + + "/" + url;
+    
     if (method === "GET") {
         var response = fetch(url, {
             method: method

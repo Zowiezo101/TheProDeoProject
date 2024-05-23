@@ -48,15 +48,4 @@
         <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
         <?php break;
 } ?>
-        <!-- Global variables -->
-        <script>
-            // This is the start of every url used for this website
-            var base_url = "<?= $base_url; ?>";
-            
-            // The selected language
-            var lang = "<?= filter_input(INPUT_GET, "lang"); ?>";
-            
-            // The page we're currently looking at
-            var page_id = "<?= $page_id; ?>";
-        </script>
         

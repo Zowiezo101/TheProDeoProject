@@ -1,29 +1,13 @@
 <?php
 
-// All the pages that use the ItemPage Module
-$item_module = ["books", "events", "peoples", "locations", "specials"];
-
-// All the pages that use the MapPage Module
-$map_module = ["timeline", "familytree", "worldmap"];
-
 // Check if this file exists
 $page_script = "src/scripts/{$page_id}.php";
-if (is_file($page_script) || 
-        (array_search($page_id, $item_module) !== false) ||
-        (array_search($page_id, $map_module) !== false)) {
-    // TODO: Show a comment explaining that this section is for dynamic stuff
-    // Mainly javascript functions
-}
-
 if (is_file($page_script)) {
     // If this file exists, require it
     require $page_script; 
 }
 
-if ((array_search($page_id, $item_module) !== false) ||
-    (array_search($page_id, $map_module) !== false))  {
-    // Some generic javascript functions to be used in case 
-    // of double or map templates?>
+?>
 
 <script>
 
@@ -34,11 +18,11 @@ function onMenuToggle() {
         // Hide the menu, make sure the window doesn't shift by 
         // specifically setting the height
         $("#content_col").css("height", $("#item_bar").css("height"));
-<?php if (array_search($page_id, $map_module)) { ?>
-        $("#item_bar").removeClass("d-md-block");
-<?php } else { ?>
-        $("#item_bar").addClass("d-none");
-<?php } ?>
+        if ($("#small_screen").length > 0) {
+            $("#item_bar").removeClass("d-md-block");
+        } else {
+            $("#item_bar").addClass("d-none");
+        }
         
         // Update the button
         button.addClass("hide_menu");
@@ -46,11 +30,11 @@ function onMenuToggle() {
         button.html('<i class="fa fa-angle-double-right" aria-hidden="true"></i>');
     } else if (button.hasClass("hide_menu")) {
         // Show the menu
-<?php if (array_search($page_id, $map_module)) { ?>
-        $("#item_bar").addClass("d-md-block");
-<?php } else { ?>
-        $("#item_bar").removeClass("d-none");
-<?php } ?>
+        if ($("#small_screen").length > 0) {
+            $("#item_bar").addClass("d-md-block");
+        } else {
+            $("#item_bar").removeClass("d-none");
+        }
         
         // Update the button
         button.addClass("show_menu");
@@ -186,7 +170,7 @@ function updatePage() {
     var page = parseInt($("#curr_page").val(), 10) - 1;
     
     // Get the page with the current settings
-    var type = "<?= $type; ?>";
+    var type = $("#item_list").attr("data-page-type");
     getPage(type, page, {
         "sort": sort,
         "filter": search
@@ -203,10 +187,9 @@ function updatePage() {
             $("#item_list").append(dict["database.no_results"]);
         } else {
             // Some variables
-            var page_size = <?= $page_size; ?>;
-            var page_id = "<?= $page_id; ?>";
-            var page_base_url = "<?= setParameters($page_base_url); ?>";
-            var curr_id = "<?= $id; ?>";
+            var page_size = int($("#item_list").attr("data-page-size"), 10);
+            var page_url = $("#item_list").attr("data-page-url");
+            var curr_id = $("#item_list").attr("data-id");
             
             // Fill up the page
             for (var i = 0; i < page_size; i++) {
@@ -217,7 +200,7 @@ function updatePage() {
                 var option = '<a class="list-group-item list-group-item-action invisible"> empty </a>';
                 if (i < data.records.length) {
                     // The link to refer to
-                    var href = page_base_url + "/" + item.id;
+                    var href = page_url + "/" + item.id;
                     
                     // If an option in the sidebar is selected, it needs to be highlighted
                     var classes = "list-group-item list-group-item-action";
@@ -239,15 +222,15 @@ function updatePage() {
                         value = value + " (" + item.aka + ")";
                     }
             
-<?php if (array_search($page_id, $map_module) !== false) { ?>
-                    var onclick = "showLoadingScreen()";
-                    if (page_id === "worldmap") {
-                        onclick = "getLinkToMap(" + item.id + ")";
-                        href = "javascript: void(0)";
+                    if ($("#loading_screen").length > 0) {
+                        var onclick = "showLoadingScreen()";
+                        if (type === "worldmap") {
+                            onclick = "getLinkToMap(" + item.id + ")";
+                            href = "javascript: void(0)";
+                        }
+                    } else {
+                        var onclick = "";
                     }
-<?php } else { ?>
-                    var onclick = "";
-<?php } ?>
                     
                     var option = '<a href="' + href + '" class="' + classes + '" onclick="' + onclick + '">' + value + '</a>';
                 }
@@ -293,14 +276,10 @@ function hideLoadingScreen() {
 
 $(function() {
     // Scroll to the data for smaller screens
-    if (window.innerWidth < 768) {
+    if ((window.innerWidth < 768) && ($("#item_content").length > 0)) {
         $("html, body").animate({
             scrollTop: $("#item_content").offset().top
         }, 2000);
     }
 });
 </script>
-
-<?php 
-}
-?>
