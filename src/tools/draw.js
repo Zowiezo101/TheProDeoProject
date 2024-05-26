@@ -65,6 +65,8 @@ function drawMapItems() {
     // The root parent
     var group = getSVG().group({id: "map"});    
     getMapItems().forEach(function(item) {
+        // TODO: The link slightly overlaps with the item
+        // Maybe draw it like a tiny bit more to the side?
         drawLink(group, item);
         drawItem(group, item);
     });
@@ -129,6 +131,9 @@ function drawItem(group, item) {
                         item.Y + item.height / 2);
                         
     } else {
+        // The Map ID
+        var map_id = $("#item_list").attr("data-id");
+        
         if ((map_id === "-999" && item.id === "-999") ||
             (map_id !== "-999" && item.id !== "-999")) {
             // We don't need a link when there's nothing to go to

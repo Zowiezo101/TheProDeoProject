@@ -1,94 +1,43 @@
 <?php
-    require_once "src/modules/Sidebar/PageList.php";
-    require "src/modules/MapPage/MapContent.php";
+    // The Parts used by this Page
+    require "src/modules/MapPage/Parts/Content/MapContent.php";
+    require "src/modules/MapPage/Parts/Content/LoadingScreen.php";
+    require "src/modules/MapPage/Parts/Content/SmallScreen.php";
+    require "src/modules/MapPage/Parts/Content/MapDetails.php";
+    require "src/modules/MapPage/Parts/Content/Modal.php";
+    require "src/modules/MapPage/Parts/Content/SVG.php";
+    require "src/modules/MapPage/Parts/List/MapList.php";
+    
+    // The different maps
+    require "src/modules/MapPage/Maps/Map.php";
+    require "src/modules/MapPage/Maps/MapTimeline.php";
+    require "src/modules/MapPage/Maps/MapFamilytree.php";
+    require "src/modules/MapPage/Maps/MapWorldmap.php";
 
-    class MapPage extends Module {
-        private $pagelist;
-        private $map_content;
-
-        public function __construct($params = []) {   
-            // The Page List
-            $this->pagelist = new PageList([
-                "true" => false,
-            ]);
+    class MapPage extends ItemPage {
+        
+        public function __construct($type) {
+            global $TYPE_TIMELINE, $TYPE_FAMILYTREE, 
+                    $TYPE_WORLDMAP;
+            // Setting the parent Module
+            parent::__construct($type);
             
-            // The Item Content
-            $this->map_content = new MapContent([
-                "true" => false
-            ]);
+            switch($type) {
+                case $TYPE_TIMELINE:
+                    $map = new MapTimeline();
+                    break;
+                case $TYPE_FAMILYTREE:
+                    $map = new MapFamilytree();
+                    break;
+                case $TYPE_WORLDMAP:
+                    $map = new MapWorldmap();
+                    break;
+            }
             
-            // Parse the parameters given
-            $this->getParams($params);
-        }
-        
-        private function getParams($params) {
-            foreach($params as $param => $value) {
-                switch($param) {
-                    case "type":
-                        $this->setType($value);
-                        break;
-                    case "base_url":
-                        $this->setBaseUrl($value);
-                        break;
-                    case "id":
-                        $this->setId($value);
-                        break;
-                }
-            }
-        }
+            $map_list = $map->getMapList();
+            $this->setList($map_list);
 
-        public function setType($type) {
-            if (true) {
-                // Pass these parameters to the PageList and ItemContent
-                $this->pagelist->setType($type);
-                $this->map_content->setType($type);
-            } else {
-                // TODO: Throw an error
-            }
-        }
-
-        public function setBaseUrl($url) {
-            if (true) {
-                // TODO: Check this is a valid value
-                // Pass these parameters to the PageList
-                $this->pagelist->setBaseUrl($url);
-            } else {
-                // TODO: Throw an error
-            }
-        }
-
-        public function setId($id) {
-            if (true) {
-                // TODO: Check this is a valid value
-                // Pass these parameters to the PageList and ItemContent
-                $this->pagelist->setId($id);
-                $this->map_content->setId($id);
-            } else {
-                // TODO: Throw an error
-            }
-        }
-        
-        // Add a module to the list of content for the ItemDefault Module
-        // We're doing it from here to make it look nice
-        public function addDefaultContent($module) {
-            $this->map_content->addDefaultContent($module);
-        }
-        
-        // Add a module to the list of content for the ItemDetails Module
-        // We're doing it from here to make it look nice
-        public function addDetailContent($module) {
-            $this->map_content->addDetailContent($module);
-        }
-        
-        // Return all the content of this module
-        public function getContent() {
-            $content = '<div class="row">
-                    '.$this->pagelist->getContent().'
-                    
-                    '.$this->map_content->getContent().'
-                </div>';
-            
-            return $content;
+            $map_content = $map->getMapContent();
+            $this->setContent($map_content);
         }
     }
-

@@ -8,7 +8,7 @@
     require "src/modules/TabPage/TabPage.php";
     require "src/modules/ItemPage/ItemPage.php";
 //    require "src/modules/SearchPage/SearchPage.php";
-//    require "src/modules/MapPage/MapPage.php";
+    require "src/modules/MapPage/MapPage.php";
     require "src/modules/AboutUsPage/AboutUsPage.php";
     require "src/modules/ContactPage/ContactPage.php";
 

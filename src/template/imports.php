@@ -39,9 +39,10 @@
         <script src="https://cdn.jsdelivr.net/npm/canvas-toBlob@1.0.0/canvas-toBlob.min.js"></script>
 
         <!-- The map maker -->
-        <script src="/src/maps/calc.js"></script>
-        <script src="/src/maps/draw.js"></script>
-        <script src="/src/maps/view.js"></script>
+        <script src="/src/tools/map.js"></script>
+        <script src="/src/tools/calc.js"></script>
+        <script src="/src/tools/draw.js"></script>
+        <script src="/src/tools/view.js"></script>
         <?php break;
     case "worldmap":
         require "../settings.conf";?>

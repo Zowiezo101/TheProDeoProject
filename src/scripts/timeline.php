@@ -1,57 +1,54 @@
 <script>
     
-// TODO: Show loading screen when loading map, remove loading screen when map is loaded
-// Best way to do this is to load the template first, show loading screen and calculate
-// timeline/familytree using the REST API. After everything is received and loaded in, 
-// remove loading screen
+    // TODO: Show loading screen when loading map, remove loading screen when map is loaded
+    // Best way to do this is to load the template first, show loading screen and calculate
+    // timeline/familytree using the REST API. After everything is received and loaded in, 
+    // remove loading screen
     var page_base_url = "<?= setParameters("events/event/"); ?>";
 
-<?php 
-    // If an ID is given, load the familytree of this ID
-    if ($id !== null) {
-?>
-    // The Map ID
-    var map_id = <?= $id; ?>;
-    
     // This function is executed once the DOM is loaded
     // It's requesting the familytree from the REST API and inserts
     // it into the DOM
     $(function(){
-        getItem(TYPE_TIMELINE, map_id).then(function(data) {
-            if (data.hasOwnProperty('records')) {
-                insertTimeline(data.records);
+        // The Map ID
+        var map_id = $("#item_list").attr("data-id");
+        
+        if (map_id !== "") {
+            getItem(TYPE_TIMELINE, map_id).then(function(data) {
+                if (data.hasOwnProperty('records')) {
+                    insertTimeline(data.records);
 
-                // Remove the loading screen
-                hideLoadingScreen();
-                
-                // The sub timelines
-                $(function() { 
-                    $('#subMapModal').on('shown.bs.modal', showSubMap);
-                    $('#subMapModal').on('hidden.bs.modal', hideSubMap);
-                    $('#subMapModal').on('show.bs.modal', function() {
-                        // Hide all popovers
-                        $(".popover").popover("hide");
+                    // Remove the loading screen
+                    hideLoadingScreen();
+
+                    // The sub timelines
+                    $(function() { 
+                        $('#subMapModal').on('shown.bs.modal', showSubMap);
+                        $('#subMapModal').on('hidden.bs.modal', hideSubMap);
+                        $('#subMapModal').on('show.bs.modal', function() {
+                            // Hide all popovers
+                            $(".popover").popover("hide");
+                        });
                     });
-                });
 
-                // Hide any visible popovers when clicking somewhere else
-                $("body").on("click", function(e) {
-                    if ($(e.target).parents(".popover").length === 0) {
-                        $(".popover").popover("hide");
-                    }
-                });
-            } else {
-                // Show an error message
-                $("#map_div").append(`
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                ` + dict["settings.database_err"] + `
-                            </div>
-                        </div>`);
-            }
-        });
+                    // Hide any visible popovers when clicking somewhere else
+                    $("body").on("click", function(e) {
+                        if ($(e.target).parents(".popover").length === 0) {
+                            $(".popover").popover("hide");
+                        }
+                    });
+                } else {
+                    // Show an error message
+                    $("#map_div").append(`
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    ` + dict["settings.database_err"] + `
+                                </div>
+                            </div>`);
+                }
+            });
+        }
     });
-<?php } ?>
     
     function insertTimeline(data) {
         // Set up the SVG

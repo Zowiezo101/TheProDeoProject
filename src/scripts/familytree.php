@@ -1,22 +1,18 @@
 <script>
     
-// TODO: Show loading screen when loading map, remove loading screen when map is loaded
-// Best way to do this is to load the template first, show loading screen and calculate
-// timeline/familytree using the REST API. After everything is received and loaded in, 
-// remove loading screen
+    // TODO: Show loading screen when loading map, remove loading screen when map is loaded
+    // Best way to do this is to load the template first, show loading screen and calculate
+    // timeline/familytree using the REST API. After everything is received and loaded in, 
+    // remove loading screen
     var page_base_url = "<?= setParameters("peoples/people/"); ?>";
-
-<?php 
-    // If an ID is given, load the familytree of this ID
-    if ($id !== null) {
-?>
-    // The Map ID
-    var map_id = <?= $id; ?>;
     
     // This function is executed once the DOM is loaded
     // It's requesting the familytree from the REST API and inserts
     // it into the DOM
     $(function(){
+        // The Map ID
+        var map_id = $("#item_list").attr("data-id");
+        
         getItem(TYPE_FAMILYTREE, map_id).then(function(data) {
             if (data.hasOwnProperty('records')) {
                 insertFamilytree(data.records);
@@ -41,7 +37,6 @@
             }
         });
     });
-<?php } ?>
     
     function insertFamilytree(data) {
         // Set up the SVG
