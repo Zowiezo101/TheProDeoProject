@@ -5,6 +5,8 @@
         private $data;
         
         public function __construct($params = []) {
+            parent::__construct();
+            
             $this->getParams($params);
         }
         

@@ -98,12 +98,10 @@ function getSearchResults(options) {
 
 function accessDatabase(method, url, data) {
     // The base URL and page language are stored in the body of the page
-    // TODO: Check if relative URL is enough
     var base_url = $("body").attr("data-base-url");
-    var page_lang = $("body").attr("data-page-lang");
     
     // Prepend these to the given URL
-    url = base_url + "/" + page_lang + + "/" + url;
+    url = base_url + url;
     
     if (method === "GET") {
         var response = fetch(url, {

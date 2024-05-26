@@ -3,6 +3,7 @@
     class TabAdd extends Tab {        
         public function __construct() {
             global $dict;
+            parent::__construct();
             
             $id = "tab_add";
             $active = isset($_SESSION["tab"]) ? 

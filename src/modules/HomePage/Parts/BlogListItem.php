@@ -13,6 +13,7 @@
         
         public function __construct($idx, $record) {
             global $dict;
+            parent::__construct();
             
             // There are 5 colors and each blog has a different color
             $this->color = $this->colors[$idx % 5];

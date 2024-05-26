@@ -16,8 +16,9 @@
         <!-- Being able to save and retrieve session settings -->
         <script src="/src/tools/session.js"></script>
 
-        <!-- Accessing the database -->
+        <!-- Accessing the database and other base functions -->
         <script src="/src/tools/database.js"></script>
+        <script src="/src/tools/base.js"></script>
 
         <!-- The translation files -->
         <script src="/locale/translation_<?= filter_input(INPUT_GET, "lang"); ?>.js"></script>

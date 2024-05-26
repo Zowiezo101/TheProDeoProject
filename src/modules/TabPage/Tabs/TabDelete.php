@@ -3,6 +3,7 @@
     class TabDelete extends Tab {        
         public function __construct() {
             global $dict;
+            parent::__construct();
             
             $id = "tab_delete";
             $active = isset($_SESSION["tab"]) ? 

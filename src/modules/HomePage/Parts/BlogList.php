@@ -4,6 +4,7 @@
 
         public function __construct() {
             global $TYPE_BLOG;
+            parent::__construct();
 
             // Get all the blogs
             $data = getItems($TYPE_BLOG);

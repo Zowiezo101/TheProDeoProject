@@ -1,11 +1,15 @@
 <?php
     // Small shapes
-    require "src/modules/Shapes/Descr.php";
+    require "src/modules/Shapes/Title.php";
     require "src/modules/Shapes/Table.php";
     require "src/modules/Shapes/Text.php";
 
     class Module {
-        protected $content = [];
+        protected $content;
+        
+        public function __construct() {
+            $this->content = [];
+        }
         
         // Add a module to the list of content
         public function addContent($module) {

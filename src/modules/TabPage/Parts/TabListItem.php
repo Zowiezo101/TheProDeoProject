@@ -7,6 +7,8 @@
         private $classes = "nav-link";
         
         public function __construct($params) {
+            parent::__construct();
+            
             // Parse the parameters given       
             $this->getParams($params);
         }

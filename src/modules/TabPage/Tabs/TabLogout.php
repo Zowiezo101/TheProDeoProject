@@ -3,6 +3,7 @@
     class TabLogout extends Tab {        
         public function __construct() {
             global $dict;
+            parent::__construct();
             
             $id = "tab_logout";
             $active = isset($_SESSION["tab"]) ? 
