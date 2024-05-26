@@ -10,10 +10,10 @@ header("Access-Control-Allow-Headers: access");
 include_once '../config/core.php';
 include_once '../objects/familytree.php';
   
-// prepare item object
+// Initialize object
 $item = new familytree();
   
-// read the details of item to be edited
+// Read the requested data
 $data = $item->read_one();
 
 // Prepare a message to be sent to the client

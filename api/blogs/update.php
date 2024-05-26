@@ -14,7 +14,7 @@ include_once '../objects/blog.php';
 // Initialize object 
 $item = new blog();
 
-// Create the object with the given data and return the created object
+// Update the object with the given data and return the updated object
 $data = $item->update();
 
 // Prepare a message to be sent to the client

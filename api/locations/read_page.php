@@ -10,10 +10,10 @@ header("Access-Control-Allow-Headers: access");
 include_once "../config/core.php";
 include_once '../objects/location.php';
   
-// initialize object
+// Initialize object
 $item = new location();
   
-// query items
+// Read the requested data
 $data = $item->read_page();
 
 // Prepare a message to be sent to the client, make sure to include paging

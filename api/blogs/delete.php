@@ -1,5 +1,5 @@
 <?php
-// required headers
+// Required headers
 header("Access-Control-Allow-Origin: http://localhost");
 header("Access-Control-Allow-Origin: https://prodeodatabase.com");
 header("Content-Type: application/json; charset=UTF-8");
@@ -11,10 +11,10 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/core.php';
 include_once '../objects/blog.php';
   
-// prepare product object
-$item = new blog($conn);
+// Initialize object 
+$item = new blog();
 
-// Create the object with the given data and return the created object
+// Delete the object
 $data = $item->delete();
 
 // Prepare a message to be sent to the client

@@ -7,8 +7,8 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: access");
   
 // Include core and object files
-include_once "../config/core.php";
-include_once "../objects/blog.php";
+include_once '../config/core.php';
+include_once '../objects/blog.php';
   
 // Initialize object
 $item = new blog();
