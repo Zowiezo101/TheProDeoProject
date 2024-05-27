@@ -1,31 +1,12 @@
 <?php
 
-require_once "utilities.php";
+// Setting our own namespace
+namespace shared;
 
-$BOOKS_TO_NOTES = ["book", "notes"];
-$EVENTS_TO_NEXT = ["event", "children"];
-$EVENTS_TO_PREV = ["event", "parents"];
-$EVENTS_TO_PEOPLES = ["event", "peoples"];
-$EVENTS_TO_LOCATIONS = ["event", "locations"];
-$EVENTS_TO_SPECIALS = ["event", "specials"];
-$EVENTS_TO_AKA = ["event", "aka"];
-$EVENTS_TO_NOTES = ["event", "notes"];
-$ACTIVITIES_TO_AKA = ["activity", "aka"];
-$ACTIVITIES_TO_NOTES = ["activity", "notes"];
-$PEOPLES_TO_PARENTS = ["people", "parents"];
-$PEOPLES_TO_CHILDREN = ["people", "children"];
-$PEOPLES_TO_EVENTS = ["people", "events"];
-$PEOPLES_TO_AKA = ["people", "aka"];
-$PEOPLES_TO_LOCATIONS = ["people", "locations"];
-$PEOPLES_TO_NOTES = ["people", "notes"];
-$LOCATIONS_TO_AKA = ["location", "aka"];
-$LOCATIONS_TO_PEOPLES = ["location", "peoples"];
-$LOCATIONS_TO_EVENTS = ["location", "events"];
-$LOCATIONS_TO_NOTES = ["location", "notes"];
-$SPECIALS_TO_EVENTS = ["special", "events"];
-$SPECIALS_TO_NOTES = ["special", "notes"];
+// Using the following namespaces
+use PDO;
 
-class item {
+class Item {
   
     // database connection and table name
     protected $conn;
@@ -53,7 +34,7 @@ class item {
     public function __construct(){
         global $conn;
         $this->conn = $conn;
-        $this->utilities = new utilities();
+        $this->utilities = new Utilities();
     }
     
     function check_parameters($required_params, $allowed_params) {
@@ -177,6 +158,7 @@ class item {
             "data" => [
                 "error" => $this->error,
                 "records" => [],
+                "query" => $this->query
             ],
             "code" => $this->code,
         ];

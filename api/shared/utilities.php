@@ -1,42 +1,12 @@
 <?php
-class utilities{
+
+// Setting our own namespace
+namespace shared;
+
+class Utilities {
     
     private $lang = "nl";
     private $conn;
-    
-    // The default tables
-    public $table_events = "events";
-    public $table_activities = "activitys";
-    public $table_peoples = "peoples";
-    public $table_locations = "locations";
-    public $table_specials = "specials";
-    
-    // The linking tables
-    public $table_a2a = "activity_to_aka";
-    public $table_a2pa = "activity_to_parent";
-    public $table_a2e = "activity_to_event";
-    public $table_e2e = "event_to_aka";
-    public $table_e2pa = "event_to_parent";
-    public $table_p2a = "people_to_activity";
-    public $table_p2p = "people_to_aka";
-    public $table_l2l = "location_to_aka";
-    public $table_p2pa = "people_to_parent";
-    private $table_p2l = "people_to_location";
-    private $table_l2a = "location_to_activity";
-    private $table_s2a = "special_to_activity";
-    private $table_notes = "notes";
-    private $table_sources = "sources";
-    private $table_n2s = "note_to_source";
-    private $table_n2i = "note_to_item";
-    
-    // The type tables
-    private $table_tn = "type_note";
-    private $table_ti = "type_item";
-    private $table_tg = "type_gender";
-    private $table_tp = "type_people";
-    private $table_tt = "type_tribe";
-    private $table_tl = "type_location";
-    private $table_ts = "type_special";
     
     public function __construct() {
         global $conn;

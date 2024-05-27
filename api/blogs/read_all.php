@@ -7,14 +7,14 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: access");
   
 // Include core and object files
-include_once '../config/core.php';
-include_once '../objects/blog.php';
+require '../config/core.php';
+require '../objects/Blog.php';
   
 // Initialize object
-$item = new blog();
+$item = new objects\Blog();
 
 // Read the requested data
-$data = $item->read_all();
+$data = $item->readAll();
 
 // Prepare a message to be sent to the client
 $message = $item->prepare_message($data);

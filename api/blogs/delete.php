@@ -8,11 +8,11 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
   
 // Include core and object files
-include_once '../config/core.php';
-include_once '../objects/blog.php';
+require '../config/core.php';
+require '../Objects/Blog.php';
   
 // Initialize object 
-$item = new blog();
+$item = new objects\Blog();
 
 // Delete the object
 $data = $item->delete();

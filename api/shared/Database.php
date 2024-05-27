@@ -1,6 +1,12 @@
 <?php
 
-class database {
+// Setting our own namespace
+namespace shared;
+
+// Using the following namespaces
+use PDO;
+
+class Database {
   
     // specify your own database credentials
     private $host = "";
@@ -27,4 +33,3 @@ class database {
         return $this->conn;
     }
 }
-
