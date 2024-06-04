@@ -167,7 +167,7 @@
                 // Take the first record
                 var blog = data.records[0];
         
-                if (blog.id === option.value) {
+                if (blog.id === parseInt(option.value, 10)) {
                     // Enable the textboxs for editing
                     $("#edit_blog_title").removeAttr("disabled");
                     $("#edit_blog_title").val(blog.title);
@@ -190,7 +190,7 @@
                 // Take the first record
                 var blog = data.records[0];
                 
-                if (blog.id === option.value) {
+                if (blog.id === parseInt(option.value, 10)) {
                     // Update the text and enable the button
                     $('#delete_blog_text').summernote('code', blog.text);
 

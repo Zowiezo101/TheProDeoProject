@@ -9,15 +9,12 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
   
 // Include core and object files
 require '../config/core.php';
-require '../objects/Blog.php';
  
 // Initialize object 
-$item = new objects\Blog();
+$item = new Classes\Blog();
 
 // Create the object with the given data and return the created object
-$data = $item->create();
+$item->create();
 
-// Prepare a message to be sent to the client
-$message = $item->prepare_message($data);
-http_response_code($message["code"]);
-echo json_encode($message["data"]);
+// Send a message to the client
+$item->sendMessage();

@@ -343,10 +343,6 @@ class Utilities {
         return $item_params;
     }
     
-    public function setLanguage($lang) {
-        $this->lang = $lang;
-    }
-    
     public function getTable($table_name) {
         
         // NL is the default language
@@ -357,16 +353,6 @@ class Utilities {
         if ($this->lang !== "nl") {
             
             switch($table_name) {
-                // TODO: Get these names from the objects themselves
-                case "blog":
-                    $columns = [
-                        "id" => false,
-                        "title" => false,
-                        "text" => false,
-                        "user" => false,
-                        "date" => false
-                    ];
-                    break;
                 
                 case "books":
                     $columns = [
@@ -548,81 +534,6 @@ class Utilities {
             // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                 array_push($array, $row);
-            }
-        }
-        return $array;
-        
-    }
-    
-    public function getNestedResults($stmt) {
-        $num = $stmt->rowCount();
-        
-        // array
-        $array = array();
-        
-        // TODO: Make this a single version
-        
-        // check if more than 0 record found
-        if ($num > 0) {
-
-            // retrieve our table contents
-            // fetch() is faster than fetchAll()
-            // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-                $note_id = $row["note_id"];
-                
-                if (!array_key_exists($note_id, $array)) { 
-                    // The note for this item isn't yet in the array                    
-                    // Push the entire result in here
-                    $array[$note_id] = [
-                        "id" => $row["note_id"],
-                        "note" => $row["note"],
-                        "sources" => array()
-                    ];
-                } 
-                if (!is_null($row["source"])) {
-                    // Push the new source in here
-                    array_push($array[$note_id]["sources"], $row["source"]);
-                }
-            }
-        }
-        return $array;
-        
-    }
-    
-    public function getNestedResultsMult($stmt) {
-        $num = $stmt->rowCount();
-        
-        // array
-        $array = array();
-        
-        // check if more than 0 record found
-        if ($num > 0) {
-
-            // retrieve our table contents
-            // fetch() is faster than fetchAll()
-            // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-                $id = $row["type"].$row["id"];
-                $note_id = $row["note_id"];
-                
-                if (!array_key_exists($id, $array)) {
-                    // This item isn't yet in the array
-                    $array[$id] = array();
-                } 
-                if (!array_key_exists($note_id, $array[$id])) { 
-                    // The note for this item isn't yet in the array                    
-                    // Push the entire result in here
-                    $array[$id][$note_id] = [
-                        "id" => $row["note_id"],
-                        "note" => $row["note"],
-                        "sources" => array()
-                    ];
-                } 
-                if (!is_null($row["source"])) {
-                    // Push the new source in here
-                    array_push($array[$id][$note_id]["sources"], $row["source"]);
-                }
             }
         }
         return $array;
@@ -1175,7 +1086,13 @@ class Utilities {
         // execute query
         $stmt->execute();
         
-        return $this->getNestedResults($stmt);
+        // check if more than 0 record found
+        if ($stmt->rowCount() > 0) {
+            $data = $this->getNotes($stmt)[0];
+        } else {
+            $data = [];
+        }
+        return $data;
     }
     
     public function getItemsToNotes($ids, $type) {
@@ -1218,7 +1135,46 @@ class Utilities {
         // execute query
         $stmt->execute();
         
-        return $this->getNestedResultsMult($stmt);
+        // check if more than 0 record found
+        if ($stmt->rowCount() > 0) {
+            $data = $this->getNotes($stmt);
+        } else {
+            $data = [];
+        }
+        return $data;
+    }
+    
+    private function getNotes($stmt) {
+        $array = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            if (isset($row["type"]) && isset($row["id"])) {
+                $id = $row["type"].$row["id"];
+            } else {
+                $id = 0;
+            }
+            $note_id = $row["note_id"];
+
+            if (!array_key_exists($id, $array)) {
+                // This item isn't yet in the array
+                $array[$id] = array();
+            } 
+            if (!array_key_exists($note_id, $array[$id])) { 
+                // The note for this item isn't yet in the array                    
+                // Push the entire result in here
+                $array[$id][$note_id] = [
+                    "id" => $row["note_id"],
+                    "note" => $row["note"],
+                    "sources" => array()
+                ];
+            } 
+            if (!is_null($row["source"])) {
+                // Push the new source in here
+                array_push($array[$id][$note_id]["sources"], $row["source"]);
+            }
+        }
+        
+        return $array;
     }
     
     public function getLinkingFunction($type, $link) {
