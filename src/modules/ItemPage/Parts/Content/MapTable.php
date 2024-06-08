@@ -138,20 +138,20 @@
             $ancestors = getMaps($TYPE_PEOPLE, $this->record->id);
             if ($this->checkData($ancestors)) {
                 foreach($ancestors->records as $ancestor) {
-                    array_push($data, [
+                    $data[] = [
                         "title" => $ancestor->name,
                         "map_id" => $ancestor->id,
                         "item_id" => $this->record->id
-                    ]);
+                    ];
                 }
             }
             
             if (count($this->record->children) > 0 && count($this->record->parents) > 0) {
-                array_push($data, [
+                $data[] = [
                     "title" => $this->record->name.$dict["items.parent.familytree"],
                     "map_id" => $this->record->id,
                     "item_id" => $this->record->id
-                ]);
+                ];
             }
             
             return $data;

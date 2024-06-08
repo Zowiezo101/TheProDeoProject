@@ -205,7 +205,7 @@
                     $book_start = $this->getBookString($aka, $ROW_BOOK_START);
                     $book_end = $this->getBookString($aka, $ROW_BOOK_END);
 
-                    array_push($books, $book_start." - ".$book_end);
+                    $books[] = $book_start." - ".$book_end;
                 }
             }
 
@@ -322,7 +322,7 @@
                     $name = $name." (".$dict[$link->type].")";
                 }
 
-                array_push($links, '<a href="'.$href.'" class="font-weight-bold">'.$name.'</a>');
+                $links[] = '<a href="'.$href.'" class="font-weight-bold">'.$name.'</a>';
             }
 
             // Add it all together
@@ -342,17 +342,17 @@
 
                 foreach ($note->sources as $source) {
                     // Turn every source into a link
-                    array_push($sources, "
+                    $sources[] = "
                         <sup class='font-weight-bold'>
                             <a target='_blank' href='".$source."'>
                                 ".$total_num_sources++."
                             </a>
-                        </sup>");
+                        </sup>";
                 }
                 $sources_str = implode(" ", $sources);
 
                 // Add the actual note and the sources together
-                array_push($notes, "<p>".$note->note." ".$sources_str."</p>");
+                $notes[] = "<p>".$note->note." ".$sources_str."</p>";
             }
 
             // Add it all together
@@ -374,7 +374,7 @@
                 }
 
                 // Add it all to the array
-                array_push($akas, $name.$meaning_name);
+                $akas[] = $name.$meaning_name;
             }
 
             // Put it all together

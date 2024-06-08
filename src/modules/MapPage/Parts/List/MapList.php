@@ -57,7 +57,7 @@
                     }
                     
                     // Add all the items into an array
-                    array_push($list_items, $list_item->getContent());
+                    $list_items[] = $list_item->getContent();
                 }
                 
                 // Put it all together

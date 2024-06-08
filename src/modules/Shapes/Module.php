@@ -16,7 +16,7 @@
             if (true) {
                 // TODO: Check if this module is a valid module to be added
                 // TODO: Or even a string with content
-                array_push($this->content, $module);
+                $this->content[] = $module;
             } else {
                 // TODO: Throw an error when the module isn't a valid module
             }
