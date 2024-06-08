@@ -28,8 +28,6 @@ function onMenuToggle() {
         button.addClass("show_menu");
         button.removeClass("hide_menu");
         button.html('<i class="fa fa-angle-double-left" aria-hidden="true"></i>');
-    } else {
-        // ????
     }
     
     // Toggle a window resize event

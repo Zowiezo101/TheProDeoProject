@@ -108,7 +108,7 @@ function accessDatabase($method, $url, $data=false) {
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     } else if ($method == "DELETE") {
         // To delete existing items
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DETE");
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     }
