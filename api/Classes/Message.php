@@ -3,7 +3,9 @@
     namespace Classes;
 
     class Message {
-        public const VAR = "{var}";
+        
+        // Debugging param
+        private $debug = false;
         
         // TODO: Vars
         public const ERROR_UNKNOWN_KEY = ["message" => "Error: unknown key '{var}' in query", "code" => 400];
@@ -19,6 +21,7 @@
         private $code = self::SUCCESS_READ;
         private $error = "";
         private $data = [];
+        private $paging = "";
         private $query = "";
         
         // Some parameters that can be set
@@ -45,6 +48,26 @@
             $this->code = $code;
         }
         
+        public function setLinks($links) {  
+            // After we have the records we want from the SQL query,
+            // we'll go through all the records again to add extra information
+            // from linking tables. This function adds all the requested information
+            // by looping through all the requested linking tables.
+            $this->data = array_map(function ($item) use ($links) {
+                // Get all the queries for the different links
+                foreach($links as [$link_name, $link_data]) {                    
+                    // Add it to the item
+                    $item[$link_name] = $link_data;
+                }
+
+                return $item;
+            }, $this->data);
+        }
+        
+        public function setPaging($paging) {
+            $this->paging = $paging;
+        }
+        
         public function setQuery($query) {
             $this->query = $query;
         }
@@ -52,23 +75,29 @@
         public function sendMessage() {
             $message = [
                 "error" => $this->error,
-                "records" => $this->data,
-                // Only when in debug mode
-//                "query" => $this->query
+                "records" => $this->data
             ];
+            
+            if ($this->debug === true) {
+                // Only when in debug mode
+                $message["query"] = $this->query;
+            }
             
             // TODO: When data is false, have the database set the appropiate error
             // Data is supposed to be an array. 
             // When it is false, something happened while checking the parameters
             
-            if ($this->include_paging === true) {
+            if ($this->paging !== "") {
                 // Include the amount of pages
-                $total_pages = ceil($this->count() / $this->records_per_page);
-                $message["paging"] = $total_pages;
+                $message["paging"] = $this->paging;
             }
             
             
             http_response_code($this->code);
             echo json_encode($message);
+        }
+        
+        public function setDebug($debug) {
+            $this->debug = $debug;
         }
     }

@@ -1,64 +1,19 @@
 <?php
-// required headers
-header("Access-Control-Allow-Origin: *");
+// Required headers
+header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Origin: https://prodeodatabase.com");
 header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Headers: access");
   
-// include database and object files
-include_once '../config/core.php';
-include_once '../config/database.php';
-include_once '../objects/book.php';
+// Include core and object files
+require '../config/core.php';
   
-// get database connection
-$db = new database();
-$conn = $db->getConnection();
+// Initialize object
+$item = new Classes\Book();
   
-// prepare item object
-$item = new book($conn);
-  
-// get keywords
-$filters = filter_input(INPUT_GET,'filter') !== null ? filter_input(INPUT_GET,'filter') : "";
-  
-// query products
-$stmt = $item->search($filters);
-$num = $stmt->rowCount();
-  
-// check if more than 0 record found
-if($num > 0){
-  
-    // products array
-    $array = array();
-    $array["records"] = array();
-  
-    // retrieve our table contents
-    // fetch() is faster than fetchAll()
-    // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-        array_push($array["records"], $row);
-    }
-  
-    // set response code - 200 OK
-    http_response_code(200);
-  
-    // show products data
-    echo json_encode($array);
-}
+// Read the requested data
+$item->searchResults();
 
-else if($num == 0){
-    // set response code - 200 OK
-    http_response_code(200);
-  
-    // tell the user no products found
-    echo json_encode(
-        array("message" => "No {$item->item_name}s found.")
-    );
-}
-  
-else{
-    // set response code - 404 Not found
-    http_response_code(404);
-  
-    // tell the user no products found
-    echo json_encode(
-        array("message" => "No {$item->item_name}s found.")
-    );
-}
+// Send a message to the client
+$item->sendMessage();

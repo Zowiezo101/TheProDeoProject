@@ -17,51 +17,59 @@
         private const PARAM_TEXT  = ["text" => FILTER_DEFAULT];
         private const PARAM_USER  = ["user" => FILTER_VALIDATE_INT];
         private const PARAM_DATE  = ["date" => FILTER_SANITIZE_SPECIAL_CHARS];
-        
-        private $table_name = "blog";
-        private $table_id = "id";
-        private $table_columns = [
-            "id", 
-            "title", 
-            "text", 
-            "user", 
-            "date"
-        ];
     
         public function __construct() {
             parent::__construct();
             
-            $this->setTableName($this->table_name);
-            $this->setTableColumns($this->table_columns, 
-                                   $this->table_id);
+            $this->setTableName("blog");
+            $this->setTableColumns([
+                "id", 
+                "title", 
+                "text", 
+                "user", 
+                "date"
+            ], "id");
+        }
+        
+        public function create() {
+            $this->setRequiredParams(array_merge(
+                self::PARAM_TITLE, 
+                self::PARAM_TEXT,
+                self::PARAM_USER, 
+                self::PARAM_DATE
+            ));
             
-            // Set the optional parameters for the following actions
-            $this->setOptionalParams([
-                self::ACTION_READ_ALL => array_merge(
-                    self::PARAM_USER
-                )
-            ]);
-            
-            // Set the required parameters for the following actions
-            $this->setRequiredParams([
-                self::ACTION_CREATE => array_merge(
-                    self::PARAM_TITLE,
-                    self::PARAM_TEXT,
-                    self::PARAM_USER,
-                    self::PARAM_DATE
-                ),
-                self::ACTION_UPDATE => array_merge(
-                    self::PARAM_ID,
-                    self::PARAM_TITLE,
-                    self::PARAM_TEXT
-                ),
-                self::ACTION_DELETE => array_merge(
-                    self::PARAM_ID
-                ),
-                self::ACTION_READ_ONE => array_merge(
-                    self::PARAM_ID
-                )
-            ]);
+            parent::create();
+        }
+        
+        public function update() {
+            $this->setRequiredParams(array_merge(
+                self::PARAM_ID, 
+                self::PARAM_TITLE,
+                self::PARAM_TEXT
+            ));
+            parent::update();
+        }
+        
+        public function delete() {
+            $this->setRequiredParams(array_merge(
+                self::PARAM_ID
+            ));
+            parent::delete();
+        }
+        
+        public function readOne() {
+            $this->setRequiredParams(array_merge(
+                self::PARAM_ID
+            ));
+            parent::readOne();
+        }
+        
+        public function readAll() {
+            $this->setOptionalParams(array_merge(
+                self::PARAM_USER
+            ));
+            parent::readAll();
         }
         
         public function getQuery() {
@@ -99,10 +107,10 @@
                     
             // Query parameters
             $query_params = [
-                ":title" => $this->title,
-                ":text" => $this->text,
-                ":user" => $this->user,
-                ":date" => $this->date
+                ":title" => [$this->title, \PDO::PARAM_STR],
+                ":text" => [$this->text, \PDO::PARAM_STR],
+                ":user" => [$this->user, \PDO::PARAM_INT],
+                ":date" => [$this->date, \PDO::PARAM_STR]
             ];
             
             // Query string (where parameters will be plugged in)
@@ -128,9 +136,9 @@
             
             // Query parameters
             $query_params = [
-                ":id" => $this->id,
-                ":title" => $this->title,
-                ":text" => $this->text
+                ":id" => [$this->id, \PDO::PARAM_INT],
+                ":title" => [$this->title, \PDO::PARAM_STR],
+                ":text" => [$this->text, \PDO::PARAM_STR]
             ];
             
             // Query string (where parameters will be plugged in)
@@ -153,7 +161,7 @@
             $table = $this->getTable();
             
             // Query parameters
-            $query_params = [":id" => $this->id];
+            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
             
             // Query string (where parameters will be plugged in)
             $query_string = "DELETE
@@ -174,7 +182,7 @@
             $table = $this->getTable();
             
             // Query parameters
-            $query_params = [":id" => $this->id];
+            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
             
             // Query string (where parameters will be plugged in)
             $query_string = "SELECT
@@ -200,7 +208,7 @@
             // Query parameters
             if (isset($this->user) && ($this->user !== "")) {
                 $where_sql = "WHERE u.id = :user";
-                $query_params = [":user" => $this->user];
+                $query_params = [":user" => [$this->user, \PDO::PARAM_INT]];
             } else {
                 $where_sql = "";
                 $query_params = [];

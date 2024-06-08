@@ -5,14 +5,6 @@ namespace shared;
 
 class Utilities {
     
-    private $lang = "nl";
-    private $conn;
-    
-    public function __construct() {
-        global $conn;
-        $this->conn = $conn;
-    }
-    
     public function getParams($type, $filters, $conn) {
         // The filters to be applied on the database
         $item_columns = array();
@@ -483,37 +475,6 @@ class Utilities {
                     ];
                     break;
             }
-            
-            // Get either the translated version or the default version
-            // if the translated version is not available
-            $lang_columns = array_map(function($value, $key) {
-                $lang_column = "items.".$key;
-                
-                if ($value === true) {
-                    $lang_column = "IF(langs.".$key." > '', 
-                        langs.".$key.", 
-                        IF(items.".$key." > '', 
-                            CONCAT(items.".$key.", ' (NL)'), 
-                            '')) AS ".$key."";
-                }
-                
-                return $lang_column;
-            }, $columns, array_keys($columns));
-            
-            // The name of the ID to use, this should always be the first column
-            $item_id = array_keys($columns)[0];
-            
-            // We have a different language, join the translation table
-            $table = 
-                "(SELECT 
-                    ".implode(",\n\t", $lang_columns)."
-                FROM 
-                    ".$table_name." AS items
-                LEFT JOIN
-                    ".$table_name."_lang AS langs 
-                ON 
-                    items.".$item_id." = langs.". $item_name."_id
-                    AND lang = '".$this->lang."')";
         }
         
         return $table;
@@ -533,7 +494,7 @@ class Utilities {
             // fetch() is faster than fetchAll()
             // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-                array_push($array, $row);
+                $array[] = $row;
             }
         }
         return $array;
@@ -1023,171 +984,6 @@ class Utilities {
         $stmt->execute();
         
         return $this->getResults($stmt);
-    }
-    
-    public function getBookToNotes($id) {
-        return $this->getItemToNotes($id, "book");
-    }
-    
-    public function getEventToNotes($id) {
-        return $this->getItemToNotes($id, "event");
-    }
-    
-    public function getActivityToNotes($id) {
-        return $this->getItemToNotes($id, "activity");
-    }
-    
-    public function getPeopleToNotes($id) {
-        return $this->getItemToNotes($id, "people");
-    }
-    
-    public function getLocationToNotes($id) {
-        return $this->getItemToNotes($id, "location");
-    }
-    
-    public function getSpecialToNotes($id) {
-        return $this->getItemToNotes($id, "special");
-    }
-    
-    public function getItemToNotes($id, $type) {
-        $table_notes = $this->getTable($this->table_notes);
-        
-        $type_name = strtolower($type);
-        $table_name = $type.'s';
-        
-        // Get the table name in specified language if applicable
-        $table = $this->getTable($table_name);
-        
-        // select all query
-        $query = "
-            SELECT ti.type_name AS type, i.id, i.name, n.note, n.id AS note_id, s.source
-                FROM " . $table . " i
-                JOIN " . $this->table_ti . " ti
-                    ON ti.type_name = '".$type_name."'
-                JOIN " . $this->table_n2i . " n2i
-                    ON n2i.item_type = ti.type_id AND n2i.item_id = i.id
-                JOIN " . $table_notes . " n
-                    ON n2i.note_id = n.id
-                LEFT JOIN " . $this->table_n2s . " n2s
-                    ON n2s.note_id = n.id
-                LEFT JOIN " . $this->table_sources . " s
-                    ON s.id = n2s.source_id
-                WHERE
-                    i.id = ?
-                ORDER BY
-                    id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id);
-
-        // execute query
-        $stmt->execute();
-        
-        // check if more than 0 record found
-        if ($stmt->rowCount() > 0) {
-            $data = $this->getNotes($stmt)[0];
-        } else {
-            $data = [];
-        }
-        return $data;
-    }
-    
-    public function getItemsToNotes($ids, $type) {
-        $table_notes = $this->getTable($this->table_notes);
-        
-        $type_name = strtolower($type);
-        $table_name = $type.'s';
-        
-        // Get the table name in specified language if applicable
-        $table = $this->getTable($table_name);
-        
-        // select all query
-        $query = "
-            SELECT ti.type_name AS type, i.id, i.name, n.note, n.id AS note_id, s.source
-                FROM " . $table . " i
-                JOIN " . $this->table_ti . " ti
-                    ON ti.type_name = '".$type_name."'
-                JOIN " . $this->table_n2i . " n2i
-                    ON n2i.item_type = ti.type_id AND n2i.item_id = i.id
-                JOIN " . $table_notes . " n
-                    ON n2i.note_id = n.id
-                LEFT JOIN " . $this->table_n2s . " n2s
-                    ON n2s.note_id = n.id
-                LEFT JOIN " . $this->table_sources . " s
-                    ON s.id = n2s.source_id
-                WHERE
-                    i.id in (".implode(", ", array_fill(0, count($ids), "?")).")
-                ORDER BY
-                    id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $i = 1;
-        foreach ($ids as &$id) {
-            $stmt->bindParam($i++, $id);
-        }
-
-        // execute query
-        $stmt->execute();
-        
-        // check if more than 0 record found
-        if ($stmt->rowCount() > 0) {
-            $data = $this->getNotes($stmt);
-        } else {
-            $data = [];
-        }
-        return $data;
-    }
-    
-    private function getNotes($stmt) {
-        $array = [];
-        
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            if (isset($row["type"]) && isset($row["id"])) {
-                $id = $row["type"].$row["id"];
-            } else {
-                $id = 0;
-            }
-            $note_id = $row["note_id"];
-
-            if (!array_key_exists($id, $array)) {
-                // This item isn't yet in the array
-                $array[$id] = array();
-            } 
-            if (!array_key_exists($note_id, $array[$id])) { 
-                // The note for this item isn't yet in the array                    
-                // Push the entire result in here
-                $array[$id][$note_id] = [
-                    "id" => $row["note_id"],
-                    "note" => $row["note"],
-                    "sources" => array()
-                ];
-            } 
-            if (!is_null($row["source"])) {
-                // Push the new source in here
-                array_push($array[$id][$note_id]["sources"], $row["source"]);
-            }
-        }
-        
-        return $array;
-    }
-    
-    public function getLinkingFunction($type, $link) {
-        $function = "";
-
-        // Get the function name by concatenating the type and link names
-        $function_name = "get".ucfirst($type)."To". ucfirst($link);
-        if (method_exists($this, $function_name)) {
-            // If it exists, return the value
-            $function = $function_name;
-        }
-        
-        return $function;
     }
   
 }

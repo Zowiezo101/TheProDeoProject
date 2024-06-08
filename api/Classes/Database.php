@@ -7,7 +7,10 @@
 
     class Database {
         
-        // 
+        // Debugging param
+        private $debug = false;
+        
+        // Standard vars
         private $conn;
         private $error;
         
@@ -30,10 +33,9 @@
             // Prepare query statement
             $stmt = $this->conn->prepare($query_string);
             
-            foreach($query_params as $param => $value) {
-                // TODO: TYPE as well for more safety
+            foreach($query_params as $param => [$value, $type]) {
                 // Bind params to the query
-                $stmt->bindValue($param, $value);
+                $stmt->bindValue($param, $value, $type);
             }
             
             // execute query
@@ -43,10 +45,7 @@
             $num = $stmt->rowCount();
             if ($num > 0) {
                 // Get the data
-                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                // Get the data and parse it
-                $data = $this->parseData($rows);
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } else {
                 // There's nothing to parse
                 $data = [];
@@ -55,12 +54,7 @@
             return $data;
         }
         
-        private function parseData($rows) {
-            // Use the function "getLinkingData" on all these rows
-            // TODO:
-//            $data = array_map([$this, "getLinkingData"], $rows);
-            $data = $rows;
-            
-            return $data;
+        public function setDebug($debug) {
+            $this->debug = $debug;
         }
     }

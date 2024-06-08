@@ -3,8 +3,12 @@
     namespace Classes;
     use Classes\Database as Database;
     use Classes\Message as Message;
+    use Classes\Link as Link;
 
     class Item {
+        
+        // Debugging param
+        private $debug = false;
         
         // The actions that are supported for this item
         public const ACTION_CREATE = "create";
@@ -19,13 +23,16 @@
         
         // Some default values
         public const DEFAULT_LANG = "nl";
+        public const PAGE_SIZE = 10;
         
         // Other classes that are used
-        private $message;
         private $database;
+        private $link;
+        private $message;
         
         // Parameters and actions
         private $action;
+        private $action_success;
         private $optional_params;
         private $required_params;
         
@@ -47,6 +54,9 @@
             // get database connection
             $this->database = new Database();
             
+            // Get the linking table queries
+            $this->link = new Link($this);
+            
             // Used to return a message to the client
             $this->message = new Message();
         }
@@ -54,210 +64,157 @@
         public function create () {   
             $this->action = self::ACTION_CREATE;
             
-            // Check the parameters
-            if ($this->checkParameters()) {  
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // A sucessful creation of a new item should return code '201'
-                    $this->message->setData($data, Message::SUCCESS_CREATED);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // A sucessful creation of a new item should return code '201'
+            $this->action_success = Message::SUCCESS_CREATED;
+            
+            // Execute the action
+            $this->executeAction();
         }
         
         public function update () {
             $this->action = self::ACTION_UPDATE;
             
-            // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // Succefully updating an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_UPDATED);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // Succefully updating an item should return code '200'
+            $this->action_success = Message::SUCCESS_UPDATED;
+            
+            // Execute the action
+            $this->executeAction();
             
         }
         
         public function delete() {
             $this->action = self::ACTION_DELETE;
             
-            // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // Succefully deleting an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_DELETED);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // Succefully deleting an item should return code '200'
+            $this->action_success = Message::SUCCESS_DELETED;
+            
+            // Execute the action
+            $this->executeAction();
             
         }
         
         public function readOne() {
             $this->action = self::ACTION_READ_ONE;
             
-            // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // Succefully reading an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_READ);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // Succefully reading an item should return code '200'
+            $this->action_success = Message::SUCCESS_READ;
             
+            // Execute the action
+            $this->executeAction();
+            
+            // Get the links and add it to the message
+            $links = $this->getLinks();
+            $this->message->setLinks($links);
         }
         
         public function readAll() {
             $this->action = self::ACTION_READ_ALL;
             
-            // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // Succefully reading an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_READ);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // Succefully reading an item should return code '200'
+            $this->action_success = Message::SUCCESS_READ;
+            
+            // Execute the action
+            $this->executeAction();
         }
         
         public function readPage() {
             $this->action = self::ACTION_READ_PAGE;
             
-            // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // Succefully reading an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_READ);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // Succefully reading an item should return code '200'
+            $this->action_success = Message::SUCCESS_READ;
             
+            // Execute the action
+            $this->executeAction();
+            
+            // Get the paging and add it to the message
+            $paging = $this->getPaging();
+            $this->message->setPaging($paging);
         }
         
         public function readMaps() {
             $this->action = self::ACTION_READ_MAPS;
             
-            // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // Succefully reading an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_READ);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // Succefully reading an item should return code '200'
+            $this->action_success = Message::SUCCESS_READ;
+            
+            // Execute the action
+            $this->executeAction();
             
         }
         
         public function searchOptions() {
             $this->action = self::ACTION_SEARCH_OPTIONS;
             
-            // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
-                $query = $this->getQuery();
-                $this->message->setQuery($query);
-                
-                try {
-                    // Get the data using the query
-                    $data = $this->database->getData($query);
-                
-                    // Succefully reading an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_READ);
-                } catch (Exception $e) {
-                    // Something went wrong, show the error
-                    $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
-                }
-            }
+            // Succefully reading an item should return code '200'
+            $this->action_success = Message::SUCCESS_READ;
+            
+            // Execute the action
+            $this->executeAction();
             
         }
         
         public function searchResults() {
             $this->action = self::ACTION_SEARCH_RESULTS;
             
+            // Succefully reading an item should return code '200'
+            $this->action_success = Message::SUCCESS_READ;
+            
+            // Execute the action
+            $this->executeAction();
+            
+        }
+        
+        private function executeAction() {
             // Check the parameters
-            if ($this->checkParameters()) {
-                // Get the query and pass it to the database class
+            if ($this->checkParameters()) {  
+                // Get the query and pass it to the message class
                 $query = $this->getQuery();
                 $this->message->setQuery($query);
-                
+
                 try {
                     // Get the data using the query
                     $data = $this->database->getData($query);
                 
-                    // Succefully reading an item should return code '200'
-                    $this->message->setData($data, Message::SUCCESS_READ);
+                    // A sucessful action should return a success code (depends on the action)
+                    $this->message->setData($data, $this->action_success);
                 } catch (Exception $e) {
                     // Something went wrong, show the error
                     $this->message->setError(Message::ERROR_UNAVAILABLE, $e->getMessage());
                 }
             }
+        }
+        
+        public function getPaging() {
+            // Query parameters
+            $query_params = [];
             
+            // Parts of the query
+            $where_sql = $this->getWhere($query_params);
+            
+            // Query string (where parameters will be plugged in)
+            $query_string = "SELECT CEILING(COUNT(*) / 10) as total_pages FROM {$this->table_name} {$where_sql}";
+            
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ]; 
+            
+            // Get the data from the database
+            $data = $this->database->getData($query);
+            return $data[0]['total_pages'];
         }
         
         public function sendMessage() {
             $this->message->sendMessage();
+        }
+        
+        public function setLinks($links) {
+            $this->link->setLinks($links);
+        }
+        
+        private function getLinks() {
+            $links = $this->link->getLinks();
+            return $links;
         }
         
         public function setTableName($name) {
@@ -280,6 +237,20 @@
         
         public function getQuery() {
             // TODO: For more generic functions once we know what we want
+        }
+        
+        public function getId() {
+            $id = isset($this->id) ? $this->id : null;
+            return $id;
+        }
+        
+        public function getLang() {
+            $lang = isset($this->lang) ? $this->lang : null;
+            return $lang;
+        }
+        
+        public function setLang($lang) {
+            $this->lang = $lang;
         }
         
         public function getTable() {
@@ -305,13 +276,13 @@
             foreach($this->table_columns as $table_column) {
                 if (array_search($table_column, $this->lang_columns)) {
                     // If there is a translated version of this column, use it
-                    $column = "COALESCE(lang.{$table_column}, CONCAT(items.{$table_column}, ' (NL)')) as {$table_column}";
+                    $column = "COALESCE(NULLIF(lang.{$table_column}, ''), CONCAT(items.{$table_column}, ' (NL)')) as {$table_column}";
                 } else {
                     // If there isn't, just use the regular version
                     $column = "items.{$table_column}";
                 }
                 
-                array_push($columns_array, $column);
+                $columns_array[] = $column;
             }
             
             // Add them all together
@@ -358,10 +329,9 @@
         private function checkRequiredParams(&$given_params) {
             $result = true;
             
-            $required_params = [];
-            if (isset($this->required_params[$this->action])) {
-                $required_params = $this->required_params[$this->action];
-            } 
+            // Get the required params if any given, otherwise return an empty array
+            $required_params = isset($this->required_params) ? 
+                    $this->required_params : [];
             
             // Check if all required params are available
             foreach (array_keys($required_params) as $key) {
@@ -385,17 +355,21 @@
         private function checkOptionalParams($given_params) {
             $result = true;
             
-            $optional_params = [];
-            if (isset($this->optional_params[$this->action])) {
-                $optional_params = $this->optional_params[$this->action];
-            } 
+            // Get the optional params if any given, otherwise return an empty array
+            $optional_params = isset($this->optional_params) ? 
+                    $this->optional_params : [];
             
             // Language is always allowed, just not always used
             $optional_params["lang"] = FILTER_SANITIZE_SPECIAL_CHARS;
             
             // Check if there are any params that aren't allowed
             foreach ($given_params as $key => $value) {
-                if (array_search($key, array_keys($optional_params)) === false) {
+                if ($key === "XDEBUG_SESSION_START") {
+                    // Debugging mode
+                    $this->debug = true;
+                    $this->database->setDebug(true);
+                    $this->message->setDebug(true);
+                } else if (array_search($key, array_keys($optional_params)) === false) {
                     // Unknown parameter
                     $this->message->setError(Message::ERROR_UNKNOWN_KEY, $key);
                     $result = false;

@@ -7,16 +7,13 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: access");
   
 // Include core and object files
-include_once '../config/core.php';
-include_once '../objects/book.php';
+require '../config/core.php';
   
-// prepare item object
-$item = new book();
+// Initialize object
+$item = new Classes\Book();
   
-// read the details of item to be edited
-$data = $item->read_one();
+// Read the requested data
+$item->readOne();
 
-// Prepare a message to be sent to the client
-$message = $item->prepare_message($data);
-http_response_code($message["code"]);
-echo json_encode($message["data"]);
+// Send a message to the client
+$item->sendMessage();
