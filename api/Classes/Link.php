@@ -127,13 +127,12 @@
             // Create a new Note Item object
             $notes = new Item();
             $notes->setLang($lang);
-            $notes->setTableName("notes");
-            $notes->setTableColumns([
+            $notes->setTable("notes", [
                 "id",
                 "note", 
                 "type"
             ], "id");
-            $notes->setLangColumns([
+            $notes->setTableLang([
                 "id",
                 "note_id",
                 "note",

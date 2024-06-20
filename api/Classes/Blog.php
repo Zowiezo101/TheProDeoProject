@@ -9,20 +9,18 @@
         protected $title;
         protected $text;
         protected $user;
-        protected $date;
+        protected $date;        
         
         // Param filters
-        private const PARAM_ID    = ["id" => FILTER_VALIDATE_INT];
-        private const PARAM_TITLE = ["title" => FILTER_SANITIZE_SPECIAL_CHARS];
-        private const PARAM_TEXT  = ["text" => FILTER_DEFAULT];
-        private const PARAM_USER  = ["user" => FILTER_VALIDATE_INT];
-        private const PARAM_DATE  = ["date" => FILTER_SANITIZE_SPECIAL_CHARS];
+        private const FILTER_TITLE = ["title" => FILTER_SANITIZE_SPECIAL_CHARS];
+        private const FILTER_TEXT  = ["text" => FILTER_DEFAULT];
+        private const FILTER_USER  = ["user" => FILTER_VALIDATE_INT];
+        private const FILTER_DATE  = ["date" => FILTER_SANITIZE_SPECIAL_CHARS];
     
         public function __construct() {
             parent::__construct();
             
-            $this->setTableName("blog");
-            $this->setTableColumns([
+            $this->setTable("blog", [
                 "id", 
                 "title", 
                 "text", 
@@ -31,77 +29,21 @@
             ], "id");
         }
         
-        public function create() {
-            $this->setRequiredParams(array_merge(
-                self::PARAM_TITLE, 
-                self::PARAM_TEXT,
-                self::PARAM_USER, 
-                self::PARAM_DATE
-            ));
-            
-            parent::create();
+        // Overwrite the filter for creating objects
+        protected function getCreateFilter() {
+            return [
+                self::OPTIONAL_PARAMS => [],
+                self::REQUIRED_PARAMS => array_merge(
+                    self::FILTER_TITLE,
+                    self::FILTER_TEXT,
+                    self::FILTER_USER,
+                    self::FILTER_DATE,
+                )
+            ];
         }
         
-        public function update() {
-            $this->setRequiredParams(array_merge(
-                self::PARAM_ID, 
-                self::PARAM_TITLE,
-                self::PARAM_TEXT
-            ));
-            parent::update();
-        }
-        
-        public function delete() {
-            $this->setRequiredParams(array_merge(
-                self::PARAM_ID
-            ));
-            parent::delete();
-        }
-        
-        public function readOne() {
-            $this->setRequiredParams(array_merge(
-                self::PARAM_ID
-            ));
-            parent::readOne();
-        }
-        
-        public function readAll() {
-            $this->setOptionalParams(array_merge(
-                self::PARAM_USER
-            ));
-            parent::readAll();
-        }
-        
-        public function getQuery() {
-            $query = [];
-            
-            // Select the function that corresponds with the action
-            switch($this->getAction()) {
-                case self::ACTION_CREATE:
-                    $query = $this->getCreateQuery();
-                    break;
-                
-                case self::ACTION_UPDATE:
-                    $query = $this->getUpdateQuery();
-                    break;
-                
-                case self::ACTION_DELETE:
-                    $query = $this->getDeleteQuery();
-                    break;
-                
-                case self::ACTION_READ_ONE:
-                    $query = $this->getReadOneQuery();
-                    break;
-                
-                case self::ACTION_READ_ALL:
-                    $query = $this->getReadAllQuery();
-                    break;
-            }
-            
-            return $query;
-        }
-        
-        private function getCreateQuery() {            
+        // Overwrite the query for creating objects
+        protected function getCreateQuery() {            
             // The translated table name
             $table = $this->getTable();
                     
@@ -130,7 +72,20 @@
             return $query;
         }
         
-        private function getUpdateQuery() {            
+        // Overwrite the filter for updating objects
+        protected function getUpdateFilter() {
+            return [
+                self::OPTIONAL_PARAMS => [],
+                self::REQUIRED_PARAMS => array_merge(
+                    self::FILTER_ID,
+                    self::FILTER_TITLE,
+                    self::FILTER_TEXT,
+                ),
+            ];
+        }
+        
+        // Overwrite the query for updating objects
+        protected function getUpdateQuery() {            
             // The translated table name
             $table = $this->getTable();
             
@@ -156,7 +111,18 @@
             return $query;
         }
         
-        private function getDeleteQuery() {
+        // Overwrite the filter for deleting objects
+        protected function getDeleteFilter() {
+            return [
+                self::OPTIONAL_PARAMS => [],
+                self::REQUIRED_PARAMS => array_merge(
+                    self::FILTER_ID,
+                ),
+            ];
+        }
+        
+        // Overwrite the query for deleting objects
+        protected function getDeleteQuery() {
             // The translated table name
             $table = $this->getTable();
             
@@ -177,31 +143,16 @@
             return $query;
         }
         
-        private function getReadOneQuery() {            
-            // The translated table name
-            $table = $this->getTable();
-            
-            // Query parameters
-            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
-            
-            // Query string (where parameters will be plugged in)
-            $query_string = "SELECT
-                    b.id, b.title, b.text, b.user, b.date
-                FROM
-                    " . $table . " b
-                WHERE
-                    b.id = :id
-                LIMIT
-                    0,1";
-            
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ];            
-            return $query;
+        protected function getReadAllFilter() {
+            return [
+                self::OPTIONAL_PARAMS => array_merge(
+                    self::FILTER_USER,
+                ),
+                self::REQUIRED_PARAMS => [],
+            ];
         }
         
-        private function getReadAllQuery() {
+        protected function getReadAllQuery() {
             // The translated table name
             $table = $this->getTable();
             
