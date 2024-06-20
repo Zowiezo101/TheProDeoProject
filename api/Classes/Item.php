@@ -334,10 +334,35 @@
         }
         
         protected function getReadPageQuery() {
-            return [
-                "string" => "",
-                "params" => ""
+            // The translated table name
+            $table = $this->getTable();
+            
+            // Query parameters
+            $query_params = [
+                ":page_start" => [self::PAGE_SIZE * $this->page, \PDO::PARAM_INT],
+                ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
             ];
+            
+            // Parts of the query
+            $where_sql = $this->getWhere($query_params);
+            $sort_sql = $this->getSort();
+
+            // Query string (where parameters will be plugged in)
+            $query_string = "SELECT
+                    i.id, i.name
+                FROM
+                    " . $table . " i
+                {$where_sql}
+                ORDER BY
+                    {$sort_sql}
+                LIMIT
+                    :page_start, :page_size";
+            
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];            
+            return $query;
         }
         
         protected function getSearchOptionsQuery() {
@@ -362,6 +387,54 @@
             }, $this->table_columns));
             
             return $columns;
+        }
+        
+        public function getWhere(&$query_params) {
+            $where_sql = "";
+            if (isset($this->filter) && ($this->filter !== "")) {
+                $where_sql = "WHERE name LIKE :filter";
+                $query_params[":filter"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
+            }
+            
+            return $where_sql;
+        }
+        
+        public function getSort() {
+            // If a sort different then the default is given
+            switch($this->sort) {
+                case '9_to_0':
+                    if (array_search("book_start_id", $this->table_columns)) {
+                        
+                    } else {
+                        $sort_sql = "i.order_id DESC";
+                    }
+                    break;
+                case 'a_to_z':
+                    if (array_search("book_start_id", $this->table_columns)) {
+                        
+                    } else {
+                        $sort_sql = "i.name ASC";
+                    }
+                    break;
+                case 'z_to_a':
+                    if (array_search("book_start_id", $this->table_columns)) {
+                        
+                    } else {
+                        $sort_sql = "i.name DESC";
+                    }
+                    break;
+
+                case '0_to_9':
+                default:
+                    if (array_search("book_start_id", $this->table_columns)) {
+                        
+                    } else {
+                        $sort_sql = "i.order_id ASC";
+                    }
+                    break;      
+            }
+            
+            return $sort_sql;
         }
         
         
