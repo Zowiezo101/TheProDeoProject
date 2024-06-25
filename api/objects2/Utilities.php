@@ -501,74 +501,6 @@ class Utilities {
         
     }
     
-    public function getEventToAka($id) {
-        // select all query
-        $query = "SELECT
-                    distinct(e2e.event_id), e2e.book_start_id,
-                    e2e.book_start_chap, e2e.book_start_vers,
-                    e2e.book_end_id, e2e.book_end_chap, 
-                    e2e.book_end_vers
-                FROM
-                    " . $this->table_e2e . " e2e
-                WHERE
-                    e2e.event_id = ?
-                UNION    
-                SELECT
-                    distinct(e.id), e.book_start_id,
-                    e.book_start_chap, e.book_start_vers,
-                    e.book_end_id, e.book_end_chap, 
-                    e.book_end_vers
-                FROM
-                    " . $this->table_events . " e
-                WHERE
-                    e.id = ?
-                ORDER BY
-                    book_start_id ASC, book_start_chap ASC, book_start_vers ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-        $stmt->bindParam(2, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getEventToPeoples($id) {
-        $table = $this->getTable($this->table_peoples);
-
-        // select all query
-        $query = "SELECT
-                    distinct(p2a.people_id) AS id, p.name AS name
-                FROM
-                    " . $this->table_p2a . " p2a
-                    LEFT JOIN
-                        " . $this->table_a2e . " a2e
-                            ON a2e.activity_id = p2a.activity_id
-                    LEFT JOIN
-                        " . $table . " p
-                            ON p2a.people_id = p.id
-                WHERE
-                    a2e.event_id = ?
-                ORDER BY
-                    p2a.people_id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
     public function getEventToLocations($id) {
         $table = $this->getTable($this->table_locations);
 
@@ -618,62 +550,6 @@ class Utilities {
                     a2e.event_id = ?
                 ORDER BY
                     s2a.special_id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getEventToChildren($id) {
-        $table = $this->getTable($this->table_events);
-        
-        // select all query
-        $query = "SELECT
-                    distinct(e.id) AS id, e.name
-                FROM
-                    " . $table . " e
-                    LEFT JOIN
-                        " . $this->table_e2pa . " e2pa
-                            ON e2pa.parent_id = e.id
-                WHERE
-                    e2pa.event_id = ?
-                ORDER BY
-                    e.id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getEventToParents($id) {
-        $table = $this->getTable($this->table_events);
-        
-        // select all query
-        $query = "SELECT
-                    distinct(e.id) AS id, e.name
-                FROM
-                    " . $table . " e
-                    LEFT JOIN
-                        " . $this->table_e2pa . " e2pa
-                            ON e2pa.event_id = e.id
-                WHERE
-                    e2pa.parent_id = ?
-                ORDER BY
-                    e.id ASC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

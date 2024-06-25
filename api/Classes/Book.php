@@ -3,12 +3,6 @@
     namespace Classes;
 
     class Book extends Item {
-        
-        // Parameters for this object
-        protected $id;
-        protected $sort;
-        protected $filter;
-        protected $page;
     
         public function __construct() {
             parent::__construct();

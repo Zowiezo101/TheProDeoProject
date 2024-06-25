@@ -38,6 +38,12 @@
         public const OPTIONAL_PARAMS = "optional";
         public const REQUIRED_PARAMS = "required";
         
+        // Some paraneters used by multiple item types
+        protected $id;
+        protected $sort;
+        protected $filter;
+        protected $page;
+        
         // Some filters used by multiple item types
         protected const FILTER_ID    = ["id" => FILTER_VALIDATE_INT];
         protected const FILTER_SORT    = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
@@ -402,35 +408,23 @@
         public function getSort() {
             // If a sort different then the default is given
             switch($this->sort) {
-                case '9_to_0':
-                    if (array_search("book_start_id", $this->table_columns)) {
-                        
-                    } else {
-                        $sort_sql = "i.order_id DESC";
-                    }
-                    break;
                 case 'a_to_z':
-                    if (array_search("book_start_id", $this->table_columns)) {
-                        
-                    } else {
-                        $sort_sql = "i.name ASC";
-                    }
+                    $sort_sql = "i.name ASC";
                     break;
                 case 'z_to_a':
-                    if (array_search("book_start_id", $this->table_columns)) {
-                        
-                    } else {
-                        $sort_sql = "i.name DESC";
-                    }
+                    $sort_sql = "i.name DESC";
+                    break;
+                case '9_to_0':
+                    $sort_sql = array_search("book_start_id", $this->table_columns) ? 
+                            "i.book_start_id DESC, i.book_start_chap DESC, i.book_start_vers DESC" :
+                            "i.order_id DESC";
                     break;
 
                 case '0_to_9':
                 default:
-                    if (array_search("book_start_id", $this->table_columns)) {
-                        
-                    } else {
-                        $sort_sql = "i.order_id ASC";
-                    }
+                    $sort_sql = array_search("book_start_id", $this->table_columns) ? 
+                            "i.book_start_id ASC, i.book_start_chap ASC, i.book_start_vers ASC" :
+                            "i.order_id ASC";
                     break;      
             }
             

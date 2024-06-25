@@ -171,32 +171,231 @@
             return $this->getItemToNotes("book");
         }
         
-        protected function getEventToChildren($id) {
+        protected function getEventToChildren() {          
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated parent table
+            $table = $this->parent->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(e.id) AS id, e.name
+                FROM
+                    " . $table . " e
+                    LEFT JOIN
+                        " . self::TABLE_E2PA . " e2pa
+                            ON e2pa.parent_id = e.id
+                WHERE
+                    e2pa.event_id = :id
+                ORDER BY
+                    e.id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["children", $data];
 
         }
         
-        protected function getEventToParents($id) {
+        protected function getEventToParents() {            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated parent table
+            $table = $this->parent->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(e.id) AS id, e.name
+                FROM
+                    " . $table . " e
+                    LEFT JOIN
+                        " . self::TABLE_E2PA . " e2pa
+                            ON e2pa.event_id = e.id
+                WHERE
+                    e2pa.parent_id = :id
+                ORDER BY
+                    e.id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["parents", $data];
+        }
+        
+        protected function getEventToPeoples() {
+//            // Get the translated peoples item
+//            $people = $this->getPeoplesItem();
+//            
+//            // Get the item ID
+//            $id = $this->parent->getId();
+//            
+//            // Get translated table for the peoples table
+//            $table = $people->getTable();
+//            
+//            // select all query
+//            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+//            $query_string = "
+//                SELECT
+//                    distinct(p2a.people_id) AS id, p.name AS name
+//                FROM
+//                    " . self::TABLE_P2A . " p2a
+//                    LEFT JOIN
+//                        " . self::TABLE_A2E . " a2e
+//                            ON a2e.activity_id = p2a.activity_id
+//                    LEFT JOIN
+//                        " . $table . " p
+//                            ON p2a.people_id = p.id
+//                WHERE
+//                    a2e.event_id = :id
+//                ORDER BY
+//                    p2a.people_id ASC";
+//
+//            $query = [
+//                "params" => $query_params,
+//                "string" => $query_string
+//            ];
+//            
+//            // Get the data from the database, using the query
+//            $data = $this->database->getData($query);
+//            return ["peoples", $data];
+            
+            // TODO:
+            return ["peoples", []];
+        }
+        
+        protected function getEventToLocations() {
+//            // Get the item ID
+//            $id = $this->parent->getId();
+//            
+//            // Get translated parent table
+//            $table = $this->parent->getTable();
+//            
+//            // select all query
+//            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+//            $query_string = "
+//                SELECT
+//                    distinct(l2a.location_id) AS id, l.name AS name
+//                FROM
+//                    " . self::TABLE_L2A . " l2a
+//                    LEFT JOIN
+//                        " . self::TABLE_A2E . " a2e
+//                            ON a2e.activity_id = l2a.activity_id
+//                    LEFT JOIN
+//                        " . $table . " l
+//                            ON l2a.location_id = l.id
+//                WHERE
+//                    a2e.event_id = :id
+//                ORDER BY
+//                    l2a.location_id ASC";
+//
+//            $query = [
+//                "params" => $query_params,
+//                "string" => $query_string
+//            ];
+//            
+//            // Get the data from the database, using the query
+//            $data = $this->database->getData($query);
+//            return ["locations", $data];
+            
+            // TODO:
+            return ["locations", []];
 
         }
         
-        protected function getEventToPeoples($id) {
+        protected function getEventToSpecials() {
+//            // Get the item ID
+//            $id = $this->parent->getId();
+//            
+//            // Get translated parent table
+//            $table = $this->parent->getTable();
+//            
+//            // select all query
+//            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+//            $query_string = "
+//                SELECT
+//                    distinct(s2a.special_id) AS id, s.name AS name
+//                FROM
+//                    " . self::TABLE_S2A . " s2a
+//                    LEFT JOIN
+//                        " . self::TABLE_A2E . " a2e
+//                            ON a2e.activity_id = s2a.activity_id
+//                    LEFT JOIN
+//                        " . $table . " s
+//                            ON s2a.special_id = s.id
+//                WHERE
+//                    a2e.event_id = :id
+//                ORDER BY
+//                    s2a.special_id ASC";
+//
+//            $query = [
+//                "params" => $query_params,
+//                "string" => $query_string
+//            ];
+//            
+//            // Get the data from the database, using the query
+//            $data = $this->database->getData($query);
+//            return ["specials", $data];
+            
+            // TODO:
+            return ["specials", []];
 
         }
         
-        protected function getEventToLocations($id) {
+        protected function getEventToAka() {      
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // select all query
+            $query_params = [":event_id" => [$id, \PDO::PARAM_INT],
+                             ":id" => [$id, \PDO::PARAM_INT],];
+            $query_string = "SELECT
+                        distinct(e2e.event_id), e2e.book_start_id,
+                        e2e.book_start_chap, e2e.book_start_vers,
+                        e2e.book_end_id, e2e.book_end_chap, 
+                        e2e.book_end_vers
+                    FROM
+                        " . self::TABLE_E2E . " e2e
+                    WHERE
+                        e2e.event_id = :event_id
+                    UNION    
+                    SELECT
+                        distinct(e.id), e.book_start_id,
+                        e.book_start_chap, e.book_start_vers,
+                        e.book_end_id, e.book_end_chap, 
+                        e.book_end_vers
+                    FROM
+                        " . self::TABLE_EVENTS . " e
+                    WHERE
+                        e.id = :id
+                    ORDER BY
+                        book_start_id ASC, book_start_chap ASC, book_start_vers ASC";
 
-        }
-        
-        protected function getEventToSpecials($id) {
-
-        }
-        
-        protected function getEventToAka($id) {
-
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["aka", $data];
         }
     
-        protected function getEventToNotes($id) {
-            return $this->getItemToNotes($id, "event");
+        protected function getEventToNotes() {
+            return $this->getItemToNotes("event");
         }
         
         protected function getActivityToAka($id) {

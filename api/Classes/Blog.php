@@ -5,7 +5,6 @@
     class Blog extends Item {
         
         // Parameters for this object
-        protected $id;
         protected $title;
         protected $text;
         protected $user;
