@@ -600,37 +600,6 @@ class Utilities {
         return $this->getResults($stmt);
     }
     
-    public function getPeopleToEvents($id) {
-        $table = $this->getTable($this->table_events);
-        
-        // select all query
-        $query = "SELECT
-                    distinct(e.id), e.name
-                FROM
-                    " . $table . " e
-                    LEFT JOIN
-                        " . $this->table_a2e . " a2e
-                            ON a2e.event_id = e.id
-                    LEFT JOIN
-                        " . $this->table_p2a . " p2a
-                            ON p2a.activity_id = a2e.activity_id
-                WHERE
-                    p2a.people_id = ?
-                ORDER BY
-                    e.id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
     public function getPeopleToLocations($id) {
         $table = $this->getTable($this->table_locations);
 
@@ -649,88 +618,6 @@ class Utilities {
                     p2l.people_id = ?
                 ORDER BY
                     l.id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getPeopleToAka($id) {
-        $table = $this->getTable($this->table_p2p);
-        
-        // select all query
-        $query = "SELECT
-                    p2p.people_id as id, p2p.people_name as name, 
-                    p2p.meaning_name as meaning_name
-                FROM
-                    " . $table . " p2p
-                WHERE
-                    p2p.people_id = ?
-                ORDER BY
-                    p2p.people_name ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getPeopleToParents($id) {
-        $table = $this->getTable($this->table_peoples);
-        
-        // select all query
-        $query = "SELECT
-                    distinct(p.id) as id, p.name
-                FROM
-                    " . $table . " p
-                    LEFT JOIN
-                        " . $this->table_p2pa . " p2p
-                            ON p2p.parent_id = p.id
-                WHERE
-                    p2p.people_id = ?
-                ORDER BY
-                    p.id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
-    public function getPeopleToChildren($id) {
-        $table = $this->getTable($this->table_peoples);
-
-        // select all query
-        $query = "SELECT
-                    distinct(p.id) as id, p.name, p.gender, p2p.parent_id
-                FROM
-                    " . $table . " p
-                    LEFT JOIN
-                        " . $this->table_p2pa . " p2p
-                            ON p2p.people_id = p.id
-                WHERE
-                    p2p.parent_id = ?
-                ORDER BY
-                    p.id ASC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

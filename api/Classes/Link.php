@@ -28,6 +28,10 @@
         public const SPECIALS_TO_EVENTS = "getSpecialToEvents";
         public const SPECIALS_TO_NOTES = "getSpecialToNotes";
         
+        // The types
+        public const PEOPLES_TO_GENDER = "getPeopleToGender";
+        public const PEOPLES_TO_TRIBE = "getPeopleToTribe";
+        
         // The default tables
         public const TABLE_BOOKS = "books";
         public const TABLE_EVENTS = "events";
@@ -93,32 +97,52 @@
             
             return $links;
         }
-
-//                    case "people_to_aka":
-//                        $columns = [
-//                            "people_id" => false,
-//                            "people_name" => true,
-//                            "meaning_name" => true,
-//                        ];
-//                        $item_name = "people";
-//                        break;
-//
-//                    case "location_to_aka":
-//                        $columns = [
-//                            "location_id" => false,
-//                            "location_name" => true,
-//                            "meaning_name" => true,
-//                        ];
-//                        $item_name = "location";
-//                        break;
-//
-//                    case "notes":
-//                        $columns = [
-//                            "id" => false,
-//                            "note" => true,
-//                            "type" => false,
-//                        ];
-//                        break;
+        
+        private function getEventsItem() {
+            // Get the current language
+            $lang = $this->parent->getLang();
+            
+            // Create a new Note Item object
+            $events = new \Classes\Event();
+            $events->setLang($lang);
+            
+            return $events;
+        }
+        
+        private function getPeoplesItem() {
+            // Get the current language
+            $lang = $this->parent->getLang();
+            
+            // Create a new Note Item object
+            $peoples = new \Classes\People();
+            $peoples->setLang($lang);
+            
+            return $peoples;
+        }
+        
+        protected function getP2PItem() {
+            // Get the current language
+            $lang = $this->parent->getLang();
+            
+            // Create a new Note Item object
+            $p2p = new Item();
+            $p2p->setLang($lang);
+            $p2p->setTable("people_to_aka", [
+                "id",
+                "people_id", 
+                "people_name",
+                "meaning_name"
+            ], "id");
+            $p2p->setTableLang([
+                "id",
+                "people_id",
+                "people_name",
+                "meaning_name",
+                "lang"
+            ], "people_id");
+            
+            return $p2p;
+        }
         
         private function getNotesItem() {
             // Get the current language
@@ -140,6 +164,18 @@
             ], "note_id");
             
             return $notes;
+        }
+        
+        private function parseType($data) {
+            $type_name = "";
+            
+            // Get the name stored in this type table
+            if (count($data) > 0 && array_key_exists("type_name", $data[0])) {
+                $type_name = $data[0]["type_name"];
+            }
+            
+            // Return the name
+            return $type_name;
         }
         
         private function parseNotes($data) {
@@ -171,7 +207,7 @@
             return $this->getItemToNotes("book");
         }
         
-        protected function getEventToChildren() {          
+        protected function getEventToChildren() {
             // Get the item ID
             $id = $this->parent->getId();
             
@@ -184,12 +220,12 @@
                 SELECT
                     distinct(e.id) AS id, e.name
                 FROM
-                    " . $table . " e
+                    {$table} e
                     LEFT JOIN
                         " . self::TABLE_E2PA . " e2pa
-                            ON e2pa.parent_id = e.id
+                            ON e2pa.event_id = e.id
                 WHERE
-                    e2pa.event_id = :id
+                    e2pa.parent_id = :id
                 ORDER BY
                     e.id ASC";
 
@@ -217,12 +253,12 @@
                 SELECT
                     distinct(e.id) AS id, e.name
                 FROM
-                    " . $table . " e
+                    {$table} e
                     LEFT JOIN
                         " . self::TABLE_E2PA . " e2pa
-                            ON e2pa.event_id = e.id
+                            ON e2pa.parent_id = e.id
                 WHERE
-                    e2pa.parent_id = :id
+                    e2pa.event_id = :id
                 ORDER BY
                     e.id ASC";
 
@@ -237,44 +273,41 @@
         }
         
         protected function getEventToPeoples() {
-//            // Get the translated peoples item
-//            $people = $this->getPeoplesItem();
-//            
-//            // Get the item ID
-//            $id = $this->parent->getId();
-//            
-//            // Get translated table for the peoples table
-//            $table = $people->getTable();
-//            
-//            // select all query
-//            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
-//            $query_string = "
-//                SELECT
-//                    distinct(p2a.people_id) AS id, p.name AS name
-//                FROM
-//                    " . self::TABLE_P2A . " p2a
-//                    LEFT JOIN
-//                        " . self::TABLE_A2E . " a2e
-//                            ON a2e.activity_id = p2a.activity_id
-//                    LEFT JOIN
-//                        " . $table . " p
-//                            ON p2a.people_id = p.id
-//                WHERE
-//                    a2e.event_id = :id
-//                ORDER BY
-//                    p2a.people_id ASC";
-//
-//            $query = [
-//                "params" => $query_params,
-//                "string" => $query_string
-//            ];
-//            
-//            // Get the data from the database, using the query
-//            $data = $this->database->getData($query);
-//            return ["peoples", $data];
+            // Get the translated peoples item
+            $people = $this->getPeoplesItem();
             
-            // TODO:
-            return ["peoples", []];
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the peoples table
+            $table = $people->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(p2a.people_id) AS id, p.name AS name
+                FROM
+                    " . self::TABLE_P2A . " p2a
+                    LEFT JOIN
+                        " . self::TABLE_A2E . " a2e
+                            ON a2e.activity_id = p2a.activity_id
+                    LEFT JOIN
+                        {$table} p
+                            ON p2a.people_id = p.id
+                WHERE
+                    a2e.event_id = :id
+                ORDER BY
+                    p2a.people_id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["peoples", $data];
         }
         
         protected function getEventToLocations() {
@@ -398,60 +431,241 @@
             return $this->getItemToNotes("event");
         }
         
-        protected function getActivityToAka($id) {
+        protected function getActivityToAka() {
 
         }
         
-        protected function getActivityToNotes($id) {
-            return $this->getItemToNotes($id, "activity");
+        protected function getActivityToNotes() {
+            return $this->getItemToNotes("activity");
         }
         
-        protected function getPeopleToParents($id) {
+        protected function getPeopleToGender() {
+            $id = $this->parent->getId();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    t.type_name
+                FROM
+                    " . self::TABLE_PEOPLES . " p
+                LEFT JOIN " . self::TABLE_TG . " AS t 
+                    ON p.gender = t.type_id
+                WHERE
+                    p.id = :id
+                LIMIT
+                    0,1";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            
+            // Parse the data into something more useful
+            $gender = $this->parseType($data);
+            return ["gender", $gender];
+        }
+        
+        protected function getPeopleToTribe() {
+            $id = $this->parent->getId();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    t.type_name
+                FROM
+                    " . self::TABLE_PEOPLES . " p
+                LEFT JOIN " . self::TABLE_TT . " AS t 
+                    ON p.tribe = t.type_id
+                WHERE
+                    p.id = :id
+                LIMIT
+                    0,1";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            
+            // Parse the data into something more useful
+            $gender = $this->parseType($data);
+            return ["tribe", $gender];
+        }
+        
+        protected function getPeopleToChildren() {
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated parent table
+            $table = $this->parent->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(p.id) AS id, p.name
+                FROM
+                    {$table} p
+                    LEFT JOIN
+                        " . self::TABLE_P2PA . " p2pa
+                            ON p2pa.people_id = p.id
+                WHERE
+                    p2pa.parent_id = :id
+                ORDER BY
+                    p.id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["children", $data];
+        }
+        
+        protected function getPeopleToParents() {
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated parent table
+            $table = $this->parent->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(p.id) AS id, p.name
+                FROM
+                    {$table} p
+                    LEFT JOIN
+                        " . self::TABLE_P2PA . " p2pa
+                            ON p2pa.parent_id = p.id
+                WHERE
+                    p2pa.people_id = :id
+                ORDER BY
+                    p.id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["parents", $data];
+        }
+        
+        protected function getPeopleToEvents() {
+            // Create a new notes item
+            $event = $this->getEventsItem();
+            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the events table
+            $table_events = $event->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(e.id), e.name
+                FROM
+                    {$table_events} e
+                    LEFT JOIN
+                        " . self::TABLE_A2E . " a2e
+                            ON a2e.event_id = e.id
+                    LEFT JOIN
+                        " . self::TABLE_P2A . " p2a
+                            ON p2a.activity_id = a2e.activity_id
+                WHERE
+                    p2a.people_id = :id
+                ORDER BY
+                    e.id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            
+            return ["events", $data];
+        }
+        
+        protected function getPeopleToAka() {
+            // Create a new aka item
+            $aka = $this->getP2PItem();
+            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the aka table
+            $table_aka = $aka->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    p2p.people_id as id, p2p.people_name as name, 
+                    p2p.meaning_name as meaning_name
+                FROM
+                    {$table_aka} p2p
+                WHERE
+                    p2p.people_id = :id
+                ORDER BY
+                    p2p.people_name ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["aka", $data];
+        }
+        
+        protected function getPeopleToLocations() {
+            // TODO:
+            return ["locations", []];
+        }
+        
+        protected function getPeopleToNotes() {
+            return $this->getItemToNotes("people");
+        }
+
+        protected function getLocationToAka() {
 
         }
         
-        protected function getPeopleToChildren($id) {
+        protected function getLocationToPeoples() {
 
         }
         
-        protected function getPeopleToEvents($id) {
+        protected function getLocationToEvents() {
 
         }
         
-        protected function getPeopleToAka($id) {
+        protected function getLocationToNotes() {
+            return $this->getItemToNotes("location");
+        }
+        
+        protected function getSpecialToEvents() {
 
         }
         
-        protected function getPeopleToLocations($id) {
-
-        }
-        
-        protected function getPeopleToNotes($id) {
-            return $this->getItemToNotes($id, "people");
-        }
-
-        protected function getLocationToAka($id) {
-
-        }
-        
-        protected function getLocationToPeoples($id) {
-
-        }
-        
-        protected function getLocationToEvents($id) {
-
-        }
-        
-        protected function getLocationToNotes($id) {
-            return $this->getItemToNotes($id, "location");
-        }
-        
-        protected function getSpecialToEvents($id) {
-
-        }
-        
-        protected function getSpecialToNotes($id) {
-            return $this->getItemToNotes($id, "special");
+        protected function getSpecialToNotes() {
+            return $this->getItemToNotes("special");
         }
         
         private function getItemToNotes($type) {
@@ -469,12 +683,12 @@
             $query_params = [":id" => [$id, \PDO::PARAM_INT]];
             $query_string = "
                 SELECT i.id, i.name, n.note, n.id AS note_id, s.source
-                    FROM " . $table_parent . " i
+                    FROM {$table_parent} i
                     JOIN " . self::TABLE_TI . " ti
                         ON ti.type_name = '". strtolower($type)."'
                     JOIN " . self::TABLE_N2I . " n2i
                         ON n2i.item_type = ti.type_id AND n2i.item_id = i.id
-                    JOIN " . $table_notes . " n
+                    JOIN {$table_notes} n
                         ON n2i.note_id = n.id
                     LEFT JOIN " . self::TABLE_N2S . " n2s
                         ON n2s.note_id = n.id

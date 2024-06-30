@@ -304,6 +304,15 @@
         }
         
         protected function getReadOneQuery() {
+            /* 
+             * TODO: The global timeline query, put this in the database itself
+            if ($this->id === -999) {
+                // This is a "Global timeline" event
+                $query = "SELECT
+                        ? AS id, 'timeline.global' AS name";
+            } 
+             */
+            
             // The translated table name
             $table = $this->getTable();
             
@@ -333,10 +342,8 @@
         }
         
         protected function getReadMapsQuery() {
-            return [
-                "string" => "",
-                "params" => ""
-            ];
+            // Too complex to have standard functions for
+            return $this->getEmptyQuery();
         }
         
         protected function getReadPageQuery() {
@@ -350,8 +357,8 @@
             ];
             
             // Parts of the query
-            $where_sql = $this->getWhere($query_params);
-            $sort_sql = $this->getSort();
+            $where_sql = $this->getWhereQuery($query_params);
+            $sort_sql = $this->getSortQuery();
 
             // Query string (where parameters will be plugged in)
             $query_string = "SELECT
@@ -395,7 +402,7 @@
             return $columns;
         }
         
-        public function getWhere(&$query_params) {
+        protected function getWhereQuery(&$query_params) {
             $where_sql = "";
             if (isset($this->filter) && ($this->filter !== "")) {
                 $where_sql = "WHERE name LIKE :filter";
@@ -405,7 +412,7 @@
             return $where_sql;
         }
         
-        public function getSort() {
+        protected function getSortQuery() {
             // If a sort different then the default is given
             switch($this->sort) {
                 case 'a_to_z':
@@ -441,10 +448,10 @@
             $query_params = [];
             
             // Parts of the query
-            $where_sql = $this->getWhere($query_params);
+            $where_sql = $this->getWhereQuery($query_params);
             
             // Query string (where parameters will be plugged in)
-            $query_string = "SELECT CEILING(COUNT(*) / 10) as total_pages FROM {$this->table_name} {$where_sql}";
+            $query_string = "SELECT CEILING(COUNT(*) / 10) as total_pages FROM {$this->table_name} i {$where_sql}";
             
             $query = [
                 "params" => $query_params,
@@ -533,7 +540,7 @@
             foreach($this->table_columns as $table_column) {
                 if (array_search($table_column, $this->lang_columns)) {
                     // If there is a translated version of this column, use it
-                    $column = "COALESCE(NULLIF(lang.{$table_column}, ''), CONCAT(items.{$table_column}, ' (NL)')) as {$table_column}";
+                    $column = "COALESCE(NULLIF(lang.{$table_column}, ''), CONCAT(NULLIF(items.{$table_column}, ''), ' (NL)'), '') as {$table_column}";
                 } else {
                     // If there isn't, just use the regular version
                     $column = "items.{$table_column}";
@@ -751,7 +758,9 @@
         protected function getReadMapsFilter() {
             return [
                 self::OPTIONAL_PARAMS => [],
-                self::REQUIRED_PARAMS => [],
+                self::REQUIRED_PARAMS => array_merge(
+                    self::FILTER_ID,
+                ),
             ];
         }
         

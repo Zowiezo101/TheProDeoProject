@@ -36,7 +36,6 @@
             $this->setLinks([
                 Link::EVENTS_TO_PREV,
                 Link::EVENTS_TO_NEXT,
-                // TODO:
                 Link::EVENTS_TO_PEOPLES,
                 Link::EVENTS_TO_LOCATIONS,
                 Link::EVENTS_TO_SPECIALS,
