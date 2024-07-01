@@ -7,16 +7,13 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: access");
   
 // Include core and object files
-include_once '../config/core.php';
-include_once '../objects/location.php';
+require '../config/core.php';
   
 // Initialize object
-$item = new location();
+$item = new Classes\Location();
   
 // Read the requested data
-$data = $item->read_one();
+$item->readOne();
 
-// Prepare a message to be sent to the client
-$message = $item->prepare_message($data);
-http_response_code($message["code"]);
-echo json_encode($message["data"]);
+// Send a message to the client
+$item->sendMessage();

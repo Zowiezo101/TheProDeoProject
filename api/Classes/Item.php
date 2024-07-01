@@ -16,7 +16,7 @@
         
         // Other classes that are used
         private $database;
-        private $link;
+        protected $link;
         private $message;
         
         // Actions

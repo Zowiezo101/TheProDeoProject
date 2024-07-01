@@ -57,12 +57,6 @@
                         "hide-empty" => true
                     ],
                     [
-                        "title" => $dict["items.peoples"],
-                        "data" => "peoples",
-                        "type" => $ROW_PEOPLES,
-                        "hide-empty" => true
-                    ],
-                    [
                         "title" => $dict["items.coordinates"],
                         "type" => $ROW_COORDS,
                         "hide-empty" => true

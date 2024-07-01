@@ -31,6 +31,7 @@
         // The types
         public const PEOPLES_TO_GENDER = "getPeopleToGender";
         public const PEOPLES_TO_TRIBE = "getPeopleToTribe";
+        public const LOCATIONS_TO_TYPE = "getLocationToType";
         
         // The default tables
         public const TABLE_BOOKS = "books";
@@ -120,7 +121,7 @@
             return $peoples;
         }
         
-        protected function getP2PItem() {
+        public function getP2PItem() {
             // Get the current language
             $lang = $this->parent->getLang();
             
@@ -142,6 +143,41 @@
             ], "people_id");
             
             return $p2p;
+        }
+        
+        private function getLocationsItem() {
+            // Get the current language
+            $lang = $this->parent->getLang();
+            
+            // Create a new Note Item object
+            $locations = new \Classes\Location();
+            $locations->setLang($lang);
+            
+            return $locations;
+        }
+        
+        public function getL2LItem() {
+            // Get the current language
+            $lang = $this->parent->getLang();
+            
+            // Create a new Note Item object
+            $l2l = new Item();
+            $l2l->setLang($lang);
+            $l2l->setTable("location_to_aka", [
+                "id",
+                "location_id", 
+                "location_name",
+                "meaning_name"
+            ], "id");
+            $l2l->setTableLang([
+                "id",
+                "location_id",
+                "location_name",
+                "meaning_name",
+                "lang"
+            ], "location_id");
+            
+            return $l2l;
         }
         
         private function getNotesItem() {
@@ -311,42 +347,41 @@
         }
         
         protected function getEventToLocations() {
-//            // Get the item ID
-//            $id = $this->parent->getId();
-//            
-//            // Get translated parent table
-//            $table = $this->parent->getTable();
-//            
-//            // select all query
-//            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
-//            $query_string = "
-//                SELECT
-//                    distinct(l2a.location_id) AS id, l.name AS name
-//                FROM
-//                    " . self::TABLE_L2A . " l2a
-//                    LEFT JOIN
-//                        " . self::TABLE_A2E . " a2e
-//                            ON a2e.activity_id = l2a.activity_id
-//                    LEFT JOIN
-//                        " . $table . " l
-//                            ON l2a.location_id = l.id
-//                WHERE
-//                    a2e.event_id = :id
-//                ORDER BY
-//                    l2a.location_id ASC";
-//
-//            $query = [
-//                "params" => $query_params,
-//                "string" => $query_string
-//            ];
-//            
-//            // Get the data from the database, using the query
-//            $data = $this->database->getData($query);
-//            return ["locations", $data];
+            // Get the translated locations item
+            $location = $this->getLocationsItem();
             
-            // TODO:
-            return ["locations", []];
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated parent table
+            $table = $location->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(l2a.location_id) AS id, l.name AS name
+                FROM
+                    " . self::TABLE_L2A . " l2a
+                    LEFT JOIN
+                        " . self::TABLE_A2E . " a2e
+                            ON a2e.activity_id = l2a.activity_id
+                    LEFT JOIN
+                        {$table} l
+                            ON l2a.location_id = l.id
+                WHERE
+                    a2e.event_id = :id
+                ORDER BY
+                    l2a.location_id ASC";
 
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["locations", $data];
         }
         
         protected function getEventToSpecials() {
@@ -636,24 +671,185 @@
         }
         
         protected function getPeopleToLocations() {
-            // TODO:
-            return ["locations", []];
+            // Create a new locations item
+            $location = $this->getLocationsItem();
+            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the locations table
+            $table = $location->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(l.id), l.name, t.type_name as type
+                FROM
+                    {$table} l
+                LEFT JOIN
+                    " . self::TABLE_P2L . " p2l
+                        ON p2l.location_id = l.id
+                LEFT JOIN
+                    " . self::TABLE_TP . " t
+                        ON p2l.type = t.type_id
+                WHERE
+                    p2l.people_id = :id
+                ORDER BY
+                    l.id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["locations", $data];
         }
         
         protected function getPeopleToNotes() {
             return $this->getItemToNotes("people");
         }
-
-        protected function getLocationToAka() {
-
-        }
         
-        protected function getLocationToPeoples() {
+        protected function getLocationToType() {
+            $id = $this->parent->getId();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    t.type_name
+                FROM
+                    " . self::TABLE_LOCATIONS . " l
+                LEFT JOIN " . self::TABLE_TL . " AS t 
+                    ON l.type = t.type_id
+                WHERE
+                    l.id = :id
+                LIMIT
+                    0,1";
 
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            
+            // Parse the data into something more useful
+            $type = $this->parseType($data);
+            return ["type", $type];
         }
         
         protected function getLocationToEvents() {
+            // Create a new notes item
+            $event = $this->getEventsItem();
+            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the events table
+            $table_events = $event->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(e.id), e.name
+                FROM
+                    {$table_events} e
+                    LEFT JOIN
+                        " . self::TABLE_A2E . " a2e
+                            ON a2e.event_id = e.id
+                    LEFT JOIN
+                        " . self::TABLE_L2A . " l2a
+                            ON l2a.activity_id = a2e.activity_id
+                WHERE
+                    l2a.location_id = :id
+                ORDER BY
+                    e.id ASC";
 
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            
+            return ["events", $data];
+        }
+        
+        protected function getLocationToPeoples() {
+            // Create a new peoples item
+            $peoples = $this->getPeoplesItem();
+            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the peoples table
+            $table = $peoples->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(p.id), p.name, t.type_name as type
+                FROM
+                    {$table} p
+                LEFT JOIN
+                    " . self::TABLE_P2L . " p2l
+                        ON p2l.people_id = p.id
+                LEFT JOIN
+                    " . self::TABLE_TP . " t
+                        ON p2l.type = t.type_id
+                WHERE
+                    p2l.location_id = :id
+                ORDER BY
+                    p.id ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["peoples", $data];
+        }
+
+        protected function getLocationToAka() {
+            // Create a new aka item
+            $aka = $this->getL2LItem();
+            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the aka table
+            $table_aka = $aka->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    l2l.location_id as id, l2l.location_name as name, 
+                    l2l.meaning_name as meaning_name
+                FROM
+                    {$table_aka} l2l
+                WHERE
+                    l2l.location_id = :id
+                ORDER BY
+                    l2l.location_name ASC";
+
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["aka", $data];
         }
         
         protected function getLocationToNotes() {
