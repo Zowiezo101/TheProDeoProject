@@ -74,50 +74,6 @@
             ];            
             return $query;
         }
-        
-        protected function getReadMapsQuery() {
-            // The translated table name
-            $table = $this->getTable();
-            
-            // Query parameters
-            $query_params = [
-                ":people_id" => [$this->id, \PDO::PARAM_INT],
-                ":parent_id" => [$this->id, \PDO::PARAM_INT]
-            ];
-            
-            // Query string (where parameters will be plugged in)
-            $query_string = "
-                WITH RECURSIVE cte (p1, p2) AS 
-                    (
-                        SELECT people_id, parent_id FROM people_to_parent WHERE people_id = :people_id
-                        UNION ALL
-                        SELECT people_id, parent_id FROM people_to_parent JOIN cte ON people_id = p2
-                    )
-
-                SELECT DISTINCT id, name FROM (
-                    SELECT id, name FROM {$table} p
-                        LEFT JOIN people_to_parent p2p
-                        ON p.id = p2p.people_id 
-                        WHERE p.id IN (SELECT p2 FROM cte)
-                        AND parent_id IS NULL
-                    UNION ALL
-                    SELECT id, name FROM {$table} p
-                        LEFT JOIN people_to_parent p1
-                        ON p.id = p1.parent_id 
-                        LEFT JOIN people_to_parent p2
-                        ON p.id = p2.people_id
-                        WHERE p1.parent_id = :parent_id
-                        AND p1.people_id IS NOT NULL
-                        AND p2.parent_id IS NULL
-                        )
-                AS ancestor";
-            
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ];
-            return $query;
-        }
     
 //        // search products
 //        function search($filters){

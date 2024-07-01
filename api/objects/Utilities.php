@@ -501,37 +501,6 @@ class Utilities {
         
     }
     
-    public function getEventToSpecials($id) {
-        $table = $this->getTable($this->table_specials);
-
-        // select all query
-        $query = "SELECT
-                    distinct(s2a.special_id) AS id, s.name AS name
-                FROM
-                    " . $this->table_s2a . " s2a
-                    LEFT JOIN
-                        " . $this->table_a2e . " a2e
-                            ON a2e.activity_id = s2a.activity_id
-                    LEFT JOIN
-                        " . $table . " s
-                            ON s2a.special_id = s.id
-                WHERE
-                    a2e.event_id = ?
-                ORDER BY
-                    s2a.special_id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-    
     public function getActivityToAka($id) {
         // select all query
         $query = "SELECT
@@ -568,36 +537,4 @@ class Utilities {
         
         return $this->getResults($stmt);
     }
-    
-    public function getSpecialToEvents($id) {
-        $table = $this->getTable($this->table_events);
-        
-        // select all query
-        $query = "SELECT
-                    distinct(e.id), e.name
-                FROM
-                    " . $table . " e
-                    LEFT JOIN
-                        " . $this->table_a2e . " a2e
-                            ON a2e.event_id = e.id
-                    LEFT JOIN
-                        " . $this->table_s2a . " s2a
-                            ON s2a.activity_id = a2e.activity_id
-                WHERE
-                    s2a.special_id = ?
-                ORDER BY
-                    e.id ASC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        
-        // bind variable values
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-
-        // execute query
-        $stmt->execute();
-        
-        return $this->getResults($stmt);
-    }
-  
 }

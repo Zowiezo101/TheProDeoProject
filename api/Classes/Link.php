@@ -32,6 +32,7 @@
         public const PEOPLES_TO_GENDER = "getPeopleToGender";
         public const PEOPLES_TO_TRIBE = "getPeopleToTribe";
         public const LOCATIONS_TO_TYPE = "getLocationToType";
+        public const SPECIALS_TO_TYPE = "getSpecialToType";
         
         // The default tables
         public const TABLE_BOOKS = "books";
@@ -178,6 +179,17 @@
             ], "location_id");
             
             return $l2l;
+        }
+        
+        private function getSpecialsItem() {
+            // Get the current language
+            $lang = $this->parent->getLang();
+            
+            // Create a new Note Item object
+            $specials = new \Classes\Special();
+            $specials->setLang($lang);
+            
+            return $specials;
         }
         
         private function getNotesItem() {
@@ -385,42 +397,41 @@
         }
         
         protected function getEventToSpecials() {
-//            // Get the item ID
-//            $id = $this->parent->getId();
-//            
-//            // Get translated parent table
-//            $table = $this->parent->getTable();
-//            
-//            // select all query
-//            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
-//            $query_string = "
-//                SELECT
-//                    distinct(s2a.special_id) AS id, s.name AS name
-//                FROM
-//                    " . self::TABLE_S2A . " s2a
-//                    LEFT JOIN
-//                        " . self::TABLE_A2E . " a2e
-//                            ON a2e.activity_id = s2a.activity_id
-//                    LEFT JOIN
-//                        " . $table . " s
-//                            ON s2a.special_id = s.id
-//                WHERE
-//                    a2e.event_id = :id
-//                ORDER BY
-//                    s2a.special_id ASC";
-//
-//            $query = [
-//                "params" => $query_params,
-//                "string" => $query_string
-//            ];
-//            
-//            // Get the data from the database, using the query
-//            $data = $this->database->getData($query);
-//            return ["specials", $data];
+            // Get the translated locations item
+            $special = $this->getSpecialsItem();
             
-            // TODO:
-            return ["specials", []];
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated parent table
+            $table = $special->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(s2a.special_id) AS id, s.name AS name
+                FROM
+                    " . self::TABLE_S2A . " s2a
+                    LEFT JOIN
+                        " . self::TABLE_A2E . " a2e
+                            ON a2e.activity_id = s2a.activity_id
+                    LEFT JOIN
+                        {$table} s
+                            ON s2a.special_id = s.id
+                WHERE
+                    a2e.event_id = :id
+                ORDER BY
+                    s2a.special_id ASC";
 
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return ["specials", $data];
         }
         
         protected function getEventToAka() {      
@@ -857,7 +868,42 @@
         }
         
         protected function getSpecialToEvents() {
+            // Create a new notes item
+            $event = $this->getEventsItem();
+            
+            // Get the item ID
+            $id = $this->parent->getId();
+            
+            // Get translated table for the events table
+            $table_events = $event->getTable();
+            
+            // select all query
+            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_string = "
+                SELECT
+                    distinct(e.id), e.name
+                FROM
+                    {$table_events} e
+                    LEFT JOIN
+                        " . self::TABLE_A2E . " a2e
+                            ON a2e.event_id = e.id
+                    LEFT JOIN
+                        " . self::TABLE_S2A . " s2a
+                            ON s2a.activity_id = a2e.activity_id
+                WHERE
+                    s2a.special_id = :id
+                ORDER BY
+                    e.id ASC";
 
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            
+            return ["events", $data];
         }
         
         protected function getSpecialToNotes() {
