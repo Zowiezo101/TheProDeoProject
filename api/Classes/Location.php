@@ -167,7 +167,7 @@
             $where_sql = "";
             if (isset($this->filter) && ($this->filter !== "")) {
                 // The Locations to Aka item
-                $l2l = $this->link->getL2LItem();
+                $l2l = $this->getL2LItem();
                 $table_l2l = $l2l->getTable();
                 
                 $where_sql = "

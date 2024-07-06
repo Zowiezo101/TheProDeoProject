@@ -230,7 +230,7 @@
             $where_sql = "";
             if (isset($this->filter) && ($this->filter !== "")) {
                 // The Peoples to Aka item
-                $p2p = $this->link->getP2PItem();
+                $p2p = $this->getP2PItem();
                 $table_p2p = $p2p->getTable();
                 
                 $where_sql = "

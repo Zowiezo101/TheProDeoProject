@@ -13,8 +13,8 @@
         public const EVENTS_TO_SPECIALS = "getEventToSpecials";
         public const EVENTS_TO_AKA = "getEventToAka";
         public const EVENTS_TO_NOTES = "getEventToNotes";
-        public const ACTIVITIES_TO_AKA = "getActivityToAka";
-        public const ACTIVITIES_TO_NOTES = "getActivityToNotes";
+        public const ACTIVITIES_TO_AKA = "getActivitiesToAka";
+        public const ACTIVITIES_TO_NOTES = "getActivitiesToNotes";
         public const PEOPLES_TO_PARENTS = "getPeopleToParents";
         public const PEOPLES_TO_CHILDREN = "getPeopleToChildren";
         public const PEOPLES_TO_EVENTS = "getPeopleToEvents";
@@ -27,6 +27,8 @@
         public const LOCATIONS_TO_NOTES = "getLocationToNotes";
         public const SPECIALS_TO_EVENTS = "getSpecialToEvents";
         public const SPECIALS_TO_NOTES = "getSpecialToNotes";
+        public const TIMELINE_TO_AKA = "getTimelineToAka";
+        public const TIMELINE_TO_NOTES = "getTimelineToNotes";
         
         // The types
         public const PEOPLES_TO_GENDER = "getPeopleToGender";
@@ -70,6 +72,7 @@
         public const TABLE_TS = "type_special";
         
         private $links = [];
+        private $data = null;
         
         // The parent class and database class
         private $parent;
@@ -80,11 +83,35 @@
             $this->database = new Database();
         }
         
+        public function __destruct() {
+            // Call the database destructor to close the database connection
+            $this->database = null;
+        }
+        
+        public function insertLinks(&$data) {
+            // Store the data
+            $this->data = $data;
+            
+            // Get the linking information of other tables
+            $links = $this->getLinks();
+            
+            foreach ($links as [$link_id, $link_name, $link_data]) {
+                // Get the index that has the correct item ID
+                $index = $this->getRecordIndex($data, $link_id);
+                
+                // Insert the data
+                $data[$index][$link_name] = $link_data;
+            }
+            
+            // Remove the data
+            $this->data = null;
+        }
+        
         public function setLinks($links) {
             $this->links = $links;
         }
         
-        public function getLinks() {
+        private function getLinks() {
             $links = [];
             
             foreach($this->links as $link) {                    
@@ -92,12 +119,55 @@
                 // to get extra information
                 if (method_exists($this, $link)) {
                     // If the function exists, execute it to get the data
-                    // and add it to the array
-                    $links[] = $this->$link();
+                    // and add it to the array.
+                    $link_data = $this->$link();
+                    $this->addLinkData($link_data, $links);
                 }
             }
             
             return $links;
+        }
+        
+        private function addLinkData($data, &$array) {
+            /* There are two possible data types:
+             * 1. An array with the following values [id, name, data]
+             * 2. An array containing multiple arrays of pt 1 [[id, name, data], 
+             *                                                 [id, name, data]]
+             * 
+             * In case 1, create a new index. 
+             * In case 2, merge the data.
+             */
+            if (is_array($data[0])) {
+                $array = array_merge($data, $array);
+            } else {
+                $array[] = $data;
+            }
+        }
+        
+        private function getRecordIndex($data, $id) {
+            $index = false;
+            
+            // Loop through all the items to find the one with the correct ID
+            foreach($data as $key => $value) {
+                if ($value["id"] === $id) {
+                    $index = $key;
+                    break;
+                }
+            }
+            
+            // Return the index if found, or false if not found
+            return $index;
+        }
+        
+        public function getActivitiesItem() {
+            // Get the current language
+            $lang = $this->parent->getLang();
+            
+            // Create a new Note Item object
+            $activities = new \Classes\Activity();
+            $activities->setLang($lang);
+            
+            return $activities;
         }
         
         private function getEventsItem() {
@@ -284,7 +354,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["children", $data];
+            return [$id, "children", $data];
 
         }
         
@@ -317,7 +387,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["parents", $data];
+            return [$id, "parents", $data];
         }
         
         protected function getEventToPeoples() {
@@ -355,7 +425,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["peoples", $data];
+            return [$id, "peoples", $data];
         }
         
         protected function getEventToLocations() {
@@ -393,7 +463,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["locations", $data];
+            return [$id, "locations", $data];
         }
         
         protected function getEventToSpecials() {
@@ -431,12 +501,14 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["specials", $data];
+            return [$id, "specials", $data];
         }
         
-        protected function getEventToAka() {      
-            // Get the item ID
-            $id = $this->parent->getId();
+        protected function getEventToAka($id = null) {
+            if ($id === null) {
+                // Get the item ID
+                $id = $this->parent->getId();
+            }
             
             // select all query
             $query_params = [":event_id" => [$id, \PDO::PARAM_INT],
@@ -470,19 +542,81 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["aka", $data];
+            return [$id, "aka", $data];
         }
     
-        protected function getEventToNotes() {
-            return $this->getItemToNotes("event");
+        protected function getEventToNotes($id = null) {
+            return $this->getItemToNotes("event", $id);
         }
         
-        protected function getActivityToAka() {
+        protected function getActivitiesToAka() {
+            // We need to loop over all the event IDs
+            $ids = $this->getIds();
+            
+            // Get the AKA for each seperate event
+            $data = array_map(function($id) {
+                return $this->getActivityToAka($id);
+            }, $ids);
+            
+            return $data;
+        }
+        
+        protected function getActivityToAka($id = null) {
+            if ($id === null) {
+                // Get the item ID
+                $id = $this->parent->getId();
+            }
+            
+            // select all query
+            $query_params = [":activity_id" => [$id, \PDO::PARAM_INT],
+                             ":id" => [$id, \PDO::PARAM_INT],];
+            $query_string = "
+                SELECT
+                    distinct(a2a.activity_id), a2a.book_start_id,
+                    a2a.book_start_chap, a2a.book_start_vers,
+                    a2a.book_end_id, a2a.book_end_chap, 
+                    a2a.book_end_vers
+                FROM
+                    " . self::TABLE_A2A . " a2a
+                WHERE
+                    a2a.activity_id = :activity_id
+                UNION    
+                SELECT
+                    distinct(a.id), a.book_start_id,
+                    a.book_start_chap, a.book_start_vers,
+                    a.book_end_id, a.book_end_chap, 
+                    a.book_end_vers
+                FROM
+                    " . self::TABLE_ACTIVITIES . " a
+                WHERE
+                    a.id = :id
+                ORDER BY
+                    book_start_id ASC, book_start_chap ASC, book_start_vers ASC";
 
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            
+            // Get the data from the database, using the query
+            $data = $this->database->getData($query);
+            return [$id, "aka", $data];
         }
         
-        protected function getActivityToNotes() {
-            return $this->getItemToNotes("activity");
+        protected function getActivityToNotes($id = null) {
+            return $this->getItemToNotes("activity", $id);
+        }
+        
+        protected function getActivitiesToNotes() {
+            // We need to loop over all the event IDs
+            $ids = $this->getIds();
+            
+            // Get the notes for each seperate event
+            $data = array_map(function($id) {
+                return $this->getActivityToNotes($id);
+            }, $ids);
+            
+            return $data;
         }
         
         protected function getPeopleToGender() {
@@ -512,7 +646,7 @@
             
             // Parse the data into something more useful
             $gender = $this->parseType($data);
-            return ["gender", $gender];
+            return [$id, "gender", $gender];
         }
         
         protected function getPeopleToTribe() {
@@ -542,7 +676,7 @@
             
             // Parse the data into something more useful
             $gender = $this->parseType($data);
-            return ["tribe", $gender];
+            return [$id, "tribe", $gender];
         }
         
         protected function getPeopleToChildren() {
@@ -574,7 +708,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["children", $data];
+            return [$id, "children", $data];
         }
         
         protected function getPeopleToParents() {
@@ -606,7 +740,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["parents", $data];
+            return [$id, "parents", $data];
         }
         
         protected function getPeopleToEvents() {
@@ -645,7 +779,7 @@
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
             
-            return ["events", $data];
+            return [$id, "events", $data];
         }
         
         protected function getPeopleToAka() {
@@ -678,7 +812,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["aka", $data];
+            return [$id, "aka", $data];
         }
         
         protected function getPeopleToLocations() {
@@ -716,7 +850,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["locations", $data];
+            return [$id, "locations", $data];
         }
         
         protected function getPeopleToNotes() {
@@ -750,7 +884,7 @@
             
             // Parse the data into something more useful
             $type = $this->parseType($data);
-            return ["type", $type];
+            return [$id, "type", $type];
         }
         
         protected function getLocationToEvents() {
@@ -789,7 +923,7 @@
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
             
-            return ["events", $data];
+            return [$id, "events", $data];
         }
         
         protected function getLocationToPeoples() {
@@ -827,7 +961,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["peoples", $data];
+            return [$id, "peoples", $data];
         }
 
         protected function getLocationToAka() {
@@ -860,7 +994,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["aka", $data];
+            return [$id, "aka", $data];
         }
         
         protected function getLocationToNotes() {
@@ -903,23 +1037,29 @@
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
             
-            return ["events", $data];
+            return [$id, "events", $data];
         }
         
         protected function getSpecialToNotes() {
             return $this->getItemToNotes("special");
         }
         
-        private function getItemToNotes($type) {
+        private function getItemToNotes($type, $id = null) {
             // Create a new notes item
             $note = $this->getNotesItem();
             
-            // Get the item ID
-            $id = $this->parent->getId();
+            if ($id === null) {
+                // Get the item ID
+                $id = $this->parent->getId();
+            }
             
             // Get translated tables for the notes table and the parent table
             $table_notes = $note->getTable();
             $table_parent = $this->parent->getTable();
+            
+            // Delete the notes item and close unused database connection
+            $note->__destruct();
+            unset($note);
             
             // select all query
             $query_params = [":id" => [$id, \PDO::PARAM_INT]];
@@ -951,6 +1091,39 @@
             
             // Parse the data into something more useful
             $notes = $this->parseNotes($data);
-            return ["notes", $notes];
+            return [$id, "notes", $notes];
+        }
+        
+        protected function getTimelineToAka() {
+            // We need to loop over all the event IDs
+            $ids = $this->getIds();
+            
+            // Get the AKA for each seperate event
+            $data = array_map(function($id) {
+                return $this->getEventToAka($id);
+            }, $ids);
+            
+            return $data;
+        }
+        
+        protected function getTimelineToNotes() {
+            // We need to loop over all the event IDs
+            $ids = $this->getIds();
+            
+            // Get the notes for each seperate event
+            $data = array_map(function($id) {
+                return $this->getEventToNotes($id);
+            }, $ids);
+            
+            return $data;
+        }
+        
+        private function getIds() {
+            // Get all the IDs from the data
+            $ids = array_map(function($item) {
+                return $item["id"];
+            }, $this->data);
+            
+            return $ids;
         }
     }

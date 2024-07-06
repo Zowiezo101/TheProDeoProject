@@ -609,7 +609,7 @@ function calcOffset(item) {
     var cOffset = 0;
     
     // The offset depends on the parent
-    if(item.parent_id !== "-1") {
+    if(item.parent_id !== -1) {
         var parent = getMapItem(item.parent_id);
         
         // Get the average offset coordinate of the parents

@@ -26,6 +26,11 @@
             }
         }
         
+        public function __destruct() {
+            // Close the database connection
+            $this->conn = null;
+        }
+        
         public function getData($query) {
             $query_string = $query["string"];
             $query_params = $query["params"];

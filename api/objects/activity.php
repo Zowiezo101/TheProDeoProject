@@ -1,5 +1,20 @@
 <?php
 class activity{
+//                        $columns = [
+//                            "id" => false,
+//                            "order_id" => false,
+//                            "name" => true,
+//                            "descr" => true,
+//                            "length" => true,
+//                            "date" => true,
+//                            "level" => false,
+//                            "book_start_id" => false,
+//                            "book_start_chap" => false,
+//                            "book_start_vers" => false,
+//                            "book_end_id" => false,
+//                            "book_end_chap" => false,
+//                            "book_end_vers" => false,
+//                        ];
   
     // database connection and table name
     private $conn;

@@ -24,9 +24,6 @@
         private $paging = "";
         private $query = "";
         
-        // Some parameters that can be set
-        private $include_paging;
-        
         public function setError($error, $value = "") {
             
             // Implement 404 as well, but only for readOne
@@ -43,25 +40,17 @@
             }
         }
         
+        public function getData() {
+            return $this->data;
+        }
+        
         public function setData($data, $code) {
             $this->data = $data;
             $this->code = $code;
         }
         
-        public function setLinks($links) {  
-            // After we have the records we want from the SQL query,
-            // we'll go through all the records again to add extra information
-            // from linking tables. This function adds all the requested information
-            // by looping through all the requested linking tables.
-            $this->data = array_map(function ($item) use ($links) {
-                // Get all the queries for the different links
-                foreach($links as [$link_name, $link_data]) {                    
-                    // Add it to the item
-                    $item[$link_name] = $link_data;
-                }
-
-                return $item;
-            }, $this->data);
+        public function updateData($data) {
+            $this->data = $data;
         }
         
         public function setPaging($paging) {

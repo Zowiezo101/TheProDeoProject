@@ -10,6 +10,7 @@ require "../Classes/Search.php";
 require "../Classes/Message.php";
 
 // The different objects to be used
+require "../Classes/Activity.php";
 require "../Classes/Blog.php";
 require "../Classes/Book.php";
 require "../Classes/Event.php";
