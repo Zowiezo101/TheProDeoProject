@@ -134,14 +134,14 @@ function drawItem(group, item) {
         // The Map ID
         var map_id = $("#item_list").attr("data-id");
         
-        if ((map_id === "-999" && item.id === "-999") ||
-            (map_id !== "-999" && item.id !== "-999")) {
+        if ((map_id === -999 && item.id === -999) ||
+            (map_id !== -999 && item.id !== -999)) {
             // We don't need a link when there's nothing to go to
             var link = group.group();
         } else {
             // The link depends on whether it is a global timeline or not
             href = page_base_url + map_id;
-            if (map_id === "-999") {
+            if (map_id === -999) {
                 href = page_base_url + item.id;
             }
                 
@@ -151,7 +151,7 @@ function drawItem(group, item) {
         }
 
         // The popover itself
-        if (item.id === "-999") {
+        if (item.id === -999) {
             // Global timeline
             popover_body.append("<p>" + dict["map.info.global"] + "</p>");
         }
@@ -175,15 +175,15 @@ function drawItem(group, item) {
             popover_body.append(popover_details);
         }
             
-        if ((map_id === "-999" && item.id !== "-999") ||
-            (map_id !== "-999" && item.id === "-999")) {
+        if ((map_id === -999 && item.id !== -999) ||
+            (map_id !== -999 && item.id === -999)) {
             // There actually is a link to go to
             // Explain how to reach the detail page
             popover_body.append("<p class='font-weight-bold'>" + 
                                     dict["map.info.event.details"].replace("LINK", "<a href='" + href + "' target='_blank'>" +
                                     dict["map.info.here"] + "</a>") + 
                                 "</p>");
-        } else if (map_id !== "-999" && item.id !== "-999" && itemHasSubChildren(item)) {
+        } else if (map_id !== -999 && item.id !== -999 && itemHasSubChildren(item)) {
             // There is a modal showing another sub timeline
             // Explain how to reach the modal
             popover_body.append("<p class='font-weight-bold'>" + 

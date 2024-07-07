@@ -13,29 +13,31 @@
         // The Map ID
         var map_id = $("#item_list").attr("data-id");
         
-        getItem(TYPE_FAMILYTREE, map_id).then(function(data) {
-            if (data.hasOwnProperty('records')) {
-                insertFamilytree(data.records);
+        if (map_id !== "") {
+            getItem(TYPE_FAMILYTREE, map_id).then(function(data) {
+                if (data.hasOwnProperty('records')) {
+                    insertFamilytree(data.records);
 
-                // Remove the loading screen
-                hideLoadingScreen();
+                    // Remove the loading screen
+                    hideLoadingScreen();
 
-                // Hide any visible popovers when clicking somewhere else
-                $("body").on("click", function(e) {
-                    if ($(e.target).parents(".popover").length === 0) {
-                        $(".popover").popover("hide");
-                    }
-                });
-            } else {
-                // Show an error message
-                $("#map_div").append(`
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                ` + dict["settings.database_err"] + `
-                            </div>
-                        </div>`);
-            }
-        });
+                    // Hide any visible popovers when clicking somewhere else
+                    $("body").on("click", function(e) {
+                        if ($(e.target).parents(".popover").length === 0) {
+                            $(".popover").popover("hide");
+                        }
+                    });
+                } else {
+                    // Show an error message
+                    $("#map_div").append(`
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    ` + dict["settings.database_err"] + `
+                                </div>
+                            </div>`);
+                }
+            });
+        }
     });
     
     function insertFamilytree(data) {

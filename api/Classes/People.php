@@ -241,9 +241,9 @@
                     AND 
                         p2p.people_name LIKE :name
                     WHERE 
-                        name LIKE :filter_n 
+                        (name LIKE :filter_n 
                     OR 
-                        people_name LIKE :filter_pn";
+                        people_name LIKE :filter_pn)";
                 
                 $query_params[":name"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
                 $query_params[":filter_n"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];

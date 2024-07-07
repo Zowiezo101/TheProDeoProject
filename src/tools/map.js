@@ -59,7 +59,7 @@ class MapMaker {
             book_end_id: ancestor.hasOwnProperty('book_end_id') ? ancestor.book_end_id : null,
             book_end_chap: ancestor.hasOwnProperty('book_end_chap') ? ancestor.book_end_chap : null,
             book_end_vers: ancestor.hasOwnProperty('book_end_vers') ? ancestor.book_end_vers : null,
-            parent_id: "-1",
+            parent_id: -1,
             gen: 0,
             gen_index: 0,
             level: 2,
@@ -130,14 +130,14 @@ class MapMaker {
                 // There might be duplicates
                 parents.forEach(function(parent) {
                     // Set the parents
-                    if (!child.parents.includes(parent_id) && parent_id !== "-1") {
+                    if (!child.parents.includes(parent_id) && parent_id !== -1) {
                         if (child.level === parent.level) {
                             // We are the child of this parent
                             child.parents.push(parent_id);
                         } else if (child.level < parent.level) {
                             // Keep going up until the parent is found with a higher level and use that as the new parent_id
                             child.parent_id = getSubParent(child.level, parent);
-                            if (!child.parents.includes(child.parent_id) && child.parent_id !== "-1") {
+                            if (!child.parents.includes(child.parent_id) && child.parent_id !== -1) {
                                 child.parents.push(child.parent_id);
                             }
 

@@ -89,7 +89,7 @@ function setSubMapItems(id) {
         book_end_id: ancestor.hasOwnProperty('book_end_id') ? ancestor.book_end_id : null,
         book_end_chap: ancestor.hasOwnProperty('book_end_chap') ? ancestor.book_end_chap : null,
         book_end_vers: ancestor.hasOwnProperty('book_end_vers') ? ancestor.book_end_vers : null,
-        parent_id: "-1",
+        parent_id: -1,
         gen: 0,
         gen_index: 0,
         level: 2,
@@ -177,7 +177,7 @@ function sortMapItems(mapItems) {
     
     // Make sure parents and children have the highest generation possible 
     // for the best readability in case of timelines
-    if ((g_Options.type === TYPE_TIMELINE) || (mapItems[0].id === "-999")) {
+    if ((g_Options.type === TYPE_TIMELINE) || (mapItems[0].id === -999)) {
         // In this case it's a timeline, let's go by generation
         for (var i = 0; i < maxGen; i++) {
             // Get all the parents of this generation
@@ -195,7 +195,7 @@ function sortMapItems(mapItems) {
                     }, -1);
                     
                     mapItem.gen = lowestGenChild - 1;
-                } else if (mapItem.parent_id !== "-1") {
+                } else if (mapItem.parent_id !== -1) {
                     mapItem.gen = getMapItem(mapItem.parent_id).gen + 1;
                 }
             });
@@ -329,14 +329,14 @@ function setParents(id, parent_id) {
         // There might be duplicates
         parents.forEach(function(parent) {
             // Set the parents
-            if (!child.parents.includes(parent_id) && parent_id !== "-1") {
+            if (!child.parents.includes(parent_id) && parent_id !== -1) {
                 if (child.level === parent.level) {
                     // We are the child of this parent
                     child.parents.push(parent_id);
                 } else if (child.level < parent.level) {
                     // Keep going up until the parent is found with a higher level and use that as the new parent_id
                     child.parent_id = getSubParent(child.level, parent);
-                    if (!child.parents.includes(child.parent_id) && child.parent_id !== "-1") {
+                    if (!child.parents.includes(child.parent_id) && child.parent_id !== -1) {
                         child.parents.push(child.parent_id);
                     }
                     
@@ -384,7 +384,7 @@ function getChildrenByParentId(id) {
     var children = items.map(item => item.id);
     
     // Return the (valid) children
-    return children.filter(item => item !== "-1");
+    return children.filter(item => item !== -1);
 }
 
 function getMapItem(id) {
@@ -455,7 +455,7 @@ function getAncestors(id) {
         var parentItem = getMapItem(parentId);
         
         var newParent = parentItem.parent_id;
-        if (newParent !== "-1") {
+        if (newParent !== -1) {
             ancestors.push(newParent);
             parents.push(newParent);
         }

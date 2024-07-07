@@ -3,9 +3,6 @@
     namespace Classes;
 
     class Timeline extends Event {
-        public function __construct() {
-            parent::__construct();
-        }
         
         protected function getReadPageQuery() {
             // The translated table name

@@ -29,6 +29,7 @@
         public const SPECIALS_TO_NOTES = "getSpecialToNotes";
         public const TIMELINE_TO_AKA = "getTimelineToAka";
         public const TIMELINE_TO_NOTES = "getTimelineToNotes";
+        public const FAMILYTREE_TO_NOTES = "getFamilytreeToNotes";
         
         // The types
         public const PEOPLES_TO_GENDER = "getPeopleToGender";
@@ -853,8 +854,8 @@
             return [$id, "locations", $data];
         }
         
-        protected function getPeopleToNotes() {
-            return $this->getItemToNotes("people");
+        protected function getPeopleToNotes($id = null) {
+            return $this->getItemToNotes("people", $id);
         }
         
         protected function getLocationToType() {
@@ -1118,12 +1119,26 @@
             return $data;
         }
         
+        protected function getFamilytreeToNotes() {
+            // We need to loop over all the people IDs
+            $ids = $this->getIds();
+            
+            // Get the notes for each seperate people
+            $data = array_map(function($id) {
+                // TODO: Insert the array of IDs and use IN() instead of ID = 
+                return $this->getPeopleToNotes($id);
+            }, $ids);
+            
+            return $data;
+        }
+        
         private function getIds() {
             // Get all the IDs from the data
             $ids = array_map(function($item) {
                 return $item["id"];
             }, $this->data);
             
-            return $ids;
+            // Only return the unique values
+            return array_unique($ids);
         }
     }

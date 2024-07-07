@@ -573,7 +573,7 @@
             }
             
             // Add them all together
-            $columns = join("\n\t, ", $columns_array);
+            $columns = join(",\n\t", $columns_array);
                 
             // The complete table query for a translated table
             $query = "(SELECT
@@ -668,22 +668,6 @@
             
             return $result;
         }
-        
-//        public function setParameters($action, $params) {
-//            // Empty the arrays
-//            $this->required_params[$action] = [];
-//            $this->optional_params[$action] = [];
-//            
-//            foreach($params as [$param, $type]) {
-//                if ($type === self::PARAM_REQUIRED) {
-//                    // Add these parameters
-//                    $this->required_params[$action] = array_merge($this->required_params[$action], $param);
-//                } else {
-//                    // Add these parameters
-//                    $this->optional_params[$action] = array_merge($this->optional_params[$action], $param);
-//                }
-//            }
-//        }
         
         /**
          * All the parameter functions for the different actions:
