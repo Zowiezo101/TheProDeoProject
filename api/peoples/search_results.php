@@ -13,7 +13,7 @@ require '../config/core.php';
 $item = new Classes\People();
   
 // Read the requested data
-$item->searchOptions();
+$item->searchResults();
 
 // Send a message to the client
 $item->sendMessage();
