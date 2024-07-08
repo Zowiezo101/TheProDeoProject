@@ -153,6 +153,15 @@
             
             // Execute the action
             $this->executeAction();
+            
+            // Retrieve the data
+            $data = $this->message->getData();
+            
+            // Insert the links
+            $this->link->insertLinks($data);
+            
+            // Update the data
+            $this->message->updateData($data);
         }
         
         public function readPage() {
@@ -502,7 +511,7 @@
         }
         
         public function getL2LItem() {
-            return $this->link->getP2PItem();
+            return $this->link->getL2LItem();
         }
         
         public function setTable($name, $columns, $id) {
@@ -603,8 +612,8 @@
             $given_params = array_merge($uri_params, $body_params);
             
             // Get the required parameters and optional parameters
-            $required_params = $filter["required"];
-            $optional_params = $filter["optional"];
+            $required_params = $filter[self::REQUIRED_PARAMS];
+            $optional_params = $filter[self::OPTIONAL_PARAMS];
             
             // Check all the required parameters
             $result = $this->checkRequiredParams($required_params, $given_params);
@@ -759,7 +768,7 @@
         
         protected function getReadAllFilter() {
             // Too complex to have standard functions for
-            return $this->getEmptyQuery();
+            return $this->getEmptyFilter();
         }
         
         protected function getReadMapsFilter() {

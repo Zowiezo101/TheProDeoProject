@@ -9,6 +9,8 @@ RewriteCond %{HTTP_HOST} !=localhost
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301] 
 
 # This is for languages
+# TODO: Rewrite this rule to work for languages with more than 2 letters
+#RewriteRule ^(en|nl|..|..-..)/(.*)$ $2?lang=$1 [QSA,DPI]
 RewriteRule ^(en|nl|..)/(.*)$ $2?lang=$1 [QSA,DPI]
 
 # And this is for the items

@@ -7,16 +7,13 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: access");
   
 // Include core and object files
-include_once '../config/core.php';
-include_once '../objects/worldmap.php';
+require '../config/core.php';
   
 // Initialize object
-$item = new worldmap();
+$item = new Classes\Worldmap();
   
 // Read the requested data
-$data = $item->read_all();
+$item->readAll();
 
-// Prepare a message to be sent to the client
-$message = $item->prepare_message($data);
-http_response_code($message["code"]);
-echo json_encode($message["data"]);
+// Send a message to the client
+$item->sendMessage();

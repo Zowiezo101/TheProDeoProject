@@ -198,6 +198,9 @@
             global $ROW_BOOK_START, $ROW_BOOK_END;
 
             $books = [];
+            
+            // TODO: Add the normal book location to this array as well
+            
 
             if (isset($data->aka) && (count($data->aka) > 0)) {
                 foreach($data->aka as $aka) {
