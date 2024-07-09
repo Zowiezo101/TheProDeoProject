@@ -1,5 +1,7 @@
 <?php
 
+    namespace Shapes;
+
     class Text extends Module {
         private $text;
         
@@ -23,4 +25,3 @@
             return $this->text;
         }
     }
-

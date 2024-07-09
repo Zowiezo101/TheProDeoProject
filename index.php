@@ -4,9 +4,10 @@
     // This needs to be started at the very beginning
     session_start();
     
-    // Initializing some variables to be used by the template
+    // Initialize variables, functions and libraries that are used for the website
     require "src/template/init.php";
 ?>
+    
     <head>
         <!-- Name shown on the tab -->
         <title><?= $dict["globals.prodeo_database"] ?></title>
@@ -15,17 +16,18 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- External Javascript and script files -->
-<?php require "src/template/imports.php"; ?>
+        <!-- All the needed Javascript files -->
+        <?php require "src/template/imports.php"; ?>
 
     </head>
     
     <!-- A few global variables are stored in the body, to make sure it's
-        available all throughout the code -->
+        available all throughout the code
+        TODO: Use this whenever needed -->
     <body class="d-flex flex-column min-vh-100"
-          data-base-url="<?= setParameters(""); ?>"
+          data-base-url="<?= $data_base_url; ?>"
         <!-- Navigation bar on top of the page -->
-<?php require "src/template/navigation.php"; ?>
+        <?php require "src/template/navigation.php"; ?>
     
         <!-- The content of this page, 
             This is done using templates and will not always have correct indentation or spacing -->
@@ -33,18 +35,11 @@
     
         
         <!-- The footer of this page -->
-<?php require "src/template/footer.php"; ?>
+        <?php require "src/template/footer.php"; ?>
         
         <!-- Javascript for dynamic content 
             (content that changes while using this page) -->
-<?php
-    // Check if this file exists
-    $page_script = "src/scripts/{$page_id}.php";
-    if (is_file($page_script)) {
-        // If this file exists, require it
-        require $page_script; 
-    }
-?>
+        <?php require "src/template/scripts.php"; ?>
        
     </body>
 </html>

@@ -1,5 +1,7 @@
 <?php
 
+    namespace Shapes;
+
     class TableRow extends Module {
         private $title;
         private $data;

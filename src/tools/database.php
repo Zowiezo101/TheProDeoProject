@@ -1,14 +1,14 @@
 <?php
 
-$TYPE_BLOG = "blogs";
-$TYPE_BOOK = "books";
-$TYPE_EVENT = "events";
-$TYPE_FAMILYTREE = "familytree";
-$TYPE_LOCATION = "locations";
-$TYPE_PEOPLE = "peoples";
-$TYPE_SPECIAL = "specials";
-$TYPE_TIMELINE = "timeline";
-$TYPE_WORLDMAP = "worldmap";
+const TYPE_BLOG = "blogs";
+const TYPE_BOOK = "books";
+const TYPE_EVENT = "events";
+const TYPE_LOCATION = "locations";
+const TYPE_PEOPLE = "peoples";
+const TYPE_SPECIAL = "specials";
+const TYPE_TIMELINE = "timeline";
+const TYPE_FAMILYTREE = "familytree";
+const TYPE_WORLDMAP = "worldmap";
 
 function createItem($type, $data) {
     
@@ -82,12 +82,44 @@ function getMaps($type, $id, $options=false) {
     return accessDatabase("GET", $url.$query);
 }
 
-function getSearchOptions($type, $options) {
+function getSearchOptions($options=false) {
+    global $base_url;
+    
+    // Create the query
+    $query = getQuery($options);
+    
+    // The data that is being requested
+    $data = [];
+    
+    foreach (["books", "events", "peoples", "locations", "specials"] as $type) {
+        // The URL to send the request to
+        $url = $base_url."/api/".$type."/search/options";
 
+        $data[$type] = accessDatabase("GET", $url.$query);
+    }
+    
+    // Access the database
+    return $data;
 }
 
 function getSearchResults($type, $options) {
+    global $base_url;
+    
+    // Create the query
+    $query = getQuery($options);
+    
+    // The data that is being requested
+    $data = [];
+    
+    foreach (["books", "events", "peoples", "locations", "specials"] as $type) {
+        // The URL to send the request to
+        $url = $base_url."/api/".$type."/search/results";
 
+        $data[$type] = accessDatabase("GET", $url.$query);
+    }
+    
+    // Access the database
+    return $data;
 }
 
 function accessDatabase($method, $url, $data=false) {

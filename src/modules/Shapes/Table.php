@@ -1,6 +1,6 @@
 <?php
 
-    require "src/modules/Shapes/TableRow.php";
+    namespace Shapes;
 
     class Table extends Module {
         private $title;
@@ -29,10 +29,6 @@
             } else {
                 // TODO: Throw an error
             }
-        }
-        
-        public function TableRow($params) {
-            return new TableRow($params);
         }
         
         public function getContent() {

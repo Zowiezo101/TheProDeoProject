@@ -1,4 +1,8 @@
 <?php    
+    /*
+     * This file contains all the functions that are needed throughout the whole
+     * website
+     */
 
     function setParameters($url, $lang=false) {
         global $base_url;
@@ -16,8 +20,6 @@
     }
 
     function insertLanguages() {
-        global $base_url;
-
         // Get all the currently available languages
         $languages = get_available_langs();
 
@@ -40,21 +42,3 @@
         // Insert all the links
         echo implode(" | ", $links);
     }
-
-    // Page is loaded server side, let's see if we changed to a different page id
-    // The only reason for this is to decide whether we want to keep or ditch
-    // the saved sort, search term and current page of the side bar
-    if (isset($_SESSION["page_id"])) {
-        // Save the old page id
-        $_SESSION["page_id_old"] = $_SESSION["page_id"];
-
-        // The actual check for page change
-        if ($_SESSION["page_id_old"] !== $page_id) {
-            unset($_SESSION["sort"]);
-            unset($_SESSION["search"]);
-            unset($_SESSION["page"]);
-        }
-    }
-
-    // Save the page id
-    $_SESSION["page_id"] = $page_id;

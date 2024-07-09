@@ -1,5 +1,7 @@
 <?php
 
+    namespace Shapes;
+
     class Title extends Module {
         private $title;
         private $sub;

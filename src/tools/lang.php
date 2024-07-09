@@ -112,6 +112,7 @@ function prefered_language(array $available_languages) {
 function get_available_langs() {
     // List of available languages
     $lang_set = null;
+    $lang = null;
 
     // Check all the available translation files
     $langFiles = glob("./locale/*.php");
@@ -125,26 +126,5 @@ function get_available_langs() {
 
     return $lang_set;
 }
-
-// Set the language to a prefered language, if available
-if (filter_input(INPUT_GET, "lang") === null) {
-    // Languages we support
-    $available_languages = get_available_langs();
-
-    // Language settings of the browser AND supported by the website
-    $langs = prefered_language($available_languages);
-    
-    $lang = $langs[0];
-    $uri = filter_input(INPUT_SERVER, "REQUEST_URI");
-    
-    // Most prefered language, link to this language
-    header("Location: /".$lang.$uri, true, 302);
-    
-    exit();
-}
-
-// Get the correct translation file, that corresponds with the prefered language
-$page_lang = filter_input(INPUT_GET, "lang");
-require "locale/translation_".$page_lang.".php";
 
 // TODO: htmlspecialchars this entire bitch

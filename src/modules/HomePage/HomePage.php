@@ -1,7 +1,9 @@
 <?php
-    // The Parts used by this Page
-    require "src/modules/HomePage/Parts/BlogList.php";
-    require "src/modules/HomePage/Parts/BlogListItem.php";
+
+    namespace HomePage;
+    
+    use Shapes\Module;
+    use Parts\BlogList;
 
     class HomePage extends Module {
         public function __construct() {
@@ -12,4 +14,3 @@
             $this->addContent($blog_list);
         }
     }
-
