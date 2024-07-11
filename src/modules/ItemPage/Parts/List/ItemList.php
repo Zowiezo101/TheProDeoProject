@@ -1,13 +1,16 @@
 <?php
-    require "src/modules/ItemPage/Parts/List/ItemListItem.php";
-    require "src/modules/ItemPage/Parts/List/ItemListToggle.php";
-    require "src/modules/ItemPage/Parts/List/ItemSearch.php";
-    require "src/modules/ItemPage/Parts/List/ItemPages.php";
 
-    $SORT_0_to_9 = "0_to_9";
-    $SORT_9_to_0 = "9_to_0";
-    $SORT_A_to_Z = "a_to_z";
-    $SORT_Z_to_A = "z_to_a";
+    namespace List;
+    
+    use Shapes\Module;
+    use List\ItemSearch;
+    use List\ItemPages;
+    use List\ItemListItem;
+
+    const SORT_0_TO_9 = "0_to_9";
+    const SORT_9_TO_0 = "9_to_0";
+    const SORT_A_TO_Z = "a_to_z";
+    const SORT_Z_TO_A = "z_to_a";
 
     class ItemList extends Module {
         // Properties for this Module
@@ -66,11 +69,10 @@
         }
         
         private function getData() {
-            global $SORT_0_to_9;
             
             // Options for the itemlist
             $search = isset($_SESSION["search"]) ? htmlspecialchars($_SESSION["search"]) : "";
-            $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : $SORT_0_to_9;
+            $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
             $page = isset($_SESSION["page"]) ? $_SESSION["page"] : 0;
     
             $data = getPage($this->type, $page, [
@@ -101,7 +103,6 @@
         }
         
         public function getItemList() {
-            global $page_size;
             
             $content = ''; 
             if ($this->data === null) {
@@ -109,7 +110,7 @@
                 $content = $this->getError();
             } else {                
                 $list_items = [];
-                for ($i = 0; $i < $page_size; $i++) {
+                for ($i = 0; $i < \modules\PAGE_SIZE; $i++) {
                     if ($i < count($this->data->records)) { 
                         $record = $this->data->records[$i];
                         
@@ -142,7 +143,7 @@
                             <div class="col-md-12">
                                 <div class="list-group text-center" id="item_list"
                                     data-page-type="'.$this->type.'"
-                                    data-page-size="'.$page_size.'"
+                                    data-page-size="'.\modules\PAGE_SIZE.'"
                                     data-page-url="'.$this->base_url.'"
                                     data-id="'.$this->id.'">
                                     '.$content.'
@@ -163,4 +164,3 @@
             return $content;
         }
     }
-

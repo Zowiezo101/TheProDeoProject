@@ -1,15 +1,21 @@
 <?php
 
+    namespace Items;
+    
+    use Shapes\Module;
+    use List\ItemList;
+    use Content\ItemContent;
+
     class Item extends Module {
         private $item_list;
         private $item_content;
         
-        public function ItemList($params) {
+        public function createItemList($params) {
             $this->item_list = new ItemList($params);
             return $this->item_list;
         }
         
-        public function ItemContent($params) {
+        public function createItemContent($params) {
             $this->item_content = new ItemContent($params);
             return $this->item_content;
         }
@@ -26,4 +32,3 @@
             return $this->item_content;
         }
     }
-

@@ -31,6 +31,30 @@
     require "src/modules/TabPage/Tabs/TabLogout.php";
     require "src/modules/TabPage/Tabs/TabLogin.php";
     
+    // The ItemPage
+    require "src/modules/ItemPage/ItemPage.php";
+    
+    // The Parts used by this Page
+    require "src/modules/ItemPage/Parts/Content/ItemContent.php";
+    require "src/modules/ItemPage/Parts/Content/ItemDefault.php";
+    require "src/modules/ItemPage/Parts/Content/ItemDetails.php";
+    require "src/modules/ItemPage/Parts/Content/ItemTable.php";
+    require "src/modules/ItemPage/Parts/Content/MapTable.php";
+    require "src/modules/ItemPage/Parts/List/ItemList.php";    
+    
+    // The different items
+    require "src/modules/ItemPage/Items/Item.php";
+    require "src/modules/ItemPage/Items/ItemBook.php";
+    require "src/modules/ItemPage/Items/ItemEvent.php";
+    require "src/modules/ItemPage/Items/ItemPeople.php";
+    require "src/modules/ItemPage/Items/ItemLocation.php";
+    require "src/modules/ItemPage/Items/ItemSpecial.php";
+    
+    require "src/modules/ItemPage/Parts/List/ItemListItem.php";
+    require "src/modules/ItemPage/Parts/List/ItemListToggle.php";
+    require "src/modules/ItemPage/Parts/List/ItemSearch.php";
+    require "src/modules/ItemPage/Parts/List/ItemPages.php";
+    
 //    require "src/modules/SearchPage/SearchPage.php";
 //    require "src/modules/MapPage/MapPage.php";
 //    require "src/modules/AboutUsPage/AboutUsPage.php";

@@ -1,5 +1,9 @@
 <?php
 
+    namespace List;
+    
+    use Shapes\Module;
+
     class ItemPages extends Module {
         private $visible;
         private $disable_prev;

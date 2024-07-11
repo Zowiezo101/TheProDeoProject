@@ -5,6 +5,7 @@
     use Shapes\Module;
     use HomePage;
     use TabPage;
+    use ItemPage;
 
     const PAGE_SIZE = 10;
 
@@ -120,7 +121,7 @@
         // Functions to return modules
         public function getItemPage($params = []) {
             $this->setContainerClass("container-fluid");
-            return new ItemPage($params);
+            return new ItemPage\ItemPage($params);
         }
 
         // Functions to return modules

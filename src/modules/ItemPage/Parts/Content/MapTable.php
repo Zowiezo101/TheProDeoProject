@@ -1,9 +1,14 @@
 <?php
 
+    namespace Content;
+    
+    use Shapes\Module;
+    use Shapes\Table;
+    use Shapes\TableRow;
+
     class MapTable extends Module {
         private $title;
         private $type;
-        private $rows;
         private $record;
         
         public function __construct($params = []) {
@@ -57,19 +62,16 @@
         }
         
         public function getContent() {
-            global $TYPE_FAMILYTREE,
-                   $TYPE_TIMELINE;
-            
             $table = new Table([
                 "title" => $this->title
             ]);
             
             switch($this->type) {
-                case $TYPE_FAMILYTREE:
+                case TYPE_FAMILYTREE:
                     $data = $this->getFamilytrees();
                     break;
                 
-                case $TYPE_TIMELINE:
+                case TYPE_TIMELINE:
                     $data = $this->getTimelines();
                     break;
                 
@@ -95,7 +97,7 @@
                         '.$title.'
                     </a>';
                 
-                $table->addContent($table->TableRow([
+                $table->addContent(new TableRow([
                     "data" => $link
                 ]));
             }
@@ -131,11 +133,11 @@
         }
         
         private function getFamilytrees() {
-            global $dict, $TYPE_PEOPLE;
+            global $dict;
             
             $data = [];
             
-            $ancestors = getMaps($TYPE_PEOPLE, $this->record->id);
+            $ancestors = getMaps(TYPE_PEOPLE, $this->record->id);
             if ($this->checkData($ancestors)) {
                 foreach($ancestors->records as $ancestor) {
                     $data[] = [
