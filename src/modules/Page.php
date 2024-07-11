@@ -4,12 +4,7 @@
     
     use Shapes\Module;
     use HomePage;
-//    use modules\TabPage;
-//    use modules\ItemPage;
-//    use modules\SearchPage;
-//    use modules\MapPage;
-//    use modules\AboutUsPage;
-//    use modules\ContactPage;
+    use TabPage;
 
     const PAGE_SIZE = 10;
 
@@ -119,7 +114,7 @@
         // Functions to return modules
         public function getTabPage($params = []) {
             $this->setContainerClass("py-5 container-fluid");
-            return new TabPage($params);
+            return new TabPage\TabPage($params);
         }
 
         // Functions to return modules

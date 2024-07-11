@@ -1,15 +1,21 @@
 <?php
 
+    namespace Tabs;
+    
+    use Shapes\Module;
+    use Parts\TabListItem;
+    use Parts\TabContentItem;
+
     class Tab extends Module {
         private $tab_list_item;
         private $tab_content_item;
         
-        public function TabListItem($params) {
+        public function createTabListItem($params) {
             $this->tab_list_item = new TabListItem($params);
             return $this->tab_list_item;
         }
         
-        public function TabContentItem($params) {
+        public function createTabContentItem($params) {
             $this->tab_content_item = new TabContentItem($params);
             return $this->tab_content_item;
         }
@@ -22,10 +28,10 @@
             return $this->tab_content_item;
         }
 
-        function BlogList() {
-            global $data, $TYPE_BLOG;
+        function getBlogList() {
+            global $data;
     
-            $data = getItems($TYPE_BLOG);
+            $data = getItems(TYPE_BLOG);
 
             // Collect the blogs if there are any
             $blogs = [];
@@ -40,10 +46,10 @@
             foreach ($blogs as $blog) {
 
                 // The date of the blog, saved in UTC timezone
-                $timezone = new DateTimeZone("UTC");
+                $timezone = new \DateTimeZone("UTC");
 
                 // A datetime object
-                $datetime = new DateTime($blog->date, $timezone);
+                $datetime = new \DateTime($blog->date, $timezone);
 
                 // The date and time, formatted to a string
                 $date = $datetime->format("d-m-Y H:i:s");
@@ -57,4 +63,3 @@
             return $options;
         }
     }
-

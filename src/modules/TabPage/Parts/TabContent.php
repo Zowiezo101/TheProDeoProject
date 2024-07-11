@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class TabContent extends Module{
         public function getContent() {            
             $content = '
@@ -13,4 +17,3 @@
             return $content;
         }
     }
-

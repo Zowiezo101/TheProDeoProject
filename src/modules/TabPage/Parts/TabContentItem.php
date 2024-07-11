@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class TabContentItem extends Module {
         private $id;
         private $classes = "tab-pane fade";
@@ -54,4 +58,3 @@
             return $content;
         }
     }
-

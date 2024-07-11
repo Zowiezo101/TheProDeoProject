@@ -1,5 +1,7 @@
 <?php
 
+    namespace Tabs;
+
     class TabEdit extends Tab {        
         public function __construct() {
             global $dict;
@@ -13,14 +15,14 @@
                     false;
             
             // Add the necessary modules in here
-            $this->TabListItem([
+            $this->createTabListItem([
                 "id" => $id,
                 "title" => $dict["settings.blog.edit"],
                 "icon" => "fa-edit",
                 "active" => $active
             ]);
             
-            $tab_content_item = $this->TabContentItem([
+            $tab_content_item = $this->createTabContentItem([
                 "id" => $id,
                 "active" => $active
             ]);
@@ -31,7 +33,7 @@
                                             <option selected disabled value="-1"> 
                                                 '.$dict["settings.blog.select_edit"].'
                                             </option>
-                                            '.$this->BlogList().'
+                                            '.$this->getBlogList().'
                                         </select>
                                     </div>
                                     <!-- Title for the blog -->
