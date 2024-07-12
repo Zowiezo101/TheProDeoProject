@@ -95,30 +95,22 @@ function onPageUpdate() {
         // Update the pagination buttons
         if (page === 0) {
             // Disable first and prev buttons
-            $("#first_page").parent().addClass("disabled");
-            $("#prev_page").parent().addClass("disabled");
-            $("#first_page").parent().attr("disabled", true);
-            $("#prev_page").parent().attr("disabled", true);
+            $("#first_page").parent().addClass("invisible");
+            $("#prev_page").parent().addClass("invisible");
         } else {
             // Enable these buttons again
-            $("#first_page").parent().removeClass("disabled");
-            $("#prev_page").parent().removeClass("disabled");
-            $("#first_page").parent().attr("disabled", false);
-            $("#prev_page").parent().attr("disabled", false);
+            $("#first_page").parent().removeClass("invisible");
+            $("#prev_page").parent().removeClass("invisible");
         }
 
         if (page === num_pages) {
             // Disable last and next buttons
-            $("#last_page").parent().addClass("disabled");
-            $("#next_page").parent().addClass("disabled");
-            $("#last_page").parent().attr("disabled", true);
-            $("#next_page").parent().attr("disabled", true);
+            $("#last_page").parent().addClass("invisible");
+            $("#next_page").parent().addClass("invisible");
         } else {
             // Enable these buttons again
-            $("#last_page").parent().removeClass("disabled");
-            $("#next_page").parent().removeClass("disabled");
-            $("#last_page").parent().attr("disabled", false);
-            $("#next_page").parent().attr("disabled", false);
+            $("#last_page").parent().removeClass("invisible");
+            $("#next_page").parent().removeClass("invisible");
         }
 
         $("#curr_page").val(page + 1);

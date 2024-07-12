@@ -24,12 +24,12 @@
             $this->page = isset($_SESSION["page"]) ? $_SESSION["page"] + 1 : 1;
             
             // Disable the previous buttons if we're already on the first page
-            $first_page = $this->page == 0;
-            $this->disable_prev = $first_page ? "disabled" : "";
+            $first_page = $this->page == 1;
+            $this->disable_prev = $first_page ? "invisible" : "";
             
             // Disable the next buttons if we're already on the last page
-            $last_page = $this->page == $this->count - 1;
-            $this->disable_next = $last_page ? "disabled" : "";
+            $last_page = $this->page == $this->count;
+            $this->disable_next = $last_page ? "invisible" : "";
         }
         
         public function getContent() {
@@ -41,12 +41,12 @@
                         <div class="row mt-2 '.$this->visible.'" id="item_pagination">
                             <div class="col-md-12">
                                 <ul class="pagination mt-2 mb-2 justify-content-center" id="item_pages">
-                                    <li class="page-item font-weight-bold '.$this->disable_prev.'" '.$this->disable_prev.'>
+                                    <li class="page-item font-weight-bold '.$this->disable_prev.'">
                                         <a id="first_page" class="page-link" onclick="onPageUpdate()">
                                             <span class="text-primary">'.$dict["database.first"].'</span>
                                         </a>
                                     </li>
-                                    <li class="page-item font-weight-bold '.$this->disable_prev.' mr-1" '.$this->disable_prev.'>
+                                    <li class="page-item font-weight-bold '.$this->disable_prev.' mr-1">
                                         <a id="prev_page" class="page-link" onclick="onPageUpdate()">
                                             <span class="text-primary">«</span>
                                         </a>
@@ -58,12 +58,12 @@
                                             <label class="text-center mx-1">'.$dict["database.out_of"].'<span id="num_pages" class="ml-1">'.$this->count.'</span></label>
                                         </div>
                                     </li>
-                                    <li class="page-item font-weight-bold '.$this->disable_next.' ml-1" '.$this->disable_next.'>
+                                    <li class="page-item font-weight-bold '.$this->disable_next.' ml-1">
                                         <a id="next_page" class="page-link" onclick="onPageUpdate()">
                                             <span class="text-primary">»</span>
                                         </a>
                                     </li>
-                                    <li class="page-item font-weight-bold '.$this->disable_next.'" '.$this->disable_next.'>
+                                    <li class="page-item font-weight-bold '.$this->disable_next.'">
                                         <a id="last_page" class="page-link" onclick="onPageUpdate()">
                                             <span class="text-primary">'.$dict["database.last"].'</span>
                                         </a>
