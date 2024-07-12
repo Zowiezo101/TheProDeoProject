@@ -154,7 +154,7 @@ function setContent(location) {
 
 function getLinkToMap(id) {    
     // Find the marker with this ID and click it
-    var marker = markers.find(marker => marker.id === id.toString());
+    var marker = markers.find(marker => marker.id === id);
     
     if (marker) {
         // Let the click event know we came here via button from the sidebar
@@ -170,7 +170,7 @@ function markerInCluster(id) {
     var clusters = markerClustererObj.clusters;
     var markerCluster = clusters.find(function(cluster) {
         // Check if the marker is present in the current cluster
-        var marker = cluster.markers.find(marker => marker.id === id.toString());
+        var marker = cluster.markers.find(marker => marker.id === id);
         return marker ? true : false;
     });
     

@@ -40,7 +40,11 @@
     require "src/modules/ItemPage/Parts/Content/ItemDetails.php";
     require "src/modules/ItemPage/Parts/Content/ItemTable.php";
     require "src/modules/ItemPage/Parts/Content/MapTable.php";
-    require "src/modules/ItemPage/Parts/List/ItemList.php";    
+    require "src/modules/ItemPage/Parts/List/ItemList.php";  
+    require "src/modules/ItemPage/Parts/List/ItemListItem.php";
+    require "src/modules/ItemPage/Parts/List/ItemListToggle.php";
+    require "src/modules/ItemPage/Parts/List/ItemSearch.php";
+    require "src/modules/ItemPage/Parts/List/ItemPages.php";  
     
     // The different items
     require "src/modules/ItemPage/Items/Item.php";
@@ -49,11 +53,6 @@
     require "src/modules/ItemPage/Items/ItemPeople.php";
     require "src/modules/ItemPage/Items/ItemLocation.php";
     require "src/modules/ItemPage/Items/ItemSpecial.php";
-    
-    require "src/modules/ItemPage/Parts/List/ItemListItem.php";
-    require "src/modules/ItemPage/Parts/List/ItemListToggle.php";
-    require "src/modules/ItemPage/Parts/List/ItemSearch.php";
-    require "src/modules/ItemPage/Parts/List/ItemPages.php";
     
 //    require "src/modules/SearchPage/SearchPage.php";
     
