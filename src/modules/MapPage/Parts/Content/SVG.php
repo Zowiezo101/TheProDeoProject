@@ -1,5 +1,9 @@
 <?php
 
+    namespace Content;
+    
+    use Shapes\Module;
+
     class SVG extends Module {
         public function getContent() {
             $content = '<div class="row min-vh-75">
@@ -16,4 +20,3 @@
             return $content;
         }
     }
-

@@ -1,5 +1,11 @@
 <?php
 
+    namespace Content;
+    
+    use Content\ItemContent;
+    use Content\LoadingScreen;
+    use Content\SmallScreen;
+
     class MapContent extends ItemContent {
         // Properties for this Module
         private $loading_screen;

@@ -1,5 +1,9 @@
 <?php
 
+    namespace Content;
+    
+    use Shapes\Module;
+
     class LoadingScreen extends Module {
         
         private $type;
@@ -52,4 +56,3 @@
             return $content;
         }
     }
-

@@ -56,7 +56,25 @@
     require "src/modules/ItemPage/Parts/List/ItemPages.php";
     
 //    require "src/modules/SearchPage/SearchPage.php";
-//    require "src/modules/MapPage/MapPage.php";
+    
+    // The MapPage
+    require "src/modules/MapPage/MapPage.php";
+    
+    // The Parts used by this Page
+    require "src/modules/MapPage/Parts/Content/MapContent.php";
+    require "src/modules/MapPage/Parts/Content/LoadingScreen.php";
+    require "src/modules/MapPage/Parts/Content/SmallScreen.php";
+    require "src/modules/MapPage/Parts/Content/Modal.php";
+    require "src/modules/MapPage/Parts/Content/SVG.php";
+    require "src/modules/MapPage/Parts/List/MapList.php";
+    require "src/modules/MapPage/Parts/List/MapListItem.php";
+    
+    // The different maps
+    require "src/modules/MapPage/Maps/Map.php";
+    require "src/modules/MapPage/Maps/MapTimeline.php";
+    require "src/modules/MapPage/Maps/MapFamilytree.php";
+    require "src/modules/MapPage/Maps/MapWorldmap.php";
+    
 //    require "src/modules/AboutUsPage/AboutUsPage.php";
 //    require "src/modules/ContactPage/ContactPage.php";
     

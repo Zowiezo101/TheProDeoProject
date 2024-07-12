@@ -6,6 +6,7 @@
     use HomePage;
     use TabPage;
     use ItemPage;
+    use MapPage;
 
     const PAGE_SIZE = 10;
 
@@ -133,7 +134,7 @@
         // Functions to return modules
         public function getMapPage($params = []) {
             $this->setContainerClass("container-fluid");
-            return new MapPage($params);
+            return new MapPage\MapPage($params);
         }
 
         // Functions to return modules
