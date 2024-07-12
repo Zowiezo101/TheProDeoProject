@@ -1,11 +1,16 @@
 <?php
 
+    namespace AboutUsPage;
+    
+    use Shapes\Module;
+    use Shapes\Text;
+
     class AboutUsPage extends Module {
         public function __construct() {
             global $dict;
             parent::__construct();
             
-            $text = $this->Text('
+            $text = new Text('
             <div class="row text-center justify-content-center">
                 <div class="col-md-10">
                     <h1 class="mb-3">'.$dict["navigation.about_us"].'</h1>
@@ -20,4 +25,3 @@
             $this->addContent($text);
         }
     }
-

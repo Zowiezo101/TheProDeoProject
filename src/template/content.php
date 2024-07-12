@@ -74,8 +74,11 @@
     require "src/modules/MapPage/Maps/MapFamilytree.php";
     require "src/modules/MapPage/Maps/MapWorldmap.php";
     
-//    require "src/modules/AboutUsPage/AboutUsPage.php";
-//    require "src/modules/ContactPage/ContactPage.php";
+    // The AboutUsPage and ContactPage
+    require "src/modules/AboutUsPage/AboutUsPage.php";
+    require "src/modules/ContactPage/ContactPage.php";
+    require "src/modules/ContactPage/Parts/ContactDescr.php";
+    require "src/modules/ContactPage/Parts/ContactForm.php";
     
     // A tool to help us build the page with modules
     require "src/modules/Page.php";

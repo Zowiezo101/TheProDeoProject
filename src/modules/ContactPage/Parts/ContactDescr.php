@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class ContactDescr extends Module {
         public function getContent() {
             global $dict;
@@ -15,4 +19,3 @@
             return $content;
         }
     }
-

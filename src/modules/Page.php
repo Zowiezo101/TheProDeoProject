@@ -7,6 +7,8 @@
     use TabPage;
     use ItemPage;
     use MapPage;
+    use AboutUsPage;
+    use ContactPage;
 
     const PAGE_SIZE = 10;
 
@@ -140,13 +142,13 @@
         // Functions to return modules
         public function getAboutUsPage() {
             $this->setContainerClass("py-5 container-fluid");
-            return new AboutUsPage();
+            return new AboutUsPage\AboutUsPage();
         }
 
         // Functions to return modules
         public function getContactPage() {
             $this->setContainerClass("py-5 container-fluid");
-            return new ContactPage();
+            return new ContactPage\ContactPage();
         }
         
         // Get the content wrapped in the container div

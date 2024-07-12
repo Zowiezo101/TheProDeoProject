@@ -1,6 +1,10 @@
 <?php
-    require "src/modules/ContactPage/Parts/ContactDescr.php";
-    require "src/modules/ContactPage/Parts/ContactForm.php";
+
+    namespace ContactPage;
+    
+    use Shapes\Module;
+    use Parts\ContactDescr;
+    use Parts\ContactForm;
 
     class ContactPage extends Module {
         private $contact_descr;
@@ -26,4 +30,3 @@
             return $content;
         }
     }
-
