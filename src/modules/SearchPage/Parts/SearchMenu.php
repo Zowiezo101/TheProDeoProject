@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class SearchMenu extends Module {
         
         private $horizontal_rule = '<hr class="my-1"/>';
@@ -501,4 +505,3 @@
             return $content;
         }
     }
-

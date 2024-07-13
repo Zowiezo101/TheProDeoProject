@@ -6,6 +6,7 @@
     use HomePage;
     use TabPage;
     use ItemPage;
+    use SearchPage;
     use MapPage;
     use AboutUsPage;
     use ContactPage;
@@ -130,7 +131,7 @@
         // Functions to return modules
         public function getSearchPage() {
             $this->setContainerClass("py-5 container-fluid");
-            return new SearchPage();
+            return new SearchPage\SearchPage();
         }
 
         // Functions to return modules
