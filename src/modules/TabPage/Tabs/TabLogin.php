@@ -1,5 +1,7 @@
 <?php
 
+    namespace Tabs;
+
     class TabLogin extends Tab {        
         public function __construct() {
             global $dict, $message,
@@ -12,14 +14,14 @@
             $id = "tab_login";
             
             // Add the necessary modules in here
-            $this->TabListItem([
+            $this->createTabListItem([
                 "id" => $id,
                 "title" => $dict["settings.login"],
                 "icon" => "fa-user-circle",
                 "active" => $active
             ]);
             
-            $tab_content_item = $this->TabContentItem([
+            $tab_content_item = $this->createTabContentItem([
                 "id" => $id,
                 "active" => $active,
                 "extra-classes" => "col-lg-6 col-10"

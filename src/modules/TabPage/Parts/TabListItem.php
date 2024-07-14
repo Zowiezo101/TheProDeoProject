@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class TabListItem extends Module {
         private $id;
         private $title;
@@ -67,4 +71,3 @@
             return $content;
         }
     }
-

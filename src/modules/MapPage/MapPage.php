@@ -1,35 +1,28 @@
 <?php
-    // The Parts used by this Page
-    require "src/modules/MapPage/Parts/Content/MapContent.php";
-    require "src/modules/MapPage/Parts/Content/LoadingScreen.php";
-    require "src/modules/MapPage/Parts/Content/SmallScreen.php";
-    require "src/modules/MapPage/Parts/Content/MapDetails.php";
-    require "src/modules/MapPage/Parts/Content/Modal.php";
-    require "src/modules/MapPage/Parts/Content/SVG.php";
-    require "src/modules/MapPage/Parts/List/MapList.php";
+
+    namespace MapPage;
+    
+    use ItemPage\ItemPage;
     
     // The different maps
-    require "src/modules/MapPage/Maps/Map.php";
-    require "src/modules/MapPage/Maps/MapTimeline.php";
-    require "src/modules/MapPage/Maps/MapFamilytree.php";
-    require "src/modules/MapPage/Maps/MapWorldmap.php";
+    use Maps\MapTimeline;
+    use Maps\MapFamilytree;
+    use Maps\MapWorldmap;
 
     class MapPage extends ItemPage {
         
         public function __construct($type) {
-            global $TYPE_TIMELINE, $TYPE_FAMILYTREE, 
-                    $TYPE_WORLDMAP;
             // Setting the parent Module
             parent::__construct($type);
             
             switch($type) {
-                case $TYPE_TIMELINE:
+                case TYPE_TIMELINE:
                     $map = new MapTimeline();
                     break;
-                case $TYPE_FAMILYTREE:
+                case TYPE_FAMILYTREE:
                     $map = new MapFamilytree();
                     break;
-                case $TYPE_WORLDMAP:
+                case TYPE_WORLDMAP:
                     $map = new MapWorldmap();
                     break;
             }

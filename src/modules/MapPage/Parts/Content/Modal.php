@@ -1,5 +1,9 @@
 <?php
 
+    namespace Content;
+    
+    use Shapes\Module;
+
     class Modal extends Module {
         
         public function getContent() {

@@ -1,38 +1,36 @@
 <?php
-    // The PHP file that contains everything we need to log in
-    require "src/tools/server.php";
     
-    // The Parts used by this Page
-    require "src/modules/TabPage/Parts/TabList.php";
-    require "src/modules/TabPage/Parts/TabListItem.php";
-    require "src/modules/TabPage/Parts/TabContent.php";
-    require "src/modules/TabPage/Parts/TabContentItem.php";
+    namespace TabPage;
+    
+    use Shapes\Module;
+    
+    // The parts of the page
+    use Parts\TabList;
+    use Parts\TabContent;
     
     // The different tabs
-    require "src/modules/TabPage/Tabs/Tab.php";
-    require "src/modules/TabPage/Tabs/TabAdd.php";
-    require "src/modules/TabPage/Tabs/TabEdit.php";
-    require "src/modules/TabPage/Tabs/TabDelete.php";
-    require "src/modules/TabPage/Tabs/TabLogout.php";
-    require "src/modules/TabPage/Tabs/TabLogin.php";
+    use Tabs\TabAdd;
+    use Tabs\TabEdit;
+    use Tabs\TabDelete;
+    use Tabs\TabLogout;
+    use Tabs\TabLogin;
 
-    $TAB_LOGIN = "login";
-    $TAB_ADD = "add";
-    $TAB_EDIT = "edit";
-    $TAB_DELETE = "delete";
-    $TAB_LOGOUT = "logout";
+    // The different tabs
+    const TAB_ADD = "add";
+    const TAB_EDIT = "edit";
+    const TAB_DELETE = "delete";
+    const TAB_LOGOUT = "logout";
+    const TAB_LOGIN = "login";
     
-    $MODE_SETTINGS = "settings";
-    $MODE_LOGIN = "login";
+    // There are two pages that use tabs, settings and login
+    const MODE_SETTINGS = "settings";
+    const MODE_LOGIN = "login";
 
     class TabPage extends Module {
         private $tab_list;
         private $tab_content;
         
         public function __construct($mode) {
-            global $MODE_LOGIN, $MODE_SETTINGS, 
-                    $TAB_LOGIN, $TAB_LOGOUT,
-                    $TAB_ADD, $TAB_EDIT, $TAB_DELETE;
             parent::__construct();
             
             // Add the necessary modules in here
@@ -44,42 +42,39 @@
             // If we are in login mode and are logged in, go to settings mode
             $this->checkMode($mode);
             
-            if ($mode === $MODE_LOGIN) {
+            if ($mode === MODE_LOGIN) {
                 // Not yet logged in, show login page
-                $this->addTab($TAB_LOGIN);
-            } else if ($mode === $MODE_SETTINGS) {
+                $this->addTab(TAB_LOGIN);
+            } else if ($mode === MODE_SETTINGS) {
                 // We are logged in, show settings page
-                $this->addTab($TAB_ADD);
-                $this->addTab($TAB_EDIT);
-                $this->addTab($TAB_DELETE);
-                $this->addTab($TAB_LOGOUT);
+                $this->addTab(TAB_ADD);
+                $this->addTab(TAB_EDIT);
+                $this->addTab(TAB_DELETE);
+                $this->addTab(TAB_LOGOUT);
             }
         }
         
-        public function addTab($tab) {
-            global $TAB_ADD, $TAB_EDIT, $TAB_DELETE,
-                    $TAB_LOGIN, $TAB_LOGOUT;
-            
+        public function addTab($tab) {            
             // Five tabs that can be chosen from
             switch($tab) {
                 // The tab for adding blogs
-                case $TAB_ADD:
+                case TAB_ADD:
                     $tab_item = new TabAdd();
                     break;
                 // The tab for editing blogs
-                case $TAB_EDIT:
+                case TAB_EDIT:
                     $tab_item = new TabEdit();
                     break;
                 // The tab for deleting blogs
-                case $TAB_DELETE:
+                case TAB_DELETE:
                     $tab_item = new TabDelete();
                     break;
                 // The tab for logging out
-                case $TAB_LOGOUT:
+                case TAB_LOGOUT:
                     $tab_item = new TabLogout();
                     break;
                 // The tab for logging in
-                case $TAB_LOGIN:
+                case TAB_LOGIN:
                     $tab_item = new TabLogin();
                     break;
             }
@@ -94,13 +89,12 @@
         }
         
         private function checkMode($mode) {
-            global $MODE_LOGIN, $MODE_SETTINGS;
     // TODO: Make sure the tabs stay selected when refreshing the page
             
             // Are we logged in?
             $logged_in = (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true);
             
-            if($mode === $MODE_LOGIN && $logged_in) {
+            if($mode === MODE_LOGIN && $logged_in) {
                 // We are logged in, go to settings page
                 $url = "settings";
                 if( headers_sent() ) { 
@@ -109,7 +103,7 @@
                     header("Location: $url"); 
                 }
                 exit;
-            } else if ($mode === $MODE_SETTINGS && !$logged_in) {
+            } else if ($mode === MODE_SETTINGS && !$logged_in) {
                 // We are not logged in, go to login page
                 $url = "login";
                 if( headers_sent() ) { 

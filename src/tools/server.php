@@ -1,4 +1,5 @@
 <?php
+// TODO: Add this into the TabPage code for logging in and out
 require "../settings.conf";
 
 // initializing variables

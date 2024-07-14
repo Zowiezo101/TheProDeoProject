@@ -1,42 +1,45 @@
 <?php
 
+    namespace Items;
+    
+    use Shapes\Title;
+    use Content\ItemTable;
+    use Content\MapTable;
+
     class ItemEvent extends Item {
         public function __construct() {
-            global $TYPE_EVENT;
             parent::__construct();
             
             /** These are the two main modules that are used for item pages */
-            $this->ItemList([
-                "type" => $TYPE_EVENT,
+            $this->createItemList([
+                "type" => TYPE_EVENT,
                 "base_url" => "events/event"
             ]);
             
-            $item_content = $this->ItemContent([
-                "type" => $TYPE_EVENT
+            $item_content = $this->createItemContent([
+                "type" => TYPE_EVENT
             ]);
             
             /** These are Modules that are being added to the ItemContent Module */
             // Add a title to the content
-            $item_content->addDetailContent($this->Title());
+            $item_content->addDetailContent($this->createTitle());
 
             // This table contains all the information about this item
-            $item_content->addDetailContent($this->ItemTable());
+            $item_content->addDetailContent($this->createItemTable());
 
             // This table contains maps related to this item
-            $item_content->addDetailContent($this->MapTable());
+            $item_content->addDetailContent($this->createMapTable());
         }
         
-        private function Title() {
+        private function createTitle() {
             return new Title([
                 "title" => "name",
                 "sub" => "descr"
             ]);
         }
         
-        private function ItemTable() {
-            global $dict,
-                    $ROW_NOTES, $ROW_PEOPLES, $ROW_LOCATIONS, 
-                    $ROW_SPECIALS, $ROW_EVENTS, $ROW_BOOKS;
+        private function createItemTable() {
+            global $dict;
             return new ItemTable([
                 "title" => $dict["items.details"],
                 "rows" => [
@@ -51,53 +54,52 @@
                     [
                         "title" => $dict["items.notes"],
                         "data" => "notes",
-                        "type" => $ROW_NOTES,
+                        "type" => \Content\ROW_NOTES,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.peoples"],
                         "data" => "peoples",
-                        "type" => $ROW_PEOPLES,
+                        "type" => \Content\ROW_PEOPLES,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.locations"],
                         "data" => "locations",
-                        "type" => $ROW_LOCATIONS,
+                        "type" => \Content\ROW_LOCATIONS,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.specials"],
                         "data" => "specials",
-                        "type" => $ROW_SPECIALS,
+                        "type" => \Content\ROW_SPECIALS,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.previous"],
                         "data" => "parents",
-                        "type" => $ROW_EVENTS,
+                        "type" => \Content\ROW_EVENTS,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.next"],
                         "data" => "children",
-                        "type" => $ROW_EVENTS,
+                        "type" => \Content\ROW_EVENTS,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.books"],
-                        "type" => $ROW_BOOKS
+                        "type" => \Content\ROW_BOOKS
                     ],
                 ]
             ]);
         }
         
-        private function MapTable() {
-            global $dict, $TYPE_TIMELINE;
+        private function createMapTable() {
+            global $dict;
             return new MapTable([
                 "title" => $dict["items.details.timeline"],
-                "type" => $TYPE_TIMELINE
+                "type" => TYPE_TIMELINE
             ]);
         }
     }
-

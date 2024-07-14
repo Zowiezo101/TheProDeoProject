@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class BlogListItem extends Module {
         private $colors = ["purple", "yellow", "red", "green", "blue"];
         
@@ -29,10 +33,10 @@
                         $record->name;
                 
             // The date of the blog, saved in UTC timezone
-            $timezone = new DateTimeZone("UTC");
+            $timezone = new \DateTimeZone("UTC");
 
             // A datetime object
-            $datetime = new DateTime($record->date, $timezone);
+            $datetime = new \DateTime($record->date, $timezone);
 
             // The date and time, formatted to a string
             $this->date = $datetime->format("j-n-Y H:i:s");

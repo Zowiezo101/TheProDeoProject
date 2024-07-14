@@ -1,5 +1,24 @@
 <?php    
+    /*
+     * This file is used to load everything that is needed to get the basics running.
+     * It loads in all the needed PHP files, get the basic variables needed and
+     * sets initial settings
+     */
+
+    /* TODO: Loading in all the needed PHP files */
+    require "src/tools/lang.php";
+    require "src/tools/base.php";
+    require "src/tools/database.php";
+    require "../settings.conf";
     
+    /* Getting the basic variables needed */
+    $data_base_url = setParameters("");
+
+    /* Setting initial settings 
+     * This means linking to the current language and page if we aren't
+     * on these pages yet
+     */
+    // TODO: Link to current page
     // The page id, this is taken from the link we are currently on. If there is no page id given, go to the home page
     $page_id = filter_input(INPUT_GET,'page') !== null ? filter_input(INPUT_GET,'page') : "home";
     if ($page_id == "") {
@@ -12,13 +31,28 @@
         exit;
     }
     
-    // A simple rule that counts for the entire website:
-    // 10 items per item page
-    $page_size = 10;
-    
-    // Some basic stuff that we need to make everything work
-    require "src/tools/lang.php";
-    require "src/tools/base.php";
+    // TODO: Link to current language
+    // Set the language to a prefered language, if available
+    if (filter_input(INPUT_GET, "lang") === null) {
+        // Languages we support
+        $available_languages = get_available_langs();
+
+        // Language settings of the browser AND supported by the website
+        $langs = prefered_language($available_languages);
+
+        $lang = $langs[0];
+        $uri = filter_input(INPUT_SERVER, "REQUEST_URI");
+
+        // Most prefered language, link to this language
+        header("Location: /".$lang.$uri, true, 302);
+
+        exit();
+    }
+
+    // Get the correct translation file, that corresponds with the prefered language
+    $page_lang = filter_input(INPUT_GET, "lang");
+    require "locale/translation_".$page_lang.".php";
+
     
     // Needed for testing purposes
     $base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ? 
@@ -68,4 +102,21 @@
             $theme = "purple";
             break;
     }
-    
+
+    // Page is loaded server side, let's see if we changed to a different page id
+    // The only reason for this is to decide whether we want to keep or ditch
+    // the saved sort, search term and current page of the side bar
+    if (isset($_SESSION["page_id"])) {
+        // Save the old page id
+        $_SESSION["page_id_old"] = $_SESSION["page_id"];
+
+        // The actual check for page change
+        if ($_SESSION["page_id_old"] !== $page_id) {
+            unset($_SESSION["sort"]);
+            unset($_SESSION["search"]);
+            unset($_SESSION["page"]);
+        }
+    }
+
+    // Save the page id
+    $_SESSION["page_id"] = $page_id;

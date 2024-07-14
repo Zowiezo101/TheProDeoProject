@@ -1,5 +1,9 @@
 <?php
 
+    namespace Content;
+    
+    use Shapes\Module;
+
     class ItemDetails extends Module {
         private $type;
         

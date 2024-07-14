@@ -1,17 +1,23 @@
 <?php
 
-    $ROW_STRING = "string";
-    $ROW_NOTES = "notes";
-    $ROW_AKA = "aka";
-    $ROW_TYPE = "type";
-    $ROW_COORDS = "coords";
-    $ROW_BOOK_START = "book_start";
-    $ROW_BOOK_END = "book_end";
-    $ROW_BOOKS = "books";
-    $ROW_EVENTS = "events";
-    $ROW_PEOPLES = "peoples";
-    $ROW_LOCATIONS = "locations";
-    $ROW_SPECIALS = "specials";
+    namespace Content;
+    
+    use Shapes\Module;
+    use Shapes\Table;
+    use Shapes\TableRow;
+
+    const ROW_STRING = "string";
+    const ROW_NOTES = "notes";
+    const ROW_AKA = "aka";
+    const ROW_TYPE = "type";
+    const ROW_COORDS = "coords";
+    const ROW_BOOK_START = "book_start";
+    const ROW_BOOK_END = "book_end";
+    const ROW_BOOKS = "books";
+    const ROW_EVENTS = "events";
+    const ROW_PEOPLES = "peoples";
+    const ROW_LOCATIONS = "locations";
+    const ROW_SPECIALS = "specials";
 
     class ItemTable extends Module {
         private $title;
@@ -69,7 +75,6 @@
         }
         
         public function getContent() {
-            global $ROW_STRING;
             
             $table = new Table([
                 "title" => $this->title
@@ -83,14 +88,14 @@
                 // Not all properties are always set, make sure to give them 
                 // default values if they aren't
                 $row_data = isset($row["data"]) ? $row["data"] : null;
-                $row_type = isset($row["type"]) ? $row["type"]: $ROW_STRING;
+                $row_type = isset($row["type"]) ? $row["type"]: ROW_STRING;
                 $row_hide = isset($row["hide-empty"]) ? $row["hide-empty"]: false;
                 
                 // Convert the data to the correct string
                 $data = $this->getDataString($row_data, $row_type, $row_hide);
                 
                 if ($data !== "") {
-                    $table->addContent($table->TableRow([
+                    $table->addContent(new TableRow([
                         "title" => $title,
                         "data" => $data
                     ]));
@@ -101,58 +106,46 @@
         }
         
         public function getDataString($data, $type, $hide_empty) {   
-            global $dict,
-                   $ROW_STRING,
-                   $ROW_NOTES,
-                   $ROW_AKA,
-                   $ROW_TYPE,
-                   $ROW_COORDS,
-                   $ROW_BOOK_START,
-                   $ROW_BOOK_END,
-                   $ROW_BOOKS,
-                   $ROW_EVENTS,
-                   $ROW_PEOPLES,
-                   $ROW_LOCATIONS,
-                   $ROW_SPECIALS;
+            global $dict;
             
             if (isset($this->record)) {
                 $data = isset($data) ? $this->record->$data : $this->record;
                 
                 // If there is a record given, use those values instead                
                 switch($type) {
-                    case $ROW_NOTES:
+                    case ROW_NOTES:
                         $string = $this->getNotesString($data);
                         break;
                     
-                    case $ROW_AKA:
+                    case ROW_AKA:
                         $string = $this->getAkaString($data);
                         break;
                     
-                    case $ROW_TYPE:
+                    case ROW_TYPE:
                         $string = $this->getTypeString($data);
                         break;
                     
-                    case $ROW_COORDS:
+                    case ROW_COORDS:
                         $string = $this->getWorldmapString($data);
                         break;
                     
-                    case $ROW_BOOK_START:
-                    case $ROW_BOOK_END:
+                    case ROW_BOOK_START:
+                    case ROW_BOOK_END:
                         $string = $this->getBookLink($data, $type);
                         break;
                     
-                    case $ROW_EVENTS:
-                    case $ROW_PEOPLES:
-                    case $ROW_LOCATIONS:
-                    case $ROW_SPECIALS:
+                    case ROW_EVENTS:
+                    case ROW_PEOPLES:
+                    case ROW_LOCATIONS:
+                    case ROW_SPECIALS:
                         $string = $this->getLinksString($data, $type);
                         break;
                     
-                    case $ROW_BOOKS:
+                    case ROW_BOOKS:
                         $string = $this->getBooksString($data);
                         break;
                         
-                    case $ROW_STRING:
+                    case ROW_STRING:
                     default:
                         $string = $data;
                         break;
@@ -172,18 +165,18 @@
         }
         
         function getBookString($data, $type) {
-            global $dict, $ROW_BOOK_START, $ROW_BOOK_END;
+            global $dict;
 
             // The first or last appearance of this item
             $book_string = "";
 
-            if($type == $ROW_BOOK_START && isset($data->book_start_id)) {
+            if($type == ROW_BOOK_START && isset($data->book_start_id)) {
                 $book_id = $dict["books.book_".$data->book_start_id];
                 $book_chap = $data->book_start_chap;
                 $book_vers = $data->book_start_vers;
 
                 $book_string = $book_id." ".$book_chap.":".$book_vers;
-            } else if ($type == $ROW_BOOK_END && isset($data->book_end_id)) {
+            } else if ($type == ROW_BOOK_END && isset($data->book_end_id)) {
                 $book_id = $dict["books.book_".$data->book_end_id];
                 $book_chap = $data->book_end_chap;
                 $book_vers = $data->book_end_vers;
@@ -195,8 +188,6 @@
         }
 
         function getBooksString($data) {
-            global $ROW_BOOK_START, $ROW_BOOK_END;
-
             $books = [];
             
             // TODO: Add the normal book location to this array as well
@@ -205,8 +196,8 @@
             if (isset($data->aka) && (count($data->aka) > 0)) {
                 foreach($data->aka as $aka) {
                     // The beginning and end of the bible location
-                    $book_start = $this->getBookString($aka, $ROW_BOOK_START);
-                    $book_end = $this->getBookString($aka, $ROW_BOOK_END);
+                    $book_start = $this->getBookString($aka, ROW_BOOK_START);
+                    $book_end = $this->getBookString($aka, ROW_BOOK_END);
 
                     $books[] = $book_start." - ".$book_end;
                 }
@@ -216,13 +207,11 @@
         }
 
         function getBookLink($data, $type) {
-            global $ROW_BOOK_START, $ROW_BOOK_END;
-
-            if($type == $ROW_BOOK_START && isset($data->book_start_id)) {
+            if($type == ROW_BOOK_START && isset($data->book_start_id)) {
                 $book_id = $data->book_start_id;
                 $book_chap = $data->book_start_chap;
                 $book_vers = $data->book_start_vers;
-            } else if ($type == $ROW_BOOK_END && isset($data->book_end_id)) {
+            } else if ($type == ROW_BOOK_END && isset($data->book_end_id)) {
                 $book_id = $data->book_end_id;
                 $book_chap = $data->book_end_chap;
                 $book_vers = $data->book_end_vers;
@@ -281,36 +270,24 @@
         }
 
         function getLinksString($data, $type) {
-            global $dict,
-                    $ROW_EVENTS,
-                    $ROW_NEXT,
-                    $ROW_PREVIOUS,
-                    $ROW_PEOPLES,
-                    $ROW_CHILDREN,
-                    $ROW_PARENTS,
-                    $ROW_LOCATIONS,
-                    $ROW_SPECIALS;
+            global $dict;
             $links = [];
 
             $base_url = "";
             switch($type) {
-                case $ROW_EVENTS:
-                case $ROW_PREVIOUS:
-                case $ROW_NEXT:
+                case ROW_EVENTS:
                     $base_url = setParameters("events/event/");
                     break;
 
-                case $ROW_PARENTS:
-                case $ROW_CHILDREN:
-                case $ROW_PEOPLES:
+                case ROW_PEOPLES:
                     $base_url = setParameters("peoples/people/");
                     break;
 
-                case $ROW_LOCATIONS:
+                case ROW_LOCATIONS:
                     $base_url = setParameters("locations/location/");
                     break;
 
-                case $ROW_SPECIALS:
+                case ROW_SPECIALS:
                     $base_url = setParameters("specials/special/");
                     break;
             }

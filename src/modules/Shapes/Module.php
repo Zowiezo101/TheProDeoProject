@@ -1,8 +1,6 @@
 <?php
-    // Small shapes
-    require "src/modules/Shapes/Title.php";
-    require "src/modules/Shapes/Table.php";
-    require "src/modules/Shapes/Text.php";
+
+    namespace Shapes;
 
     class Module {
         protected $content;
@@ -46,16 +44,6 @@
                 </div>
             </div>';
         }
-
-        // Functions to return modules
-        public function BlogList() {
-            return new BlogList();
-        }
-
-        // Functions to return modules
-        public function Text($params = []) {
-            return new Text($params);
-        }
         
         // Return all the contents of this module
         public function getContent() {
@@ -76,4 +64,3 @@
             return $content;
         }
     }
-

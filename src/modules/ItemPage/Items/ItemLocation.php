@@ -1,39 +1,41 @@
 <?php
 
+    namespace Items;
+    
+    use Shapes\Title;
+    use Content\ItemTable;
+
     class ItemLocation extends Item {
         public function __construct() {
-            global $TYPE_LOCATION;
             parent::__construct();
             
             /** These are the two main modules that are used for item pages */
-            $this->ItemList([
-                "type" => $TYPE_LOCATION,
+            $this->createItemList([
+                "type" => TYPE_LOCATION,
                 "base_url" => "locations/location"
             ]);
             
-            $item_content = $this->ItemContent([
-                "type" => $TYPE_LOCATION
+            $item_content = $this->createItemContent([
+                "type" => TYPE_LOCATION
             ]);
             
             /** These are Modules that are being added to the ItemContent Module */
             // Add a title to the content
-            $item_content->addDetailContent($this->Title());
+            $item_content->addDetailContent($this->createTitle());
 
             // This table contains all the information about this item
-            $item_content->addDetailContent($this->ItemTable());
+            $item_content->addDetailContent($this->createItemTable());
         }
         
-        private function Title() {
+        private function createTitle() {
             return new Title([
                 "title" => "name",
                 "sub" => "descr"
             ]);
         }
         
-        private function ItemTable() {
-            global $dict, $ROW_AKA, $ROW_NOTES, 
-                    $ROW_PEOPLES, $ROW_COORDS, $ROW_EVENTS, 
-                    $ROW_TYPE, $ROW_BOOK_START, $ROW_BOOK_END;
+        private function createItemTable() {
+            global $dict;
             return new ItemTable([
                 "title" => $dict["items.details"],
                 "rows" => [
@@ -43,43 +45,43 @@
                     ],
                     [
                         "title" => $dict["items.aka"],
-                        "type" => $ROW_AKA
+                        "type" => \Content\ROW_AKA
                     ],
                     [
                         "title" => $dict["items.type"],
                         "data" => "type",
-                        "type" => $ROW_TYPE
+                        "type" => \Content\ROW_TYPE
                     ],
                     [
                         "title" => $dict["items.notes"],
                         "data" => "notes",
-                        "type" => $ROW_NOTES,
+                        "type" => \Content\ROW_NOTES,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.coordinates"],
-                        "type" => $ROW_COORDS,
+                        "type" => \Content\ROW_COORDS,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.events"],
                         "data" => "events",
-                        "type" => $ROW_EVENTS,
+                        "type" => \Content\ROW_EVENTS,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.peoples"],
                         "data" => "peoples",
-                        "type" => $ROW_PEOPLES,
+                        "type" => \Content\ROW_PEOPLES,
                         "hide-empty" => true
                     ],
                     [
                         "title" => $dict["items.book_start"],
-                        "type" => $ROW_BOOK_START
+                        "type" => \Content\ROW_BOOK_START
                     ],
                     [
                         "title" => $dict["items.book_end"],
-                        "type" => $ROW_BOOK_END
+                        "type" => \Content\ROW_BOOK_END
                     ],
                 ]
             ]);

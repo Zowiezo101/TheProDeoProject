@@ -1,5 +1,7 @@
 <?php
 
+    namespace Tabs;
+
     class TabAdd extends Tab {        
         public function __construct() {
             global $dict;
@@ -13,14 +15,14 @@
                     true;
             
             // Add the necessary modules in here
-            $this->TabListItem([
+            $this->createTabListItem([
                 "id" => $id,
                 "title" => $dict["settings.blog.add"],
                 "icon" => "fa-plus",
                 "active" => $active
             ]);
             
-            $tab_content_item = $this->TabContentItem([
+            $tab_content_item = $this->createTabContentItem([
                 "id" => $id,
                 "active" => $active
             ]);

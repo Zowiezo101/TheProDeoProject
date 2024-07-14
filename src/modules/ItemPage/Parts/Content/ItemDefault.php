@@ -1,4 +1,9 @@
 <?php
+
+    namespace Content;
+    
+    use Shapes\Module;
+    use Shapes\Title;
     
     class ItemDefault extends Module {
         
@@ -22,12 +27,7 @@
         }
 
         public function setType($type) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->type = $type;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->type = $type;
         }
         
         public function getContent() {

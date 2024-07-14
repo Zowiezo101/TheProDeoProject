@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class SearchContent extends Module {
 //        var content = $("<div>").addClass("col-md-8 col-lg-9").append(` 
 //                <!-- Search results -->
@@ -54,4 +58,3 @@
 //
 //        return content;
     }
-

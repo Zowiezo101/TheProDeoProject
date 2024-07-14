@@ -1,5 +1,10 @@
 <?php
 
+    namespace Content;
+    
+    use Shapes\Module;
+    use List\ItemListToggle;
+
     class ItemContent extends Module {   
         // Properties for this Module     
         protected $default;

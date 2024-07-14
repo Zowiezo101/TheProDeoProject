@@ -51,10 +51,8 @@
         <script src="/src/tools/draw.js"></script>
         <script src="/src/tools/view.js"></script>
         <?php break;
-    case "worldmap":
-        require "../settings.conf";?>
+    case "worldmap":?>
         <script src="https://maps.googleapis.com/maps/api/js?key=<?= $API_key; ?>&v=weekly"></script>
         <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
         <?php break;
 } ?>
-        

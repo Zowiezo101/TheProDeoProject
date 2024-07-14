@@ -1,5 +1,9 @@
 <?php
-    require "src/modules/MapPage/Parts/List/MapListItem.php";
+
+    namespace List;
+    
+    use List\ItemList;    
+    use List\MapListItem;
 
     class MapList extends ItemList {
         // Properties for this Module
@@ -30,7 +34,6 @@
         }
         
         public function getItemList() {
-            global $page_size;
             
             $content = ''; 
             if ($this->data === null) {
@@ -38,7 +41,7 @@
                 $content = $this->getError();
             } else {                
                 $list_items = [];
-                for ($i = 0; $i < $page_size; $i++) {
+                for ($i = 0; $i < \modules\PAGE_SIZE; $i++) {
                     if ($i < count($this->data->records)) { 
                         $record = $this->data->records[$i];
                         
@@ -72,7 +75,7 @@
                             <div class="col-md-12">
                                 <div class="list-group text-center" id="item_list"
                                     data-page-type="'.$this->type.'"
-                                    data-page-size="'.$page_size.'"
+                                    data-page-size="'.\modules\PAGE_SIZE.'"
                                     data-page-url="'.$this->base_url.'"
                                     data-id="'.$this->id.'">
                                     '.$content.'
@@ -81,4 +84,3 @@
                         </div>';
         }
     }
-

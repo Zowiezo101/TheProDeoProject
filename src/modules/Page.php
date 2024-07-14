@@ -1,16 +1,17 @@
 <?php
-    // Database access and the base class
-    require "src/tools/database.php";
-    require "src/modules/Shapes/Module.php";
+
+    namespace modules;
     
-    // Different kinds of pages
-    require "src/modules/HomePage/HomePage.php";
-    require "src/modules/TabPage/TabPage.php";
-    require "src/modules/ItemPage/ItemPage.php";
-    require "src/modules/SearchPage/SearchPage.php";
-    require "src/modules/MapPage/MapPage.php";
-    require "src/modules/AboutUsPage/AboutUsPage.php";
-    require "src/modules/ContactPage/ContactPage.php";
+    use Shapes\Module;
+    use HomePage;
+    use TabPage;
+    use ItemPage;
+    use SearchPage;
+    use MapPage;
+    use AboutUsPage;
+    use ContactPage;
+
+    const PAGE_SIZE = 10;
 
     class Page extends Module {
         // The style to be used for the content div
@@ -27,7 +28,7 @@
                 case "home":
                     // The HomePage Module, this consists out of the following Modules:
                     // - BlogList
-                    $module = $this->HomePage();
+                    $module = $this->getHomePage();
                     break;
                 
                 case "login":
@@ -35,7 +36,7 @@
                     // The tab page comes with 2 modules
                     // - The TabList sidebar (Which consists of the list of clickable tabs)
                     // - The TabContent module (Showing the content of the clicked tab)
-                    $module = $this->TabPage($page_id);
+                    $module = $this->getTabPage($page_id);
                     break;
                 
                 case "books":
@@ -46,14 +47,14 @@
                     // The item page comes with 2 modules
                     // - The ItemList sidebar (Which consists of the clickable items)
                     // - The ItemContent module (Showing the content of the clicked item)
-                    $module = $this->ItemPage($page_id);
+                    $module = $this->getItemPage($page_id);
                     break;
                 
                 case "search":
                     // The search page comes with 2 modules:
                     // - The SearchMenu sidebar (With search options)
                     // - The SearchContent module (Showing result on the right side)
-                    $module = $this->SearchPage();
+                    $module = $this->getSearchPage();
                     break;
                 
                 case "timeline":
@@ -62,20 +63,20 @@
                     // The map page comes with 2 modules
                     // - The MapList sidebar (Which consists of the clickable items)
                     // - The MapContent module (Showing the content of the clicked map)
-                    $module = $this->MapPage($page_id);
+                    $module = $this->getMapPage($page_id);
                     break;
                 
                 case "aboutus":
                     // The AboutUs Module, this consists out of the following Modules:
                     // - Text
-                    $module = $this->AboutUsPage();
+                    $module = $this->getAboutUsPage();
                     break;
                 
                 case "contact":
                     // The contact page, it comes with 2 modules:
                     // - The left column with text
                     // - The right column with the contact form
-                    $module = $this->ContactPage();
+                    $module = $this->getContactPage();
                     break;
             }
 
@@ -101,7 +102,7 @@
         }
 
         // Functions to return modules
-        public function HomePage() {
+        public function getHomePage() {
             // The container style for this page
             $this->setContainerClass("py-5 container blogs");      
 
@@ -112,43 +113,43 @@
                             background-size: 100% 32px;
                             background-repeat: repeat-y");
     
-            return new HomePage();
+            return new HomePage\HomePage();
         }
 
         // Functions to return modules
-        public function TabPage($params = []) {
+        public function getTabPage($params = []) {
             $this->setContainerClass("py-5 container-fluid");
-            return new TabPage($params);
+            return new TabPage\TabPage($params);
         }
 
         // Functions to return modules
-        public function ItemPage($params = []) {
+        public function getItemPage($params = []) {
             $this->setContainerClass("container-fluid");
-            return new ItemPage($params);
+            return new ItemPage\ItemPage($params);
         }
 
         // Functions to return modules
-        public function SearchPage() {
+        public function getSearchPage() {
             $this->setContainerClass("py-5 container-fluid");
-            return new SearchPage();
+            return new SearchPage\SearchPage();
         }
 
         // Functions to return modules
-        public function MapPage($params = []) {
+        public function getMapPage($params = []) {
             $this->setContainerClass("container-fluid");
-            return new MapPage($params);
+            return new MapPage\MapPage($params);
         }
 
         // Functions to return modules
-        public function AboutUsPage() {
+        public function getAboutUsPage() {
             $this->setContainerClass("py-5 container-fluid");
-            return new AboutUsPage();
+            return new AboutUsPage\AboutUsPage();
         }
 
         // Functions to return modules
-        public function ContactPage() {
+        public function getContactPage() {
             $this->setContainerClass("py-5 container-fluid");
-            return new ContactPage();
+            return new ContactPage\ContactPage();
         }
         
         // Get the content wrapped in the container div

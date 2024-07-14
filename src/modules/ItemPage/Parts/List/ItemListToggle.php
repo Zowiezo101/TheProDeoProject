@@ -1,5 +1,9 @@
 <?php
 
+    namespace List;
+    
+    use Shapes\Module;
+
     class ItemListToggle extends Module {
         public function getContent() {
             // A simple module used to create a button
@@ -17,4 +21,3 @@
             return $content;
         }
     }
-

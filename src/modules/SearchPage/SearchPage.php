@@ -1,8 +1,10 @@
 <?php
-    require "src/modules/SearchPage/Parts/SearchMenu.php";
-    require "src/modules/SearchPage/Parts/SearchContent.php";
-    require "src/modules/SearchPage/Parts/SearchDefault.php";
-    require "src/modules/SearchPage/Parts/SearchDetails.php";
+
+    namespace SearchPage;
+    
+    use Shapes\Module;
+    use Parts\SearchMenu;
+    use Parts\SearchContent;
 
     class SearchPage extends Module {
         private $search_menu;
@@ -27,4 +29,3 @@
             return $content;
         }
     }
-

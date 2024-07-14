@@ -1,5 +1,9 @@
 <?php
 
+    namespace Parts;
+    
+    use Shapes\Module;
+
     class TabList extends Module {
         public function getContent() {
             $content = '<!-- The column with the tabs -->
@@ -12,4 +16,3 @@
             return $content;
         }
     }
-

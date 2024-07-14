@@ -1,5 +1,9 @@
 <?php
 
+    namespace Content;
+    
+    use Shapes\Module;
+
     class SmallScreen extends Module {
         
         private $type = false;
@@ -44,4 +48,3 @@
             return $content;
         }
     }
-

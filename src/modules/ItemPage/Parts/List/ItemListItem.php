@@ -1,5 +1,9 @@
 <?php
 
+    namespace List;
+    
+    use Shapes\Module;
+
     class ItemListItem extends Module {        
         // Properties for this Module
         protected $data;
