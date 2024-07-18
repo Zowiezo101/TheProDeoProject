@@ -76,7 +76,7 @@
             $page = isset($_SESSION["page"]) ? $_SESSION["page"] : 0;
     
             $data = getPage($this->type, $page, [
-                "filter" => $search,
+                "search" => $search,
                 "sort" => $sort
             ]);
             

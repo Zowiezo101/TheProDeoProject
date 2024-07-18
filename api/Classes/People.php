@@ -58,7 +58,7 @@
             
             // Query parameters
             $query_params = [
-                ":page_start" => [self::PAGE_SIZE * $this->page, \PDO::PARAM_INT],
+                ":page_start" => [self::PAGE_SIZE * $this->parameters["page"], \PDO::PARAM_INT],
                 ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
             ];
             
@@ -91,8 +91,8 @@
             
             // Query parameters
             $query_params = [
-                ":people_id" => [$this->id, \PDO::PARAM_INT],
-                ":parent_id" => [$this->id, \PDO::PARAM_INT]
+                ":people_id" => [$this->parameters["id"], \PDO::PARAM_INT],
+                ":parent_id" => [$this->parameters["id"], \PDO::PARAM_INT]
             ];
             
             // Query string (where parameters will be plugged in)
@@ -218,9 +218,10 @@
         
         private function getColumnQuery(&$query_params) {
             $column_sql = "i.id, i.name";
-            if (isset($this->filter) && ($this->filter !== "")) {
+            if (isset($this->parameters["search"]) && 
+                     ($this->parameters["search"] !== "")) {
                 $column_sql = "i.id, i.name, IF(people_name LIKE :aka, people_name, '') AS aka";
-                $query_params[":aka"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
+                $query_params[":aka"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
             }
             
             return $column_sql;
@@ -228,7 +229,8 @@
         
         protected function getWhereQuery(&$query_params) {
             $where_sql = "";
-            if (isset($this->filter) && ($this->filter !== "")) {
+            if (isset($this->parameters["search"]) && 
+                     ($this->parameters["search"] !== "")) {
                 // The Peoples to Aka item
                 $p2p = $this->getP2PItem();
                 $table_p2p = $p2p->getTable();
@@ -245,9 +247,9 @@
                     OR 
                         people_name LIKE :filter_pn)";
                 
-                $query_params[":name"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
-                $query_params[":filter_n"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
-                $query_params[":filter_pn"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
+                $query_params[":name"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
+                $query_params[":filter_n"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
+                $query_params[":filter_pn"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
             }
             
             return $where_sql;

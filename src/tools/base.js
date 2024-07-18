@@ -154,7 +154,7 @@ function updatePage() {
     var type = $("#item_list").attr("data-page-type");
     getPage(type, page, {
         "sort": sort,
-        "filter": search
+        "search": search
     }).then(function (data) {
         // Start out clean
         $("#item_list").empty();

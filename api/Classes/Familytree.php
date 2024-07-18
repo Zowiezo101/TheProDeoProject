@@ -31,7 +31,7 @@
             // query to read a familytree, starting from a single id
             // It uses a recursive function to keep finding children, until there
             // are no more children to be found
-            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
+            $query_params = [":id" => [$this->parameters["id"], \PDO::PARAM_INT]];
             $query_string = "WITH RECURSIVE ancestors AS 
                     (
                     SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,

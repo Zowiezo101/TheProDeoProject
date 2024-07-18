@@ -38,16 +38,13 @@
         public const OPTIONAL_PARAMS = "optional";
         public const REQUIRED_PARAMS = "required";
         
-        // Some paraneters used by multiple item types
-        protected $id;
-        protected $sort;
-        protected $filter;
-        protected $page;
+        // The array to store the parameters in
+        protected $parameters = [];
         
         // Some filters used by multiple item types
         protected const FILTER_ID    = ["id" => FILTER_VALIDATE_INT];
-        protected const FILTER_SORT    = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_FILTER = ["filter" => FILTER_SANITIZE_SPECIAL_CHARS];
+        protected const FILTER_SORT  = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
+        protected const FILTER_SEARCH   = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
         protected const FILTER_PAGE  = ["page" => FILTER_VALIDATE_INT];
         
         // A parameter that is used for every action
@@ -337,7 +334,7 @@
             $table = $this->getTable();
             
             // Query parameters
-            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
+            $query_params = [":id" => [$this->parameters["id"], \PDO::PARAM_INT]];
             
             // Query string (where parameters will be plugged in)
             $query_string = "SELECT
@@ -372,7 +369,7 @@
             
             // Query parameters
             $query_params = [
-                ":page_start" => [self::PAGE_SIZE * $this->page, \PDO::PARAM_INT],
+                ":page_start" => [self::PAGE_SIZE * $this->parameters["page"], \PDO::PARAM_INT],
                 ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
             ];
             
@@ -424,9 +421,10 @@
         
         protected function getWhereQuery(&$query_params) {
             $where_sql = "";
-            if (isset($this->filter) && ($this->filter !== "")) {
+            if (isset($this->parameters["search"]) && 
+                     ($this->parameters["search"] !== "")) {
                 $where_sql = "WHERE name LIKE :filter";
-                $query_params[":filter"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
+                $query_params[":filter"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
             }
             
             return $where_sql;
@@ -434,7 +432,7 @@
         
         protected function getSortQuery() {
             // If a sort different then the default is given
-            switch($this->sort) {
+            switch($this->parameters["sort"]) {
                 case 'a_to_z':
                     $sort_sql = "i.name ASC";
                     break;
@@ -530,7 +528,8 @@
         }
         
         public function getId() {
-            $id = isset($this->id) ? $this->id : null;
+            $id = isset($this->parameters["id"]) ? 
+                        $this->parameters["id"] : null;
             return $id;
         }
         
@@ -642,8 +641,9 @@
                     $result = false;
                     break;
                 } else {
-                    // Filter the parameter and make sure it's the expected type
-                    $this->$key = filter_var($given_params[$key], $required_params[$key]);
+                    // Filter the parameter and make sure it's the expected type                    
+                    // Then store the parameters so we can easily find them back
+                    $this->parameters[$key] = filter_var($given_params[$key], $required_params[$key]);
 
                     // Remove the key from the given params, as it has been checked
                     unset($given_params[$key]);
@@ -669,9 +669,12 @@
                     $this->message->setError(Message::ERROR_UNKNOWN_KEY, $key);
                     $result = false;
                     break;
+                } else if ($key === "lang") {
+                    $this->lang = filter_var($value, $optional_params[$key]);
                 } else {
                     // Filter the parameter and make sure it's the expected type
-                    $this->$key = filter_var($value, $optional_params[$key]);
+                    // Then store the parameters so we can easily find them back
+                    $this->parameters[$key] = filter_var($value, $optional_params[$key]);
                 }
             }
             
@@ -784,7 +787,7 @@
             return [
                 self::OPTIONAL_PARAMS => array_merge(
                     self::FILTER_SORT,
-                    self::FILTER_FILTER,
+                    self::FILTER_SEARCH,
                 ),
                 self::REQUIRED_PARAMS => array_merge(
                     self::FILTER_PAGE,

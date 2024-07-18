@@ -4,12 +4,6 @@
 
     class Blog extends Item {
         
-        // Parameters for this object
-        protected $title;
-        protected $text;
-        protected $user;
-        protected $date;        
-        
         // Param filters
         private const FILTER_TITLE = ["title" => FILTER_SANITIZE_SPECIAL_CHARS];
         private const FILTER_TEXT  = ["text" => FILTER_DEFAULT];
@@ -48,10 +42,10 @@
                     
             // Query parameters
             $query_params = [
-                ":title" => [$this->title, \PDO::PARAM_STR],
-                ":text" => [$this->text, \PDO::PARAM_STR],
-                ":user" => [$this->user, \PDO::PARAM_INT],
-                ":date" => [$this->date, \PDO::PARAM_STR]
+                ":title" => [$this->parameters["title"], \PDO::PARAM_STR],
+                ":text" => [$this->parameters["text"], \PDO::PARAM_STR],
+                ":user" => [$this->parameters["user"], \PDO::PARAM_INT],
+                ":date" => [$this->parameters["date"], \PDO::PARAM_STR]
             ];
             
             // Query string (where parameters will be plugged in)
@@ -90,9 +84,9 @@
             
             // Query parameters
             $query_params = [
-                ":id" => [$this->id, \PDO::PARAM_INT],
-                ":title" => [$this->title, \PDO::PARAM_STR],
-                ":text" => [$this->text, \PDO::PARAM_STR]
+                ":id" => [$this->parameters["id"], \PDO::PARAM_INT],
+                ":title" => [$this->parameters["title"], \PDO::PARAM_STR],
+                ":text" => [$this->parameters["text"], \PDO::PARAM_STR]
             ];
             
             // Query string (where parameters will be plugged in)
@@ -126,7 +120,7 @@
             $table = $this->getTable();
             
             // Query parameters
-            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
+            $query_params = [":id" => [$this->parameters["id"], \PDO::PARAM_INT]];
             
             // Query string (where parameters will be plugged in)
             $query_string = "DELETE
@@ -156,9 +150,10 @@
             $table = $this->getTable();
             
             // Query parameters
-            if (isset($this->user) && ($this->user !== "")) {
+            if (isset($this->parameters["user"]) && 
+                     ($this->parameters["user"] !== "")) {
                 $where_sql = "WHERE u.id = :user";
-                $query_params = [":user" => [$this->user, \PDO::PARAM_INT]];
+                $query_params = [":user" => [$this->parameters["user"], \PDO::PARAM_INT]];
             } else {
                 $where_sql = "";
                 $query_params = [];

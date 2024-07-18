@@ -48,7 +48,7 @@
             
             // Query parameters
             $query_params = [
-                ":page_start" => [self::PAGE_SIZE * $this->page, \PDO::PARAM_INT],
+                ":page_start" => [self::PAGE_SIZE * $this->parameters["page"], \PDO::PARAM_INT],
                 ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
             ];
             
@@ -155,9 +155,10 @@
         
         private function getColumnQuery(&$query_params) {
             $column_sql = "i.id, i.name";
-            if (isset($this->filter) && ($this->filter !== "")) {
+            if (isset($this->parameters["search"]) && 
+                     ($this->parameters["search"] !== "")) {
                 $column_sql = "i.id, i.name, IF(location_name LIKE :aka, location_name, '') AS aka";
-                $query_params[":aka"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
+                $query_params[":aka"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
             }
             
             return $column_sql;
@@ -165,7 +166,8 @@
         
         protected function getWhereQuery(&$query_params) {
             $where_sql = "";
-            if (isset($this->filter) && ($this->filter !== "")) {
+            if (isset($this->parameters["search"]) && 
+                     ($this->parameters["search"] !== "")) {
                 // The Locations to Aka item
                 $l2l = $this->getL2LItem();
                 $table_l2l = $l2l->getTable();
@@ -182,9 +184,9 @@
                     OR 
                         location_name LIKE :filter_ln";
                 
-                $query_params[":name"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
-                $query_params[":filter_n"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
-                $query_params[":filter_ln"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
+                $query_params[":name"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
+                $query_params[":filter_n"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
+                $query_params[":filter_ln"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
             }
             
             return $where_sql;
