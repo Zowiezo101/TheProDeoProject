@@ -86,14 +86,26 @@ function getMaps(type, id, options) {
     return accessDatabase("GET", url + query);
 }
 
-function getSearchResults(options) {
-    /*
-     * URL: api/[item]/search/results
-     * options: 
-     * - item_type
-     * - lang
-     * - filter
-     */
+function getSearchOptions(type, options) {
+    // Create the query
+    var query = getQuery(options);
+    
+    // The URL to set the request to
+    var url = "api/" + type + "/search/options";
+    
+    // Access the database
+    return accessDatabase("GET", url + query);
+}
+
+function getSearchResults(type, options) {
+    // Create the query
+    var query = getQuery(options);
+    
+    // The URL to set the request to
+    var url = "api/" + type + "/search/results";
+    
+    // Access the database
+    return accessDatabase("GET", url + query);
 }
 
 function accessDatabase(method, url, data) {

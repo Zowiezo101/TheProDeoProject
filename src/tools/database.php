@@ -82,44 +82,26 @@ function getMaps($type, $id, $options=false) {
     return accessDatabase("GET", $url.$query);
 }
 
-function getSearchOptions($options=false) {
-    global $base_url;
-    
+function getSearchOptions($type, $options=false) {
     // Create the query
     $query = getQuery($options);
     
-    // The data that is being requested
-    $data = [];
-    
-    foreach (["books", "events", "peoples", "locations", "specials"] as $type) {
-        // The URL to send the request to
-        $url = $base_url."/api/".$type."/search/options";
-
-        $data[$type] = accessDatabase("GET", $url.$query);
-    }
+    // The URL to send the request to
+    $url = setParameters("api/".$type."/search/options");
     
     // Access the database
-    return $data;
+    return accessDatabase("GET", $url.$query);
 }
 
-function getSearchResults($type, $options) {
-    global $base_url;
-    
+function getSearchResults($type, $options=false) {
     // Create the query
     $query = getQuery($options);
     
-    // The data that is being requested
-    $data = [];
-    
-    foreach (["books", "events", "peoples", "locations", "specials"] as $type) {
-        // The URL to send the request to
-        $url = $base_url."/api/".$type."/search/results";
-
-        $data[$type] = accessDatabase("GET", $url.$query);
-    }
+    // The URL to send the request to
+    $url = setParameters("api/".$type."/search/results");
     
     // Access the database
-    return $data;
+    return accessDatabase("GET", $url.$query);
 }
 
 function accessDatabase($method, $url, $data=false) {
