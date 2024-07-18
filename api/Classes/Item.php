@@ -4,6 +4,7 @@
     use Classes\Database as Database;
     use Classes\Message as Message;
     use Classes\Link as Link;
+    use Classes\Search as Search;
 
     class Item {
         
@@ -16,8 +17,9 @@
         
         // Other classes that are used
         private $database;
-        private $link;
         private $message;
+        private $link;
+        private $search;
         
         // Actions
         private $action;
@@ -44,7 +46,7 @@
         // Some filters used by multiple item types
         protected const FILTER_ID    = ["id" => FILTER_VALIDATE_INT];
         protected const FILTER_SORT  = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_SEARCH   = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
+        public const FILTER_SEARCH   = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
         protected const FILTER_PAGE  = ["page" => FILTER_VALIDATE_INT];
         
         // A parameter that is used for every action
@@ -68,11 +70,14 @@
             // get database connection
             $this->database = new Database();
             
+            // Used to return a message to the client
+            $this->message = new Message();
+            
             // Get the linking table queries
             $this->link = new Link($this);
             
-            // Used to return a message to the client
-            $this->message = new Message();
+            // The search class to get search queries
+            $this->search = new Search($this);
         }
         
         public function __destruct() {
@@ -320,16 +325,7 @@
             return $this->getEmptyQuery();
         }
         
-        protected function getReadOneQuery() {
-            /* 
-             * TODO: The global timeline query, put this in the database itself
-            if ($this->id === -999) {
-                // This is a "Global timeline" event
-                $query = "SELECT
-                        ? AS id, 'timeline.global' AS name";
-            } 
-             */
-            
+        protected function getReadOneQuery() {            
             // The translated table name
             $table = $this->getTable();
             
@@ -396,17 +392,11 @@
         }
         
         protected function getSearchOptionsQuery() {
-            return [
-                "string" => "",
-                "params" => ""
-            ];
+            return $this->search->getOptionsQuery();
         }
         
         protected function getSearchResultsQuery() {
-            return [
-                "string" => "",
-                "params" => ""
-            ];
+            return $this->search->getSearchQuery();
         }
         
         private function getColumnQuery() {
@@ -796,17 +786,11 @@
         }
         
         protected function getSearchOptionsFilter() {
-            return [
-                self::OPTIONAL_PARAMS => [],
-                self::REQUIRED_PARAMS => [],
-            ];
+            return $this->search->getOptionsFilter();
         }
         
         protected function getSearchResultsFilter() {
-            return [
-                self::OPTIONAL_PARAMS => [],
-                self::REQUIRED_PARAMS => [],
-            ];
+            return $this->search->getSearchFilter();
         }
         
         /*

@@ -27,6 +27,8 @@ RewriteRule ^(.*)/map/([-0-9]*)/?$ $1?id=$2 [QSA,DPI]
 # api/[item]/[id] -> api/[item]/read_one.php?id=[id]
 # api/[item]/[id]/maps -> api/[item]/read_maps.php?id=[id]
 # api/[item]/pages/[page] -> api/[item]/read_page.php?page=[page]
+# api/[item]/search/options -> api/[item]/search_options.php
+# api/[item]/search/results -> api/[item]/search_results.php
 # api/[item]/[id] -> api/[item]/update.php?id=[id]
 # api/[item]/[id] -> api/[item]/delete.php?id=[id]
 
@@ -41,6 +43,12 @@ RewriteRule ^(.*)/([0-9]*)/maps$ $1/read_maps?id=$2 [QSA,DPI]
 
 RewriteCond %{REQUEST_URI} ^/api/
 RewriteRule ^(.*)/pages/([0-9]*)$ $1/read_page?page=$2 [QSA,DPI]
+
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^(.*)/search/options$ $1/search_options [QSA,DPI]
+
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^(.*)/search/results$ $1/search_results [QSA,DPI]
 
 RewriteCond %{REQUEST_URI} ^/api/
 RewriteCond %{REQUEST_METHOD} GET

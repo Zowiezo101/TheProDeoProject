@@ -43,39 +43,6 @@
                 Link::EVENTS_TO_NOTES
             ]);
         }
-        
-//        // search products
-//        // TODO
-//        function search($filters){
-//            // utilities
-//            $utilities = new utilities();
-//
-//            $params = $utilities->getParams($this->table_name, $filters, $this->conn);
-//
-//            // select all query
-//            $query = "SELECT
-//                        " . $params["columns"] . "
-//                    FROM
-//                        " . $this->table . " b
-//                    ". $params["filters"] ."
-//                    ORDER BY
-//                        b.order_id ASC";
-//
-//            // prepare query statement
-//            $stmt = $this->conn->prepare($query);
-//            $this->query = $query;
-//
-//            // bind
-//            $i = 1;
-//            foreach($params["values"] as $value) {
-//                $stmt->bindValue($i++, $value);
-//            }
-//
-//            // execute query
-//            $stmt->execute();
-//
-//            return $stmt;
-//        }
     
         // search products
         // TODO:

@@ -60,8 +60,6 @@
     // The Parts used by this Page
     require "src/modules/SearchPage/Parts/SearchMenu.php";
     require "src/modules/SearchPage/Parts/SearchContent.php";
-    require "src/modules/SearchPage/Parts/SearchDefault.php";
-    require "src/modules/SearchPage/Parts/SearchDetails.php";
     
     // The MapPage
     require "src/modules/MapPage/MapPage.php";
