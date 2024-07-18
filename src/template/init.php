@@ -5,13 +5,17 @@
      * sets initial settings
      */
 
-    /* TODO: Loading in all the needed PHP files */
+    /* Loading in all the needed PHP files */
     require "src/tools/lang.php";
     require "src/tools/base.php";
     require "src/tools/database.php";
     require "../settings.conf";
     
     /* Getting the basic variables needed */
+    $base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ? 
+                    "http://localhost" : 
+                    "https://prodeodatabase.com";
+    
     $data_base_url = setParameters("");
 
     /* Setting initial settings 
@@ -52,12 +56,6 @@
     // Get the correct translation file, that corresponds with the prefered language
     $page_lang = filter_input(INPUT_GET, "lang");
     require "locale/translation_".$page_lang.".php";
-
-    
-    // Needed for testing purposes
-    $base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ? 
-                    "http://localhost" : 
-                    "https://prodeodatabase.com";
 
     $dropdown = "";
     // Get the dropdown menu that needs to have it's button activated

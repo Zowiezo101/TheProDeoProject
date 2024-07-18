@@ -51,7 +51,7 @@
             // Query string (where parameters will be plugged in)
             $query_string = "
                 INSERT INTO
-                    " . $table . "
+                    {$table}
                 SET
                     title=:title, 
                     text=:text, 
@@ -91,7 +91,7 @@
             
             // Query string (where parameters will be plugged in)
             $query_string = "UPDATE
-                    " . $table . "
+                    {$table}
                 SET
                     title=:title, text=:text
                 WHERE
@@ -163,7 +163,7 @@
             $query_string = "SELECT
                     b.id, b.title, b.text, u.name, b.date
                 FROM
-                    " . $table . " b
+                    {$table} b
                 JOIN 
                     users u
                 ON 
