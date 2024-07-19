@@ -99,14 +99,23 @@
                 // Get the search result if this type is selected
                 getSearchResults(getItemType(item_type), parameters).then(function(results) {
                     // Insert the database results
-                    insertSearchResults(results);
+                    insertSearchResults(getItemType(item_type), results);
                 });;
             }
         });
     }
     
-    function insertSearchResults(results) {
+    function insertSearchResults(item_type, results) {
+        // Start out clean
+        $("#tab" + item_type).empty();
         
+        if (results.error !== "") {
+            // Error message, because database can't be reached
+            $("#tab" + item_type).append(dict["database.no_results"]);
+        } else if (results.records.length > 0) {
+            // The table with all the search results
+            insertTable(item_type, results);
+        }
     }
     
     function getParameter(param_name, param_type) {
@@ -201,6 +210,91 @@
         return item_string;
     }
     
+    function insertTable(item_type, results) {
+        // All the selected/used columns for this item type
+        var columns = results.columns;
+        
+        // Add a link column and get an array with header cells
+        var header = getHeaderRow(columns);
+            
+        // Insert all the records into the table
+        var rows = results.records.map((record) => {
+            return getDataRow(record);
+        });
+        
+        var body = rows.join("");
+        
+        // The table, this will be filled in later
+        $("#tab" + item_type).append(`
+            <div class="table-responsive">
+                <table class="table table-striped table-borderless">
+                    <thead>` + header + `</thead>
+                    <tbody>` + body + `</tbody>
+                </table>
+            </div>
+        `);
+        
+        // This is to be able to sort the results
+        $("#tab" + item_type + " table").DataTable({
+            paging: false,
+            searching: false,
+            info: false
+        });
+    }
+    
+    function getHeaderRow(columns) {
+        return columns.filter((column) => {
+            // Remove these columns
+            return ["book_start_vers", "book_start_chap", 
+                    "book_end_vers",   "book_end_chap",
+                    "id"].includes(column) ? false : true;
+        }).concat("link").map((column) => {
+            // Some renaming for these columns
+            if(column === "book_start_id") {
+                column = "book_start";
+            } else if(column === "book_end_id") {
+                column = "book_end";
+            }
+            
+            // Return the row header cells
+            return '<th scope="col">' + dict["items." + column] + '</th>';
+        }).join("");
+    }
+    
+    function getDataRow(record) {
+        // Get all the keys and filter out the ones we don't need
+        var keys = Object.keys(record).filter((key) => {
+            // Remove these columns
+            return ["book_start_vers", "book_start_chap", 
+                    "book_end_vers",   "book_end_chap",
+                    "id"].includes(key) ? false : true;
+        }).concat("link");
+        
+        // Loop through all the keys
+        var data_row = keys.map((key) => {
+            switch(key) {
+                case "name":
+                    // TODO: Do this in database with AKA
+                    data_cell = '<th scope="row">' + record["name"] + (record["aka"] ? " (" + record["aka"] + ")" : "") + '</th>';
+                    break;
+                    
+                case "link":
+                    data_cell = "<td>" + "TODO" + "</td>";
+                    break;
+                    
+                default:
+                    // Default sitation is to take the data as is
+                    data_cell = "<td>" + record[key] + "</td>";
+                    break
+            }
+            
+            // TODO: Something with data order to get the correct order
+            return data_cell;
+        });
+
+        return "<tr>" + data_row.join("") + "</tr>";
+    }
+    
 //    function onBookChange() {
 //        // For start and end
 //    }
@@ -225,50 +319,11 @@
 //        
 //    }
 //
-//    /** Insert the search results of the session */
-//    function insertResults() {
-//        var specific = $("#item_specific").val();
-//        // Get the data of the books, events, peoples, locations & specials 
-//        // using the search terms
-//
-//        switch(specific) {
-//            case "0":
-//                getItems(TYPE_BOOK, getSearchTerms("books")).then(function(result) { insertItems("books", result); });
-//                break;
-//
-//            case "1":
-//                getItems(TYPE_EVENT, getSearchTerms("events")).then(function(result) { insertItems("events", result); });
-//                break;
-//
-//            case "2":
-//                getItems(TYPE_PEOPLE, getSearchTerms("peoples")).then(function(result) { insertItems("peoples", result); });
-//                break;
-//
-//            case "3":
-//                getItems(TYPE_LOCATION, getSearchTerms("locations")).then(function(result) { insertItems("locations", result); });
-//                break;
-//
-//            case "4":
-//                getItems(TYPE_SPECIAL, getSearchTerms("specials")).then(function(result) { insertItems("specials", result); });
-//                break;
-//
-//            default:
-//                getItems(TYPE_BOOK, getSearchTerms("books")).then(function(result) { insertItems("books", result); });
-//                getItems(TYPE_EVENT, getSearchTerms("events")).then(function(result) { insertItems("events", result); });
-//                getItems(TYPE_PEOPLE, getSearchTerms("peoples")).then(function(result) { insertItems("peoples", result); });
-//                getItems(TYPE_LOCATION, getSearchTerms("locations")).then(function(result) { insertItems("locations", result); });
-//                getItems(TYPE_SPECIAL, getSearchTerms("specials")).then(function(result) { insertItems("specials", result); });
-//                break;
-//        }
-//    }
-//
 ///** Inserting the results in a readable table format 
 // * @param {String} type
 // * @param {Object} result * 
 // * */
 //function insertItems(type, result) {
-//    // Start out clean
-//    $("#tab" + type).empty();
 //    
 //    // No errors and at least 1 item of data
 //    if (result.records) {
@@ -316,52 +371,7 @@
 //            // The row for every item we've got
 //            table_row.push('<tr>' + table_data + '</tr>');
 //        }
-//        
-//        $("#tab" + type).append(`
-//            <div class="table-responsive">
-//                <table class="table table-striped table-borderless">
-//                    <thead>
-//                        <tr>`
-//                            + table_header +
-//                        `</tr>
-//                    </thead>
-//                    <tbody>`
-//                        + table_row.join("") +
-//                    `</tbody>
-//                </table>
-//            </div>
-//        `);
-//        
-//        var num_columns = table_header.split("><").length;
-//        
-//        // This is to sort the results
-//        $("#tab" + type + " table").DataTable({
-//            "paging": false,
-//            "searching": false,
-//            "info": false,
-//            "order": [[num_columns - (type === "books" ? 1 : 3), 'asc']]
-//        });
-//    } else {
-//        // Error message, because database can't be reached
-//        $("#tab" + type).append(dict["database.no_results"]);
 //    }
-//}
-//
-///**
-// * Inserting a header into the table of results
-// * @param {String} type
-// * @param {String} name
-// * */
-//function insertHeader(type, name) {
-//    var types = getTypes(name);
-//    
-//    var table_header = "";
-//    if (types.includes(type)) {
-//        table_header = '<th scope="col">' + dict["items." + name] + '</th>';
-//    }
-//    
-//    return table_header;
-//}
 //
 ///**
 // * Inserting data into the table of results

@@ -23,6 +23,7 @@
         private $data = [];
         private $paging = "";
         private $query = "";
+        private $columns = [];
         
         public function setError($error, $value = "") {
             
@@ -61,6 +62,10 @@
             $this->query = $query;
         }
         
+        public function setColumns($columns) {
+            $this->columns = $columns;
+        }
+        
         public function sendMessage() {
             $message = [
                 "error" => $this->error,
@@ -81,6 +86,10 @@
                 $message["paging"] = $this->paging;
             }
             
+            if (count($this->columns) > 0) {
+                // Include the column names (only for search results)
+                $message["columns"] = $this->columns;
+            }
             
             http_response_code($this->code);
             echo json_encode($message);

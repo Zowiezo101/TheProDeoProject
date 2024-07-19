@@ -208,6 +208,9 @@
             
             // Execute the action
             $this->executeAction();
+            
+            $columns = $this->search->getColumns();
+            $this->message->setColumns($columns);
         }
         
         /**
@@ -401,7 +404,6 @@
         
         private function getColumnQuery() {
             // Get all the columns from the column table
-            // i.id, i.title, i.text, i.user, i.date
             $columns = join(",", array_map(function ($column) {
                 return "i.{$column}";
             }, $this->table_columns));
@@ -421,6 +423,11 @@
         }
         
         protected function getSortQuery() {
+            // Sort isn't set, give the default value
+            if (!isset($this->parameters["sort"])) {
+                $this->parameters["sort"] = "0_to_9";
+            }
+            
             // If a sort different then the default is given
             switch($this->parameters["sort"]) {
                 case 'a_to_z':
@@ -530,6 +537,18 @@
         
         public function setLang($lang) {
             $this->lang = $lang;
+        }
+        
+        public function getParameters() {
+            return $this->parameters;
+        }
+        
+        public function getTableColumns() {
+            return $this->table_columns;
+        }
+        
+        public function getTableName() {
+            return $this->table_name;
         }
         
         /**

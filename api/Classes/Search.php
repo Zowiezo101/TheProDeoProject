@@ -9,6 +9,9 @@
         // The parent class 
         private $parent;
         
+        // Store the columns to be returned with the result as well
+        private $columns;
+        
         // Filters for search page
         protected const FILTER_NAME = ["name" => FILTER_SANITIZE_SPECIAL_CHARS];
         protected const FILTER_MEANING_NAME = ["meaning_name" => FILTER_SANITIZE_SPECIAL_CHARS];
@@ -34,6 +37,9 @@
         }
         
         public function getOptionsQuery() {
+            // TODO: Also retrieve the types tables for some reason?
+            
+            
             return [
                 "string" => "",
                 "params" => ""
@@ -101,14 +107,148 @@
         }
         
         private function getQueryParams() {
-            $filters = $this->parent->parameters;
+            $query_params = [];
+            
+            $filters = $this->parent->getParameters();
+            
+            return $query_params;
         }
         
-        private function getColumnQuery($query_params) {
+        private function getColumnQuery(&$query_params) {
+            // Always get the name, bible location and ID
+            $columns = ["i.id", "i.name"];
             
+            if (array_search("book_start_id", $this->parent->getTableColumns()) !== false) {
+                // The table for this type has the bible location as well
+                $columns = array_merge($columns, [
+                    "i.book_start_id", 
+                    "i.book_start_chap", 
+                    "i.book_start_vers", 
+                    "i.book_end_id", 
+                    "i.book_end_chap", 
+                    "i.book_end_vers"
+                ]);
+            } else if ($this->parent->getTableName() === "events") {
+                // TODO: This part needs to use AKA table, order by bible location and 
+                // get the highest value for end and the lowest value for start
+            }
+            
+            // Store the columns to be send with the reults
+            $this->columns = $columns;
+            
+            // The column query part
+            $column_query = join(", ", $columns);
+            return $column_query;
         }
         
         private function getWhereQuery(&$query_params) {
+            // Get all the filters that are given when requesting data
+            $filters = $this->parent->getParameters();
+            $wheres = [];
             
+            foreach ($filters as $filter => $value) {
+                // Some standard values to be reset for every iteration
+                $column = "";
+                $where = "";
+                $query_param = [];
+                
+                // Every filter generates its own WHERE query
+                switch($filter) {
+                    case array_key_first(self::FILTER_NAME);
+                        $column = filter;
+                        $where = "i.name LIKE :name";
+                        $query_param = [":name", '%'.$value.'%', \PDO::PARAM_STR];
+                        break;
+                    
+                    case array_key_first(self::FILTER_MEANING_NAME):
+                        $column = $filter;
+                        $where = "i.meaning_name LIKE :meaning_name";
+                        $query_param = [":meaning_name", '%'.$value.'%', \PDO::PARAM_STR];
+                        break;
+                }
+                
+                // Pretty much all filters only apply to a single column in 
+                // the database. Make sure this column actually exists.
+                if($this->checkColumn($column) !== false) {
+                    // If a column exists, we can then add the where query and
+                    // query parameters to their corresponding arrays
+                    $wheres[] = $where;
+                    
+                    // Take the first value of query_param as the parameter name
+                    // and use the rest as the parameter values
+                    $query_params[array_shift($query_param)] = $query_param;
+                }
+            }
+            $where_sql = (count($wheres) > 0) ? "WHERE " . join(" AND ", $wheres) : "";
+            return $where_sql;
+        }
+        
+        public function getColumns() {            
+            // Remove the table names from the column names
+            return array_map(function($column) {
+                // Split the string and only send the part after the last dot
+                $parts = explode(".", $column);
+                        
+                // Return the column name without the table name
+                return end($parts);
+            }, $this->columns);
+        }
+        
+        private function checkColumn($column) {
+            return array_search($column, $this->parent->getTableColumns());
         }
     }
+    
+    
+//        // TODO
+//        function search($filters){
+//            // utilities
+//            $utilities = new utilities();
+//
+//            $params = $utilities->getParams($this->table_name, $filters, $this->conn);
+//
+//            // select all query
+//            $query = "SELECT
+//                        " . $params["columns"] . "
+//                    FROM
+//                        " . $this->table . " b
+//                    ". $params["filters"] ."
+//                    ORDER BY
+//                        b.order_id ASC";
+//                        
+//            // TODO: Insert joins for type tables
+//            // Like AKA, gender, tribe, location_type & special_type
+//
+//            // prepare query statement
+//            $stmt = $this->conn->prepare($query);
+//            $this->query = $query;
+//
+//            // bind
+//            $i = 1;
+//            foreach($params["values"] as $value) {
+//                $stmt->bindValue($i++, $value);
+//            }
+//
+//            // execute query
+//            $stmt->execute();
+//
+//            return $stmt;
+//        }
+    
+//            if (strpos($params["columns"], $utilities->location_aka) !== false) {
+//                $table = $utilities->getTable($this->base->table_l2l);
+//
+//                // We need this extra table when AKA is needed
+//                $query .= 
+//                    "LEFT JOIN " . $table . " as location_to_aka
+//                        ON location_to_aka.location_id = l.id 
+//                        AND location_to_aka.location_name LIKE ?
+//                    ";
+//            }
+//            if (strpos($params["columns"], "type") !== false) {
+//                // We need this extra table when gender is needed
+//                $query .= 
+//                    "LEFT JOIN " . $this->table_type . " as it
+//                        ON it.type_id = l.type
+//                    ";
+//            }
