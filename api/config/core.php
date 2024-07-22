@@ -6,7 +6,6 @@ require "../../../settings.conf";
 require "../Classes/Database.php";
 require "../Classes/Item.php";
 require "../Classes/Link.php";
-require "../Classes/Search.php";
 require "../Classes/Message.php";
 
 // The different objects to be used

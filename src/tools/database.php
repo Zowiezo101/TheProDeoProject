@@ -82,23 +82,12 @@ function getMaps($type, $id, $options=false) {
     return accessDatabase("GET", $url.$query);
 }
 
-function getSearchOptions($type, $options=false) {
+function getOptions($type, $options=false) {
     // Create the query
     $query = getQuery($options);
     
     // The URL to send the request to
-    $url = setParameters("api/".$type."/search/options");
-    
-    // Access the database
-    return accessDatabase("GET", $url.$query);
-}
-
-function getSearchResults($type, $options=false) {
-    // Create the query
-    $query = getQuery($options);
-    
-    // The URL to send the request to
-    $url = setParameters("api/".$type."/search/results");
+    $url = setParameters("api/".$type."/options");
     
     // Access the database
     return accessDatabase("GET", $url.$query);

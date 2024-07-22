@@ -4,7 +4,6 @@
     use Classes\Database as Database;
     use Classes\Message as Message;
     use Classes\Link as Link;
-    use Classes\Search as Search;
 
     class Item {
         
@@ -12,18 +11,17 @@
         protected $debug = false;
         
         // Some default values
-        private const DEFAULT_LANG = "nl";
+        protected const DEFAULT_LANG = "nl";
         protected const PAGE_SIZE = 10;
         
         // Other classes that are used
-        private $database;
-        private $message;
-        private $link;
-        private $search;
+        protected $database;
+        protected $message;
+        protected $link;
         
         // Actions
-        private $action;
-        private $action_success;
+        protected $action;
+        protected $action_success;
         
         // The actions that are supported for this item
         public const ACTION_CREATE = "create";
@@ -33,8 +31,7 @@
         public const ACTION_READ_ALL = "read_all";
         public const ACTION_READ_MAPS = "read_maps";
         public const ACTION_READ_PAGE = "read_page";
-        public const ACTION_SEARCH_OPTIONS = "search_options";
-        public const ACTION_SEARCH_RESULTS = "search_results";
+        public const ACTION_READ_OPTIONS = "read_options";
         
         // Parameters
         public const OPTIONAL_PARAMS = "optional";
@@ -46,7 +43,7 @@
         // Some filters used by multiple item types
         protected const FILTER_ID    = ["id" => FILTER_VALIDATE_INT];
         protected const FILTER_SORT  = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
-        public const FILTER_SEARCH   = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
+        protected const FILTER_SEARCH   = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
         protected const FILTER_PAGE  = ["page" => FILTER_VALIDATE_INT];
         
         // A parameter that is used for every action
@@ -75,9 +72,6 @@
             
             // Get the linking table queries
             $this->link = new Link($this);
-            
-            // The search class to get search queries
-            $this->search = new Search($this);
         }
         
         public function __destruct() {
@@ -156,14 +150,34 @@
             // Execute the action
             $this->executeAction();
             
-            // Retrieve the data
-            $data = $this->message->getData();
+            // Get all columns that are available with this query
+            $columns = $this->getTableColumns();
             
-            // Insert the links
-            $this->link->insertLinks($data);
+            // Add all these columns to the results
+            $this->message->setColumns($columns);
             
-            // Update the data
-            $this->message->updateData($data);
+            
+            // TODO: This part needs to use AKA table, order by bible location and 
+            // get the highest value for end and the lowest value for start
+            
+    
+//            if (strpos($params["columns"], $utilities->location_aka) !== false) {
+//                $table = $utilities->getTable($this->base->table_l2l);
+//
+//                // We need this extra table when AKA is needed
+//                $query .= 
+//                    "LEFT JOIN " . $table . " as location_to_aka
+//                        ON location_to_aka.location_id = l.id 
+//                        AND location_to_aka.location_name LIKE ?
+//                    ";
+//            }
+//            if (strpos($params["columns"], "type") !== false) {
+//                // We need this extra table when gender is needed
+//                $query .= 
+//                    "LEFT JOIN " . $this->table_type . " as it
+//                        ON it.type_id = l.type
+//                    ";
+//            }
         }
         
         public function readPage() {
@@ -190,27 +204,14 @@
             $this->executeAction();
         }
         
-        public function searchOptions() {
-            $this->action = self::ACTION_SEARCH_OPTIONS;
+        public function readOptions() {
+            $this->action = self::ACTION_READ_OPTIONS;
             
             // Succefully reading an item should return code '200'
             $this->action_success = Message::SUCCESS_READ;
             
             // Execute the action
             $this->executeAction();
-        }
-        
-        public function searchResults() {
-            $this->action = self::ACTION_SEARCH_RESULTS;
-            
-            // Succefully reading an item should return code '200'
-            $this->action_success = Message::SUCCESS_READ;
-            
-            // Execute the action
-            $this->executeAction();
-            
-            $columns = $this->search->getColumns();
-            $this->message->setColumns($columns);
         }
         
         /**
@@ -219,7 +220,7 @@
          * for the client. In case of error, it prepares an error message
          * @param type $query
          */
-        private function executeAction() {
+        protected function executeAction() {
             // Check the parameters
             $filter = $this->getFilter();
             if ($this->checkParameters($filter)) {  
@@ -294,12 +295,8 @@
                     $query = $this->getReadPageQuery();
                     break;
                 
-                case self::ACTION_SEARCH_OPTIONS:
-                    $query = $this->getSearchOptionsQuery();
-                    break;
-                
-                case self::ACTION_SEARCH_RESULTS:
-                    $query = $this->getSearchResultsQuery();
+                case self::ACTION_READ_OPTIONS:
+                    $query = $this->getReadOptionsQuery();
                     break;
             }
             
@@ -339,7 +336,7 @@
             $query_string = "SELECT
                     {$this->getColumnQuery()}
                 FROM
-                    " . $table . " i
+                    {$table} i
                 WHERE
                     i.id = :id
                 LIMIT
@@ -352,9 +349,26 @@
             return $query;
         }
         
-        protected function getReadAllQuery() {
-            // Too complex to have standard functions for
-            return $this->getEmptyQuery();
+        protected function getReadAllQuery() {      
+            // The translated table name
+            $table = $this->getTable();
+            
+            // Query parameters
+            $query_params = [];
+            
+            // Query string (where parameters will be plugged in)
+            $query_string = "SELECT
+                    {$this->getColumnQuery()}
+                FROM
+                    {$table} i
+                ORDER BY
+                    i.order_id ASC";
+            
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            return $query;
         }
         
         protected function getReadMapsQuery() {
@@ -394,12 +408,9 @@
             return $query;
         }
         
-        protected function getSearchOptionsQuery() {
-            return $this->search->getOptionsQuery();
-        }
-        
-        protected function getSearchResultsQuery() {
-            return $this->search->getSearchQuery();
+        protected function getReadOptionsQuery() {
+            // Too complex to have standard functions for
+            return $this->getEmptyQuery();
         }
         
         private function getColumnQuery() {
@@ -555,7 +566,6 @@
          * Return the table name. In case of translations, return MySQL code
          * to request the translated version of the table and default
          * language to fall back to.
-         * @return type
          */
         public function getTable() {
             // Only if we're not using the default language 
@@ -735,12 +745,8 @@
                     $params = $this->getReadPageFilter();
                     break;
                 
-                case self::ACTION_SEARCH_OPTIONS:
-                    $params = $this->getSearchOptionsFilter();
-                    break;
-                
-                case self::ACTION_SEARCH_RESULTS:
-                    $params = $this->getSearchResultsFilter();
+                case self::ACTION_READ_OPTIONS:
+                    $params = $this->getReadOptionsFilter();
                     break;
             }
             
@@ -805,11 +811,8 @@
         }
         
         protected function getSearchOptionsFilter() {
-            return $this->search->getOptionsFilter();
-        }
-        
-        protected function getSearchResultsFilter() {
-            return $this->search->getSearchFilter();
+            // Too complex to have standard functions for
+            return $this->getEmptyFilter();
         }
         
         /*

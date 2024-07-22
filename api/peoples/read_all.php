@@ -10,10 +10,10 @@ header("Access-Control-Allow-Headers: access");
 require '../config/core.php';
   
 // Initialize object
-$item = new Classes\Event();
+$item = new Classes\People();
   
 // Read the requested data
-$item->searchResults();
+$item->readAll();
 
 // Send a message to the client
 $item->sendMessage();

@@ -86,23 +86,12 @@ function getMaps(type, id, options) {
     return accessDatabase("GET", url + query);
 }
 
-function getSearchOptions(type, options) {
+function getOptions(type, options) {
     // Create the query
     var query = getQuery(options);
     
     // The URL to set the request to
-    var url = "api/" + type + "/search/options";
-    
-    // Access the database
-    return accessDatabase("GET", url + query);
-}
-
-function getSearchResults(type, options) {
-    // Create the query
-    var query = getQuery(options);
-    
-    // The URL to set the request to
-    var url = "api/" + type + "/search/results";
+    var url = "api/" + type + "/options";
     
     // Access the database
     return accessDatabase("GET", url + query);

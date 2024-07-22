@@ -13,7 +13,7 @@ require '../config/core.php';
 $item = new Classes\Special();
   
 // Read the requested data
-$item->searchResults();
+$item->readAll();
 
 // Send a message to the client
 $item->sendMessage();
