@@ -9,6 +9,8 @@
         public function getContent() {
             global $dict;
             
+            // TODO: Keep selected tabs selected
+            
             $content = '<div class="col-md-8 col-lg-9">
                     <!-- Search results -->
                     <div class="row">

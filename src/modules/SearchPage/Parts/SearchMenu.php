@@ -10,6 +10,9 @@
 
     class SearchMenu extends Module {
         
+        // TODO: Implement suggestion while typing
+        // Basically filtering a specific property while typing
+        
         private const HORIZONTAL_RULE = "<hr class='my-1'/>";
         
         public function __construct() {
@@ -25,6 +28,24 @@
             $this->addContent($this->searchLastAppearance());
 //            $this->addContent(self::HORIZONTAL_RULE);
 //            $this->addContent($this->searchSpecific());
+    
+//    // The elements that need initializing
+//    var elementInit = {
+//        "start": false,
+//        "end": false,
+//        "specific": false,
+//        "num_chapters": false,
+//        "age": false,
+//        "age_parents": false
+//    };
+//
+//    // The elements that can be disabled
+//    var elementEnabled = {
+//        "num_chapters": false,
+//        "age": false,
+//        "age_parents": false
+//    };
+//
         }
         
         private function searchName() {            

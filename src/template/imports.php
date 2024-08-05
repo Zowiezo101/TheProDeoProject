@@ -33,7 +33,7 @@
         <!-- Bootstrap slider -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
         <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
-        <!--<script src="https://cdn.datatables.net/plug-ins/2.1.0/pagination/input.js"></script>-->
+        <!-- TODO: <script src="https://cdn.datatables.net/plug-ins/2.1.0/pagination/input.js"></script>-->
         <script src="https://cdn.datatables.net/plug-ins/2.1.0/features/inputPaging/dist/dataTables.inputPaging.min.js"></script>
         <script src="https://cdn.datatables.net/2.1.0/js/dataTables.bootstrap4.min.js"></script>
         <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap4.min.css" type="text/css">
