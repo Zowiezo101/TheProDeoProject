@@ -38,4 +38,17 @@
                 Link::SPECIALS_TO_NOTES
             ]);
         }
+        
+        public function getReadOptionsQuery() {
+            // The following options are returned for the item type Book:
+            // - All special types
+            
+            // TODO:
+//            select
+//                1
+//            from
+//                dual
+//            where
+//                false
+        }
     }

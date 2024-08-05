@@ -114,4 +114,17 @@
             return $where_sql;
         }
         
+        public function getReadOptionsQuery() {
+            // The following options are returned for the item type Book:
+            // - All location types
+            
+            // TODO:
+//            select
+//                1
+//            from
+//                dual
+//            where
+//                false
+        }
+        
     }

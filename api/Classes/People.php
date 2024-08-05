@@ -168,4 +168,20 @@
             return $where_sql;
         }
         
+        public function getReadOptionsQuery() {
+            // The following options are returned for the item type Book:
+            // - Min/Max own age
+            // - Min/Max parent age
+            // - All genders
+            // - All types
+            
+            // TODO:
+//            select
+//                1
+//            from
+//                dual
+//            where
+//                false
+        }
+        
     }
