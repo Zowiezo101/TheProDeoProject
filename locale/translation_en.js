@@ -186,6 +186,7 @@ var dict = {
 	"books.book": "Bible book",
 	"books.chapter": "Chapter",
 	"books.verse": "Verse",
+	"search.info": "Info",
 	"search.specific_for": "Specific search for:",
 	"search.select": "Select option",
 	"search.none": "None",

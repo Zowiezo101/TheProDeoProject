@@ -8,6 +8,10 @@
     require "src/modules/Shapes/Table.php";
     require "src/modules/Shapes/TableRow.php";
     require "src/modules/Shapes/Text.php";
+    require "src/modules/Shapes/InputText.php";
+    require "src/modules/Shapes/InputBook.php";
+    require "src/modules/Shapes/InputSelect.php";
+    require "src/modules/Shapes/InputSlider.php";
     
     // The HomePage
     require "src/modules/HomePage/HomePage.php";

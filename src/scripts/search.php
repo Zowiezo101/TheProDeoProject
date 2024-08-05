@@ -1,143 +1,369 @@
 <script>
     
-    const ITEM_BOOK = "0";
-    const ITEM_EVENT = "1";
-    const ITEM_PEOPLE = "2";
-    const ITEM_LOCATION = "3";
-    const ITEM_SPECIAL = "4";
-    const ITEM_ALL = "-1";
+    const TYPE_ALL = [TYPE_BOOK, TYPE_EVENT, TYPE_PEOPLE, TYPE_LOCATION, TYPE_SPECIAL];
     
-    const TYPE_INPUT = 0;
-    const TYPE_SELECT = 1;
-    const TYPE_SLIDER = 2;
+    var tables = [];
+    
+    /*
+     * Start with filling the search table. The actual searching is done using
+     * DataTables, but it's prepared with the full database.
+     * Once the page is loaded, do an initial search
+     */
     
     // This function is executed once the DOM is loaded
     $(function(){
-        // Get the search results with the given parameters
-        onSearch();
+        // Get all the search options and search data
+        initSearch();
     });
     
-//    // The elements that need initializing
-//    var elementInit = {
-//        "start": false,
-//        "end": false,
-//        "specific": false,
-//        "num_chapters": false,
-//        "age": false,
-//        "age_parents": false
-//    };
-//
-//    // The elements that can be disabled
-//    var elementEnabled = {
-//        "num_chapters": false,
-//        "age": false,
-//        "age_parents": false
-//    };
-//
-    function onSearch() {
+    function initSearch() {
+        // Get all the search data for every item type
+        TYPE_ALL.forEach(
+            function (item_type) {
+                // Get all the search options
+                getOptions(item_type).then(function(results) {
+                    // Insert the data into the search table
+                    if (results.error !== "") {
+                        // Error message, because database can't be reached
+                        // TODO: Actual error message here
+                        $("#tab" + item_type).append(dict["database.no_results"]);
+                    } else {
+                        // The table with all the search results
+                        insertOptions(item_type, results);
+                    }
+                });
+                
+                // Get the search data
+                getItems(item_type).then(function(results) {
+                    // Insert the data into the search table
+                    if (results.error !== "") {
+                        // Error message, because database can't be reached
+                        // TODO: Actual error message here
+                        $("#tab" + item_type).append(dict["database.no_results"]);
+                    } else {
+                        // The table with all the search results
+                        insertTable(item_type, results);
+        
+                        // Get the search results with the given parameters
+                        onSearch(item_type);
+                    }
+                });
+            }
+        );
+    }
+    
+    /*
+     * Inserting the options, like sliders and books to select
+     */
+    
+    function insertOptions() {
+        // Set the max and min values
+        var slider_num_chapters = $("#item_num_chapters").slider({
+            max: 100,
+            min: 0
+        });
+
+        // Initialize the sliders and set their values
+        slider_num_chapters.slider("setValue", [0, 100]);
+        
+        // Set the max and min values
+        var slider_num_chapters = $("#item_age").slider({
+            max: 100,
+            min: 0
+        });
+
+        // Initialize the sliders and set their values
+        slider_num_chapters.slider("setValue", [0, 100]);
+        
+        // Set the max and min values
+        var slider_num_chapters = $("#item_parent_age").slider({
+            max: 100,
+            min: 0
+        });
+
+        // Initialize the sliders and set their values
+        slider_num_chapters.slider("setValue", [0, 100]);
+    }
+    
+    /*
+     * Inserting the table, its header rows and data rows
+     */
+    
+    function insertTable(item_type, results) {
+        // All the columns this table can display
+        var columns = getColumns(results.columns);
+        
+        // Get an array with header cells
+        var header = getHeader(columns);
+            
+        // Insert all the records into the table
+        var body = getBody(item_type, columns, results);
+        
+        // The table, this will be filled in later
+        $("#tab" + item_type).append(`
+            <div class="table-responsive">
+                <table class="table table-striped table-borderless w-100">
+                    <thead>` + header + `</thead>
+                    <tbody>` + body + `</tbody>
+                </table>
+            </div>
+        `);
+        
+        // This is to be able to sort the results
+        tables[item_type] = $("#tab" + item_type + " table").DataTable({
+            // TODO: Paging needs to be turned on and translated into own languages
+            // TODO: https://datatables.net/blog/2024/inputPaging
+            
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: null,
+                bottomEnd: null,
+                bottom: "inputPaging"
+//                bottom: "paging"
+            },
+            
+            // Insert the column list, so we can make unused columns invisible
+            columns: columns,
+            order: [0, "asc"]
+        });
+    }
+    
+    function getColumns(columns) {
+        return columns.filter((column) => {
+            // Remove these columns
+            return ["book_start_vers", "book_start_chap", 
+                    "book_end_vers",   "book_end_chap",
+                    "order_id"].includes(column) ? false : true;
+        }).concat("link").map((column) => {
+            // Some renaming here
+            switch(column) {
+                case "book_start_id":
+                    column = "book_start";
+                    break;
+                    
+                case "book_end_id":
+                    column = "book_end";
+                    break;
+                    
+                case "father_age":
+                case "mother_age":
+                    column = "parent_age";
+                    break;
+            }
+                
+            // Do not show column if the name is id or parameter is not filled in
+            var visible = false;
+            if (["name", "num_chapters", "book_start", "book_end", "link"].includes(column)) {
+                // Always show these columns
+                visible = true;
+            }
+            
+            // Return the column names with the following syntax
+            return {
+                name: column,
+                title: dict["items." + column],
+                
+                // Make the ID column invisible
+                visible: visible,
+                
+                // Make the name column bold
+                className: (column === "name") ? "font-weight-bold" : ""
+            };
+        });
+    }
+    
+    function getHeader(columns) {
+        return columns.map((column) => {            
+            // Return the row header cells
+            return '<th scope="col" class="text-center">' + column.title + '</th>';
+        }).join("");
+    }
+    
+    function getBody(item_type, columns, results) {
+        return results.records.map((record) => {
+            return getDataRow(item_type, columns, record);
+        }).join("");
+    }
+    
+    function getDataRow(item_type, columns, record) {        
+        // Loop through all the keys
+        var data_row = columns.map((column) => {
+            switch(column.name) {
+//                case "name":
+//                    // TODO: Do this in database with AKA
+//                    data_cell = record["name"] + (record["aka"] ? " (" + record["aka"] + ")" : "");
+//                    break;
+//                    
+//                case "book_start":
+//                case "book_end":
+//                    data_cell = getBookString(column.name, record);
+//                    break;
+//                    
+//                case "father_age":
+//                case "mother_age":
+//                    parent_age = [];
+//                    if (record["father_age"] > 0) { parent_age.push("father_age"); }
+//                    if (record["mother_age"] > 0) { parent_age.push("mother_age"); }
+//                    data_cell = parent_age.join(", ");
+//                    break;
+//                    
+//                case "gender":
+//                case "tribe":
+//                case "type":
+//                    data_cell = getTypeString(column.name, record);
+//                    break;
+//                    
+//                case "link":
+//                    data_cell = getLinkToObject(item_type, record);
+//                    break;
+                    
+                default:
+                    // Default sitation is to take the data as is
+                    data_cell = record[column.name];
+                    break
+            }
+            
+            // TODO: Something with data order to get the correct order
+            return "<td class='text-center'>" + data_cell + "</td>";
+        });
+
+        return "<tr>" + data_row.join("") + "</tr>";
+    }
+    
+    /*
+     * The three main search functions
+     */
+
+    function onSearch(item_type = null) {
         // Get all the filled in search parameters
         var parameters = getSearchParameters();
         
         // Update the query to the session
         updateSession(parameters);
         
-        // Get database results with the given parameters
-        searchDatabase(parameters);
-    }
-    
-    function getSearchParameters() {
-        var parameters = [];       
-        
-        // All the parameters to look for
-        param_list = {
-            "name": [ITEM_ALL, TYPE_INPUT],
-            "meaning_name": [ITEM_ALL, TYPE_INPUT],
-            "descr": [ITEM_ALL, TYPE_INPUT],
-            "start_book": [ITEM_ALL, TYPE_SELECT],
-            "start_chap": [ITEM_ALL, TYPE_SELECT],
-            "end_book": [ITEM_ALL, TYPE_SELECT],
-            "end_chap": [ITEM_ALL, TYPE_SELECT],
-            "num_chapters": [ITEM_BOOK, TYPE_SLIDER],
-            "length": [ITEM_EVENT, TYPE_INPUT],
-            "date": [ITEM_EVENT, TYPE_INPUT],
-            "age": [ITEM_PEOPLE, TYPE_SLIDER],
-            "parent_age": [ITEM_PEOPLE, TYPE_SLIDER],
-            "gender": [ITEM_PEOPLE, TYPE_SELECT],
-            "tribe": [ITEM_PEOPLE, TYPE_SELECT],
-            "profession": [ITEM_PEOPLE, TYPE_INPUT],
-            "nationality": [ITEM_PEOPLE, TYPE_INPUT],
-            "type_location": [ITEM_LOCATION, TYPE_SELECT],
-            "type_special": [ITEM_SPECIAL, TYPE_SELECT]
-        };
-        
-        for (var param_name in param_list) {
-            // Get the type of parameter
-            param_type = param_list[param_name];
-            
-            // Get the value of this parameter
-            param_val = getParameter(param_name, param_type);
-            if (param_val !== null) {
-                // If the value is null, it's not set and thus not 
-                // needed for searching
-                parameters[param_name] = param_val;
-            }
-        };
-        
-        return parameters.length > 0 ? parameters : false;
-    }
-    
-    function searchDatabase(parameters) {
-        // For every item type
-        [ITEM_BOOK,
-         ITEM_EVENT,
-         ITEM_PEOPLE,
-         ITEM_LOCATION,
-         ITEM_SPECIAL].forEach((item_type) => {
-            // Check if we selected a specific item type, or will search
-            // all item types
-            if (isItemType(item_type)) {
-                // Get the search result if this type is selected
-                getSearchResults(getItemType(item_type), parameters).then(function(results) {
-                    // Insert the database results
-                    insertSearchResults(getItemType(item_type), results);
-                });;
-            }
-        });
-    }
-    
-    function insertSearchResults(item_type, results) {
-        // Start out clean
-        $("#tab" + item_type).empty();
-        
-        if (results.error !== "") {
-            // Error message, because database can't be reached
-            $("#tab" + item_type).append(dict["database.no_results"]);
-        } else if (results.records.length > 0) {
-            // The table with all the search results
-            insertTable(item_type, results);
+        if (item_type === null) {
+            // Get database results with the given parameters
+            updateTables(parameters);
+        } else {
+            // Only search in a single table
+            updateTable(item_type, parameters);
         }
     }
     
-    function getParameter(param_name, param_type) {
-        var item_type = param_type[0];
-        var input_type = param_type[1];
+    function getSearchParameters() {
+        var parameters = [];
         
+        $(".search-field").each(function() {
+            // Each separate field
+            var field = $(this);
+            
+            // Get the value of this parameter
+            param_val = getParameter(field);
+            param_name = getName(field);
+            
+            // If the value is null, it's not set and thus not 
+            // needed for searching, but still needed to be able to remove it
+            // from the session
+            parameters[param_name] = param_val;
+        });
+        
+        return parameters;
+    }
+    
+    function updateTables(parameters) {
+        // Update all tables with the given parameters
+        TYPE_ALL.forEach(
+            function (item_type) {
+                // Update this table with the parameters
+                updateTable(item_type, parameters);
+            }
+        );
+    }
+    
+    function updateTable(item_type, parameters) {        
+        // Insert the parameters and redraw the table
+        for (var param in parameters) {
+            // The value of this parameter
+            var value = parameters[param];
+            
+            // The column associated with this parameter
+            var column = getColumn(item_type, param);
+            
+            // Skip every parameter that has value null and has no column
+            // associated with it
+            if (value !== null && column !== null) {                
+                // Start filtering using the seach value
+                // and make this column visible
+                column.search(value).draw().visible(true);
+            } else if (value === null && column !== null) {
+                // Stop searching with this field
+                column.search("").draw();
+        
+                // Make this column invisible, unless it's one of the core columns
+                column.visible(["name", "num_chapters", "book_start", "book_end", "link"].includes(param));
+            }
+        };
+    }
+    
+    function getColumn(item_type, param) {
+        var column = tables[item_type].column(param + ":name");
+        
+        if (column[0].length === 0) {
+            // The books column doesn't have a description field
+            // or a meaning_name field, so skip these
+            column = null;
+        }
+        
+        return column;
+    }
+    
+    
+    /*
+     * Parameter functions
+     */
+    
+    function getParameter(field) {
+        // The value of this parameter (if given)
+        var val = getValue(field);
+        
+//        // The user can select a specific item type to search for, 
+//        // when this item type is selected, only the parameters related 
+//        // to this item_type are used. The given item_type corresponds 
+//        // with a specific parameter and this function checks whether this 
+//        // parameter will be used
+//        var is_applicable = isApplicable(field);
+        
+        // If the current value is empty or not of need, set it to null
+//        if (val === "" || val === "-1" || is_applicable === false) {
+        if (val === "" || val === "-1") {
+            val = null;
+        }
+        
+        // Return the current value
+        return val;
+    }
+    
+    function getValue(field) {
         // Pre-define this variable
         var val = "";
         
+        // Get the input type (text input, select or slider)
+        var input_type = field.data("input-type");
+        
         switch(input_type) {
-            case TYPE_INPUT:
-                // Get the current value of the parameter
-                val = $("#item_" + param_name).val();
+            case "text":
+                // Get the current value of the field
+                val = field.val();
                 break;
                 
-            case TYPE_SELECT:
-                // Get the current selected value of the parameter
-                val = $("#item_" + param_name + " :selected").val();
+            case "select":
+                // Get the current selected value of the field
+                val = field.find("[selected]").val();
                 break;
                 
-            case TYPE_SLIDER:
-                // Get the current selected value of the parameter
+            case "slider":
+                // Get the current selected value of the field
                 val = $("#item_" + param_name).slider('getValue');
                 break;
                 
@@ -149,151 +375,84 @@
 //        }
         }
         
-        // If the current value is empty or not of need, set it to null
-        if (val === "" || val === "-1" || checkItemType(item_type) === false) {
-            val = null;
-        }
-        
-        // Return the current value
         return val;
     }
     
-    function checkItemType(item_type) {
-        // Get the selected specific type
-        var selected_type = $("#item_specific :selected").val();
-        
-        // The user can select a specific item type to search for, 
-        // when this item type is selected (selected_type), only the
-        // parameters related to this item_type are used. The given
-        // item_type corresponds with a specific parameter and this function
-        // checks whether this parameter will be used
-        return (item_type === selected_type || item_type === "-1");
+    function getName(field) {
+        return field.attr("id");
     }
     
-    function isItemType(item_type) {
-        // Get the selected specific type
-        var selected_type = $("#item_specific :selected").val();
-        
-        // This function is similar to checkItemType, except it returns
-        // true if the selected specific type is equal to the given item
-        // type, of equal to "ITEM_ALL"
-        return (item_type === selected_type || selected_type === "-1");
-    }
+//    function isApplicable(param_name, item_type) {
+//        var is_applicable = true;
+//        
+//        if (item_type !== null) {
+//            // Check if the user has selected a specific item type
+//            // Only return the parameter if it's applicable to 
+//            // the selected item type
+//            var selected_type = $("#item_specific :selected").val();
+//            
+//            // Check for which item types this parameter is applicable
+//            var item_types = SEARCH_FIELDS[param_name].item_type;
+//            
+//            // If the item_type is a string, convert it to an array
+//            if (typeof item_types === "string") {
+//                item_types = [item_types];
+//            }
+//            
+//            // If the selected type is "ALL", all parameters will be applicable
+//            // by default. If it's not "ALL", see if the selected type is in the 
+//            // list of applicable item_types for this parameter.
+//            if ((selected_type !== "-1") && (item_types.indexOf(selected_type) === -1)) {
+//                is_applicable = false;
+//            }
+//        }
+//        
+//        return is_applicable;
+//    }
+//    
+//    /*
+//     * Cell functions for the data in the table
+//     */
+//    
+//    function getBookString(type, record) {
+//        var book_string = "";
+//        
+//        if (type === "book_start") {
+//            book_string = dict["books.book_" + record["book_start_id"]] + " " + 
+//                    record["book_start_chap"] + ":" + 
+//                    record["book_start_vers"];
+//        } else {
+//            book_string = dict["books.book_" + record["book_end_id"]] + " " + 
+//                    record["book_end_chap"] + ":" + 
+//                    record["book_end_vers"];
+//        }
+//        
+//        return book_string;
+//    }
+//    
+//    function getTypeString(int) {
+//        var str = "";
+//
+//        if (typeof dict[int] !== "undefined") {
+//            str = dict[int];
+//        }
+//
+//        return str;
+//    }
+//    
+//    function getLinkToObject(item_type, record) {
+//        var text = item_type + "/" + item_type.slice(0, -1) + "/" + record["id"];
+//        var href = $("body").data("base-url") + text;
+//        
+//        return '<a href="' + href + '" target="_blank" ' +
+//            'class="font-weight-bold">' + 
+//                text + 
+//        '</a>';
+//    }
     
-    function getItemType(item_type) {
-        // Get the ITEM_xxx value and convert it to a TYPE_xxx value
-        // for communication with the database
-        item_string = "";
-        
-        switch(item_type) {
-            case ITEM_BOOK:
-                item_string = TYPE_BOOK;
-                break;
-                
-            case ITEM_EVENT:
-                item_string = TYPE_EVENT;
-                break
-                
-            case ITEM_PEOPLE:
-                item_string = TYPE_PEOPLE;
-                break
-                
-            case ITEM_LOCATION:
-                item_string = TYPE_LOCATION;
-                break
-                
-            case ITEM_SPECIAL:
-                item_string = TYPE_SPECIAL;
-                break
-        }
-        
-        return item_string;
-    }
-    
-    function insertTable(item_type, results) {
-        // All the selected/used columns for this item type
-        var columns = results.columns;
-        
-        // Add a link column and get an array with header cells
-        var header = getHeaderRow(columns);
-            
-        // Insert all the records into the table
-        var rows = results.records.map((record) => {
-            return getDataRow(record);
-        });
-        
-        var body = rows.join("");
-        
-        // The table, this will be filled in later
-        $("#tab" + item_type).append(`
-            <div class="table-responsive">
-                <table class="table table-striped table-borderless">
-                    <thead>` + header + `</thead>
-                    <tbody>` + body + `</tbody>
-                </table>
-            </div>
-        `);
-        
-        // This is to be able to sort the results
-        $("#tab" + item_type + " table").DataTable({
-            paging: false,
-            searching: false,
-            info: false
-        });
-    }
-    
-    function getHeaderRow(columns) {
-        return columns.filter((column) => {
-            // Remove these columns
-            return ["book_start_vers", "book_start_chap", 
-                    "book_end_vers",   "book_end_chap",
-                    "id"].includes(column) ? false : true;
-        }).concat("link").map((column) => {
-            // Some renaming for these columns
-            if(column === "book_start_id") {
-                column = "book_start";
-            } else if(column === "book_end_id") {
-                column = "book_end";
-            }
-            
-            // Return the row header cells
-            return '<th scope="col">' + dict["items." + column] + '</th>';
-        }).join("");
-    }
-    
-    function getDataRow(record) {
-        // Get all the keys and filter out the ones we don't need
-        var keys = Object.keys(record).filter((key) => {
-            // Remove these columns
-            return ["book_start_vers", "book_start_chap", 
-                    "book_end_vers",   "book_end_chap",
-                    "id"].includes(key) ? false : true;
-        }).concat("link");
-        
-        // Loop through all the keys
-        var data_row = keys.map((key) => {
-            switch(key) {
-                case "name":
-                    // TODO: Do this in database with AKA
-                    data_cell = '<th scope="row">' + record["name"] + (record["aka"] ? " (" + record["aka"] + ")" : "") + '</th>';
-                    break;
-                    
-                case "link":
-                    data_cell = "<td>" + "TODO" + "</td>";
-                    break;
-                    
-                default:
-                    // Default sitation is to take the data as is
-                    data_cell = "<td>" + record[key] + "</td>";
-                    break
-            }
-            
-            // TODO: Something with data order to get the correct order
-            return data_cell;
-        });
-
-        return "<tr>" + data_row.join("") + "</tr>";
-    }
+    /*
+     * onChange functions
+     */
     
 //    function onBookChange() {
 //        // For start and end
@@ -318,244 +477,11 @@
 //    function onSpecialChange() {
 //        
 //    }
-//
-///** Inserting the results in a readable table format 
-// * @param {String} type
-// * @param {Object} result * 
-// * */
-//function insertItems(type, result) {
-//    
-//    // No errors and at least 1 item of data
-//    if (result.records) {
-//        
-//        // Table header is the name
-//        var table_header = insertHeader(type, "name");
-//        table_header += insertHeader(type, "meaning_name");
-//        table_header += insertHeader(type, "descr");
-//        table_header += insertHeader(type, "length");
-//        table_header += insertHeader(type, "date");
-//        table_header += insertHeader(type, "age");
-//        table_header += insertHeader(type, "parent_age");
-//        table_header += insertHeader(type, "gender");
-//        table_header += insertHeader(type, "tribe");
-//        table_header += insertHeader(type, "profession");
-//        table_header += insertHeader(type, "nationality");
-//        table_header += insertHeader(type, "type");
-//        table_header += insertHeader(type, "book_start");
-//        table_header += insertHeader(type, "book_end");
-//        table_header += insertHeader(type, "num_chapters");
-//        table_header += insertHeader(type, "link");
-//        
-//        var table_row = [];
-//        for (var i = 0; i < result.records.length; i++) {
-//            var data = result.records[i];
-//            
-//            // Table header is the name
-//            var table_data = insertData(type, "name", data);
-//            table_data += insertData(type, "meaning_name", data);
-//            table_data += insertData(type, "descr", data);
-//            table_data += insertData(type, "length", data);
-//            table_data += insertData(type, "date", data);
-//            table_data += insertData(type, "age", data);
-//            table_data += insertData(type, "parent_age", data);
-//            table_data += insertData(type, "gender", data);
-//            table_data += insertData(type, "tribe", data);
-//            table_data += insertData(type, "profession", data);
-//            table_data += insertData(type, "nationality", data);
-//            table_data += insertData(type, "type", data);
-//            table_data += insertData(type, "book_start", data);
-//            table_data += insertData(type, "book_end", data);
-//            table_data += insertData(type, "num_chapters", data);
-//            table_data += insertData(type, "link", data);
-//            
-//            // The row for every item we've got
-//            table_row.push('<tr>' + table_data + '</tr>');
-//        }
-//    }
-//
-///**
-// * Inserting data into the table of results
-// * @param {String} type
-// * @param {String} name
-// * @param {Object} data
-// * */
-//function insertData(type, name, data) {
-//    var types = getTypes(name);
-//    
-//    var table_data = "";
-//    if (types.includes(type)) {
-//        if (name === "name") {
-//            table_data = '<th scope="row">' + data["name"] + (data["aka"] ? " ("+data["aka"] +")" : "") + '</th>';
-//        } else if (name === "link") {
-//            table_data = '<td data-order="' + data["id"] + '">' + getLinkToItem(type, data["id"], "self") + '</td>';
-//        } else if (name === "length") {
-//            table_data = '<td>' + data["length"] + '</td>';
-//        } else if (name === "parent_age") {
-//            if ((data["father_age"] !== "-1") && (data["mother_age"] !== "-1")) {
-//                table_data = '<td>' + data["father_age"] + ', ' + data["mother_age"] + '</td>';
-//            } else {
-//                table_data = '<td>' + Math.max(data["father_age"], data["mother_age"]) + '</td>';
-//            } 
-//        } else if (name === "gender") {
-//            table_data = '<td>' + getTypeString(data["gender"]) + '</td>';
-//        } else if (name === "tribe") {
-//            table_data = '<td>' + getTypeString(data["tribe"]) + '</td>';
-//        } else if (name === "type") {
-//            table_data = '<td>' + getTypeString(data["type"]) + '</td>';
-//        } else if (name === "book_start") {
-//            // Data to order by
-//            var data_order =
-//                        ((data["book_start_id"].length < 3) ? 
-//                            ("0".repeat(3 - data["book_start_id"].length) + data["book_start_id"]) : 
-//                                                                            data["book_start_id"]) + 
-//                        ((data["book_start_chap"].length < 3) ? 
-//                            ("0".repeat(3 - data["book_start_chap"].length) + data["book_start_chap"]) : 
-//                                                                              data["book_start_chap"]) + 
-//                        ((data["book_start_vers"].length < 3) ? 
-//                            ("0".repeat(3 - data["book_start_vers"].length) + data["book_start_vers"]) : 
-//                                                                              data["book_start_vers"]);
-//                    
-//            table_data = '<td data-order="' + data_order + '">' + 
-//                    dict["books.book_" + data["book_start_id"]] + 
-//                    " " + data["book_start_chap"] + 
-//                    ":" + data["book_start_vers"] + 
-//                '</td>';
-//        } else if (name === "book_end") {
-//            // Data to order by
-//            var data_order =
-//                        ((data["book_end_id"].length < 3) ? 
-//                            ("0".repeat(3 - data["book_end_id"].length) + data["book_end_id"]) : 
-//                                                                          data["book_end_id"]) + 
-//                        ((data["book_end_chap"].length < 3) ? 
-//                            ("0".repeat(3 - data["book_end_chap"].length) + data["book_end_chap"]) : 
-//                                                                            data["book_end_chap"]) + 
-//                        ((data["book_end_vers"].length < 3) ? 
-//                            ("0".repeat(3 - data["book_end_vers"].length) + data["book_end_vers"]) : 
-//                                                                            data["book_end_vers"]);
-//                                                                      
-//            table_data = '<td data-order="' + data_order + '">' + 
-//                    dict["books.book_" + data["book_end_id"]] + 
-//                    " " + data["book_end_chap"] + 
-//                    ":" + data["book_end_vers"] + 
-//                '</td>';
-//        } else {
-//            table_data = '<td>' + data[name] + '</td>';
-//        }
-//    }
-//    
-//    return table_data;
-//}
-//
-//function getTypes(name) {
-//    var types = [];
-//    if ($.inArray(name, ["name", "link", "book_start", "book_end", "num_chapters"]) !== -1) {
-//        switch(name) {
-//            case "name":
-//            case "link":
-//                types = ["books", "events", "peoples", "locations", "specials"];
-//                break;
-//                
-//            case "book_start":
-//            case "book_end":
-//                types = ["events", "peoples", "locations", "specials"];
-//                break;
-//                
-//            case "num_chapters":
-//                types = ["books"];
-//                break;
-//        }
-//    } else if (session_settings["search_" + name]) {
-//        // If this value saved in the session?
-//        switch(name) {
-//            case "meaning_name":
-//                types = ["peoples", "locations", "specials"];
-//                break;
-//
-//            case "descr":
-//                types = ["events", "peoples", "locations", "specials"];
-//                break;
-//                
-//            case "length":
-//            case "date":
-//                types = ["events"];
-//                break;
-//                
-//            case "age":
-//            case "parent_age":
-//            case "gender":
-//            case "tribe":
-//            case "profession":
-//            case "nationality":
-//                types = ["peoples"];
-//                break;
-//        }
-//    }  else if ((name === "type") && (session_settings["search_" + name + "_location"])) {
-//        types = ["locations"];
-//    } else if ((name === "type") && (session_settings["search_" + name + "_special"])) {
-//        types = ["specials"];
-//    }
-//    
-//    return types;
-//}
-//
-//function getTypeString(int) {
-//    var str = "";
-//    
-//    if (typeof dict[int] !== "undefined") {
-//        str = dict[int];
-//    }
-//    
-//    return str;
-//}
-//
-//function getLinkToItem(type, id, text, options) {
-//    var newTab = options && options.hasOwnProperty("openInNewTab") ? options.openInNewTab : false;
-//    var classes = options && options.hasOwnProperty("classes") ? options.classes : "";
-//    var panTo = options && options.hasOwnProperty("panToItem") ? options.panToItem : "";
-//    
-//    // If any other classes are inserted
-//    if (typeof classes === "undefined" || classes === "") {
-//        classes = "font-weight-bold";
-//    }
-//    
-//    var to_table = type;
-//    var to_item = to_table.substr(0, to_table.length - 1);
-//    if (["familytree", "timeline"].includes(type)) {
-//        to_item = "map";
-//    }
-//    
-//    var link = setParameters(to_table + (id !== "-1" ? ("/" + to_item + "/" + id) : ""));
-//    if (text === "self") {
-//        text = link.substr(get_settings["lang"] ? 4 : 1);
-//    }
-//    if (text === "Global") {
-//        text = dict["timeline.global"];
-//    }
-//    
-//    if (id === null) {
-//        link = '#';
-//    }
-//    
-//    if (panTo !== "") {
-//        link += '?panTo=' + panTo;
-//    }
-//    
-//    if ((type === "worldmap") && id !== "-1") {
-//        // Use a function to link to the item
-//        return '<a href="javascript: void(0)" onclick="getLinkToMap(' + id + ')"' + 
-//            'class="' + classes + '">' + 
-//                text + 
-//        '</a>';        
-//    } else {
-//        // Use an actual hyhperlink to the item
-//        return '<a href="' + link + '" ' + (newTab ? 'target="_blank" ' : '') +
-//            (type === "worldmap" ? 'data-toggle="tooltip" title="' + dict["items.details.worldmap"] + '"' : "") + 
-//            'class="' + classes + '">' + 
-//                text + 
-//        '</a>';
-//    }
-//}
-//
+
+
+
+
+
 //function insertChapters(type) {
 //    // Get the selected book and its amount of chapters
 //    var book = $("#item_" + type + "_book option:selected");

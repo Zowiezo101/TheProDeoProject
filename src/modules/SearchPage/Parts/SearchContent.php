@@ -20,16 +20,11 @@
                                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabpeoples">'.$dict["navigation.peoples"].'</a> </li>
                                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tablocations">'.$dict["navigation.locations"].'</a></li>
                                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="" data-target="#tabspecials">'.$dict["navigation.specials"].'</a></li>
+                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="" data-target="#tabsearch">'.$dict["search.info"].'</a> </li>
                             </ul>
 
                             <!-- The different tabs -->
                             <div class="tab-content mt-2">
-                                <!-- Search explanation -->
-                                <div class="tab-pane fade show active" id="tabsearch" role="tabpanel">
-                                    <h1>'.$dict["search.title"].'</h1>
-                                    <p>'.$dict["search.description"].'</p>
-                                </div>
-
                                 <!-- Tab for books -->
                                 <div class="tab-pane fade" id="tabbooks" role="tabpanel">
                                 </div>
@@ -48,6 +43,12 @@
 
                                 <!-- Tab for specials -->
                                 <div class="tab-pane fade" id="tabspecials" role="tabpanel">
+                                </div>
+                                
+                                <!-- Search explanation -->
+                                <div class="tab-pane fade show active" id="tabsearch" role="tabpanel">
+                                    <h1>'.$dict["search.title"].'</h1>
+                                    <p>'.$dict["search.description"].'</p>
                                 </div>
                             </div>
                         </div>
