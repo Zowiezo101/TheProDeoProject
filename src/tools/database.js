@@ -86,17 +86,6 @@ function getMaps(type, id, options) {
     return accessDatabase("GET", url + query);
 }
 
-function getOptions(type, options) {
-    // Create the query
-    var query = getQuery(options);
-    
-    // The URL to set the request to
-    var url = "api/" + type + "/options";
-    
-    // Access the database
-    return accessDatabase("GET", url + query);
-}
-
 function accessDatabase(method, url, data) {
     // The base URL and page language are stored in the body of the page
     var base_url = $("body").attr("data-base-url");

@@ -43,20 +43,6 @@
                 Link::EVENTS_TO_NOTES
             ]);
         }
-        
-        public function getReadOptionsQuery() {
-            // The following options are returned for the item type Book:
-            // - Min/Max number of chapters
-            // - All book names & number of chapters
-            
-            // TODO:
-//            select
-//                1
-//            from
-//                dual
-//            where
-//                false
-        }
     
         // search products
         // TODO:

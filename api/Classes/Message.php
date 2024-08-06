@@ -24,6 +24,7 @@
         private $paging = "";
         private $query = "";
         private $columns = [];
+        private $options = [];
         
         public function setError($error, $value = "") {
             
@@ -66,6 +67,10 @@
             $this->columns = $columns;
         }
         
+        public function setOptions($options) {
+            $this->options = $options;
+        }
+        
         public function sendMessage() {
             $message = [
                 "error" => $this->error,
@@ -89,6 +94,11 @@
             if (count($this->columns) > 0) {
                 // Include the column names (only for search results)
                 $message["columns"] = $this->columns;
+            }
+            
+            if (count($this->options) > 0) {
+                // Include the options (only for search options)
+                $message["options"] = $this->options;
             }
             
             http_response_code($this->code);

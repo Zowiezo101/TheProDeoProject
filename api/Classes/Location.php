@@ -40,6 +40,12 @@
                 Link::LOCATIONS_TO_AKA,
                 Link::LOCATIONS_TO_NOTES
             ]);
+            
+            // The following options are returned for the item type Location:
+            // - All location types
+            $this->setOptions([
+                Options::LOCATION_TYPES,
+            ]);
         }
         
         protected function getReadPageQuery() {            
@@ -112,19 +118,5 @@
             }
             
             return $where_sql;
-        }
-        
-        public function getReadOptionsQuery() {
-            // The following options are returned for the item type Book:
-            // - All location types
-            
-            // TODO:
-//            select
-//                1
-//            from
-//                dual
-//            where
-//                false
-        }
-        
+        }        
     }

@@ -50,6 +50,18 @@
                 Link::PEOPLES_TO_AKA,
                 Link::PEOPLES_TO_NOTES
             ]);
+            
+            // The following options are returned for the item type People:
+            // - Min/Max own age
+            // - Min/Max parent age
+            // - All genders
+            // - All tribes
+            $this->setOptions([
+                Options::AGE_MIN_MAX,
+                Options::PARENT_AGE_MIN_MAX,
+                Options::GENDER_TYPES,
+                Options::TRIBE_TYPES,
+            ]);
         }
         
         protected function getReadPageQuery() {            
@@ -166,22 +178,5 @@
             }
             
             return $where_sql;
-        }
-        
-        public function getReadOptionsQuery() {
-            // The following options are returned for the item type Book:
-            // - Min/Max own age
-            // - Min/Max parent age
-            // - All genders
-            // - All types
-            
-            // TODO:
-//            select
-//                1
-//            from
-//                dual
-//            where
-//                false
-        }
-        
+        }        
     }

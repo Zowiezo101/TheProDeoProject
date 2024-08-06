@@ -4,6 +4,7 @@
     use Classes\Database as Database;
     use Classes\Message as Message;
     use Classes\Link as Link;
+    use Classes\Options as Options;
 
     class Item {
         
@@ -18,6 +19,7 @@
         protected $database;
         protected $message;
         protected $link;
+        protected $options;
         
         // Actions
         protected $action;
@@ -41,10 +43,11 @@
         protected $parameters = [];
         
         // Some filters used by multiple item types
-        protected const FILTER_ID    = ["id" => FILTER_VALIDATE_INT];
-        protected const FILTER_SORT  = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_SEARCH   = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_PAGE  = ["page" => FILTER_VALIDATE_INT];
+        protected const FILTER_ID      = ["id" => FILTER_VALIDATE_INT];
+        protected const FILTER_SORT    = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
+        protected const FILTER_SEARCH  = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
+        protected const FILTER_PAGE    = ["page" => FILTER_VALIDATE_INT];
+        protected const FILTER_OPTIONS = ["options" => FILTER_VALIDATE_BOOL];
         
         // A parameter that is used for every action
         private $lang;
@@ -72,12 +75,16 @@
             
             // Get the linking table queries
             $this->link = new Link($this);
+            
+            // Get the linking table queries
+            $this->options = new Options();
         }
         
         public function __destruct() {
             // Call their destructors as well to close database connections
             $this->database = null;
             $this->link = null;
+            $this->options = null;
         }
         
         /**
@@ -156,6 +163,20 @@
             // Add all these columns to the results
             $this->message->setColumns($columns);
             
+            // When doing a read all, search options can be added as well
+            // These options are returned and can be used for a search page
+            // The desired search options are set in the item classes 
+            // (Book, Event, etc)
+            if (isset($this->parameters["options"]) && 
+                     ($this->parameters["options"] !== false)) {
+                
+                // Get the options
+                $options = $this->options->getOptions();
+            
+                // Insert the options
+                $this->message->setOptions($options);
+            }
+            
             
             // TODO: This part needs to use AKA table, order by bible location and 
             // get the highest value for end and the lowest value for start
@@ -196,16 +217,6 @@
         
         public function readMaps() {
             $this->action = self::ACTION_READ_MAPS;
-            
-            // Succefully reading an item should return code '200'
-            $this->action_success = Message::SUCCESS_READ;
-            
-            // Execute the action
-            $this->executeAction();
-        }
-        
-        public function readOptions() {
-            $this->action = self::ACTION_READ_OPTIONS;
             
             // Succefully reading an item should return code '200'
             $this->action_success = Message::SUCCESS_READ;
@@ -293,10 +304,6 @@
                 
                 case self::ACTION_READ_PAGE:
                     $query = $this->getReadPageQuery();
-                    break;
-                
-                case self::ACTION_READ_OPTIONS:
-                    $query = $this->getReadOptionsQuery();
                     break;
             }
             
@@ -408,11 +415,6 @@
             return $query;
         }
         
-        protected function getReadOptionsQuery() {
-            // Too complex to have standard functions for
-            return $this->getEmptyQuery();
-        }
-        
         private function getColumnQuery() {
             // Get all the columns from the column table
             $columns = join(",", array_map(function ($column) {
@@ -499,6 +501,15 @@
         /**
          * These are getters and setters for different properties
          */
+        public function setOptions($options) {
+            $this->options->setOptions($options);
+        }
+        
+        private function getOptions() {
+            $options = $this->options->getOptions();
+            return $options;
+        }
+        
         public function setLinks($links) {
             $this->link->setLinks($links);
         }
@@ -744,10 +755,6 @@
                 case self::ACTION_READ_PAGE:
                     $params = $this->getReadPageFilter();
                     break;
-                
-                case self::ACTION_READ_OPTIONS:
-                    $params = $this->getReadOptionsFilter();
-                    break;
             }
             
             return $params;
@@ -785,8 +792,12 @@
         }
         
         protected function getReadAllFilter() {
-            // Too complex to have standard functions for
-            return $this->getEmptyFilter();
+            return [
+                self::OPTIONAL_PARAMS => array_merge(
+                    self::FILTER_OPTIONS,
+                ),
+                self::REQUIRED_PARAMS => [],
+            ];
         }
         
         protected function getReadMapsFilter() {
@@ -808,10 +819,5 @@
                     self::FILTER_PAGE,
                 ),
             ];
-        }
-        
-        protected function getReadOptionsFilter() {
-            // Too complex to have standard functions for
-            return $this->getEmptyFilter();
         }
     }

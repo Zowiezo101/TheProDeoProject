@@ -82,17 +82,6 @@ function getMaps($type, $id, $options=false) {
     return accessDatabase("GET", $url.$query);
 }
 
-function getOptions($type, $options=false) {
-    // Create the query
-    $query = getQuery($options);
-    
-    // The URL to send the request to
-    $url = setParameters("api/".$type."/options");
-    
-    // Access the database
-    return accessDatabase("GET", $url.$query);
-}
-
 function accessDatabase($method, $url, $data=false) {
     $curl = curl_init();
     
