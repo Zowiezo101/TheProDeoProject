@@ -17,23 +17,16 @@
     });
     
     function initSearch() {
+        // Get all the filled in search parameters
+        var parameters = getSearchParameters();
+        
+        // Update the query to the session
+        updateSession(parameters);
+        
         // Get all the search data for every item type
         TYPE_ALL.forEach(
-            function (item_type) {
-                // Get all the search options
-                getOptions(item_type).then(function(results) {
-                    // Insert the data into the search table
-                    if (results.error !== "") {
-                        // Error message, because database can't be reached
-                        // TODO: Actual error message here
-                        $("#tab" + item_type).append(dict["database.no_results"]);
-                    } else {
-                        // The table with all the search results
-                        insertOptions(item_type, results);
-                    }
-                });
-                
-                // Get the search data
+            function (item_type) {                
+                // Get the search data and options
                 getItems(item_type).then(function(results) {
                     // Insert the data into the search table
                     if (results.error !== "") {
@@ -42,10 +35,15 @@
                         $("#tab" + item_type).append(dict["database.no_results"]);
                     } else {
                         // The table with all the search results
+                        insertOptions(item_type, results);
+                        
+                        // The table with all the search results
                         insertTable(item_type, results);
         
                         // Get the search results with the given parameters
-                        onSearch(item_type);
+                        // Only do the current item type, as we don't know
+                        // in which order the item types are returned
+                        updateTable(item_type, parameters);
                     }
                 });
             }
@@ -56,33 +54,119 @@
      * Inserting the options, like sliders and books to select
      */
     
-    function insertOptions() {
-        // Set the max and min values
-        var slider_num_chapters = $("#item_num_chapters").slider({
-            max: 100,
-            min: 0
-        });
-
-        // Initialize the sliders and set their values
-        slider_num_chapters.slider("setValue", [0, 100]);
+    function insertOptions(item_type, results) {
+        switch(item_type) {
+            case TYPE_BOOK:
+                insertBooks(results.records);
+                insertSlider("num_chapters", results.options);
+                break;
+                
+            case TYPE_PEOPLE:
+                insertSlider("age", results.options);
+                insertSlider("parent_age", results.options);
+                insertSelect("gender", results.options);
+                insertSelect("tribe", results.options);
+                break;
+                
+            case TYPE_LOCATION:
+                insertSelect("location", results.options);
+                break;
+                
+            case TYPE_SPECIAL:
+                insertSelect("special", results.options);
+                break;
+        }
+    }
+    
+    function insertBooks(records) {
+        var book_start = $("#book_start");
+        var book_end = $("#book_end");
         
-        // Set the max and min values
-        var slider_num_chapters = $("#item_age").slider({
-            max: 100,
-            min: 0
+        // Insert all the books as options into the selects
+        records.forEach((record) => {
+            var option = `<option
+                data-num-chapters=${record.num_chapters}
+                value='${record.id}'>
+                    ${record.name}
+                </option>`;
+            
+            book_start.append(option);
+            book_end.append(option);
         });
-
-        // Initialize the sliders and set their values
-        slider_num_chapters.slider("setValue", [0, 100]);
         
-        // Set the max and min values
-        var slider_num_chapters = $("#item_parent_age").slider({
-            max: 100,
-            min: 0
-        });
-
-        // Initialize the sliders and set their values
-        slider_num_chapters.slider("setValue", [0, 100]);
+        // Select the session values
+        if (book_start.data("item-val") !== "") {
+            book_start.val(book_start.data("item-val"));
+            book_start.change();
+        }
+        
+        if (book_end.data("item-val") !== "") {
+            book_end.val(book_end.data("item-val"));
+            book_end.change();
+        }
+    }
+    
+    function insertChapters(name, num_chapters, init) {
+        // The chapter select
+        var chap_select = $(`#chap_${name}`);
+        
+        // Replace the current contents
+        chap_select.children(":not([disabled])").remove();
+        
+        for (var i = 0; i < num_chapters; i++) {
+            chap_select.append(
+                `<option chapter value="${i+1}"> 
+                    ${i+1}
+                </option>`
+            );
+        }
+        
+        // If we were called from an element (init = false), reset the chapters
+        // If we were called from insertBooks (init = true), leave the chapters be
+        if (init === false) {
+            // Set the first chapter by default for the first appearance and
+            // the last chapter by default for the last appearance
+            var chap_val = (name === "start") ? 1 : num_chapters - 1;
+            chap_select.val(chap_val);
+            
+            // Also call the onChange() for this element
+            chap_select.change();
+        } else {
+            chap_select.val(chap_select.data("item-val"));
+        }
+    }
+    
+    function insertSlider(name, options) {
+//        // Set the max and min values
+//        var slider_num_chapters = $("#item_num_chapters").slider({
+//            max: 100,
+//            min: 0
+//        });
+//
+//        // Initialize the sliders and set their values
+//        slider_num_chapters.slider("setValue", [0, 100]);
+//        
+//        // Set the max and min values
+//        var slider_num_chapters = $("#item_age").slider({
+//            max: 100,
+//            min: 0
+//        });
+//
+//        // Initialize the sliders and set their values
+//        slider_num_chapters.slider("setValue", [0, 100]);
+//        
+//        // Set the max and min values
+//        var slider_num_chapters = $("#item_parent_age").slider({
+//            max: 100,
+//            min: 0
+//        });
+//
+//        // Initialize the sliders and set their values
+//        slider_num_chapters.slider("setValue", [0, 100]);
+    }
+    
+    function insertSelect(name, options) {
+        
     }
     
     /*
@@ -232,23 +316,18 @@
     }
     
     /*
-     * The three main search functions
+     * The search functions
      */
 
-    function onSearch(item_type = null) {
+    function onSearch() {
         // Get all the filled in search parameters
         var parameters = getSearchParameters();
         
         // Update the query to the session
         updateSession(parameters);
         
-        if (item_type === null) {
-            // Get database results with the given parameters
-            updateTables(parameters);
-        } else {
-            // Only search in a single table
-            updateTable(item_type, parameters);
-        }
+        // Get database results with the given parameters
+        updateTables(parameters);
     }
     
     function getSearchParameters() {
@@ -409,11 +488,11 @@
 //        
 //        return is_applicable;
 //    }
-//    
-//    /*
-//     * Cell functions for the data in the table
-//     */
-//    
+    
+    /*
+     * Cell functions for the data in the table
+     */
+    
 //    function getBookString(type, record) {
 //        var book_string = "";
 //        
@@ -454,10 +533,23 @@
      * onChange functions
      */
     
-//    function onBookChange() {
-//        // For start and end
-//    }
-//    
+    function onBookChange(name) {
+        // Get the selected book option
+        var book_select = $(`#book_${name} option:selected`);
+        var book_val = book_select.val();
+        
+        // Update the query to the session
+        parameters = [];
+        parameters[`book_${name}`] = book_val;
+        updateSession(parameters);
+        
+        // TODO: Set remove filter
+        
+        // Get the number of chapters and insert those chapters
+        var num_chapters = book_select.data("num-chapters");
+        insertChapters(name, num_chapters, this.event === undefined);
+    }
+    
 //    function onItemChange() {
 //        
 //    }
@@ -479,55 +571,6 @@
 //    }
 
 
-
-
-
-//function insertChapters(type) {
-//    // Get the selected book and its amount of chapters
-//    var book = $("#item_" + type + "_book option:selected");
-//    var num_chapters = book.data("numChapters");
-//    
-//    // Insert all the options
-//    $("#item_" + type + "_chap").empty();
-//    $("#item_" + type + "_chap").append(
-//                // Default option, is not selectable
-//                '<option selected disabled value="-1">' + 
-//                    dict["books.chapter"] + 
-//                '</option>'
-//            );
-//    for (var i = 0; i < num_chapters; i++) {
-//        // Inserting the chapters
-//        $("#item_" + type + "_chap").append(
-//                '<option value="' + (i+1) + '">' + 
-//                    (i+1) + 
-//                '</option>'
-//            );
-//    }
-//    
-//    // Need to initialize First/Last appearance chapters?
-//    if (!elementInit[type]) {
-//        // Setting back the selected chapter from the session
-//        $("#item_" + type + "_chap").val(
-//                session_settings["search_" + type + "_chap"] ? 
-//                session_settings["search_" + type + "_chap"] : -1);
-//                
-//        // Done initializing this dropdown
-//        elementInit[type] = true;
-//    } else {
-//        // When changing books, preset it to the first/last chapter
-//        $("#item_" + type + "_chap").val(type === "start" ? 1 : num_chapters);
-//        
-//        // Take over the changes
-//        $("#item_" + type + "_chap").change();
-//    }
-//    
-//    // Set the filter if a value is set
-//    if ($("#item_" + type + "_chap").val() !== -1 &&
-//        $("#item_" + type + "_chap").val() !== null) {
-//        removeFilter(type, "#item_" + type + "_label");
-//    }
-//}
-//
 //function insertSpecifics() {
 //    // Get the selected book and its amount of chapters
 //    var type = $("#item_specific option:selected").val();
