@@ -79,8 +79,8 @@
     }
     
     function insertBooks(records) {
-        var book_start = $("#book_start");
-        var book_end = $("#book_end");
+        var book_start = $("#book_start_id");
+        var book_end = $("#book_end_id");
         
         // Insert all the books as options into the selects
         records.forEach((record) => {
@@ -108,7 +108,7 @@
     
     function insertChapters(name, num_chapters, init) {
         // The chapter select
-        var chap_select = $(`#chap_${name}`);
+        var chap_select = $(`#book_${name}_chap`);
         
         // Replace the current contents
         chap_select.children(":not([disabled])").remove();
@@ -126,7 +126,7 @@
         if (init === false) {
             // Set the first chapter by default for the first appearance and
             // the last chapter by default for the last appearance
-            var chap_val = (name === "start") ? 1 : num_chapters - 1;
+            var chap_val = (name === "start") ? 1 : num_chapters;
             chap_select.val(chap_val);
             
             // Also call the onChange() for this element
@@ -211,12 +211,8 @@
             columns: columns,
             order: [0, "asc"],
             
-            // TODO: Work around for an issue with DataTables: 
+            // Work around for an issue with DataTables: 
             // https://datatables.net/forums/discussion/78954
-            // Doesn't seem to work with newer versions of dataTables, 
-            // gotta find something else.. Search for "orderData target" since
-            // the target columns doesn't get updated when ordering by source
-            // columns..
             drawCallback: function () {
                 var api = this.api();
                 
@@ -419,12 +415,12 @@
     
     function updateTable(item_type, parameters) {        
         // Insert the parameters and redraw the table
-        for (var param in parameters) {            
+        for (var name in parameters) {            
             // The column associated with this parameter
-            var column = getColumn(item_type, param);
+            var column = getColumn(item_type, name);
             
             // The value of this parameter
-            var value = getSearchValue(parameters, param);
+            var value = getSearchValue(parameters, name);
             
             // Skip every parameter that has value null and has no column
             // associated with it
@@ -433,18 +429,23 @@
                 // Start filtering using the search value
                 // and make this column visible
                 column.search(value).draw().visible(true);
+                
+                // Make the column visible, unless it uses a different
+                // column to display the values
+                // TODO: Show display column
+//                val_column = 
             } else if (value === null && column !== null) {
                 // Stop searching with this field
                 column.search("").draw();
         
                 // Make this column invisible, unless it's one of the core columns
-                column.visible(["name", "num_chapters", "book_start", "book_end", "link"].includes(param));
+                column.visible(["name", "num_chapters", "book_start", "book_end", "link"].includes(name));
             }
         };
     }
     
-    function getColumn(item_type, param) {
-        var column = tables[item_type].column(param + ":name");
+    function getColumn(item_type, name) {        
+        var column = tables[item_type].column(name + ":name");
         
         if (column[0].length === 0) {
             // The books column doesn't have a description field
@@ -455,24 +456,31 @@
         return column;
     }
     
-    function getSearchValue(parameters, param) {
+    function getSearchValue(parameters, name) {
         var value = null;
         
-        switch(param) {
-            case "book_start":
-                value = function(column_value, obj, row_idx) {
-                    return true;
-                };
+        switch(name) {
+            case "book_start_id":
+            case "book_start_chap":
+                value = parameters[name] ? function(value, row, row_idx) {
+                    return parseInt(parameters[name], 10) <= parseInt(value, 10);
+                } : null;
+                break;
+                
+            case "book_end_id":
+            case "book_end_chap":
+                value = parameters[name] ? function(value, row, row_idx) {
+                    return parseInt(parameters[name], 10) >= parseInt(value, 10);
+                } : null;
                 break;
                 
             default:
-                value = parameters[param];
+                value = parameters[name];
                 break;
         }
         
         return value;
     }
-    
     
     /*
      * Parameter functions
@@ -618,12 +626,12 @@
     
     function onBookChange(name) {
         // Get the selected book option
-        var book_select = $(`#book_${name} option:selected`);
+        var book_select = $(`#book_${name}_id option:selected`);
         var book_val = book_select.val();
         
         // Update the query to the session
         parameters = [];
-        parameters[`book_${name}`] = book_val;
+        parameters[`book_${name}_id`] = book_val;
         updateSession(parameters);
         
         // TODO: Set remove filter

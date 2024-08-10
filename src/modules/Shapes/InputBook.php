@@ -35,7 +35,7 @@
                 </div>
     
                 <div class='col-md-6'>
-                    <select id='book_{$this->name}'
+                    <select id='book_{$this->name}_id'
                             class='custom-select search-field'
                             onchange='onBookChange(\"{$this->name}\")'
                             data-item-type='{$this->item_type}'
@@ -47,7 +47,7 @@
                 </div>
 
                 <div class='col-md-6'>
-                    <select id='chap_{$this->name}'
+                    <select id='book_{$this->name}_chap'
                             class='custom-select search-field'  
                             onchange='onSearch()'
                             data-item-type='{$this->item_type}'
