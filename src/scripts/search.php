@@ -175,7 +175,7 @@
     
     function insertTable(item_type, results) {
         // All the columns this table can display
-        var columns = getColumns(results.columns);
+        var columns = getColumns(item_type, results.columns);
         
         // Get an array with header cells
         var header = getHeader(columns);
@@ -186,9 +186,9 @@
         // The table, this will be filled in later
         $("#tab" + item_type).append(`
             <div class="table-responsive">
-                <table class="table table-striped table-borderless w-100">
-                    <thead>` + header + `</thead>
-                    <tbody>` + body + `</tbody>
+                <table class="table table-striped table-borderless w-100" data-item-type="${item_type}">
+                    <thead>${header}</thead>
+                    <tbody>${body}</tbody>
                 </table>
             </div>
         `);
@@ -209,51 +209,112 @@
             
             // Insert the column list, so we can make unused columns invisible
             columns: columns,
-            order: [0, "asc"]
+            order: [0, "asc"],
+            
+            // TODO: Work around for an issue with DataTables: 
+            // https://datatables.net/forums/discussion/78954
+            // Doesn't seem to work with newer versions of dataTables, 
+            // gotta find something else.. Search for "orderData target" since
+            // the target columns doesn't get updated when ordering by source
+            // columns..
+            drawCallback: function () {
+                var api = this.api();
+                
+                // The array used to store the ordering into
+                var order = [];
+                       
+                // Get the current ordering of the table using the column names
+                // instead of column indices
+                api.order().map((obj) => {
+                    // The column and the direction in which they are ordered
+                    col_idx = obj[0];
+                    col_dir = obj[1];
+                    
+                    // The column name
+                    col_name = api.settings()[0].aoColumns[col_idx].name;
+                    
+                    // Inserting it into the order array
+                    order[col_name] = col_dir;
+                });
+                
+                // All of the columns that use an invislbe column for sorting
+                ["link", "book_start", "book_end"].forEach((column_name) => {
+                    // Check if this column is used for sorting
+                    if (column_name in order && order[column_name] !== "") {
+                        // Add the class needed to show the user that this 
+                        // column is actually being used for sorting
+                        api.column(column_name + ":name").header().classList.add(
+                            order[column_name] === "asc" ? "dt-ordering-asc" : "dt-ordering-desc"
+                        );
+                    }
+                });
+            }
         });
     }
     
-    function getColumns(columns) {
+    function getColumns(item_type, columns) {
+        // Add a link column
+        extra_columns = [];
+        if (item_type !== TYPE_BOOK) {
+            // For all tables except the book table, add the first and last 
+            // appearance columns. These two columns are used to combine the id, 
+            // chapter and vers columns into one and still have the seperate
+            // values to sort and search on
+            extra_columns = extra_columns.concat(["book_start", "book_end"]);
+        }
+        
+        // Add the link as the last column
+        extra_columns = extra_columns.concat("link");
+        
         return columns.filter((column) => {
             // Remove these columns
-            return ["book_start_vers", "book_start_chap", 
-                    "book_end_vers",   "book_end_chap",
-                    "order_id"].includes(column) ? false : true;
-        }).concat("link").map((column) => {
-            // Some renaming here
-            switch(column) {
-                case "book_start_id":
-                    column = "book_start";
-                    break;
-                    
-                case "book_end_id":
-                    column = "book_end";
-                    break;
-                    
-                case "father_age":
-                case "mother_age":
-                    column = "parent_age";
-                    break;
-            }
-                
-            // Do not show column if the name is id or parameter is not filled in
+            return ["order_id"].includes(column) ? false : true;
+        }).concat(extra_columns).map((column_name, idx, array) => {            
+            // Only show the base columns, the others will be made visible when needed
             var visible = false;
-            if (["name", "num_chapters", "book_start", "book_end", "link"].includes(column)) {
+            if (["name", "num_chapters", "book_start", "book_end", "link"].includes(column_name)) {
                 // Always show these columns
                 visible = true;
             }
             
+            orderData = idx;
+            // Custom order for these three columns. They use different columns
+            // to determine the order for themselves
+            switch(column_name) {
+                case "book_start":
+                    orderData = [array.indexOf("book_start_id"),
+                                 array.indexOf("book_start_chap"),
+                                 array.indexOf("book_start_vers")];
+                    break;
+
+                case "book_end":
+                    orderData = [array.indexOf("book_end_id"),
+                                 array.indexOf("book_end_chap"),
+                                 array.indexOf("book_end_vers")];
+                    break;
+
+                case "link":
+                    orderData = array.indexOf("id");
+                    break;
+            }
+            
             // Return the column names with the following syntax
-            return {
-                name: column,
-                title: dict["items." + column],
+            column = {
+                // The name and the title
+                name: column_name,
+                title: dict["items." + column_name],
                 
-                // Make the ID column invisible
+                // The column to be used for ordering for this column
+                orderData: orderData,
+                
+                // Visibility of the column
                 visible: visible,
                 
                 // Make the name column bold
-                className: (column === "name") ? "font-weight-bold" : ""
+                className: (column_name === "name") ? "font-weight-bold" : ""
             };
+            
+            return column;
         });
     }
     
@@ -265,53 +326,49 @@
     }
     
     function getBody(item_type, columns, results) {
+        // Loop through all the results
         return results.records.map((record) => {
-            return getDataRow(item_type, columns, record);
+            return getRow(item_type, columns, record);
         }).join("");
     }
     
-    function getDataRow(item_type, columns, record) {        
-        // Loop through all the keys
+    function getRow(item_type, columns, record) {
+        // Loop through all the columns
         var data_row = columns.map((column) => {
             switch(column.name) {
-//                case "name":
-//                    // TODO: Do this in database with AKA
-//                    data_cell = record["name"] + (record["aka"] ? " (" + record["aka"] + ")" : "");
-//                    break;
-//                    
-//                case "book_start":
-//                case "book_end":
-//                    data_cell = getBookString(column.name, record);
-//                    break;
-//                    
-//                case "father_age":
-//                case "mother_age":
-//                    parent_age = [];
-//                    if (record["father_age"] > 0) { parent_age.push("father_age"); }
-//                    if (record["mother_age"] > 0) { parent_age.push("mother_age"); }
-//                    data_cell = parent_age.join(", ");
-//                    break;
-//                    
-//                case "gender":
-//                case "tribe":
-//                case "type":
-//                    data_cell = getTypeString(column.name, record);
-//                    break;
-//                    
-//                case "link":
-//                    data_cell = getLinkToObject(item_type, record);
-//                    break;
+                case "name":
+                    data = getNameString(record);
+                    break;
+                    
+                case "book_start":
+                case "book_end":
+                    data = getBookString(column.name, record);
+                    break;
+                    
+                case "parent_age":
+                    data = getAgeString(column.name, record);
+                    break;
+                    
+                case "gender":
+                case "tribe":
+                case "type":
+                    data = getTypeString(column.name, record);
+                    break;
+                    
+                case "link":
+                    data = getLinkString(item_type, record);
+                    break;
                     
                 default:
-                    // Default sitation is to take the data as is
-                    data_cell = record[column.name];
-                    break
+                    data = record[column.name];
+                    break;
             }
             
-            // TODO: Something with data order to get the correct order
-            return "<td class='text-center'>" + data_cell + "</td>";
+            // Get the data to be put in the table
+            return "<td class='text-center'>" + data + "</td>";
         });
 
+        // The row to be put in the table
         return "<tr>" + data_row.join("") + "</tr>";
     }
     
@@ -362,17 +419,18 @@
     
     function updateTable(item_type, parameters) {        
         // Insert the parameters and redraw the table
-        for (var param in parameters) {
-            // The value of this parameter
-            var value = parameters[param];
-            
+        for (var param in parameters) {            
             // The column associated with this parameter
             var column = getColumn(item_type, param);
             
+            // The value of this parameter
+            var value = getSearchValue(parameters, param);
+            
             // Skip every parameter that has value null and has no column
             // associated with it
-            if (value !== null && column !== null) {                
-                // Start filtering using the seach value
+            if (value !== null && column !== null) {
+                
+                // Start filtering using the search value
                 // and make this column visible
                 column.search(value).draw().visible(true);
             } else if (value === null && column !== null) {
@@ -395,6 +453,24 @@
         }
         
         return column;
+    }
+    
+    function getSearchValue(parameters, param) {
+        var value = null;
+        
+        switch(param) {
+            case "book_start":
+                value = function(column_value, obj, row_idx) {
+                    return true;
+                };
+                break;
+                
+            default:
+                value = parameters[param];
+                break;
+        }
+        
+        return value;
     }
     
     
@@ -438,7 +514,7 @@
                 
             case "select":
                 // Get the current selected value of the field
-                val = field.find("[selected]").val();
+                val = field.find(":selected").val();
                 break;
                 
             case "slider":
@@ -490,44 +566,51 @@
 //    }
     
     /*
-     * Cell functions for the data in the table
+     * getString functions for the data in the table
      */
     
-//    function getBookString(type, record) {
-//        var book_string = "";
-//        
-//        if (type === "book_start") {
-//            book_string = dict["books.book_" + record["book_start_id"]] + " " + 
-//                    record["book_start_chap"] + ":" + 
-//                    record["book_start_vers"];
-//        } else {
-//            book_string = dict["books.book_" + record["book_end_id"]] + " " + 
-//                    record["book_end_chap"] + ":" + 
-//                    record["book_end_vers"];
-//        }
-//        
-//        return book_string;
-//    }
-//    
-//    function getTypeString(int) {
-//        var str = "";
-//
-//        if (typeof dict[int] !== "undefined") {
-//            str = dict[int];
-//        }
-//
-//        return str;
-//    }
-//    
-//    function getLinkToObject(item_type, record) {
-//        var text = item_type + "/" + item_type.slice(0, -1) + "/" + record["id"];
-//        var href = $("body").data("base-url") + text;
-//        
-//        return '<a href="' + href + '" target="_blank" ' +
-//            'class="font-weight-bold">' + 
-//                text + 
-//        '</a>';
-//    }
+    function getNameString(record) {
+        // TODO: Do this in database with AKA
+        return record["name"] + (record["aka"] ? " (" + record["aka"] + ")" : "");
+    }
+    
+    function getBookString(column_name, record) {
+        var book_string = "";
+        
+        if (column_name === "book_start") {
+            book_string = dict["books.book_" + record["book_start_id"]] + " " + 
+                    record["book_start_chap"] + ":" + 
+                    record["book_start_vers"];
+        } else {
+            book_string = dict["books.book_" + record["book_end_id"]] + " " + 
+                    record["book_end_chap"] + ":" + 
+                    record["book_end_vers"];
+        }
+        
+        return book_string;
+    }
+    
+    function getAgeString() {
+        
+////                parent_age = [];
+////                if (record["father_age"] > 0) { parent_age.push("father_age"); }
+////                if (record["mother_age"] > 0) { parent_age.push("mother_age"); }
+////                data = parent_age.join(", ");
+    }
+    
+    function getTypeString() {
+        
+    }
+    
+    function getLinkString(item_type, record) {
+        var text = item_type + "/" + item_type.slice(0, -1) + "/" + record["id"];
+        var href = $("body").data("base-url") + text;
+        
+        return '<a href="' + href + '" target="_blank" ' +
+            'class="font-weight-bold">' + 
+                text + 
+        '</a>';
+    }
     
     /*
      * onChange functions
