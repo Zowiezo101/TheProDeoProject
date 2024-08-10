@@ -49,7 +49,7 @@
                 <div class='col-md-6'>
                     <select id='chap_{$this->name}'
                             class='custom-select search-field'  
-                            onchange='onSearch()'>
+                            onchange='onSearch()'
                             data-item-type='{$this->item_type}'
                             data-input-type='select'
                             data-item-val='{$this->session_chap_val}'>
