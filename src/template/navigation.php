@@ -21,8 +21,6 @@
                                 <a class="dropdown-item <?= $page_id == "peoples" ? "bg-primary" : "" ?>" href="<?= setParameters("peoples")?>"><?= $dict["navigation.peoples"] ?></a>
                                 <a class="dropdown-item <?= $page_id == "locations" ? "bg-primary" : "" ?>" href="<?= setParameters("locations")?>"><?= $dict["navigation.locations"] ?></a>
                                 <a class="dropdown-item <?= $page_id == "specials" ? "bg-primary" : "" ?>" href="<?= setParameters("specials")?>"><?= $dict["navigation.specials"] ?></a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item <?= $page_id == "search" ? "bg-primary" : "" ?>" href="<?= setParameters("search")?>"><?= $dict["navigation.search"] ?></a>
                             </div>
                         </li>
                         <li class="nav-item <?= $page_id == "timeline" ? "rounded bg-primary" : "" ?>"> <a class="nav-link" href="<?= setParameters("timeline")?>"><?= $dict["navigation.timeline"] ?></a> </li>

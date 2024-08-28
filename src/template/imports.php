@@ -1,4 +1,5 @@
         <!-- Some libaries needed for easier programming -->
+        <!-- TODO: Add some links to the websites of these libraries -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/jquery-color@2.2.0/dist/jquery.color.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" crossorigin="anonymous"></script>
@@ -19,6 +20,11 @@
         <!-- Accessing the database and other base functions -->
         <script src="/src/tools/database.js"></script>
         <script src="/src/tools/base.js"></script>
+        
+        <!-- DataTables for all the item pages (https://datatables.net/) -->
+        <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.1.0/js/dataTables.bootstrap4.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap4.min.css" type="text/css">
 
         <!-- The translation files -->
         <script src="/locale/translation_<?= filter_input(INPUT_GET, "lang"); ?>.js"></script>
@@ -32,12 +38,6 @@
     case "search":?>
         <!-- Bootstrap slider -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
-        <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
-        <!-- TODO: <script src="https://cdn.datatables.net/plug-ins/2.1.0/pagination/input.js"></script>-->
-        <script src="https://cdn.datatables.net/plug-ins/2.1.0/features/inputPaging/dist/dataTables.inputPaging.min.js"></script>
-        <script src="https://cdn.datatables.net/2.1.0/js/dataTables.bootstrap4.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap4.min.css" type="text/css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/2.1.0/features/inputPaging/dist/dataTables.inputPaging.min.css" type="text/css">
         <?php break;
     case "familytree":
     case "timeline":?>

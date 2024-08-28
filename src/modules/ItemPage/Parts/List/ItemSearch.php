@@ -18,10 +18,10 @@
                         <div class="row mb-2">
                             <div class="col-8 col-md-6">
                                 <div class="input-group w-100">
-                                    <input type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearch()" value="'.$search.'">
+                                    <input type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearchUpdate()" value="'.$search.'">
                                     <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button" onclick="onSearch()">
-                                            <i class="fa fa-search"></i>
+                                        <button class="btn btn-outline-primary" type="button" onclick="onFilter()">
+                                            <i class="fa fa-filter"></i>
                                         </button>
                                     </div>
                                 </div>

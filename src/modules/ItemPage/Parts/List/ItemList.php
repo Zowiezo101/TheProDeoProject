@@ -35,11 +35,10 @@
             // Get the database information
             $this->id = $this->getId();
             $this->data = $this->getData();
-            $count = $this->getCount();
             
             // Add the necessary modules in here
             $this->item_search = new ItemSearch();
-            $this->item_pages = new ItemPages($count);
+            $this->item_pages = new ItemPages();
         }
         
         public function getParams($params) {
@@ -64,21 +63,13 @@
         }
         
         private function getId() {
-            $id = filter_input(INPUT_GET, "id");
+            $id = intval(filter_input(INPUT_GET, "id"));
             return $id;
         }
         
         private function getData() {
-            
-            // Options for the itemlist
-            $search = isset($_SESSION["search"]) ? htmlspecialchars($_SESSION["search"]) : "";
-            $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
-            $page = isset($_SESSION["page"]) ? $_SESSION["page"] : 0;
-    
-            $data = getPage($this->type, $page, [
-                "search" => $search,
-                "sort" => $sort
-            ]);
+            // Options for the itemlist    
+            $data = getItems($this->type);
             
             if ($this->checkData($data) === false) {
                 $data = null;
@@ -87,22 +78,16 @@
             return $data;
         }
         
-        private function getCount() {
-            $count = 0;
-            if (isset($this->data->paging) && $this->data->paging !== "") {
-                // Get the amount of pages
-                $count = $this->data->paging;
-            }
-            
-            return $count;
-        }
-        
         public function addClasses($classes) {
             // Add some extra classes to the item_bar
             $this->classes .= " ".$classes;
         }
         
         public function getItemList() {
+            // Options for the itemlist
+            $search = isset($_SESSION["search"]) ? htmlspecialchars($_SESSION["search"]) : "";
+            $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
+            $page = isset($_SESSION["page"]) ? $_SESSION["page"] : 0;
             
             $content = ''; 
             if ($this->data === null) {
@@ -110,30 +95,24 @@
                 $content = $this->getError();
             } else {                
                 $list_items = [];
-                for ($i = 0; $i < \modules\PAGE_SIZE; $i++) {
-                    if ($i < count($this->data->records)) { 
-                        $record = $this->data->records[$i];
-                        
-                        // When the PageListItem is the currently selected item
-                        $active = $this->id === $record->id;
-                        
-                        // Insert all the items into a PageListItem Module
-                        $list_item = new ItemListItem([
-                            "data" => $record,
-                            "base_url" => $this->base_url,
-                            "active" => $active]);
-                    } else {
-                        // Empty PageListItems to fill up the PageList
-                        $list_item = new ItemListItem();
-                    }
-                    
+                for ($i = 0; $i < count($this->data->records); $i++) {
+                    $record = $this->data->records[$i];
+
+                    // When the PageListItem is the currently selected item
+                    $active = $this->id === $record->id;
+
+                    // Insert all the items into a PageListItem Module
+                    $list_item = new ItemListItem([
+                        "data" => $record,
+                        "base_url" => $this->base_url,
+                        "active" => $active]);
+
                     // Add all the items into an array
                     $list_items[] = $list_item->getContent();
                 }
                 
                 // Put it all together
                 $content = implode("", $list_items);
-                
             }
             
             // Wrap it into a div
@@ -141,18 +120,28 @@
                         <!-- The list of items -->
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="list-group text-center" id="item_list"
-                                    data-page-type="'.$this->type.'"
-                                    data-page-size="'.\modules\PAGE_SIZE.'"
-                                    data-page-url="'.$this->base_url.'"
-                                    data-id="'.$this->id.'">
-                                    '.$content.'
+                                <div class="list-group text-center" style="height:510px; overflow:hidden"> 
+                                    <table class="table-borderless w-100" id="item_list"
+                                        data-page-type="'.$this->type.'"
+                                        data-page-url="'.$this->base_url.'"
+                                        data-table-sort="'.$sort.'"
+                                        data-table-search="'.$search.'"
+                                        data-table-page="'.$page.'"
+                                        data-id="'.$this->id.'">
+                                            <thead class="d-none">
+                                                <!-- The name that is being displayed -->
+                                                <th>name</th>
+                                                <!-- Invisible order_id column for sorting -->
+                                                <th>order_id</th>
+                                            </thead>
+                                            <tbody>'.$content.'</tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>';
         }
         
-        public function getContent() {            
+        public function getContent() {
             // The PageList content
             $content = '<!-- The column with the menu -->
                     <nav id="item_bar" class="'.$this->classes.'">
