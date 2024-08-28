@@ -8,6 +8,7 @@
     class MapList extends ItemList {
         // Properties for this Module
         private $onclick;
+        private $added_data = [];
         
         public function __construct($params = []) {
             parent::__construct($params);
@@ -25,12 +26,19 @@
                     case "onclick":
                         $this->setOnClick($value);
                         break;
+                    case "add_data":
+                        $this->addData($value);
+                        break;
                 }
             }
         }
 
         public function setOnClick($onclick) {
             $this->onclick = $onclick;
+        }
+        
+        public function addData($data) {
+            $this->added_data = $data;
         }
         
         public function getItemList() {
@@ -43,10 +51,13 @@
             if ($this->data === null) {
                 // Something went wrong
                 $content = $this->getError();
-            } else {                
+            } else {
+                // Add the added data to the array
+                $records = array_merge($this->data->records, $this->added_data);
+                
                 $list_items = [];
-                for ($i = 0; $i < count($this->data->records); $i++) {
-                    $record = $this->data->records[$i];
+                for ($i = 0; $i < count($records); $i++) {
+                    $record = $records[$i];
 
                     // When the PageListItem is the currently selected item
                     $active = $this->id === $record->id;

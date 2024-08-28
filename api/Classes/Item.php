@@ -336,11 +336,15 @@
             // Query parameters
             $query_params = [];
             
+            // Parts of the query
+            $where_sql = $this->getWhereQuery();
+            
             // Query string (where parameters will be plugged in)
             $query_string = "SELECT
                     {$this->getColumnQuery()}
                 FROM
                     {$table} i
+                {$where_sql}
                 ORDER BY
                     i.order_id ASC";
             
@@ -365,15 +369,9 @@
             return $columns;
         }
         
-        protected function getWhereQuery(&$query_params) {
-            $where_sql = "";
-            if (isset($this->parameters["search"]) && 
-                     ($this->parameters["search"] !== "")) {
-                $where_sql = "WHERE name LIKE :filter";
-                $query_params[":filter"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
-            }
-            
-            return $where_sql;
+        protected function getWhereQuery() {      
+            // The where query is usually empty, but in some cases this is used
+            return "";
         }
         
         protected function getSortQuery() {

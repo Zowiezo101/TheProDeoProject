@@ -32,6 +32,10 @@
             // Parse the parameters given
             $this->getParams($params);
             
+//            TODO:
+//            - Searching for AKA names
+//            - Advanced searching
+            
             // Get the database information
             $this->id = $this->getId();
             $this->data = $this->getData();

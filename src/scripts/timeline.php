@@ -11,12 +11,6 @@
     // it into the DOM
     $(function(){
         
-            // TODO: Add 
-//                            -999 AS order_id, 
-//                            -999 AS id, 
-//                            'timeline.global' as name) AS e1
-        
-        
         // The Map ID
         var map_id = $("#item_list").attr("data-id");
         

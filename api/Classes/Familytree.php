@@ -13,9 +13,8 @@
             ]);
         }
         
-        protected function getWhereQuery(&$query_params) {
-            $where_sql = parent::getWhereQuery($query_params);
-            $where_sql = $where_sql . ($where_sql ? " AND " : " WHERE ") . "
+        protected function getWhereQuery() {
+            $where_sql = " WHERE
                 i.id NOT IN (
                     SELECT people_id FROM people_to_parent WHERE parent_id IS NOT NULL)
                 AND i.id IN (

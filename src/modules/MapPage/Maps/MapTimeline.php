@@ -14,7 +14,12 @@
             $this->createMapList([
                 "type" => TYPE_TIMELINE,
                 "base_url" => "timeline/map",
-                "onclick" => \List\ONCLICK_LOADING
+                "onclick" => \List\ONCLICK_LOADING,
+                "add_data" => [(object) [
+                    "order_id" => -999,
+                    "id" => -999,
+                    "name" => "timeline.global"
+                ]]
             ]);
             
             $map_content = $this->createMapContent([

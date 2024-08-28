@@ -35,15 +35,6 @@
             $this->message->updateData($data);
         }
         
-        protected function getWhereQuery(&$query_params) {
-            $where_sql = parent::getWhereQuery($query_params);
-            $where_sql = $where_sql . ($where_sql ? " AND " : " WHERE ") . "
-                coordinates IS NOT NULL AND
-                coordinates <> ''";
-            
-            return $where_sql;
-        }
-        
         protected function getReadAllQuery() {
             // The translated table name
             $table = $this->getTable();
