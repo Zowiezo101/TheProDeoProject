@@ -12,6 +12,8 @@
             $search = isset($_SESSION["search"]) ? htmlspecialchars($_SESSION["search"]) : "";
             $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
             
+            // TODO: Make sure that searching for AKA names also gets the correct names
+            
             // The search bar
             $content = '
                         <!-- Search bar and sorting -->

@@ -63,7 +63,10 @@
         }
         
         private function getId() {
-            $id = intval(filter_input(INPUT_GET, "id"));
+            $id = filter_input(INPUT_GET, "id");
+            if (!is_null($id)) {
+                $id = intval($id, 10);
+            }
             return $id;
         }
         

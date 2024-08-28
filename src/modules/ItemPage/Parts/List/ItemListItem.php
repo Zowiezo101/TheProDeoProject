@@ -77,7 +77,8 @@
             $content = '<a href="'.$href.'" class="'.$this->classes.'">'.$value.'</a>';
             
             // Put it in the table data format
-            return '<tr height="51px">
+            return '
+                    <tr height="51px">
                         <td  class="p-0">'.$content.'</td>
                         <td class="d-none">'.$record->order_id.'</td>
                     </tr>';

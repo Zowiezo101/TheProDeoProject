@@ -34,6 +34,10 @@
         }
         
         public function getItemList() {
+            // Options for the itemlist
+            $search = isset($_SESSION["search"]) ? htmlspecialchars($_SESSION["search"]) : "";
+            $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
+            $page = isset($_SESSION["page"]) ? $_SESSION["page"] : 0;
             
             $content = ''; 
             if ($this->data === null) {
@@ -41,23 +45,18 @@
                 $content = $this->getError();
             } else {                
                 $list_items = [];
-                for ($i = 0; $i < \modules\PAGE_SIZE; $i++) {
-                    if ($i < count($this->data->records)) { 
-                        $record = $this->data->records[$i];
-                        
-                        // When the PageListItem is the currently selected item
-                        $active = $this->id === $record->id;
-                        
-                        // Insert all the items into a PageListItem Module
-                        $list_item = new MapListItem([
-                            "data" => $record,
-                            "base_url" => $this->base_url,
-                            "active" => $active,
-                            "onclick" => $this->onclick]);
-                    } else {
-                        // Empty PageListItems to fill up the PageList
-                        $list_item = new MapListItem();
-                    }
+                for ($i = 0; $i < count($this->data->records); $i++) {
+                    $record = $this->data->records[$i];
+
+                    // When the PageListItem is the currently selected item
+                    $active = $this->id === $record->id;
+
+                    // Insert all the items into a PageListItem Module
+                    $list_item = new MapListItem([
+                        "data" => $record,
+                        "base_url" => $this->base_url,
+                        "active" => $active,
+                        "onclick" => $this->onclick]);
                     
                     // Add all the items into an array
                     $list_items[] = $list_item->getContent();
@@ -73,12 +72,22 @@
                         <!-- The list of items -->
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="list-group text-center" id="item_list"
-                                    data-page-type="'.$this->type.'"
-                                    data-page-size="'.\modules\PAGE_SIZE.'"
-                                    data-page-url="'.$this->base_url.'"
-                                    data-id="'.$this->id.'">
-                                    '.$content.'
+                                <div class="list-group text-center" style="height:510px; overflow:hidden">
+                                    <table class="table-borderless w-100" id="item_list"
+                                        data-page-type="'.$this->type.'"
+                                        data-page-url="'.$this->base_url.'"
+                                        data-table-sort="'.$sort.'"
+                                        data-table-search="'.$search.'"
+                                        data-table-page="'.$page.'"
+                                        data-id="'.$this->id.'">
+                                            <thead class="d-none">
+                                                <!-- The name that is being displayed -->
+                                                <th>name</th>
+                                                <!-- Invisible order_id column for sorting -->
+                                                <th>order_id</th>
+                                            </thead>
+                                            <tbody>'.$content.'</tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>';

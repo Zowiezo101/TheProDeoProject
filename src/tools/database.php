@@ -19,28 +19,6 @@ function createItem($type, $data) {
     return accessDatabase("POST", $url, $data);
 }
 
-function getItem($type, $id, $options=false) {
-    // Create the query
-    $query = getQuery($options);
-    
-    // The URL to send the request to
-    $url = setParameters("api/".$type."/".$id);
-    
-    // Access the database
-    return accessDatabase("GET", $url.$query);
-}
-
-function getItems($type, $options=false) {
-    // Create the query
-    $query = getQuery($options);
-    
-    // The URL to send the request to
-    $url = setParameters("api/".$type."/all");
-    
-    // Access the database
-    return accessDatabase("GET", $url.$query);
-}
-
 function updateItem($type, $id, $data) {
     
     // The URL to send the request to
@@ -48,7 +26,6 @@ function updateItem($type, $id, $data) {
     
     // Access the database
     return accessDatabase("PUT", $url, $data);
-
 }
 
 function deleteItem($type, $id) {
@@ -60,26 +37,28 @@ function deleteItem($type, $id) {
     return accessDatabase("DELETE", $url);
 }
 
-function getPage($type, $page, $options) {
-    // Create the query
-    $query = getQuery($options);
-    
+function getItem($type, $id) {    
     // The URL to send the request to
-    $url = setParameters("api/".$type."/pages/".$page);
+    $url = setParameters("api/".$type."/".$id);
     
     // Access the database
-    return accessDatabase("GET", $url.$query);
+    return accessDatabase("GET", $url);
 }
 
-function getMaps($type, $id, $options=false) {
-    // Create the query
-    $query = getQuery($options);
+function getItems($type) {
+    // The URL to send the request to
+    $url = setParameters("api/".$type."/all");
     
+    // Access the database
+    return accessDatabase("GET", $url);
+}
+
+function getMaps($type, $id) {    
     // The URL to send the request to
     $url = setParameters("api/".$type."/".$id."/maps");
     
     // Access the database
-    return accessDatabase("GET", $url.$query);
+    return accessDatabase("GET", $url);
 }
 
 function accessDatabase($method, $url, $data=false) {
@@ -112,25 +91,4 @@ function accessDatabase($method, $url, $data=false) {
     curl_close($curl);
     
     return $response;
-}
-
-function getQuery($options) {    
-    // TODO: Use the htmlbuildquery function
-    // The query that is built using the options
-    $query = "";
-    
-    // No options means no query
-    if ($options != false) {
-        $params = [];
-        
-        // Create the following syntax for each given option: options=value
-        foreach($options as $option => $value) {
-            $params[] = $option."=".$value;
-        }
-        
-        // Add it all together to get parameters that can be added to an URL
-        $query = "?".implode("&", $params);
-    }
-    
-    return $query;
 }

@@ -50,7 +50,7 @@
             
             // Get all the locations with their details
             $query_params = [];
-            $query_string = "SELECT
+            $query_string = "SELECT l.order_id,
                     l.id, l.name, l.descr,
                     l.meaning_name, IFNULL(aka.location_name, '') AS aka,
                     l.type, l.coordinates

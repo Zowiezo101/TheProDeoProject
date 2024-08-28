@@ -21,7 +21,6 @@
         private $code = self::SUCCESS_READ;
         private $error = "";
         private $data = [];
-        private $paging = "";
         private $query = "";
         private $columns = [];
         private $options = [];
@@ -55,10 +54,6 @@
             $this->data = $data;
         }
         
-        public function setPaging($paging) {
-            $this->paging = $paging;
-        }
-        
         public function setQuery($query) {
             $this->query = $query;
         }
@@ -85,11 +80,6 @@
             // TODO: When data is false, have the database set the appropiate error
             // Data is supposed to be an array. 
             // When it is false, something happened while checking the parameters
-            
-            if ($this->paging !== "") {
-                // Include the amount of pages
-                $message["paging"] = $this->paging;
-            }
             
             if (count($this->columns) > 0) {
                 // Include the column names (only for search results)

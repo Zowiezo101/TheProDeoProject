@@ -22,29 +22,6 @@ function createItem(type, data) {
     
     // Access the database
     return accessDatabase("POST", url, data);
-    
-}
-
-function getItem(type, id, options=false) {
-    // Create the query
-    var query = getQuery(options);
-    
-    // The URL to set the request to
-    var url = "api/" + type + "/" + id;
-    
-    // Access the database
-    return accessDatabase("GET", url + query);
-}
-
-function getItems(type, options=false) {
-    // Create the query
-    var query = getQuery(options);
-    
-    // The URL to set the request to
-    var url = "api/" + type + "/all";
-    
-    // Access the database
-    return accessDatabase("GET", url + query);
 }
 
 function updateItem(type, id, data) {    
@@ -53,7 +30,6 @@ function updateItem(type, id, data) {
     
     // Access the database
     return accessDatabase("PUT", url, data);
-    
 }
 
 function deleteItem(type, id) {
@@ -64,26 +40,28 @@ function deleteItem(type, id) {
     return accessDatabase("DELETE", url);    
 }
 
-function getPage(type, page, options) {    
-    // Create the query
-    var query = getQuery(options);
-    
+function getItem(type, id) {    
     // The URL to set the request to
-    var url = "api/" + type + "/pages/" + page;
+    var url = "api/" + type + "/" + id;
     
     // Access the database
-    return accessDatabase("GET", url + query);
+    return accessDatabase("GET", url);
 }
 
-function getMaps(type, id, options) {    
-    // Create the query
-    var query = getQuery(options);
+function getItems(type) {    
+    // The URL to set the request to
+    var url = "api/" + type + "/all";
     
+    // Access the database
+    return accessDatabase("GET", url);
+}
+
+function getMaps(type, id) {    
     // The URL to set the request to
     var url = "api/" + type + "/" + id + "/maps";
     
     // Access the database
-    return accessDatabase("GET", url + query);
+    return accessDatabase("GET", url);
 }
 
 function accessDatabase(method, url, data) {
@@ -114,23 +92,3 @@ function accessDatabase(method, url, data) {
         return JSON.parse(response);
     });
 }
-
-function getQuery(options) {
-    // The query that is built using the options
-    var query = "";
-    
-    // No options means no query
-    if (options !== false) {
-        var params = [];
-        
-        // Create the following syntax for each given option: options=value
-        for (var key in options) {
-            params.push(key + "=" + options[key]);
-        }
-        
-        // Add it all together to get parameters that can be added to an URL
-        query = "?" + params.join("&");
-    }
-    
-    return query;
-}	

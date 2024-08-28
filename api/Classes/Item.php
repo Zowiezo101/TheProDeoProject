@@ -13,7 +13,6 @@
         
         // Some default values
         protected const DEFAULT_LANG = "nl";
-        protected const PAGE_SIZE = 10;
         
         // Other classes that are used
         protected $database;
@@ -32,8 +31,6 @@
         public const ACTION_READ_ONE = "read_one";
         public const ACTION_READ_ALL = "read_all";
         public const ACTION_READ_MAPS = "read_maps";
-        public const ACTION_READ_PAGE = "read_page";
-        public const ACTION_READ_OPTIONS = "read_options";
         
         // Parameters
         public const OPTIONAL_PARAMS = "optional";
@@ -44,9 +41,6 @@
         
         // Some filters used by multiple item types
         protected const FILTER_ID      = ["id" => FILTER_VALIDATE_INT];
-        protected const FILTER_SORT    = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_SEARCH  = ["search" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_PAGE    = ["page" => FILTER_VALIDATE_INT];
         protected const FILTER_OPTIONS = ["options" => FILTER_VALIDATE_BOOL];
         
         // A parameter that is used for every action
@@ -201,20 +195,6 @@
 //            }
         }
         
-        public function readPage() {
-            $this->action = self::ACTION_READ_PAGE;
-            
-            // Succefully reading an item should return code '200'
-            $this->action_success = Message::SUCCESS_READ;
-            
-            // Execute the action
-            $this->executeAction();
-            
-            // Get the paging and add it to the message
-            $paging = $this->getPaging();
-            $this->message->setPaging($paging);
-        }
-        
         public function readMaps() {
             $this->action = self::ACTION_READ_MAPS;
             
@@ -266,9 +246,6 @@
          * - ReadOne
          * - ReadAll
          * - ReadMaps
-         * - ReadPage
-         * - SearchOptions
-         * - SearchResults
          */
         private function getQuery() {
             $query = [
@@ -300,10 +277,6 @@
                 
                 case self::ACTION_READ_MAPS:
                     $query = $this->getReadMapsQuery();
-                    break;
-                
-                case self::ACTION_READ_PAGE:
-                    $query = $this->getReadPageQuery();
                     break;
             }
             
@@ -383,38 +356,6 @@
             return $this->getEmptyQuery();
         }
         
-        protected function getReadPageQuery() {
-            // The translated table name
-            $table = $this->getTable();
-            
-            // Query parameters
-            $query_params = [
-                ":page_start" => [self::PAGE_SIZE * $this->parameters["page"], \PDO::PARAM_INT],
-                ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
-            ];
-            
-            // Parts of the query
-            $where_sql = $this->getWhereQuery($query_params);
-            $sort_sql = $this->getSortQuery();
-
-            // Query string (where parameters will be plugged in)
-            $query_string = "SELECT
-                    i.id, i.name
-                FROM
-                    {$table} i
-                {$where_sql}
-                ORDER BY
-                    {$sort_sql}
-                LIMIT
-                    :page_start, :page_size";
-            
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ];            
-            return $query;
-        }
-        
         private function getColumnQuery() {
             // Get all the columns from the column table
             $columns = join(",", array_map(function ($column) {
@@ -464,31 +405,6 @@
             }
             
             return $sort_sql;
-        }
-        
-        
-        /**
-         * Get the amount of pages for this table and filter
-         * @return type
-         */
-        public function getPaging() {
-            // Query parameters
-            $query_params = [];
-            
-            // Parts of the query
-            $where_sql = $this->getWhereQuery($query_params);
-            
-            // Query string (where parameters will be plugged in)
-            $query_string = "SELECT CEILING(COUNT(*) / 10) as total_pages FROM {$this->table_name} i {$where_sql}";
-            
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ]; 
-            
-            // Get the data from the database
-            $data = $this->database->getData($query);
-            return $data[0]['total_pages'];
         }
         
         /**
@@ -719,9 +635,6 @@
          * - ReadOne
          * - ReadAll
          * - ReadMaps
-         * - ReadPage
-         * - SearchOptions
-         * - SearchResults
          */
         private function getFilter() {
             $params = [];
@@ -750,10 +663,6 @@
                 
                 case self::ACTION_READ_MAPS:
                     $params = $this->getReadMapsFilter();
-                    break;
-                
-                case self::ACTION_READ_PAGE:
-                    $params = $this->getReadPageFilter();
                     break;
             }
             
@@ -805,18 +714,6 @@
                 self::OPTIONAL_PARAMS => [],
                 self::REQUIRED_PARAMS => array_merge(
                     self::FILTER_ID,
-                ),
-            ];
-        }
-        
-        protected function getReadPageFilter() {
-            return [
-                self::OPTIONAL_PARAMS => array_merge(
-                    self::FILTER_SORT,
-                    self::FILTER_SEARCH,
-                ),
-                self::REQUIRED_PARAMS => array_merge(
-                    self::FILTER_PAGE,
                 ),
             ];
         }

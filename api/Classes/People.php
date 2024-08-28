@@ -64,39 +64,6 @@
             ]);
         }
         
-        protected function getReadPageQuery() {            
-            // The translated table name
-            $table = $this->getTable();
-            
-            // Query parameters
-            $query_params = [
-                ":page_start" => [self::PAGE_SIZE * $this->parameters["page"], \PDO::PARAM_INT],
-                ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
-            ];
-            
-            // Parts of the query
-            $column_sql = $this->getColumnQuery($query_params);
-            $where_sql = $this->getWhereQuery($query_params);
-            $sort_sql = $this->getSortQuery();
-
-            // Query string (where parameters will be plugged in)
-            $query_string = "SELECT
-                    {$column_sql}
-                FROM
-                    {$table} i
-                {$where_sql}
-                ORDER BY
-                    {$sort_sql}
-                LIMIT
-                    :page_start, :page_size";
-            
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ];            
-            return $query;
-        }
-        
         protected function getReadMapsQuery() {
             // The translated table name
             $table = $this->getTable();
@@ -140,43 +107,4 @@
             ];
             return $query;
         }
-        
-        private function getColumnQuery(&$query_params) {
-            $column_sql = "i.id, i.name";
-            if (isset($this->parameters["search"]) && 
-                     ($this->parameters["search"] !== "")) {
-                $column_sql = "i.id, i.name, IF(people_name LIKE :aka, people_name, '') AS aka";
-                $query_params[":aka"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
-            }
-            
-            return $column_sql;
-        }
-        
-        protected function getWhereQuery(&$query_params) {
-            $where_sql = "";
-            if (isset($this->parameters["search"]) && 
-                     ($this->parameters["search"] !== "")) {
-                // The Peoples to Aka item
-                $p2p = $this->getP2PItem();
-                $table_p2p = $p2p->getTable();
-                
-                $where_sql = "
-                    LEFT JOIN 
-                        {$table_p2p} p2p
-                    ON 
-                        p2p.people_id = i.id
-                    AND 
-                        p2p.people_name LIKE :name
-                    WHERE 
-                        (name LIKE :filter_n 
-                    OR 
-                        people_name LIKE :filter_pn)";
-                
-                $query_params[":name"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
-                $query_params[":filter_n"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
-                $query_params[":filter_pn"] = ['%'.$this->parameters["search"].'%', \PDO::PARAM_STR];
-            }
-            
-            return $where_sql;
-        }        
     }
