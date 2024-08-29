@@ -35,7 +35,6 @@
 //            TODO:
 //            - Searching for AKA names
 //            - Advanced searching
-//            - Dutch warning when no results have been found
             
             // Get the database information
             $this->id = $this->getId();
