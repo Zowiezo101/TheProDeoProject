@@ -3,6 +3,7 @@
     namespace Items;
     
     use Shapes\Title;
+    use List\ItemModal;
     use Content\ItemTable;
     use Content\MapTable;
 
@@ -18,6 +19,55 @@
             
             $item_content = $this->createItemContent([
                 "type" => TYPE_PEOPLE
+            ]);
+            
+            $this->createItemModal([
+                "filters" => [
+                    [
+                        "name" => "name",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "meaning_name",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "descr",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "start",
+                        "type" => ItemModal::INPUT_BOOK
+                    ],
+                    [
+                        "name" => "end",
+                        "type" => ItemModal::INPUT_BOOK
+                    ],
+                    [
+                        "name" => "age",
+                        "type" => ItemModal::INPUT_SLIDER
+                    ],
+                    [
+                        "name" => "parent_age",
+                        "type" => ItemModal::INPUT_SLIDER
+                    ],
+                    [
+                        "name" => "gender",
+                        "type" => ItemModal::INPUT_SELECT
+                    ],
+                    [
+                        "name" => "tribe",
+                        "type" => ItemModal::INPUT_SELECT
+                    ],
+                    [
+                        "name" => "profession",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "nationality",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                ]
             ]);
             
             /** These are Modules that are being added to the ItemContent Module */

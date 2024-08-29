@@ -22,7 +22,7 @@
                                 <div class="input-group w-100">
                                     <input type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearchUpdate()" value="'.$search.'">
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-primary" type="button" onclick="onFilter()">
+                                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" type="button">
                                             <i class="fa fa-filter"></i>
                                         </button>
                                     </div>
@@ -41,6 +41,7 @@
                                 </div>
                             </div>
                         </div>';
+            
                     
             return $content;
         }

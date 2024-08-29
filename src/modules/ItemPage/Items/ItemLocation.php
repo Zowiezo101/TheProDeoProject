@@ -3,6 +3,7 @@
     namespace Items;
     
     use Shapes\Title;
+    use List\ItemModal;
     use Content\ItemTable;
 
     class ItemLocation extends Item {
@@ -17,6 +18,35 @@
             
             $item_content = $this->createItemContent([
                 "type" => TYPE_LOCATION
+            ]);
+            
+            $this->createItemModal([
+                "filters" => [
+                    [
+                        "name" => "name",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "meaning_name",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "descr",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "start",
+                        "type" => ItemModal::INPUT_BOOK
+                    ],
+                    [
+                        "name" => "end",
+                        "type" => ItemModal::INPUT_BOOK
+                    ],
+                    [
+                        "name" => "type",
+                        "type" => ItemModal::INPUT_SELECT
+                    ]
+                ]
             ]);
             
             /** These are Modules that are being added to the ItemContent Module */

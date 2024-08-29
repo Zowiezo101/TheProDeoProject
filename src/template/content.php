@@ -48,6 +48,7 @@
     require "src/modules/ItemPage/Parts/List/ItemListItem.php";
     require "src/modules/ItemPage/Parts/List/ItemListToggle.php";
     require "src/modules/ItemPage/Parts/List/ItemSearch.php";
+    require "src/modules/ItemPage/Parts/List/ItemModal.php";
     require "src/modules/ItemPage/Parts/List/ItemPages.php";  
     
     // The different items
@@ -57,13 +58,6 @@
     require "src/modules/ItemPage/Items/ItemPeople.php";
     require "src/modules/ItemPage/Items/ItemLocation.php";
     require "src/modules/ItemPage/Items/ItemSpecial.php";
-    
-    // The SearchPage
-    require "src/modules/SearchPage/SearchPage.php";
-    
-    // The Parts used by this Page
-    require "src/modules/SearchPage/Parts/SearchMenu.php";
-    require "src/modules/SearchPage/Parts/SearchContent.php";
     
     // The MapPage
     require "src/modules/MapPage/MapPage.php";

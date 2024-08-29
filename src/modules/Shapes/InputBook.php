@@ -30,7 +30,8 @@
             <!-- ".ucfirst($this->name)." appearance -->    
             <div class='row pb-2'>
                 <div class='col-md-12'>
-                    <label class='font-weight-bold'>{$dict["items.book_{$this->name}"]}:
+                    <label class='font-weight-bold'>
+                        {$dict["items.book_{$this->name}"]}:
                     </label>
                 </div>
     
@@ -48,8 +49,7 @@
 
                 <div class='col-md-6'>
                     <select id='book_{$this->name}_chap'
-                            class='custom-select search-field'  
-                            onchange='onSearch()'
+                            class='custom-select search-field'
                             data-item-type='{$this->item_type}'
                             data-input-type='select'
                             data-item-val='{$this->session_chap_val}'>

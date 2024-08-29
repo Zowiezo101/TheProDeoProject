@@ -28,22 +28,19 @@
             <!-- ".ucfirst($this->name)." -->
             <div class='row pb-2'>
                 <div class='col-md-12'>
-                    <label class='font-weight-bold'>{$dict["items.{$this->name}"]}:
+                    <label class='font-weight-bold'>
+                        {$dict["items.{$this->name}"]}:
                     </label>
                 </div>
                 
                 <div class='col-md-12'>
-                    <form class='form-inline' onSubmit='return false;'>
-                        <input  id='{$this->name}'
-                                class='form-control w-100 search-field'
-                                type='text' 
-                                value='{$this->session_val}'
-                                onkeyup='onSearch()'
-                                placeholder='{$dict["database.search"]}' 
-                                data-item-type='{$this->item_type}'
-                                data-input-type='text'
-                                    />
-                    </form>
+                    <input  id='{$this->name}'
+                            class='form-control w-100 search-field'
+                            type='text' 
+                            value='{$this->session_val}'
+                            placeholder='{$dict["database.search"]}' 
+                            data-item-type='{$this->item_type}'
+                            data-input-type='text' />
                 </div>
             </div>";
             
