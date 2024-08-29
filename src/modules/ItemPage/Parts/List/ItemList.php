@@ -35,6 +35,7 @@
 //            TODO:
 //            - Searching for AKA names
 //            - Advanced searching
+//            - Dutch warning when no results have been found
             
             // Get the database information
             $this->id = $this->getId();
@@ -141,7 +142,7 @@
                                                 <!-- Invisible order_id column for sorting -->
                                                 <th>order_id</th>
                                             </thead>
-                                            <tbody>'.$content.'</tbody>
+                                            <tbody class="item-group">'.$content.'</tbody>
                                     </table>
                                 </div>
                             </div>

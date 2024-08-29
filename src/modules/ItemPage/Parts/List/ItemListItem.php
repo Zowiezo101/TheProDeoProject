@@ -74,12 +74,15 @@
                 $value = $value." ({$record->aka})";
             }
 
-            $content = '<a href="'.$href.'" class="'.$this->classes.'">'.$value.'</a>';
+            // The list-group-item style remains, but make sure to remove the borders
+            // This is because the underlying items also have this style and those
+            // have the proper border radius since they are actually in a group.
+            $content = '<a style="border-width: 0px;" href="'.$href.'" class="'.$this->classes.'">'.$value.'</a>';
             
             // Put it in the table data format
             return '
-                    <tr height="51px">
-                        <td  class="p-0">'.$content.'</td>
+                    <tr class="p-0 '.$this->classes.'" height="51px">
+                        <td class="p-0 '.$this->classes.'">'.$content.'</td>
                         <td class="d-none">'.$record->order_id.'</td>
                     </tr>';
         }
