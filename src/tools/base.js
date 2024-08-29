@@ -186,115 +186,6 @@ function setSearch(search) {
     // Go back to the first page
     setPage(0);
 }
-    
-//function updatePage() {
-//    // This happens when a search is done
-//    // For example, a new page is loaded, the sort is changed or
-//    // a search term is entered
-//    
-//    // The base URL is stored in the body of the page
-//    var base_url = $("body").attr("data-base-url");
-//    
-//    // Get the selected search term
-//    var search = $("#item_search").val();
-//    
-//    // Get the selected sort
-//    var sort = $("#item_sort .active").attr("id");
-//    
-//    // Get the current page
-//    var page = parseInt($("#curr_page").val(), 10) - 1;
-//    
-//    // Get the page with the current settings
-//    var type = $("#item_list").attr("data-page-type");
-//    getPage(type, page, {
-//        "sort": sort,
-//        "search": search
-//    }).then(function (data) {
-//        // Start out clean
-//        $("#item_list").empty();
-//        
-//        // Update the page and select the correct item
-//        if (data.hasOwnProperty("error") && data.error !== "") {
-//            // Show an error if applicable
-//            $("#item_list").append(data.error);
-//        } else if (data.hasOwnProperty("records") && data.records.length === 0) {
-//            // Show that there are no results
-//            $("#item_list").append(dict["database.no_results"]);
-//        } else {
-//            // Some variables
-//            var page_size = parseInt($("#item_list").attr("data-page-size"), 10);
-//            var page_url = $("#item_list").attr("data-page-url");
-//            var curr_id = $("#item_list").attr("data-id");
-//            
-//            // Fill up the page
-//            for (var i = 0; i < page_size; i++) {
-//                var item = data.records[i];
-//                
-//                // We want a full page of items inserted. 
-//                // If there aren't enough items, fill the rest up with blanks
-//                var option = '<a class="list-group-item list-group-item-action invisible"> empty </a>';
-//                if (i < data.records.length) {
-//                    // The link to refer to
-//                    var href = base_url + page_url + "/" + item.id;
-//                    
-//                    // If an option in the sidebar is selected, it needs to be highlighted
-//                    var classes = "list-group-item list-group-item-action";
-//                    if (curr_id === item.id) {
-//                        classes = classes + " active";
-//                    }
-//                    
-//                    // The name to be shown in the sidebar
-//                    var value = item.name;
-//                    if (value === "timeline.global") {
-//                        // In case of the timeline, there is a global timeline
-//                        // consisting of all the events
-//                        $alue = dict[value];
-//                    }
-//                    
-//                    if (item.hasOwnProperty("aka") && item.aka !== "") {
-//                        // The AKA value is only given when searching for a name and there is a hit
-//                        // with an AKA value.
-//                        value = value + " (" + item.aka + ")";
-//                    }
-//            
-//                    if ($("#loading_screen").length > 0) {
-//                        var onclick = "showLoadingScreen()";
-//                        if (type === "worldmap") {
-//                            onclick = "getLinkToMap(" + item.id + ")";
-//                            href = "javascript: void(0)";
-//                        }
-//                    } else {
-//                        var onclick = "";
-//                    }
-//                    
-//                    var option = '<a href="' + href + '" class="' + classes + '" onclick="' + onclick + '">' + value + '</a>';
-//                }
-//                
-//                $("#item_list").append(option);
-//            }
-//        }
-//        
-//        total_num_pages = 0;
-//        if (data.hasOwnProperty("paging") && data.paging !== "") {
-//            total_num_pages = parseInt(data.paging, 10);
-//        }
-//        
-//        // Make the pagination visible/invisible
-//        if (total_num_pages > 1) {
-//            // pagination
-//            $("#item_pagination").addClass("visible");
-//            $("#item_pagination").removeClass("invisible");
-//            
-//            // Show the amount of pages
-//            $("#num_pages").text(total_num_pages);
-//        } else {
-//            // No pagination
-//            $("#item_pagination").addClass("invisible");
-//            $("#item_pagination").removeClass("visible");
-//        }
-//        
-//    });
-//}
 
 function onFilter() {
     
@@ -335,6 +226,11 @@ $(function() {
                 topEnd: null,
                 bottomStart: null,
                 bottomEnd: null
+            },
+            language: {
+                // This is the only message from dataTables the user should see
+                // Make sure it's translated in the selected language
+                zeroRecords: dict["database.no_results"]
             },
             
             columns: [
