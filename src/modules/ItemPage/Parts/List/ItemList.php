@@ -32,10 +32,6 @@
             // Parse the parameters given
             $this->getParams($params);
             
-//            TODO:
-//            - Searching for AKA names
-//            - Advanced searching
-            
             // Get the database information
             $this->id = $this->getId();
             $this->data = $this->getData();
@@ -102,9 +98,7 @@
                 $content = $this->getError();
             } else {                
                 $list_items = [];
-                for ($i = 0; $i < count($this->data->records); $i++) {
-                    $record = $this->data->records[$i];
-
+                foreach ($this->data->records as $record) {
                     // When the PageListItem is the currently selected item
                     $active = $this->id === $record->id;
 

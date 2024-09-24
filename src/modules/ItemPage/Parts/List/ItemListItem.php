@@ -55,15 +55,6 @@
                 $this->classes .= " active";
             }
         }
-
-        public function setBehavior($behavior) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->behavior = $behavior;
-            } else {
-                // TODO: Throw an error
-            }
-        }
         
         public function getContent() {            
             // The PageListItem, this is an item in the PageList.

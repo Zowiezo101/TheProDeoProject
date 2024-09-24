@@ -168,9 +168,12 @@ function onSearchUpdate() {
     // Get the selected search term
     var search = $("#item_search").val();
     
+    // Insert it in the filter modal as well
+    $("#name").val(search);
+    
     // Update the session settings
     updateSession({
-        "search": search
+        "name": search
     });
     
     setSearch(search);
@@ -185,14 +188,6 @@ function setSearch(search) {
     
     // Go back to the first page
     setPage(0);
-}
-
-function onFilter() {
-    
-}
-
-function onFilterUpdate() {
-    
 }
     
 function showLoadingScreen() {
