@@ -217,7 +217,17 @@ $(function() {
                 scrollTop: $("#item_content").offset().top
             }, 2000);
         }
-    
+        
+	    var columns = [];
+	    $("#item_list th").each((idx, el) => {
+	        var td = $(el);
+
+	        columns.push({
+	            name: td.text(),
+	            visible: td.hasClass("d-none") === false
+	        });
+	    });
+	
         // Set the dataTable to be able to sort and change pages
         table = $("#item_list").DataTable({
             
@@ -233,15 +243,7 @@ $(function() {
                 zeroRecords: dict["database.no_results"]
             },
             
-            columns: [
-                {
-                    name: "name"
-                },
-                {
-                    name: "order_id",
-                    visible: false
-                }
-            ],
+            columns: columns,
             order: [1, "asc"]
         });
         

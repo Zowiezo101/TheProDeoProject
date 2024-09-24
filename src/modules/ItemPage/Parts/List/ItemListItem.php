@@ -9,6 +9,7 @@
         protected $data;
         protected $classes = "list-group-item list-group-item-action";
         protected $href;
+        protected $columns;
         protected $value;
         
         public function __construct($params=[]) {
@@ -27,6 +28,9 @@
                     case "base_url":
                         $this->setBaseUrl($value);
                         break;
+                    case "columns":
+                        $this->setColumns($value);
+                        break;
                     case "active":
                         $this->setActive($value);
                         break;
@@ -40,6 +44,10 @@
 
         public function setBaseUrl($url) {
             $this->href = setParameters($url);
+        }
+
+        public function setColumns($columns) {
+            $this->columns = $columns;
         }
 
         public function setActive($active) {
@@ -79,11 +87,18 @@
             // have the proper border radius since they are actually in a group.
             $content = '<a style="border-width: 0px;" href="'.$href.'" class="'.$this->classes.'">'.$value.'</a>';
             
+            $columns_list = [];
+            foreach($this->columns as $column) {
+                $columns_list[] = '<td class="d-none">'.$record->$column.'</td>';
+            }
+            
+            $columns = implode("", $columns_list);
+            
             // Put it in the table data format
             return '
                     <tr class="p-0 '.$this->classes.'" height="51px">
                         <td class="p-0 '.$this->classes.'">'.$content.'</td>
-                        <td class="d-none">'.$record->order_id.'</td>
+                        '.$columns.'
                     </tr>';
         }
     }

@@ -14,7 +14,10 @@
             /** These are the two main modules that are used for item pages */
             $this->createItemList([
                 "type" => TYPE_EVENT,
-                "base_url" => "events/event"
+                "base_url" => "events/event",
+                "columns" => [
+                    "order_id"
+                ]
             ]);
             
             $item_content = $this->createItemContent([

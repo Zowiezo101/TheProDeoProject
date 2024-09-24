@@ -112,6 +112,7 @@
                     $list_item = new ItemListItem([
                         "data" => $record,
                         "base_url" => $this->base_url,
+                        "columns" => $this->data->columns,
                         "active" => $active]);
 
                     // Add all the items into an array
@@ -121,6 +122,13 @@
                 // Put it all together
                 $content = implode("", $list_items);
             }
+            
+            $columns_list = [];
+            foreach($this->data->columns as $column) {
+                $columns_list[] = '<th class="d-none">'.$column.'</th>';
+            }
+            
+            $columns = implode("", $columns_list);
             
             // Wrap it into a div
             return  '
@@ -135,12 +143,12 @@
                                         data-table-search="'.$search.'"
                                         data-table-page="'.$page.'"
                                         data-id="'.$this->id.'">
-                                            <thead class="d-none">
+                                            <thead class="d-none"><tr>
                                                 <!-- The name that is being displayed -->
-                                                <th>name</th>
-                                                <!-- Invisible order_id column for sorting -->
-                                                <th>order_id</th>
-                                            </thead>
+                                                <th>content</th>
+                                                <!-- Invisible columns for sorting and filtering -->
+                                                '.$columns.'
+                                            </tr></thead>
                                             <tbody class="item-group">'.$content.'</tbody>
                                     </table>
                                 </div>
