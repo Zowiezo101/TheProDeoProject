@@ -4,21 +4,19 @@
 
     class InputSlider extends Module {
         private $name;
-        private $session_val;
-        private $item_type;
+        private $session_slider_val;
+        private $session_check_val;
         
-        public function __construct($name, $item_type = null) {
+        public function __construct($name) {
             parent::__construct();
             
             // The name of this textbox
             $this->name = $name;
             
             // If there is a value stored in the session, get that value
-            $this->session_val = isset($_SESSION[$name]) ? htmlspecialchars($_SESSION[$name]) : "";
-            
-            // The item type this textbox will apply to
-            // If none is given, it applies to all
-            $this->item_type = isset($item_type) ? $item_type : "";
+            // TODO: Get the checkbox value too
+            $this->session_slider_val = isset($_SESSION["slider_$name"]) ? htmlspecialchars($_SESSION["slider_$name"]) : "";
+            $this->session_check_val = isset($_SESSION["check_$name"]) ? htmlspecialchars($_SESSION["check_$name"]) : "";
         }
         
         public function getContent() {
@@ -38,13 +36,32 @@
                             class='d-none search-field'
                             type='text' 
                             value=''
+                            onchange='onFilterChange()'
                             data-slider-id='slider_{$this->name}'
                             data-slider-tooltip-split='true'
                             data-slider-step='1'
                             data-slider-value='1'
                             data-slider-range='true'
-                            data-item-type='{$this->item_type}'
-                            data-input-type='slider' />
+                            data-type='slider'
+                            data-val='{$this->session_slider_val}' />
+                </div>
+                
+                <!-- A checkbox to include unknown values as well -->
+                
+                <div class='col-md-12'>
+                    <div class='form-check'>
+                        <input  id='{$this->name}_nan'
+                                class='form-check-input search-field'
+                                type='checkbox' 
+                                value='{$this->session_check_val}'
+                                onchange='onFilterChange()'
+                                data-type='checkbox' 
+                                checked />
+
+                        <label class='form-check-label'>
+                            TODO: Allow unknown values too:
+                        </label>
+                    </div>
                 </div>
             </div>";
             

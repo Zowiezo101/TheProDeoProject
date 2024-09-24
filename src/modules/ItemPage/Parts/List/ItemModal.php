@@ -94,6 +94,7 @@
         }
         
         public function getContent() {
+            global $dict;
             $content = '
             <!-- Modal -->
             <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
@@ -111,14 +112,11 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Apply">
-                                <span aria-hidden="true">Apply</span>
+                            <button type="button" class="btn btn-primary" onclick="onFilterChange()" data-dismiss="modal" aria-label="Apply">
+                                <span aria-hidden="true">'.$dict["database.search"].'</span>
                             </button>
-                            <button type="button" class="btn btn-outline-primary" aria-label="Reset">
-                                <span aria-hidden="true">Reset</span>
-                            </button>
-                            <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Cancel">
-                                <span aria-hidden="true">Cancel</span>
+                            <button type="button" class="btn btn-light" onclick="onFilterReset()" aria-label="Reset">
+                                <span aria-hidden="true">TODO: Reset filter</span>
                             </button>
                         </div>
                     </div>

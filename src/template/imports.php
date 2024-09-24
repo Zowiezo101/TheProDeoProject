@@ -19,11 +19,15 @@
         <!-- Accessing the database and other base functions -->
         <script src="/src/tools/database.js"></script>
         <script src="/src/tools/base.js"></script>
+        <script src="/src/tools/filter.js"></script>
         
         <!-- DataTables for all the item pages (https://datatables.net/) -->
         <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
         <script src="https://cdn.datatables.net/2.1.0/js/dataTables.bootstrap4.min.js"></script>
         <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap4.min.css" type="text/css">
+        
+        <!-- Bootstrap slider -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
 
         <!-- The translation files -->
         <script src="/locale/translation_<?= filter_input(INPUT_GET, "lang"); ?>.js"></script>
@@ -33,10 +37,6 @@
         <!-- Main Summernote library -->
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-        <?php break;
-    case "search":?>
-        <!-- Bootstrap slider -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
         <?php break;
     case "familytree":
     case "timeline":?>

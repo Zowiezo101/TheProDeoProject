@@ -5,9 +5,8 @@
     class InputSelect extends Module {
         private $name;
         private $session_val;
-        private $item_type;
         
-        public function __construct($name, $item_type = null) {
+        public function __construct($name) {
             parent::__construct();
             
             // The name of this textbox
@@ -15,10 +14,6 @@
             
             // If there is a value stored in the session, get that value
             $this->session_val = isset($_SESSION[$name]) ? htmlspecialchars($_SESSION[$name]) : "";
-            
-            // The item type this textbox will apply to
-            // If none is given, it applies to all
-            $this->item_type = isset($item_type) ? $item_type : "";
         }
         
         public function getContent() {
@@ -33,7 +28,10 @@
                     </label>
                 </div>
                 <div class='col-md-12'>
-                    <select class='custom-select search-field' id='item_{$this->name}'>
+                    <select id='item_{$this->name}'
+                            class='custom-select search-field' 
+                            data-type='select'
+                            data-val='{$this->session_chap_val}'>
                         <option selected disabled value='-1'>{$dict["search.select"]}</option>
                     </select>
                 </div>

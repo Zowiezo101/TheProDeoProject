@@ -6,21 +6,16 @@
         private $name;
         private $session_book_val;
         private $session_chap_val;
-        private $item_type;
         
-        public function __construct($name, $item_type = null) {
+        public function __construct($name) {
             parent::__construct();
             
             // The name of this textbox
             $this->name = $name;
             
             // If there is a value stored in the session, get that value
-            $this->session_book_val = isset($_SESSION["book_$name"]) ? htmlspecialchars($_SESSION["book_$name"]) : "";
-            $this->session_chap_val = isset($_SESSION["chap_$name"]) ? htmlspecialchars($_SESSION["chap_$name"]) : "";
-            
-            // The item type this textbox will apply to
-            // If none is given, it applies to all
-            $this->item_type = isset($item_type) ? $item_type : "";
+            $this->session_book_val = isset($_SESSION["book_{$name}"]) ? htmlspecialchars($_SESSION["book_{$name}"]) : "";
+            $this->session_chap_val = isset($_SESSION["chap_{$name}"]) ? htmlspecialchars($_SESSION["chap_{$name}"]) : "";
         }
         
         public function getContent() {
@@ -39,9 +34,8 @@
                     <select id='book_{$this->name}_id'
                             class='custom-select search-field'
                             onchange='onBookChange(\"{$this->name}\")'
-                            data-item-type='{$this->item_type}'
-                            data-input-type='select'
-                            data-item-val='{$this->session_book_val}'>
+                            data-type='select'
+                            data-val='{$this->session_book_val}'>
                         <option selected disabled value='-1'>{$dict["books.book"]}</option>
                         <!-- Filled in later -->
                     </select>
@@ -50,9 +44,8 @@
                 <div class='col-md-6'>
                     <select id='book_{$this->name}_chap'
                             class='custom-select search-field'
-                            data-item-type='{$this->item_type}'
-                            data-input-type='select'
-                            data-item-val='{$this->session_chap_val}'>
+                            data-type='book'
+                            data-val='{$this->session_chap_val}'>
                         <option selected disabled value='-1'>{$dict["books.chapter"]}</option>
                         <!-- Filled in later -->
                     </select>

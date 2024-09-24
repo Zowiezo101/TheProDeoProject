@@ -217,50 +217,5 @@ $(function() {
                 scrollTop: $("#item_content").offset().top
             }, 2000);
         }
-        
-	    var columns = [];
-	    $("#item_list th").each((idx, el) => {
-	        var td = $(el);
-
-	        columns.push({
-	            name: td.text(),
-	            visible: td.hasClass("d-none") === false
-	        });
-	    });
-	
-        // Set the dataTable to be able to sort and change pages
-        table = $("#item_list").DataTable({
-            
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottomStart: null,
-                bottomEnd: null
-            },
-            language: {
-                // This is the only message from dataTables the user should see
-                // Make sure it's translated in the selected language
-                zeroRecords: dict["database.no_results"]
-            },
-            
-            columns: columns,
-            order: [1, "asc"]
-        });
-        
-        
-        // Setting the sorting type
-        if ($("#item_list").data("table-sort")) {
-            setSort($("#item_list").data("table-sort"));
-        }
-        
-        // Adding the saved search term
-        if ($("#item_list").data("table-search")) {
-            setSearch($("#item_list").data("table-search"));
-        }
-        
-        // Setting the saved page
-        if ($("#item_list").data("table-page")) {
-            setPage($("#item_list").data("table-page"));
-        }
     }
 });

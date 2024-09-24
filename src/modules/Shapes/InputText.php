@@ -5,9 +5,8 @@
     class InputText extends Module {
         private $name;
         private $session_val;
-        private $item_type;
         
-        public function __construct($name, $item_type = null) {
+        public function __construct($name) {
             parent::__construct();
             
             // The name of this textbox
@@ -15,10 +14,6 @@
             
             // If there is a value stored in the session, get that value
             $this->session_val = isset($_SESSION[$name]) ? htmlspecialchars($_SESSION[$name]) : "";
-            
-            // The item type this textbox will apply to
-            // If none is given, it applies to all
-            $this->item_type = isset($item_type) ? $item_type : "";
         }
         
         public function getContent() {
@@ -39,8 +34,8 @@
                             type='text' 
                             value='{$this->session_val}'
                             placeholder='{$dict["database.search"]}' 
-                            data-item-type='{$this->item_type}'
-                            data-input-type='text' />
+                            onkeyup='onTextChange(\"{$this->name}\")'
+                            data-type='text' />
                 </div>
             </div>";
             
