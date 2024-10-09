@@ -1,3 +1,6 @@
 [submodule "web"]
 	path = web
 	url = https://github.com/ProDeoProductions/ProDeoWebsite
+[submodule "database"]
+	path = database
+	url = https://github.com/ProDeoProductions/ProDeoDatabase
