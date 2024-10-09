@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * This is an example file for settings.conf. The file will be used by the website and Docker to take credentials from.
+ */
+
+// Database (These credentials are set locally on your computer)
+$db_username = "root";
+$db_password = "12345";
+$db_database = "bible";
+
+// PHP Mailer
+$email_host = "smtp.hostinger.com";
+$email_user = "info@prodeodatabase.com";
+$email_pass = "{Sssshhh, this is secret!}";
+
+$API_key = "{API KEY for Google Maps}";
+
+?>
