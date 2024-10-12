@@ -1,5 +1,0 @@
-[12-Oct-2024 09:08:54 UTC] Xdebug: [Step Debug] Could not connect to debugging client. Tried: host.docker.internal:9003 (through xdebug.client_host/xdebug.client_port).
-[12-Oct-2024 09:08:54 UTC] Xdebug: [Step Debug] Could not connect to debugging client. Tried: host.docker.internal:9003 (through xdebug.client_host/xdebug.client_port).
-[12-Oct-2024 09:08:54 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/index.php:5) in /var/www/src/template/init.php on line 51
-[12-Oct-2024 09:08:54 UTC] Xdebug: [Step Debug] Could not connect to debugging client. Tried: host.docker.internal:9003 (through xdebug.client_host/xdebug.client_port).
-[12-Oct-2024 09:08:54 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/index.php:5) in /var/www/src/template/init.php on line 51

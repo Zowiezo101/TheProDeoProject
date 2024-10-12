@@ -1,3 +1,0 @@
-localhost:80 172.18.0.1 - - [12/Oct/2024:09:08:54 +0000] "GET / HTTP/1.1" 200 405 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
-localhost:80 172.18.0.1 - - [12/Oct/2024:09:08:54 +0000] "GET /home HTTP/1.1" 200 569 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
-localhost:80 172.18.0.1 - - [12/Oct/2024:09:08:54 +0000] "GET /favicon.ico HTTP/1.1" 200 569 "http://localhost/home" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
