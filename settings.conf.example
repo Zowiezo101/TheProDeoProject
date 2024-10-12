@@ -4,9 +4,9 @@
  * This is an example file for settings.conf. The file will be used by the website and Docker to take credentials from.
  */
 
-// Database (These credentials are set locally on your computer)
-$db_username = "root";
-$db_password = "12345";
+// Database
+$db_username = $_ENV["MYSQL_USER"];
+$db_password = $_ENV["MYSQL_PASSWORD"];
 $db_database = "bible";
 
 // PHP Mailer

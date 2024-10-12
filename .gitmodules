@@ -2,5 +2,5 @@
 	path = web
 	url = https://github.com/ProDeoProductions/ProDeoWebsite
 [submodule "database"]
-	path = database
+	path = config/initdb
 	url = https://github.com/ProDeoProductions/ProDeoDatabase

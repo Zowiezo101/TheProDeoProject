@@ -1,71 +1,130 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
-
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 
 services:
-# The first service or container, is the website itself. In the Dockerfile
-# we've told Docker to create an image with PHP 8.3 on an Apache server
-  prodeo-website:
+
+  # This is the container for the Apache server
+  web:
+    # The location of the Dockerfile
     build:
-      context: ./web
-    depends_on:
-      - prodeo-database
-    ports:
-      - 3000:3000
-    develop:
-      watch:
-#        - path: ./app/package.json
-#          action: rebuild
-        - path: ./web
-          target: /var/www
-          action: sync
-
-# TODO: Get the ports correct
+      context: './bin/php'
       
-  prodeo-database:
-    image: mysql
-    volumes: 
-      - database:/data/db
+    # The name for this container
+    container_name: "prodeo-webserver"
+    
+    # If anything goes wrong, restart the web server
+    restart: "always"
+    
+    # Using both port 80 on the host and the container
     ports:
-      - 3080:3080
-
-# The commented out section below is an example of how to define a PostgreSQL
-# database that your application can use. `depends_on` tells Docker Compose to
-# start the database before your application. The `db-data` volume persists the
-# database data between container restarts. The `db-password` secret is used
-# to set the database password. You must create `db/password.txt` and add
-# a password of your choosing to it before running `docker-compose up`.
-#     depends_on:
-#       db:
-#         condition: service_healthy
-#   db:
-#     image: postgres
-#     restart: always
-#     user: postgres
-#     secrets:
-#       - db-password
-#     volumes:
-#       - db-data:/var/lib/postgresql/data
-#     environment:
-#       - POSTGRES_DB=example
-#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-#     expose:
-#       - 5432
-#     healthcheck:
-#       test: [ "CMD", "pg_isready" ]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-
-volumes:
+      - "80:80"
+      
+    # We want the database to be started before the server can start
+    depends_on:
+      - database
+      
+    volumes:
+      # The 'web' directory will be mapped to the container directory "/var/www"
+      - ./web:/var/www
+      - ./settings.conf:/var/settings.conf
+      
+      # These are config files mapped to the VMs config files
+      - ./config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./config/vhosts:/etc/apache2/sites-enabled
+      
+      # These are log directories mapped to the VMs log directories
+      - ./logs/apache2:/var/log/apache2
+      - ./logs/xdebug:/var/log/xdebug
+      
+    environment:
+      # Settings for the Apache webserver
+      APACHE_DOCUMENT_ROOT: /var/www
+      
+      # Settings for phpMyAdmin
+      PMA_PORT: 8080
+      
+      # Settings for the MySQL database
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: bible
+      HOST_MACHINE_MYSQL_PORT: 3306
+      
+      # Settings for XDEBUG
+      XDEBUG_CONFIG: "client_host=host.docker.internal remote_port=9003"
+      
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      
+  # This is the container for the MySQL database
   database:
-# secrets:
-#   db-password:
-#     file: db/password.txt
+    # The location of the Dockerfile
+    build:
+      context: "./bin/mysql"
+      
+    # The name for this container
+    container_name: "prodeo-database"
+    
+    # If anything goes wrong, restart the database
+    restart: "always"
+    
+    # The database port
+    ports:
+      - "3306:3306"
+      
+    volumes:      
+      # This allows the database to be initialized with our sql files
+      - ./config/initdb:/docker-entrypoint-initdb.d
+      
+      # The 'database' directory will be mapped to the container directory "/var/lib/mysql"
+      - ./database:/var/lib/mysql
+      
+      # This is a log directory mapped to the VMs log directory
+      - ./logs/mysql:/var/log
+    
+    environment:
+      # Some environment variables to log in to the database
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: bible
+      
+  # This is the container for phpMyAdmin
+  phpmyadmin:
+    # The location of the Dockerfile
+    build:
+      context: "./bin/pma"
+      
+    # The name for this container
+    container_name: "prodeo-phpmyadmin"
+    
+    # We need the database, but don't have to wait for it to be initialized
+    links:
+      - database
+      
+    environment:
+      # Settings for phpMyAdmin
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: 12345
+      
+      # Settings for the MySQL database
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      
+      # Settings for limits
+      UPLOAD_LIMIT: 512M
+      MEMORY_LIMIT: 512M
+    
+    # Using port 8080 on the host and port 80 on the container
+    ports:
+      - "8080:80"
+      
+    volumes:      
+      # This is a config file mapped to the VMs config files
+      - ./config/php/php.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
+      
+      # This is a log directory mapped to the VMs log directory
+      - ./logs/php:/var/log/apache2
+    
 
