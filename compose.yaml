@@ -7,6 +7,9 @@ services:
     build:
       context: './bin/php'
       
+    # A file containing sensitive information
+    env_file: ".env"
+      
     # The name for this container
     container_name: "prodeo-webserver"
     
@@ -105,7 +108,7 @@ services:
       PMA_HOST: database
       PMA_PORT: 3306
       PMA_USER: root
-      PMA_PASSWORD: 12345
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       
       # Settings for the MySQL database
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
