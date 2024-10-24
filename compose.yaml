@@ -11,7 +11,7 @@ services:
     env_file: ".env"
       
     # The name for this container
-    container_name: "prodeo-webserver"
+    container_name: "server"
     
     # If anything goes wrong, restart the web server
     restart: "always"
@@ -64,7 +64,7 @@ services:
       context: "./bin/mysql"
       
     # The name for this container
-    container_name: "prodeo-database"
+    container_name: "database"
     
     # If anything goes wrong, restart the database
     restart: "always"
@@ -97,7 +97,7 @@ services:
       context: "./bin/pma"
       
     # The name for this container
-    container_name: "prodeo-phpmyadmin"
+    container_name: "phpmyadmin"
     
     # We need the database, but don't have to wait for it to be initialized
     links:

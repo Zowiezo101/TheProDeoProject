@@ -27,6 +27,7 @@ RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install gmp
 RUN docker-php-ext-install intl
 RUN docker-php-ext-install opcache
+RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install soap
 RUN docker-php-ext-install sockets
 RUN docker-php-ext-install sysvmsg
