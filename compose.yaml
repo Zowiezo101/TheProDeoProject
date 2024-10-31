@@ -51,9 +51,6 @@ services:
       MYSQL_DATABASE: bible
       HOST_MACHINE_MYSQL_PORT: 3306
       
-      # Settings for XDEBUG
-      XDEBUG_CONFIG: "client_host=host.docker.internal remote_port=9003"
-      
     extra_hosts:
       - "host.docker.internal:host-gateway"
       

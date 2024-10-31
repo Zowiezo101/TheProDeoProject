@@ -10,7 +10,7 @@
             "request": "launch",
             "port": 9003,
             "log": true,
-
+            "maxConnections": 2,
             "pathMappings": {
                 "/var/www": "${workspaceFolder}\\web"
             },

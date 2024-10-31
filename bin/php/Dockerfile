@@ -46,7 +46,7 @@ RUN pecl install timezonedb && \
 	docker-php-ext-enable timezonedb
 
 # Install and enable Xdebug
-RUN pecl install xdebug-3.3.1 && \
+RUN pecl install xdebug-3.3.2 && \
     docker-php-ext-enable xdebug && \
     mkdir /var/log/xdebug
 
