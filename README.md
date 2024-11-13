@@ -1,5 +1,8 @@
-This repository is only used to seperate the database SQL file from the development environment. 
-In order to start working on the Database, you also need to use the repository DatabaseHelper. 
-This second repository is used to create the development environment needed to update the Database.
+## Welcome to the Database Repository!
+This repository is used for the SQL database file. Having a whole repository for a single database file seems like overkill, but it's the easiest way to share this file between repositories without having to include the development environment as well.
 
-Read the [Wiki](https://github.com/ProDeoProductions/ProDeoDatabase/wiki) to learn more about this database, what it's used for and how to help out.
+## DatabaseHelper
+If you are planning on helping out with the database, you need to check out the [DatabaseHelper](https://github.com/ProDeoProductions/DatabaseHelper) repository instead. It also contains this repository as a sub-repository. Remember that you need to be added to the database team for write permissions to both this repository and the DatabaseHelper repository.
+
+## Wiki
+The [Wiki](https://github.com/ProDeoProductions/ProDeoDatabase/wiki) contains detailed information on the contents of the database and how it can be used to show this information to anyone who is interested. 
