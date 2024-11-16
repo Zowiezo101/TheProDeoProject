@@ -1,20 +1,8 @@
-# The ProDeo Database Website repository
-https://www.ProDeoDatabase.com
+## Welcome to the Website Repository!
+This repository is used for the source code of the website that hosts the database. The master branch of this repository, is the official version of the website as hosted on https://www.prodeodatabase.com
 
-## What is the purpose of this website?
-The website is a way to visualize information from the Bible in a clear and understandable way, using a database. I hope that it will help people understand the Bible better. More details on the database can be found [here](https://github.com/ProDeoProductions/ProDeoDatabase), but I've included a short summary of this database [further](#the-bible-database) on this page. All you need to know for now is that the website is built entirely around this database.
+## WebsiteHelper
+If you are planning on helping out with the website, you need to check out the [WebsiteHelper](https://github.com/ProDeoProductions/WebsiteHelper) repository instead. It works as the development environment of the website code. It contains both the database and website repositories as sub-repositories. Remember that you need to be added to the website team for write permissions to both this repository and the WebsiteHelper repository.
 
-It allows you to browse through the database and view details on a lot of things mentioned in the Bible. Like info on the Bible books, events, people, different locations and extras like songs and objects (I like to call those extras "Specials"). It builds timelines with the events, family trees with the people and has a worldmap to show the locations from the database. 
-
-The website also contains blogs on the homepage to keep visitors up to date on the progress of the website and database, a contact page for people to reach out for feedback and questions, and an about us page for visitors to get to know everyone better who works on the website and database.
-
-## The Bible database
-The database is the main source of information for the website. It contains all people and locations mentioned in the Bible, all the Bible books and many events that are mentioned in the Bible. There is also a list of objects, songs, and some other items.
-
-The database is still a work in progress, because there are about 3000+ people, 1000+ locations and many, many events. So a lot of information is currently still missing!
-
-## How can I contribute?
-If you like to help out with the website, you can ask to become a member of this GitHub group. Out of safety for the developers of the website, there is currently no way to directly contribute to the website without being a member. If you like to help out with the database, please go to the page of the database [here](https://github.com/ProDeoProductions/ProDeoDatabase) and read how you can help out.
-
-## Becoming a member
-If you want to become a member, please send an email to ProDeoProductions2u@gmail.com to explain how and why you would like to help. Some knowledge of programming is handy to have, but even just having someone to discuss things with is already welcome.
+## Wiki
+The [Wiki](https://github.com/ProDeoProductions/ProDeoWebsite/wiki) contains detailed information on the source code of the website and how it's used to show the database to anyone who is interested.
