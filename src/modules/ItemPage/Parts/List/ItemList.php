@@ -88,7 +88,7 @@
         
         public function getItemList() {
             // Options for the itemlist
-            $search = isset($_SESSION["search"]) ? htmlspecialchars($_SESSION["search"]) : "";
+            $search = isset($_SESSION["name"]) ? htmlspecialchars($_SESSION["name"]) : "";
             $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
             $page = isset($_SESSION["page"]) ? $_SESSION["page"] : 0;
             

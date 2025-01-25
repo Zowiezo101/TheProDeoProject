@@ -15,7 +15,7 @@
             
             // If there is a value stored in the session, get that value
             // TODO: Get the checkbox value too
-            $this->session_slider_val = isset($_SESSION["slider_$name"]) ? htmlspecialchars($_SESSION["slider_$name"]) : "";
+            $this->session_slider_val = isset($_SESSION[$name]) ? htmlspecialchars($_SESSION[$name]) : "0,0";
             $this->session_check_val = isset($_SESSION["check_$name"]) ? htmlspecialchars($_SESSION["check_$name"]) : "";
         }
         
@@ -40,10 +40,9 @@
                             data-slider-id='slider_{$this->name}'
                             data-slider-tooltip-split='true'
                             data-slider-step='1'
-                            data-slider-value='1'
+                            data-slider-value='[{$this->session_slider_val}]'
                             data-slider-range='true'
-                            data-type='slider'
-                            data-val='{$this->session_slider_val}' />
+                            data-type='slider'/>
                 </div>
                 
                 <!-- A checkbox to include unknown values as well -->
