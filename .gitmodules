@@ -1,9 +1,3 @@
-[submodule "database"]
-	path = database
-	url = https://github.com/ProDeoProductions/DatabaseHelper
-[submodule "website"]
-	path = website
-	url = https://github.com/ProDeoProductions/WebsiteHelper
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/Zowiezo101/TheProDeoProject.wiki
