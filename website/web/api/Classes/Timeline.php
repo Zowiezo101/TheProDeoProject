@@ -4,46 +4,6 @@
 
     class Timeline extends Event {
         
-        protected function getReadPageQuery() {
-            // The translated table name
-            $table = $this->getTable();
-
-            // Query parameters
-            $query_params = [
-                ":page_start" => [self::PAGE_SIZE * $this->page, \PDO::PARAM_INT],
-                ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
-            ];
-
-            // Parts of the query
-            $where_sql = $this->getWhereQuery($query_params);
-            $sort_sql = $this->getSortQuery();
-
-            // Query string (where parameters will be plugged in)
-            $query_string = "
-                SELECT * FROM (
-                    SELECT * FROM (
-                        SELECT -999 AS id, 
-                        'timeline.global' as name) AS e1
-                    UNION ALL
-                    SELECT * FROM (
-                        SELECT
-                            i.id, i.name
-                        FROM
-                            {$table} i
-                        {$where_sql}
-                        ORDER BY
-                            {$sort_sql} ) AS e2
-                ) AS e
-                LIMIT
-                    :page_start, :page_size";
-
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ];            
-            return $query;
-        }
-        
         protected function getReadOneQuery() {
             $id = $this->getId();
         

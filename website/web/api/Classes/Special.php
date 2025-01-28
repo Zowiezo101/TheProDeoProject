@@ -37,73 +37,11 @@
                 Link::SPECIALS_TO_EVENTS,
                 Link::SPECIALS_TO_NOTES
             ]);
+            
+            // The following options are returned for the item type Special:
+            // - All special types
+            $this->setOptions([
+                Options::SPECIAL_TYPES,
+            ]);
         }
-    
-//        // search products
-//        // TODO:
-//        function search($filters){
-//            // utilities
-//            $utilities = new utilities();
-//            $params = $utilities->getParams($this->table_name, $filters, $this->conn);
-//
-//            // If there are any types available, do these first!
-//            $types = null;
-//            if(array_key_exists("types", $params)) {
-//                $types = array();
-//
-//                foreach($params["types"] as $type) {
-//                    $types[$type] = array();
-//
-//                    $query = "SELECT
-//                                type_id, type_name
-//                            FROM
-//                                ".$type;
-//
-//                    // prepare query statement
-//                    $stmt = $this->conn->prepare($query);
-//
-//                    // execute query
-//                    $stmt->execute();
-//
-//                    // The amount of results
-//                    $num = strval($stmt->rowCount());
-//
-//                    // get retrieved data
-//                    $types[$type] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//                    $types[$type][] = ["type_id" => $num, "type_name" => "search.all"];
-//                }
-//            }
-//
-//            // select all query
-//            $query = "SELECT
-//                        " . $params["columns"] . "
-//                    FROM
-//                        " . $this->table . " s";
-//
-//            if (strpos($params["columns"], "type") !== false) {
-//                // We need this extra table when gender is needed
-//                $query .= 
-//                    " LEFT JOIN " . $this->table_type . " as it
-//                        ON it.type_id = s.type
-//                    ";
-//            }
-//
-//            $query .= $params["filters"] . "
-//                    ORDER BY
-//                        s.order_id ASC";
-//
-//            // prepare query statement
-//            $stmt = $this->conn->prepare($query);
-//
-//            // bind
-//            $i = 1;
-//            foreach($params["values"] as $value) {
-//                $stmt->bindValue($i++, $value);
-//            }
-//
-//            // execute query
-//            $stmt->execute();
-//
-//            return [$stmt, $types];
-//        }
     }

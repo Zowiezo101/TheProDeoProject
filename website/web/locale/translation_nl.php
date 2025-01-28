@@ -187,6 +187,7 @@ $dict = array(
 	"books.book"=>"Bijbelboek",
 	"books.chapter"=>"Hoofdstuk",
 	"books.verse"=>"Vers",
+	"search.info"=>"Uitleg",
 	"search.specific_for"=>"Specifiek zoeken voor:",
 	"search.select"=>"Selecteer optie",
 	"search.none"=>"Geen",

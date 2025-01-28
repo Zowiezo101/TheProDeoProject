@@ -4,6 +4,7 @@
     use Classes\Database as Database;
     use Classes\Message as Message;
     use Classes\Link as Link;
+    use Classes\Options as Options;
 
     class Item {
         
@@ -11,17 +12,17 @@
         protected $debug = false;
         
         // Some default values
-        private const DEFAULT_LANG = "nl";
-        protected const PAGE_SIZE = 10;
+        protected const DEFAULT_LANG = "nl";
         
         // Other classes that are used
-        private $database;
-        private $link;
-        private $message;
+        protected $database;
+        protected $message;
+        protected $link;
+        protected $options;
         
         // Actions
-        private $action;
-        private $action_success;
+        protected $action;
+        protected $action_success;
         
         // The actions that are supported for this item
         public const ACTION_CREATE = "create";
@@ -30,25 +31,17 @@
         public const ACTION_READ_ONE = "read_one";
         public const ACTION_READ_ALL = "read_all";
         public const ACTION_READ_MAPS = "read_maps";
-        public const ACTION_READ_PAGE = "read_page";
-        public const ACTION_SEARCH_OPTIONS = "search_options";
-        public const ACTION_SEARCH_RESULTS = "search_results";
         
         // Parameters
         public const OPTIONAL_PARAMS = "optional";
         public const REQUIRED_PARAMS = "required";
         
-        // Some paraneters used by multiple item types
-        protected $id;
-        protected $sort;
-        protected $filter;
-        protected $page;
+        // The array to store the parameters in
+        protected $parameters = [];
         
         // Some filters used by multiple item types
-        protected const FILTER_ID    = ["id" => FILTER_VALIDATE_INT];
-        protected const FILTER_SORT    = ["sort" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_FILTER = ["filter" => FILTER_SANITIZE_SPECIAL_CHARS];
-        protected const FILTER_PAGE  = ["page" => FILTER_VALIDATE_INT];
+        protected const FILTER_ID      = ["id" => FILTER_VALIDATE_INT];
+        protected const FILTER_OPTIONS = ["options" => FILTER_VALIDATE_BOOL];
         
         // A parameter that is used for every action
         private $lang;
@@ -71,17 +64,21 @@
             // get database connection
             $this->database = new Database();
             
+            // Used to return a message to the client
+            $this->message = new Message();
+            
             // Get the linking table queries
             $this->link = new Link($this);
             
-            // Used to return a message to the client
-            $this->message = new Message();
+            // Get the linking table queries
+            $this->options = new Options();
         }
         
         public function __destruct() {
             // Call their destructors as well to close database connections
             $this->database = null;
             $this->link = null;
+            $this->options = null;
         }
         
         /**
@@ -154,52 +151,52 @@
             // Execute the action
             $this->executeAction();
             
-            // Retrieve the data
-            $data = $this->message->getData();
+            // Get all columns that are available with this query
+            $columns = $this->getTableColumns();
             
-            // Insert the links
-            $this->link->insertLinks($data);
+            // Add all these columns to the results
+            $this->message->setColumns($columns);
             
-            // Update the data
-            $this->message->updateData($data);
-        }
-        
-        public function readPage() {
-            $this->action = self::ACTION_READ_PAGE;
+            // When doing a read all, search options can be added as well
+            // These options are returned and can be used for a search page
+            // The desired search options are set in the item classes 
+            // (Book, Event, etc)
+            if (isset($this->parameters["options"]) && 
+                     ($this->parameters["options"] !== false)) {
+                
+                // Get the options
+                $options = $this->options->getOptions();
             
-            // Succefully reading an item should return code '200'
-            $this->action_success = Message::SUCCESS_READ;
+                // Insert the options
+                $this->message->setOptions($options);
+            }
             
-            // Execute the action
-            $this->executeAction();
             
-            // Get the paging and add it to the message
-            $paging = $this->getPaging();
-            $this->message->setPaging($paging);
+            // TODO: This part needs to use AKA table, order by bible location and 
+            // get the highest value for end and the lowest value for start
+            
+    
+//            if (strpos($params["columns"], $utilities->location_aka) !== false) {
+//                $table = $utilities->getTable($this->base->table_l2l);
+//
+//                // We need this extra table when AKA is needed
+//                $query .= 
+//                    "LEFT JOIN " . $table . " as location_to_aka
+//                        ON location_to_aka.location_id = l.id 
+//                        AND location_to_aka.location_name LIKE ?
+//                    ";
+//            }
+//            if (strpos($params["columns"], "type") !== false) {
+//                // We need this extra table when gender is needed
+//                $query .= 
+//                    "LEFT JOIN " . $this->table_type . " as it
+//                        ON it.type_id = l.type
+//                    ";
+//            }
         }
         
         public function readMaps() {
             $this->action = self::ACTION_READ_MAPS;
-            
-            // Succefully reading an item should return code '200'
-            $this->action_success = Message::SUCCESS_READ;
-            
-            // Execute the action
-            $this->executeAction();
-        }
-        
-        public function searchOptions() {
-            $this->action = self::ACTION_SEARCH_OPTIONS;
-            
-            // Succefully reading an item should return code '200'
-            $this->action_success = Message::SUCCESS_READ;
-            
-            // Execute the action
-            $this->executeAction();
-        }
-        
-        public function searchResults() {
-            $this->action = self::ACTION_SEARCH_RESULTS;
             
             // Succefully reading an item should return code '200'
             $this->action_success = Message::SUCCESS_READ;
@@ -214,7 +211,7 @@
          * for the client. In case of error, it prepares an error message
          * @param type $query
          */
-        private function executeAction() {
+        protected function executeAction() {
             // Check the parameters
             $filter = $this->getFilter();
             if ($this->checkParameters($filter)) {  
@@ -249,9 +246,6 @@
          * - ReadOne
          * - ReadAll
          * - ReadMaps
-         * - ReadPage
-         * - SearchOptions
-         * - SearchResults
          */
         private function getQuery() {
             $query = [
@@ -284,18 +278,6 @@
                 case self::ACTION_READ_MAPS:
                     $query = $this->getReadMapsQuery();
                     break;
-                
-                case self::ACTION_READ_PAGE:
-                    $query = $this->getReadPageQuery();
-                    break;
-                
-                case self::ACTION_SEARCH_OPTIONS:
-                    $query = $this->getSearchOptionsQuery();
-                    break;
-                
-                case self::ACTION_SEARCH_RESULTS:
-                    $query = $this->getSearchResultsQuery();
-                    break;
             }
             
             return $query;
@@ -323,27 +305,18 @@
             return $this->getEmptyQuery();
         }
         
-        protected function getReadOneQuery() {
-            /* 
-             * TODO: The global timeline query, put this in the database itself
-            if ($this->id === -999) {
-                // This is a "Global timeline" event
-                $query = "SELECT
-                        ? AS id, 'timeline.global' AS name";
-            } 
-             */
-            
+        protected function getReadOneQuery() {            
             // The translated table name
             $table = $this->getTable();
             
             // Query parameters
-            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
+            $query_params = [":id" => [$this->parameters["id"], \PDO::PARAM_INT]];
             
             // Query string (where parameters will be plugged in)
             $query_string = "SELECT
                     {$this->getColumnQuery()}
                 FROM
-                    " . $table . " i
+                    {$table} i
                 WHERE
                     i.id = :id
                 LIMIT
@@ -356,9 +329,30 @@
             return $query;
         }
         
-        protected function getReadAllQuery() {
-            // Too complex to have standard functions for
-            return $this->getEmptyQuery();
+        protected function getReadAllQuery() {      
+            // The translated table name
+            $table = $this->getTable();
+            
+            // Query parameters
+            $query_params = [];
+            
+            // Parts of the query
+            $where_sql = $this->getWhereQuery();
+            
+            // Query string (where parameters will be plugged in)
+            $query_string = "SELECT
+                    {$this->getColumnQuery()}
+                FROM
+                    {$table} i
+                {$where_sql}
+                ORDER BY
+                    i.order_id ASC";
+            
+            $query = [
+                "params" => $query_params,
+                "string" => $query_string
+            ];
+            return $query;
         }
         
         protected function getReadMapsQuery() {
@@ -366,55 +360,8 @@
             return $this->getEmptyQuery();
         }
         
-        protected function getReadPageQuery() {
-            // The translated table name
-            $table = $this->getTable();
-            
-            // Query parameters
-            $query_params = [
-                ":page_start" => [self::PAGE_SIZE * $this->page, \PDO::PARAM_INT],
-                ":page_size" => [self::PAGE_SIZE, \PDO::PARAM_INT]
-            ];
-            
-            // Parts of the query
-            $where_sql = $this->getWhereQuery($query_params);
-            $sort_sql = $this->getSortQuery();
-
-            // Query string (where parameters will be plugged in)
-            $query_string = "SELECT
-                    i.id, i.name
-                FROM
-                    {$table} i
-                {$where_sql}
-                ORDER BY
-                    {$sort_sql}
-                LIMIT
-                    :page_start, :page_size";
-            
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ];            
-            return $query;
-        }
-        
-        protected function getSearchOptionsQuery() {
-            return [
-                "string" => "",
-                "params" => ""
-            ];
-        }
-        
-        protected function getSearchResultsQuery() {
-            return [
-                "string" => "",
-                "params" => ""
-            ];
-        }
-        
         private function getColumnQuery() {
             // Get all the columns from the column table
-            // i.id, i.title, i.text, i.user, i.date
             $columns = join(",", array_map(function ($column) {
                 return "i.{$column}";
             }, $this->table_columns));
@@ -422,19 +369,19 @@
             return $columns;
         }
         
-        protected function getWhereQuery(&$query_params) {
-            $where_sql = "";
-            if (isset($this->filter) && ($this->filter !== "")) {
-                $where_sql = "WHERE name LIKE :filter";
-                $query_params[":filter"] = ['%'.$this->filter.'%', \PDO::PARAM_STR];
-            }
-            
-            return $where_sql;
+        protected function getWhereQuery() {      
+            // The where query is usually empty, but in some cases this is used
+            return "";
         }
         
         protected function getSortQuery() {
+            // Sort isn't set, give the default value
+            if (!isset($this->parameters["sort"])) {
+                $this->parameters["sort"] = "0_to_9";
+            }
+            
             // If a sort different then the default is given
-            switch($this->sort) {
+            switch($this->parameters["sort"]) {
                 case 'a_to_z':
                     $sort_sql = "i.name ASC";
                     break;
@@ -458,31 +405,6 @@
             return $sort_sql;
         }
         
-        
-        /**
-         * Get the amount of pages for this table and filter
-         * @return type
-         */
-        public function getPaging() {
-            // Query parameters
-            $query_params = [];
-            
-            // Parts of the query
-            $where_sql = $this->getWhereQuery($query_params);
-            
-            // Query string (where parameters will be plugged in)
-            $query_string = "SELECT CEILING(COUNT(*) / 10) as total_pages FROM {$this->table_name} i {$where_sql}";
-            
-            $query = [
-                "params" => $query_params,
-                "string" => $query_string
-            ]; 
-            
-            // Get the data from the database
-            $data = $this->database->getData($query);
-            return $data[0]['total_pages'];
-        }
-        
         /**
          * Send the message to the client
          */
@@ -493,6 +415,15 @@
         /**
          * These are getters and setters for different properties
          */
+        public function setOptions($options) {
+            $this->options->setOptions($options);
+        }
+        
+        private function getOptions() {
+            $options = $this->options->getOptions();
+            return $options;
+        }
+        
         public function setLinks($links) {
             $this->link->setLinks($links);
         }
@@ -530,7 +461,8 @@
         }
         
         public function getId() {
-            $id = isset($this->id) ? $this->id : null;
+            $id = isset($this->parameters["id"]) ? 
+                        $this->parameters["id"] : null;
             return $id;
         }
         
@@ -543,11 +475,22 @@
             $this->lang = $lang;
         }
         
+        public function getParameters() {
+            return $this->parameters;
+        }
+        
+        public function getTableColumns() {
+            return $this->table_columns;
+        }
+        
+        public function getTableName() {
+            return $this->table_name;
+        }
+        
         /**
          * Return the table name. In case of translations, return MySQL code
          * to request the translated version of the table and default
          * language to fall back to.
-         * @return type
          */
         public function getTable() {
             // Only if we're not using the default language 
@@ -609,7 +552,7 @@
             $body_params = (array) json_decode(file_get_contents("php://input"));
             
             // Put them together
-            $given_params = array_merge($uri_params, $body_params);
+            $given_params = array_merge($uri_params ? $uri_params : [], $body_params);
             
             // Get the required parameters and optional parameters
             $required_params = $filter[self::REQUIRED_PARAMS];
@@ -642,8 +585,9 @@
                     $result = false;
                     break;
                 } else {
-                    // Filter the parameter and make sure it's the expected type
-                    $this->$key = filter_var($given_params[$key], $required_params[$key]);
+                    // Filter the parameter and make sure it's the expected type                    
+                    // Then store the parameters so we can easily find them back
+                    $this->parameters[$key] = filter_var($given_params[$key], $required_params[$key]);
 
                     // Remove the key from the given params, as it has been checked
                     unset($given_params[$key]);
@@ -669,9 +613,12 @@
                     $this->message->setError(Message::ERROR_UNKNOWN_KEY, $key);
                     $result = false;
                     break;
+                } else if ($key === "lang") {
+                    $this->lang = filter_var($value, $optional_params[$key]);
                 } else {
                     // Filter the parameter and make sure it's the expected type
-                    $this->$key = filter_var($value, $optional_params[$key]);
+                    // Then store the parameters so we can easily find them back
+                    $this->parameters[$key] = filter_var($value, $optional_params[$key]);
                 }
             }
             
@@ -686,9 +633,6 @@
          * - ReadOne
          * - ReadAll
          * - ReadMaps
-         * - ReadPage
-         * - SearchOptions
-         * - SearchResults
          */
         private function getFilter() {
             $params = [];
@@ -717,18 +661,6 @@
                 
                 case self::ACTION_READ_MAPS:
                     $params = $this->getReadMapsFilter();
-                    break;
-                
-                case self::ACTION_READ_PAGE:
-                    $params = $this->getReadPageFilter();
-                    break;
-                
-                case self::ACTION_SEARCH_OPTIONS:
-                    $params = $this->getSearchOptionsFilter();
-                    break;
-                
-                case self::ACTION_SEARCH_RESULTS:
-                    $params = $this->getSearchResultsFilter();
                     break;
             }
             
@@ -767,8 +699,12 @@
         }
         
         protected function getReadAllFilter() {
-            // Too complex to have standard functions for
-            return $this->getEmptyFilter();
+            return [
+                self::OPTIONAL_PARAMS => array_merge(
+                    self::FILTER_OPTIONS,
+                ),
+                self::REQUIRED_PARAMS => [],
+            ];
         }
         
         protected function getReadMapsFilter() {
@@ -779,362 +715,4 @@
                 ),
             ];
         }
-        
-        protected function getReadPageFilter() {
-            return [
-                self::OPTIONAL_PARAMS => array_merge(
-                    self::FILTER_SORT,
-                    self::FILTER_FILTER,
-                ),
-                self::REQUIRED_PARAMS => array_merge(
-                    self::FILTER_PAGE,
-                ),
-            ];
-        }
-        
-        protected function getSearchOptionsFilter() {
-            return [
-                self::OPTIONAL_PARAMS => [],
-                self::REQUIRED_PARAMS => [],
-            ];
-        }
-        
-        protected function getSearchResultsFilter() {
-            return [
-                self::OPTIONAL_PARAMS => [],
-                self::REQUIRED_PARAMS => [],
-            ];
-        }
-        
-        /*
-         * public function getParams($type, $filters, $conn) {
-        // The filters to be applied on the database
-        $item_columns = array();
-        $item_filters = array();
-        $item_values = array();
-        $item_params["filters"] = array();
-        $item_params["values"] = array();
-        $item_params["columns"] = array();
-        
-        // Always have these columns
-        $item_columns[] = "name";
-        switch($type) {
-            case "books":
-                $item_columns[] = "num_chapters";
-                $item_columns[] = "id";
-                break;
-            
-            case "events":
-                $item_columns[] = "min_book_id as book_start_id";
-                $item_columns[] = "min_book_chap as book_start_chap";
-                $item_columns[] = "min_book_vers as book_start_vers";
-                $item_columns[] = "max_book_id as book_end_id";
-                $item_columns[] = "max_book_chap as book_end_chap";
-                $item_columns[] = "max_book_vers as book_end_vers";
-                $item_columns[] = "e.id";
-                break;
-            
-            case "peoples":
-                $item_columns[] = "book_start_id";
-                $item_columns[] = "book_start_chap";
-                $item_columns[] = "book_start_vers";
-                $item_columns[] = "book_end_id";
-                $item_columns[] = "book_end_chap";
-                $item_columns[] = "book_end_vers";
-                $item_columns[] = "p.id";
-                break;
-            
-            case "locations":
-                $item_columns[] = "book_start_id";
-                $item_columns[] = "book_start_chap";
-                $item_columns[] = "book_start_vers";
-                $item_columns[] = "book_end_id";
-                $item_columns[] = "book_end_chap";
-                $item_columns[] = "book_end_vers";
-                $item_columns[] = "l.id";
-                break;
-            
-            case "specials":
-                $item_columns[] = "book_start_id";
-                $item_columns[] = "book_start_chap";
-                $item_columns[] = "book_start_vers";
-                $item_columns[] = "book_end_id";
-                $item_columns[] = "book_end_chap";
-                $item_columns[] = "book_end_vers";
-                $item_columns[] = "s.id";
-                break;
-        }
-        
-        $json_filters = json_decode($filters);
-        if (json_last_error() === JSON_ERROR_NONE && is_object($json_filters)) {
-            if(property_exists($json_filters, 'sliders')) {
-                $item_columns = [];
-                
-                if(in_array('chapters', $json_filters->sliders)) {
-                    // Get the maximum and minimum chapters
-                    $item_columns[] = "max(num_chapters) as max_num_chapters";
-                    $item_columns[] = "min(num_chapters) as min_num_chapters";
-                }
-                if(in_array('age', $json_filters->sliders)) {
-                    // Get the maximum and minimum chapters
-                    $item_columns[] = "max(age) as max_age";
-                    $item_columns[] = "min(age) as min_age";
-                }
-                if(in_array('parent_age', $json_filters->sliders)) {
-                    // Get the maximum and minimum chapters
-                    $item_columns[] = "greatest(max(father_age), max(mother_age)) as max_parent_age";
-                    $item_columns[] = "greatest(min(father_age), min(mother_age)) as min_parent_age";
-                }
-            } 
-            
-            if(property_exists($json_filters, 'select')) {
-                $item_types = [];
-                
-                if(in_array('gender', $json_filters->select)) {
-                    // Get the gender types
-                    $item_types[] = "type_gender";
-                }
-                if(in_array('tribe', $json_filters->select)) {
-                    // Get the tribe types
-                    $item_types[] = "type_tribe";
-                }
-                if(in_array('type_location', $json_filters->select)) {
-                    // Get the location types
-                    $item_types[] = "type_location";
-                }
-                if(in_array('type_special', $json_filters->select)) {
-                    // Get the special types
-                    $item_types[] = "type_special";
-                }
-                $item_params["types"] = $item_types;
-            }
-        
-                if(property_exists($json_filters, 'name')) {
-                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
-                    if ($type === "peoples") {
-                        // Two extra columns, one for the AKA and one
-                        // to let us known wether we have a hit because aka
-                        $item_columns[] = "if(".$this->people_aka." LIKE ?, ".$this->people_aka.", '') AS aka";
-                        
-                        // One updated filter WITH aka
-                        $item_filters[] = "(name LIKE ? OR ".$this->people_aka." LIKE ?)";
-                        
-                        // Three extra values
-                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
-                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
-                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
-                    } elseif ($type === "locations") {
-                        // Two extra columns, one for the AKA and one
-                        // to let us known wether we have a hit because aka
-                        $item_columns[] = "if(".$this->location_aka." LIKE ?, ".$this->location_aka.", '') AS aka";
-                        
-                        // One updated filter WITH aka
-                        $item_filters[] = "(name LIKE ? OR ".$this->location_aka." LIKE ?)";
-                        
-                        // Three extra values
-                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
-                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
-                        $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->name))."%";
-                    } else {
-                        $item_filters[] = "name LIKE ?";
-                    }
-                }
-                if(property_exists($json_filters, 'meaning_name')) {
-                    $item_filters[] = "meaning_name LIKE ?";
-                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->meaning_name))."%";
-                    $item_columns[] = "meaning_name";
-                }
-                if(property_exists($json_filters, 'descr')) {
-                    $item_filters[] = "descr LIKE ?";
-                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->descr))."%";
-                    $item_columns[] = "descr";
-                }
-                if(property_exists($json_filters, 'num_chapters')) {
-                    $item_filters[] = "num_chapters BETWEEN ? AND ?";
-                    
-                    // The two chapters to set between
-                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->num_chapters)), 2);
-                    $item_values[] = $items[0];
-                    $item_values[] = $items[1];
-                }
-                if(property_exists($json_filters, 'length')) {
-                    $item_filters[] = "length LIKE ?";
-                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->length))."%";
-                    $item_columns[] = "length";
-                }
-                if(property_exists($json_filters, 'date')) {
-                    $item_filters[] = "date LIKE ?";
-                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->date))."%";
-                    $item_columns[] = "date";
-                }
-                if(property_exists($json_filters, 'age')) {
-                    $item_filters[] = "age BETWEEN ? AND ?";
-                    
-                    // The two lengths to set between
-                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->age)), 2);
-                    $item_values[] = $items[0];
-                    $item_values[] = $items[1];
-                    $item_columns[] = "age";
-                }
-                if(property_exists($json_filters, 'parent_age')) {
-                    $item_filters[] = "(father_age BETWEEN ? AND ? OR mother_age BETWEEN ? AND ?)";
-                    
-                    // The two lengths to set between
-                    $items = explode('-', htmlspecialchars(strip_tags($json_filters->parent_age)), 2);
-                    $item_values[] = $items[0];
-                    $item_values[] = $items[1];
-                    $item_values[] = $items[0];
-                    $item_values[] = $items[1];
-                    $item_columns[] = "father_age";
-                    $item_columns[] = "mother_age";
-                }
-                if(property_exists($json_filters, 'gender')) {
-                    $item_filters[] = "gender = ?";
-                    $item_values[] = htmlspecialchars(strip_tags($json_filters->gender));
-                    $item_columns[] = "g.type_name as gender";
-                    
-                    $query = "SELECT
-                                type_id
-                            FROM
-                                " .$this->gender_type;
-                    
-                    // prepare query statement
-                    $stmt = $conn->prepare($query);
-                    
-                    // execute query
-                    $stmt->execute();
-                    
-                    // The amount of results
-                    $num = strval($stmt->rowCount());
-                    
-                    if ($json_filters->gender == $num) {
-                        $genders = implode(", ", range(0, $num - 1, 1));
-
-                        // We want all genders
-                        array_pop($item_filters);
-                        array_pop($item_values);
-                        $item_filters[] = "gender in (".$genders.")";
-                    }
-                }
-                if(property_exists($json_filters, 'tribe')) {
-                    $item_filters[] = "tribe = ?";
-                    $item_values[] = htmlspecialchars(strip_tags($json_filters->tribe));
-                    $item_columns[] = "t.type_name as tribe";
-                    
-                    $query = "SELECT
-                                type_id
-                            FROM
-                                " .$this->tribe_type;
-                    
-                    // prepare query statement
-                    $stmt = $conn->prepare($query);
-                    
-                    // execute query
-                    $stmt->execute();
-                    
-                    // The amount of results
-                    $num = strval($stmt->rowCount());
-                    
-                    if ($json_filters->tribe == $num) {
-                        $tribes = implode(", ", range(0, $num - 1, 1));
-
-                        // We want all tribes
-                        array_pop($item_filters);
-                        array_pop($item_values);
-                        $item_filters[] = "tribe in (".$tribes.")";
-                    }
-                }
-                if(property_exists($json_filters, 'profession')) {
-                    $item_filters[] = "profession LIKE ?";
-                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->profession))."%";
-                    $item_columns[] = "profession";
-                }
-                if(property_exists($json_filters, 'nationality')) {
-                    $item_filters[] = "nationality LIKE ?";
-                    $item_values[] = "%".htmlspecialchars(strip_tags($json_filters->nationality))."%";
-                    $item_columns[] = "nationality";
-                }
-                if(property_exists($json_filters, 'type')) {
-                    $item_filters[] = "type = ?";
-                    $item_values[] = htmlspecialchars(strip_tags($json_filters->type));
-                    $item_columns[] = "it.type_name as type";
-
-                    if ($type == "locations") {
-                        $query = "SELECT
-                                    type_id
-                                FROM
-                                    " .$this->location_type;
-
-                        // prepare query statement
-                        $stmt = $conn->prepare($query);
-
-                        // execute query
-                        $stmt->execute();
-
-                        // The amount of results
-                        $num = strval($stmt->rowCount());
-
-                        if ($json_filters->type == $num) {
-                            $tribes = implode(", ", range(0, $num - 1, 1));
-
-                            // We want all types
-                            array_pop($item_filters);
-                            array_pop($item_values);
-                            $item_filters[] = "type in (".$tribes.")";
-                        }
-                    }
-
-                    if ($type == "specials") {
-                        $query = "SELECT
-                                    type_id
-                                FROM
-                                    " .$this->special_type;
-
-                        // prepare query statement
-                        $stmt = $conn->prepare($query);
-
-                        // execute query
-                        $stmt->execute();
-
-                        // The amount of results
-                        $num = strval($stmt->rowCount());
-
-                        if ($json_filters->type == $num) {
-                            $tribes = implode(", ", range(0, $num - 1, 1));
-
-                            // We want all types
-                            array_pop($item_filters);
-                            array_pop($item_values);
-                            $item_filters[] = "type in (".$tribes.")";
-                        }
-                    }
-                }
-            
-                if(property_exists($json_filters, 'start_book')) {
-                    $item_filters[] = "book_start_id >= ?";
-                    $item_values[] = htmlspecialchars(strip_tags($json_filters->start_book));
-                }
-                if(property_exists($json_filters, 'start_chap')) {
-                    $item_filters[] = "book_start_chap >= ?";
-                    $item_values[] = htmlspecialchars(strip_tags($json_filters->start_chap));
-                }
-                if(property_exists($json_filters, 'end_book')) {
-                    $item_filters[] = "book_end_id <= ?";
-                    $item_values[] = htmlspecialchars(strip_tags($json_filters->end_book));
-                }
-                if(property_exists($json_filters, 'end_chap')) {
-                    $item_filters[] = "book_end_chap <= ?";
-                    $item_values[] = htmlspecialchars(strip_tags($json_filters->end_chap));
-                }
-        }
-        
-        // Turn these arrays into strings
-        $item_params["columns"] = implode(', ', $item_columns);
-        $item_params["filters"] = implode(' AND ', $item_filters) ? 
-                        "WHERE " . implode(' AND ', $item_filters) : "";
-        $item_params["values"] = $item_values;
-        
-        return $item_params;
-    }
-         */
     }

@@ -10,6 +10,7 @@
     // It's requesting the familytree from the REST API and inserts
     // it into the DOM
     $(function(){
+        
         // The Map ID
         var map_id = $("#item_list").attr("data-id");
         

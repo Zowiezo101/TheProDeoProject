@@ -3,6 +3,7 @@
     namespace Items;
     
     use Shapes\Title;
+    use List\ItemModal;
     use Content\ItemTable;
 
     class ItemBook extends Item {
@@ -17,6 +18,19 @@
             
             $item_content = $this->createItemContent([
                 "type" => TYPE_BOOK
+            ]);
+            
+            $this->createItemModal([
+                "filters" => [
+                    [
+                        "name" => "name",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "num_chapters",
+                        "type" => ItemModal::INPUT_SLIDER
+                    ],
+                ]
             ]);
             
             /** These are Modules that are being added to the ItemContent Module */
