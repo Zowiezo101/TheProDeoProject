@@ -72,7 +72,7 @@ services:
       
     volumes:      
       # This allows the database to be initialized with our sql files
-      - ./config/initdb:/docker-entrypoint-initdb.d
+      - ../database/sql:/docker-entrypoint-initdb.d
       
       # The 'database' directory will be mapped to the container directory "/var/lib/mysql"
       - ./database:/var/lib/mysql
