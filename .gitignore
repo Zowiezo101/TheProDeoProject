@@ -1,0 +1,9 @@
+syntax: glob
+web/web.zip
+web.zip
+nbproject/private/private.xml
+.tmp.drivedownload/*.driveupload
+www.zip
+.tmp.driveupload/*
+settings.conf
+/nbproject/*
