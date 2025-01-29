@@ -19,11 +19,11 @@ The website is the tool used to visualize the database in a way that is much eas
 
 ## How to set it up
 1. Clone this repository
-2. Copy ./website/sample.env and rename the copy to .env
+2. Copy `./website/sample.env` and rename the copy to `.env`
 3. Fill in any username and password you would like to use for the database. These will be used when creating the database server for the development environment
-4. Repeat steps 2 and 3 with ./database/sample.env. The database credentials for the `./database` environment don't have to be the same as those for the `./website` environment as these databases do not communicate.
-5. go to ./website and run the command `docker compose up --build` to build the website development environment
-6. go to ./database and run the command `docker compose up --build` to build the database development environment
+4. Repeat steps 2 and 3 with `./database/sample.env`. The database credentials for the `./database` environment don't have to be the same as those for the `./website` environment as these databases do not communicate and these are two seperate environments.
+5. go to `./website` and run the command `docker compose up --build` to build the website development environment
+6. go to `./database` and run the command `docker compose up --build` to build the database development environment
 
 You now have the bare bones development set-up to start working on both projects, though you will need to do some more work to have all components working properly. 
 * For the Google Maps API on the website, you will need to generate an API key. How to do this, is explained [here](https://developers.google.com/maps/documentation/javascript/get-api-key). Without this key, the worldmap data will be loaded, but not the map.
