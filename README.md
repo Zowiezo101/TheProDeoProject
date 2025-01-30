@@ -17,18 +17,6 @@ The database contains the actual information itself. All the Bible books, people
 ### Website
 The website is the tool used to visualize the database in a way that is much easier to understand than a bunch of tables and rows. I've written some code to generate a timeline and a familytree with the data in the datbase, so it can be easily filled up and edited with more recent data.
 
-## How to set it up
-1. Clone this repository
-2. Copy `./website/sample.env` and rename the copy to `.env`
-3. Fill in any username and password you would like to use for the database. These will be used when creating the database server for the development environment
-4. Repeat steps 2 and 3 with `./database/sample.env`. The database credentials for the `./database` environment don't have to be the same as those for the `./website` environment as these databases do not communicate and these are two seperate environments.
-5. go to `./website` and run the command `docker compose up --build` to build the website development environment
-6. go to `./database` and run the command `docker compose up --build` to build the database development environment
-
-You now have the bare bones development set-up to start working on both projects, though you will need to do some more work to have all components working properly. 
-* For the Google Maps API on the website, you will need to generate an API key. How to do this, is explained [here](https://developers.google.com/maps/documentation/javascript/get-api-key). Without this key, the worldmap data will be loaded, but not the map.
-* To have the contact form working properly, you need to insert login credentials to be used for sending emails. If you have a Google account, this won't work by using your own credentials. You can create a special password [here](https://myaccount.google.com/apppasswords) to be used by PHPMailer and use smtp.gmail.com as `EMAIL_HOST`.
-
 ## Help out
 Do you want to help out or adopt the project? Please contact me! This project is really special to me and I want to be sure any contributors or possible new owners will be a good fit for this project.
 
