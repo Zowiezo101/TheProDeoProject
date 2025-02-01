@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Website with xDebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "log": true,
+            "maxConnections": 2,
+            "pathMappings": {
+                "/var/www": "${workspaceFolder}\\website\\www"
+            },
+        },
+		{
+			"name": "DatabaseHelper",
+			"type": "python"
+		}
+    ]
+}
