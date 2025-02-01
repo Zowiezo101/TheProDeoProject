@@ -1,64 +1,17 @@
 
+# Name of this set of containers
+name: database-server
+
 services:
 
-  # This is the container for the Apache server
-  web:
-    # The location of the Dockerfile
-    build:
-      context: './bin/php'
-      
-    # A file containing sensitive information
-    env_file: ".env"
-      
-    # The name for this container
-    container_name: "server"
-    
-    # If anything goes wrong, restart the web server
-    restart: "always"
-    
-    # Using both port 80 on the host and the container
-    ports:
-      - "80:80"
-      
-    # We want the database to be started before the server can start
-    depends_on:
-      - database
-      
-    volumes:
-      # The 'web' directory will be mapped to the container directory "/var/www"
-      - ./web:/var/www
-      - ./settings.conf:/var/settings.conf
-      
-      # These are config files mapped to the VMs config files
-      - ./config/php/php.ini:/usr/local/etc/php/php.ini
-      - ./config/vhosts:/etc/apache2/sites-enabled
-      
-      # These are log directories mapped to the VMs log directories
-      - ./logs/apache2:/var/log/apache2
-      - ./logs/xdebug:/var/log/xdebug
-      
-    environment:
-      # Settings for the Apache webserver
-      APACHE_DOCUMENT_ROOT: /var/www
-      
-      # Settings for phpMyAdmin
-      PMA_PORT: 8080
-      
-      # Settings for the MySQL database
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: bible
-      HOST_MACHINE_MYSQL_PORT: 3306
-      
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-      
   # This is the container for the MySQL database
   database:
     # The location of the Dockerfile
     build:
       context: "./bin/mysql"
+      
+    # A file containing sensitive information
+    env_file: ".env"
       
     # The name for this container
     container_name: "database"
@@ -111,10 +64,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      
-      # Settings for limits
-      UPLOAD_LIMIT: 512M
-      MEMORY_LIMIT: 512M
     
     # Using port 8080 on the host and port 80 on the container
     ports:
@@ -126,5 +75,3 @@ services:
       
       # This is a log directory mapped to the VMs log directory
       - ./logs/php:/var/log/apache2
-    
-

@@ -1,0 +1,35 @@
+
+# Name of this set of containers
+name: database-helper
+
+services:
+
+  # This is the container for the Python environment
+  python:
+    # The location of the Dockerfile
+    build:
+      context: "./bin/python"
+      
+    # A file containing sensitive information
+    env_file: ".env"
+      
+    # The name for this container
+    container_name: "python"
+      
+    volumes:            
+      # The 'src' directory will be mapped to the container directory "/app"
+      - ../database/src:/app
+      
+      # This is a log directory mapped to the VMs log directory
+      - ./logs/mysql:/var/log
+      
+      # This is a log directory mapped to the VMs log directory
+      # - ./logs/python:/var/log/apache2
+    
+    environment:
+      # Some environment variables to log in to the database
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: bible
+      HOST_MACHINE_MYSQL_PORT: 3306
