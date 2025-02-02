@@ -22,3 +22,6 @@ Do you want to help out or adopt the project? Please contact me! This project is
 
 ## Check the Wiki
 The Wiki contains more information on how the directory is structured, how the code works and other detailed information.
+
+## The bow on the gift wrapping
+This README is meant as the little bow on the gift wrapping of the present. I've been working on this project for over ten years with love for God, to eventually give something to the people who want to get to know Him better. I'm sad to shelf this project, but this is for my own health. It's time for me to work on something different with renewed joy and a fire in my heart. Thanks for the family and friends that have supported me all these years to get this far, and thanks to God who gave me the passion and a distraction from many difficult and hard years with this project <3.
