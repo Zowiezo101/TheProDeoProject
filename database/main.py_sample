@@ -1,0 +1,74 @@
+# Libraries and files needed to run this file:
+from src.commands import CommandHandler
+
+# All available commands:
+# prepare_translation
+# read_activities
+# read_activity_to_aka
+# read_activity_to_parent
+# read_all
+# read_blogs
+# read_books
+# read_event_to_aka
+# read_event_to_parent
+# read_events
+# read_location_to_activity
+# read_location_to_aka
+# read_locations
+# read_note_to_item
+# read_note_to_source
+# read_notes
+# read_people_to_activity
+# read_people_to_aka
+# read_people_to_location
+# read_people_to_parent
+# read_peoples
+# read_sources
+# read_special_to_activity
+# read_specials
+# read_types
+# reorder
+# write_activities
+# write_activity_to_aka
+# write_activity_to_parent
+# write_all
+# write_blogs
+# write_books
+# write_event_to_aka
+# write_event_to_parent
+# write_events
+# write_location_to_activity
+# write_location_to_aka
+# write_locations
+# write_note_to_item
+# write_note_to_source
+# write_notes
+# write_people_to_activity
+# write_people_to_aka
+# write_people_to_location
+# write_people_to_parent
+# write_peoples
+# write_sources
+# write_special_to_activity
+# write_specials
+# write_types
+
+CH = CommandHandler("EN")
+CH.execute_commands([
+    CH.read_all
+])
+
+CH = CommandHandler("NL")
+CH.execute_commands([
+    CH.read_all
+])
+
+CH = CommandHandler("EN")
+CH.execute_commands([
+    CH.write_all
+])
+
+CH = CommandHandler("NL")
+CH.execute_commands([
+    CH.write_all
+])

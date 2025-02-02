@@ -4,3 +4,4 @@ desktop.ini
 *.pyc
 docker/.env
 docker/database/
+database/main.py

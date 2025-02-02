@@ -17,11 +17,8 @@ services:
     container_name: "python"
       
     volumes:            
-      # The 'src' directory will be mapped to the container directory "/app"
-      - ../database/src:/app
-      
-      # This is a log directory mapped to the VMs log directory
-      - ./logs/mysql:/var/log
+      # The 'database' directory will be mapped to the container directory "/app"
+      - ../database:/app
       
       # This is a log directory mapped to the VMs log directory
       # - ./logs/python:/var/log/apache2
