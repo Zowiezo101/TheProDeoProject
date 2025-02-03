@@ -75,3 +75,8 @@ services:
       
       # This is a log directory mapped to the VMs log directory
       - ./logs/php:/var/log/apache2
+    
+# Needed so that the Python container can communicate with the database
+networks:
+  database-server_default:
+    driver: bridge

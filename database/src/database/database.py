@@ -1,4 +1,6 @@
 
+import os
+
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -7,7 +9,6 @@ from src.database.database_empty import DatabaseEmpty
 from src.database.database_get import DatabaseGet
 from src.database.database_copy import DatabaseCopy
 from src.database.database_merge import DatabaseMerge
-from src.settings import db_username, db_password
 
 DEFAULT_LANG = "nl"
 
@@ -39,9 +40,9 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
 
         # Connect to the database
         try:
-            conn = self.conn.connect(host="localhost",
-                                     user=db_username,
-                                     passwd=db_password,
+            conn = self.conn.connect(host="database",
+                                     user=os.environ["MYSQL_USER"],
+                                     passwd=os.environ["MYSQL_PASSWORD"],
                                      db="bible")
         except self.conn.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -57,8 +58,8 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
     def init_database(self):
         # This database doesn't exist yet, initialize it for use
         conn = self.conn.connect(host="localhost",
-                                 user=db_username,
-                                 passwd=db_password)
+                                 user=os.environ["MYSQL_USER"],
+                                 passwd=os.environ["MYSQL_PASSWORD"])
         cursor = conn.cursor()
         
         # We have a backup in the SQL folder

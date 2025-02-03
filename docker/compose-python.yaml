@@ -30,3 +30,11 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: bible
       HOST_MACHINE_MYSQL_PORT: 3306
+        
+    networks:
+      - database-server_default
+      
+# We need this network to communicate with the database
+networks:
+  database-server_default:
+    external: true

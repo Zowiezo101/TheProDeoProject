@@ -186,16 +186,16 @@ class Activities (ItemBase):
         files = get_files(file_path)
         for file in files:
             # Get file_id
-            page, file_id, *name = file.replace(".txt", "").split('_')
+            event, file_id, *name = file.replace(".txt", "").split('_')
 
             # Only return with the file for this event_id
             if file_id == self.event_id:
-                file_name = f"activities/" + "_".join([page, file_id, *name])
+                file_name = f"activities/" + "_".join([event, file_id, *name])
                 break
 
         if file_name == "":
             # This file does not exist yet
-            file_name = f"activities/page_{self.event_id}"
+            file_name = f"activities/event_{self.event_id}"
 
         return file_name
 

@@ -1,5 +1,4 @@
 
-import src.settings
 import mysql.connector
 import subprocess
 from mysql.connector import errorcode
@@ -17,8 +16,8 @@ class DatabaseExt:
         self.dba_dump = ""
 
         # Local database
-        self.db_username = src.settings.db_username
-        self.db_password = src.settings.db_password
+        self.db_username = os.environ["MYSQL_USER"]
+        self.db_password = os.environ["MYSQL_PASSWORD"]
 
         if hasattr(src.settings, "dba_host"):
             self.dba_host = src.settings.dba_host
