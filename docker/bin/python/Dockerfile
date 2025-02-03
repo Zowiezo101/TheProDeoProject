@@ -5,4 +5,7 @@ WORKDIR /app
 
 RUN pip install --upgrade pip
 RUN pip install mysql-connector-python
-CMD ["python3", "main.py"]
+
+# Without the -u, Docker waits for output to pile up before showing it in the terminal. 
+# We want it right away
+CMD ["python3", "-u", "main.py"]

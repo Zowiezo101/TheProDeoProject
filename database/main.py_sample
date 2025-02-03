@@ -1,7 +1,10 @@
-# Libraries and files needed to run this file:
+# Import the command handler to be able to use it
 from src.commands import CommandHandler
 
-# All available commands:
+# All available commands with the command handler when using execute_commands
+# reorder_database
+# import_database
+# export_database
 # prepare_translation
 # read_activities
 # read_activity_to_aka
@@ -27,7 +30,6 @@ from src.commands import CommandHandler
 # read_special_to_activity
 # read_specials
 # read_types
-# reorder
 # write_activities
 # write_activity_to_aka
 # write_activity_to_parent
@@ -53,22 +55,25 @@ from src.commands import CommandHandler
 # write_specials
 # write_types
 
-CH = CommandHandler("EN")
-CH.execute_commands([
-    CH.read_all
+# Create a command handler from the CommandHandler class with the desired language as the only parameter. # You'll need a seperate command handler for every language you want to work with. 
+CH_en = CommandHandler("EN")
+CH_nl = CommandHandler("NL")
+
+# With the command handler you can call execute_commands with a list of the commands you want to run. 
+# Some commands are only available for the default language, while for a few other commands the language does not matter. 
+# Most commands however are affected by the language of the command handler.
+CH_en.execute_commands([
+    CH_en.read_all
 ])
 
-CH = CommandHandler("NL")
-CH.execute_commands([
-    CH.read_all
+CH_nl.execute_commands([
+    CH_nl.read_all
 ])
 
-CH = CommandHandler("EN")
-CH.execute_commands([
-    CH.write_all
+CH_en.execute_commands([
+    CH_en.write_all
 ])
 
-CH = CommandHandler("NL")
-CH.execute_commands([
-    CH.write_all
+CH_nl.execute_commands([
+    CH_nl.write_all
 ])

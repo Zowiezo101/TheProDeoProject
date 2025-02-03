@@ -19,8 +19,6 @@ class CommandHandler:
         # First all the other languages and last the default language
         self.langs = ["en", "nl"]
 
-# TODO: Make a backup of the current status of the database ready for pushing to GitHub
-
         # Parse all event related things
         self.write_event_to_parent = ["write_event_to_parent", Events(self.lang).write_parents]
         self.read_event_to_parent = ["read_event_to_parent", Events(self.lang).read_parents]
@@ -83,14 +81,18 @@ class CommandHandler:
         self.read_note_to_source = ["read_note_to_source", Sources(self.lang).read_notes]
 
         # Parse the entire database
-        self.read_all = ["read_all", self.read_files]
-        self.write_all = ["write_all", self.write_files]
+        self.read_all = ["read_all", self.__read_files]
+        self.write_all = ["write_all", self.__write_files]
+        
+        # Import or export the entire database
+        self.import_database = ["import_database", self.__import_database]
+        self.export_database = ["export_database", self.__export_database]
 
         # Set the order_id and item_id to the same values
-        self.reorder = ["reorder", self.reorder_database]
+        self.reorder_database = ["reorder_database", self.__reorder_database]
 
         # Create a translation directory with all necessary subdirs
-        self.prepare_translation = ["prepare_translation", self.prepare_lang]
+        self.prepare_translation = ["prepare_translation", self.__prepare_lang]
         return
 
     # Command Handler, to execute what I want it to execute
@@ -103,7 +105,7 @@ class CommandHandler:
                 print(f"Command {command[0]} does not exist")
         return
 
-    def prepare_lang(self):
+    def __prepare_lang(self):
         lang_path = f'files/translate_{self.lang}'
 
         # Check the dir and create it if it doesn't exist yet
@@ -117,7 +119,7 @@ class CommandHandler:
 
         return
 
-    def write_files(self):
+    def __write_files(self):
         # When not the default lang, it's only for that single lang
         if self.lang != DEFAULT_LANG:
             # Links between the databases
@@ -188,7 +190,7 @@ class CommandHandler:
 
         return
 
-    def read_files(self):
+    def __read_files(self):
         # When not the default lang, it's only for that single lang
         if self.lang != DEFAULT_LANG:
             # Links between the databases
@@ -258,14 +260,16 @@ class CommandHandler:
 
         return
 
-    def reorder_database(self):
+    def __reorder_database(self):
         # per type/table
         item_bases = [Books(DEFAULT_LANG),
                       Events(DEFAULT_LANG),
                       Activities(DEFAULT_LANG, None),
                       Locations(DEFAULT_LANG),
                       Peoples(DEFAULT_LANG),
-                      Specials(DEFAULT_LANG)]
+                      Specials(DEFAULT_LANG),
+                      Notes(DEFAULT_LANG),
+                      Sources(DEFAULT_LANG)]
 
         # The item_base to work with
         for item_base in item_bases:
@@ -310,4 +314,10 @@ class CommandHandler:
 
                     # Delete the old item
                     db.empty_items(item_id)
+        return
+        
+    def __export_database(self):
+        return
+        
+    def __import_database(self):
         return
