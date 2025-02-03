@@ -728,7 +728,7 @@ LOCK TABLES `blog` WRITE;
 /*!40000 ALTER TABLE `blog` DISABLE KEYS */;
 INSERT INTO `blog` VALUES
 (1,'Almost done!','<p>I\'ve been working behind the scenes last few days to update the site a newer look. I\'m not fully done yet, and some more changes will come to make it such that feels finished.</p><p><br></p><p>The most important things are there now, the database can be viewed, timeline and familytrees are created and the worldmap is visible and working.</p><p><br></p><p>I just have a list of details that I want to work on, tiny things that had a lower priority. Also, feel free to send me any feedback, tips or advice! It\'s not perfect, but it\'s also not done yet as well..</p><p><br></p><p>As soon as I\'m done with the website itself, I will continue to work on the database and try to fill in as many blanks as possible and make a clear overview of bible related things.<br></p>',1,'2022-07-03T11:55:25.381Z'),
-(2,'Finally there..','<p>After months of hard work, some breaks in between and a lot of persistence, I think I\'m finally content with the website.</p><p><br></p><p>It\'s still not done though! I still have to fill up the database with information and check if everything truly works as intended. But as far as I can see and have tested the website, it should be good. </p><p><br></p><p>Please let me know if you find anything that does not seem right! Error messages, typo\'s, misinformation etc! Your help is very much appreciated as I work on the database and try to help people get a better understanding of the Bible.</p><p><br></p><p>Thank you for sticking with me<br></p><p><br></p>',1,'2022-08-25T13:01:12.934Z');
+(2,'Finally there..','<p>After months of hard work, some breaks in between and a lot of persistence, I think I\'m finally content with the website.</p><p><br></p><p>It\'s still not done though! I still have to fill up the database with information and check if everything truly works as intended. But as far as I can see and have tested the website, it should be good. </p><p><br></p><p>Please let me know if you find anything that does not seem right! Error messages, typo\'s, misinformation etc! Your help is very much appreciated as I work on the database and try to help people get a better understanding of the Bible.</p><p><br></p><p>Thank you for sticking with me<br></p>',1,'2022-08-25T13:01:12.934Z');
 /*!40000 ALTER TABLE `blog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1831,9 +1831,9 @@ INSERT INTO `locations` VALUES
 (642,642,'Migron','','',-1,'',9,14,2,9,14,2),
 (643,643,'Boses','','',-1,'',9,14,5,9,14,5),
 (644,644,'Senne','','',-1,'',9,14,5,9,14,5),
-(645,645,'Ajjolon','','',-1,'',9,5,31,9,5,31),
-(646,646,'Soba','','',-1,'',9,5,47,9,5,47),
-(647,647,'Sen','','',-1,'',9,7,12,9,7,12),
+(645,645,'Ajjolon','','',-1,'',9,15,31,9,15,31),
+(646,646,'Soba','','',-1,'',9,15,47,9,15,47),
+(647,647,'Sen','','',-1,'',9,17,12,9,17,12),
 (648,648,'Telaë','','',-1,'',9,15,4,9,15,4),
 (649,649,'Efes-Dammim','','',-1,'',9,17,1,9,17,1),
 (650,650,'Terebintenvallei','','',-1,'',9,17,2,9,17,2),
@@ -2793,7 +2793,7 @@ INSERT INTO `people_to_parent` VALUES
 (17,12),
 (17,14),
 (18,12),
-(18,15),
+(18,14),
 (19,2),
 (19,3),
 (20,19),
@@ -8880,4 +8880,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-03 18:51:54
+-- Dump completed on 2025-02-03 19:12:01

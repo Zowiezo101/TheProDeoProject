@@ -85,24 +85,44 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
                                 '> sql/bible.sql', shell=True).decode("utf-8")
 
         # Open the created file
-        export_file = open(r"sql/bible.sql", "r+", encoding='utf-8')
+        file = open(r"sql/bible.sql", "r+", encoding='utf-8')
 
         # Add some extra lines to the content
-        export_sql = export_file.read()
-        export_sql = """CREATE DATABASE  IF NOT EXISTS `bible` 
+        sql = file.read()
+        sql = """CREATE DATABASE  IF NOT EXISTS `bible` 
 /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ 
 /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `bible`;
 
-""" + export_sql
+""" + sql
         
         # Overwrite the content with added lines
-        export_file.seek(0)
-        export_file.write(export_sql)
-        export_file.truncate()
-        export_file.close()
+        file.seek(0)
+        file.write(sql)
+        file.truncate()
+        file.close()
 
         print("Export finished")
+        return
+    
+    def import_database(self):
+        print("Importing database from sql/bible.sql")
+
+        conn = self.connect_database()
+
+        # Open the sql file
+        file = open(r"sql/bible.sql", "r", encoding='utf-8')
+
+        # Read the contents from the sql file
+        sql = file.read()
+
+        # Execute the query to import the file
+        cursor = conn.cursor()
+        cursor.execute(sql, multi=True)
+        conn.commit()
+        conn.close()
+
+        print("Import finished")
         return
 
     def execute_get(self, sql):
