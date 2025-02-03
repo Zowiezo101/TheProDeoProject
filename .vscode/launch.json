@@ -2,6 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Database Helper locally",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal", 
+            "cwd": "${fileDirname}",
+        },
+        {
             "name": "Website with xDebug",
             "type": "php",
             "request": "launch",
@@ -11,10 +19,6 @@
             "pathMappings": {
                 "/var/www": "${workspaceFolder}\\website\\www"
             },
-        },
-		{
-			"name": "DatabaseHelper",
-			"type": "python"
-		}
+        }
     ]
 }

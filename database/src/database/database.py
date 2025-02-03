@@ -41,7 +41,7 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
 
         # Connect to the database
         try:
-            conn = self.conn.connect(host="database",
+            conn = self.conn.connect(host=os.environ["MYSQL_HOST"],
                                      user=os.environ["MYSQL_USER"],
                                      passwd=os.environ["MYSQL_PASSWORD"],
                                      db="bible")
@@ -58,7 +58,7 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
         
     def init_database(self):
         # This database doesn't exist yet, initialize it for use
-        conn = self.conn.connect(host="database",
+        conn = self.conn.connect(host=os.environ["MYSQL_HOST"],
                                  user=os.environ["MYSQL_USER"],
                                  passwd=os.environ["MYSQL_PASSWORD"])
         cursor = conn.cursor()
@@ -80,7 +80,7 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
         print("Exporting database to sql/bible.sql")
 
         # Dump the contents of the database into sql/bible.sql
-        subprocess.check_output(f'mysqldump --host=database --port=3306 --default-character-set=utf8mb4 '
+        subprocess.check_output(f'mysqldump --host={os.environ["MYSQL_HOST"]} --port=3306 --default-character-set=utf8mb4 '
                                 f'--user={os.environ["MYSQL_USER"]} -p{os.environ["MYSQL_PASSWORD"]} --protocol=tcp --no-tablespaces --skip-triggers "bible" '
                                 '> sql/bible.sql', shell=True).decode("utf-8")
 
