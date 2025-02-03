@@ -1,6 +1,7 @@
 
 import os
 
+import subprocess
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -57,13 +58,12 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
         
     def init_database(self):
         # This database doesn't exist yet, initialize it for use
-        conn = self.conn.connect(host="localhost",
+        conn = self.conn.connect(host="database",
                                  user=os.environ["MYSQL_USER"],
                                  passwd=os.environ["MYSQL_PASSWORD"])
         cursor = conn.cursor()
         
         # We have a backup in the SQL folder
-        # TODO: This backup doesn't have any create commands..
         file = open("database/bible.sql")
         sql = file.read()
         print("Initializing database")
@@ -75,6 +75,35 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
         cursor.close()
         
         return conn
+    
+    def export_database(self):
+        print("Exporting database to sql/bible.sql")
+
+        # Dump the contents of the database into sql/bible.sql
+        subprocess.check_output(f'mysqldump --host=database --port=3306 --default-character-set=utf8mb4 '
+                                f'--user={os.environ["MYSQL_USER"]} -p{os.environ["MYSQL_PASSWORD"]} --protocol=tcp --no-tablespaces --skip-triggers "bible" '
+                                '> sql/bible.sql', shell=True).decode("utf-8")
+
+        # Open the created file
+        export_file = open(r"sql/bible.sql", "r+", encoding='utf-8')
+
+        # Add some extra lines to the content
+        export_sql = export_file.read()
+        export_sql = """CREATE DATABASE  IF NOT EXISTS `bible` 
+/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ 
+/*!80016 DEFAULT ENCRYPTION='N' */;
+USE `bible`;
+
+""" + export_sql
+        
+        # Overwrite the content with added lines
+        export_file.seek(0)
+        export_file.write(export_sql)
+        export_file.truncate()
+        export_file.close()
+
+        print("Export finished")
+        return
 
     def execute_get(self, sql):
         # Connect to the database

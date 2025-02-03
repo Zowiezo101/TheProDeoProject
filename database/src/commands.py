@@ -317,6 +317,8 @@ class CommandHandler:
         return
         
     def __export_database(self):
+        db = Books(DEFAULT_LANG).db
+        db.export_database()
         return
         
     def __import_database(self):

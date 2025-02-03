@@ -3,6 +3,9 @@ FROM python:3.12
 
 WORKDIR /app
 
+# install default-mysql-client for mysqldump
+RUN apt-get update && apt-get install -y default-mysql-client
+
 RUN pip install --upgrade pip
 RUN pip install mysql-connector-python
 
