@@ -108,8 +108,8 @@ USE `bible`;
     def import_database(self):
         print("Importing database from sql/bible.sql")
         
-        subprocess.check_output(f'mysqldump --host={os.environ["MYSQL_HOST"]} --port=3306 --default-character-set=utf8mb4 '
-                                f'--user={os.environ["MYSQL_USER"]} -p{os.environ["MYSQL_PASSWORD"]} --protocol=tcp --no-tablespaces --skip-triggers "bible" '
+        subprocess.check_output(f'mysql --host={os.environ["MYSQL_HOST"]} --port=3306 --default-character-set=utf8mb4 '
+                                f'--user={os.environ["MYSQL_USER"]} -p{os.environ["MYSQL_PASSWORD"]} "bible" '
                                 '< sql/bible.sql', shell=True).decode("utf-8")
 
         print("Import finished")
