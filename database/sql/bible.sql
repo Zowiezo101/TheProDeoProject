@@ -28,8 +28,8 @@ DROP TABLE IF EXISTS `activity_to_aka`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activity_to_aka` (
-  `id` int NOT NULL,
-  `activity_id` int NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `activity_id` int NOT NULL COMMENT 'The record from the activitys table that is linked to',
   `book_start_id` int DEFAULT NULL COMMENT 'Bible book of the first appearance',
   `book_start_chap` int DEFAULT NULL COMMENT 'Bible chapter of the first appearance',
   `book_start_vers` int DEFAULT NULL COMMENT 'Bible vers of the first appearance',
@@ -57,8 +57,8 @@ DROP TABLE IF EXISTS `activity_to_event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activity_to_event` (
-  `activity_id` int NOT NULL,
-  `event_id` int NOT NULL,
+  `activity_id` int NOT NULL COMMENT 'The record from the activitys table that is linked to',
+  `event_id` int NOT NULL COMMENT 'The record from the events table that is linked to',
   PRIMARY KEY (`activity_id`,`event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All activities and events that have a relationship. This is a many-to-many linking table, meaning that a single activity can link to multiple events and a single event can link to multiple activities.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -267,8 +267,8 @@ DROP TABLE IF EXISTS `activity_to_parent`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activity_to_parent` (
-  `activity_id` int NOT NULL,
-  `parent_id` int NOT NULL,
+  `activity_id` int NOT NULL COMMENT 'The child record from the activitys table that is linked to',
+  `parent_id` int NOT NULL COMMENT 'The parent record from the activitys table that is linked to',
   PRIMARY KEY (`activity_id`,`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All activities related to each other. This is a many-to-many linking table, meaning that a single activity can link to multiple other activities, and multiple other activities can link to a single activity.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -460,11 +460,11 @@ DROP TABLE IF EXISTS `activitys`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activitys` (
   `order_id` int NOT NULL COMMENT 'The order we want the activities to be viewed in. This is used in the textfiles for the DatabaseHelper and on the website',
-  `id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT 'Doesn''t have to be an exact date, can also be a reference to another major event.',
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Name of this activity',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Description of this activity',
+  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Duration of this activity',
+  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT 'Date of this activity. Doesn''t have to be an exact date, can also be a reference to another major event.',
   `level` int DEFAULT '1' COMMENT 'Level is related to timelines and only used there. A level 1 activity is part of the timeline of an event. A level 2 activity is part of the timeline of another activity (sub timeline)',
   `book_start_id` int DEFAULT NULL COMMENT 'Bible book of the first appearance',
   `book_start_chap` int DEFAULT NULL COMMENT 'Bible chapter of the first appearance',
@@ -680,13 +680,13 @@ DROP TABLE IF EXISTS `activitys_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activitys_lang` (
-  `id` int NOT NULL,
-  `activity_id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `activity_id` int NOT NULL COMMENT 'The record from the activitys table that is linked to',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of the activity',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated description of the activity',
+  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated duration of the activity',
+  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated date of the activity',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of activities. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -711,11 +711,11 @@ DROP TABLE IF EXISTS `blog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `blog` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'Unique number to identity this specific record',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Title of the blog',
+  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Text of the blog',
   `user` int DEFAULT NULL COMMENT 'The user ID corresponds to the values in the users table.',
-  `date` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `date` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'The date this blog has been added',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Blogs are only used on the website to notfy users of changes, progress and other matters on the homepage.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -741,10 +741,10 @@ DROP TABLE IF EXISTS `books`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `books` (
   `order_id` int NOT NULL COMMENT 'The order we want the books to be viewed in. This is used in the textfiles for the DatabaseHelper and on the website',
-  `id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `num_chapters` int DEFAULT NULL,
-  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Name of this book',
+  `num_chapters` int DEFAULT NULL COMMENT 'Number of chapters this book has',
+  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Summary of this book',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='The books present in the Bible. The Deuterocanonical books will most likely not be present in this list, but might become present in the future.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -833,11 +833,11 @@ DROP TABLE IF EXISTS `books_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `books_lang` (
-  `id` int NOT NULL,
-  `book_id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `book_id` int NOT NULL COMMENT 'The record from the books table that is linked to',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of this book',
+  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated summary of this book',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of books. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -929,8 +929,8 @@ DROP TABLE IF EXISTS `event_to_aka`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `event_to_aka` (
-  `id` int NOT NULL,
-  `event_id` int NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `event_id` int NOT NULL COMMENT 'The record from the events table that is linked to',
   `book_start_id` int DEFAULT NULL COMMENT 'Bible book of the first appearance',
   `book_start_chap` int DEFAULT NULL COMMENT 'Bible chapter of the first appearance',
   `book_start_vers` int DEFAULT NULL COMMENT 'Bible vers of the first appearance',
@@ -961,8 +961,8 @@ DROP TABLE IF EXISTS `event_to_parent`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `event_to_parent` (
-  `event_id` int NOT NULL,
-  `parent_id` int NOT NULL,
+  `event_id` int NOT NULL COMMENT 'The child record from the events table that is linked to',
+  `parent_id` int NOT NULL COMMENT 'The parent record from the events table that is linked to',
   PRIMARY KEY (`event_id`,`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All events related to each other. This is a many-to-many linking table, meaning that a single event can link to multiple other events, and multiple other events can link to a single event.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -987,11 +987,11 @@ DROP TABLE IF EXISTS `events`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `events` (
   `order_id` int NOT NULL COMMENT 'The order we want the events to be viewed in. This is used in the textfiles for the DatabaseHelper and on the website',
-  `id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT 'Doesn''t have to be an exact date, can also be a reference to another major event.',
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Name of this event',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Description of this event',
+  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Duration of this event',
+  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT 'Date of this event. Doesn''t have to be an exact date, can also be a reference to another major event.',
   `book_start_id` int DEFAULT NULL COMMENT 'Bible book of the first appearance',
   `book_start_chap` int DEFAULT NULL COMMENT 'Bible chapter of the first appearance',
   `book_start_vers` int DEFAULT NULL COMMENT 'Bible vers of the first appearance',
@@ -1022,13 +1022,13 @@ DROP TABLE IF EXISTS `events_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `events_lang` (
-  `id` int NOT NULL,
-  `event_id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `event_id` int NOT NULL COMMENT 'The record from the events table that is linked to',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of this event',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated description of this event',
+  `length` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated duration of this event',
+  `date` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated date of this event',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of events. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1052,8 +1052,8 @@ DROP TABLE IF EXISTS `location_to_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `location_to_activity` (
-  `location_id` int NOT NULL,
-  `activity_id` int NOT NULL,
+  `location_id` int NOT NULL COMMENT 'The record from the locations table that is linked to',
+  `activity_id` int NOT NULL COMMENT 'The record from the activitys table that is linked to',
   PRIMARY KEY (`location_id`,`activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All locations and activities that have a relationship. This is a many-to-many linking table, meaning that a single location can link to multiple activities and a single activity can link to multiple locations.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1109,10 +1109,10 @@ DROP TABLE IF EXISTS `location_to_aka`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `location_to_aka` (
-  `id` int NOT NULL,
-  `location_id` int DEFAULT NULL,
-  `location_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `location_id` int DEFAULT NULL COMMENT 'The record from the locations table that is linked to',
+  `location_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Additional name this location is known as',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Meaning of the additional name',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All the names a location is known as. If a location is known under different names, they will be available here. The first or most used appearance of a name is not available here, but used in the locations table.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1137,11 +1137,11 @@ DROP TABLE IF EXISTS `location_to_aka_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `location_to_aka_lang` (
-  `id` int NOT NULL,
-  `location_id` int NOT NULL,
-  `location_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `location_id` int NOT NULL COMMENT 'The record from the locations table that is linked to',
+  `location_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of this location',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated meaning of the name of this location',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of location_to_aka. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1164,12 +1164,12 @@ DROP TABLE IF EXISTS `locations`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `locations` (
   `order_id` int NOT NULL COMMENT 'The order we want the locations to be viewed in. This is used in the textfiles for the DatabaseHelper and on the website',
-  `id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Name of this location',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Description of this location',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Meaning of the name of this location',
   `type` int DEFAULT NULL COMMENT 'The type corresponds to the values in the type_location table.',
-  `coordinates` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `coordinates` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Coordinates of this location',
   `book_start_id` int DEFAULT NULL COMMENT 'Bible book of the first appearance',
   `book_start_chap` int DEFAULT NULL COMMENT 'Bible chapter of the first appearance',
   `book_start_vers` int DEFAULT NULL COMMENT 'Bible vers of the first appearance',
@@ -2374,12 +2374,12 @@ DROP TABLE IF EXISTS `locations_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `locations_lang` (
-  `id` int NOT NULL,
-  `location_id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `location_id` int NOT NULL COMMENT 'The record from the locations table that is linked to',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of this location',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated description of this location',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated meaning of the name of this location',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of locations. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2404,9 +2404,9 @@ DROP TABLE IF EXISTS `note_to_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `note_to_item` (
-  `id` int NOT NULL,
-  `note_id` int NOT NULL,
-  `item_id` int NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `note_id` int NOT NULL COMMENT 'The record from the notes table that is linked to',
+  `item_id` int NOT NULL COMMENT 'The record from one of the main tables that is linked to',
   `item_type` int NOT NULL COMMENT 'The type corresponds to the values in the type_item table.',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All notes and items that have a relationship. This is a many-to-many linking table, meaning that a single note can link to multiple items and a single item can link to multiple notes.';
@@ -2445,8 +2445,8 @@ DROP TABLE IF EXISTS `note_to_source`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `note_to_source` (
-  `note_id` int NOT NULL,
-  `source_id` int NOT NULL,
+  `note_id` int NOT NULL COMMENT 'The record from the notes table that is linked to',
+  `source_id` int NOT NULL COMMENT 'The record from the sources table that is linked to',
   PRIMARY KEY (`note_id`,`source_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All notes and sources that have a relationship. This is a many-to-many linking table, meaning that a single note can link to multiple sources and a single source can link to multiple notes.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2479,8 +2479,8 @@ DROP TABLE IF EXISTS `notes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `notes` (
-  `id` int NOT NULL,
-  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The actual note contents of this record',
   `type` int DEFAULT NULL COMMENT 'The type corresponds to the values in the type_note table.',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Notes are used to convey extra information about a person, location, event or anything else. It can be theories, facts, ideas or anything else.';
@@ -2512,10 +2512,10 @@ DROP TABLE IF EXISTS `notes_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `notes_lang` (
-  `id` int NOT NULL,
-  `note_id` int NOT NULL,
-  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `note_id` int NOT NULL COMMENT 'The record from the notes table that is linked to',
+  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated content of this note',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of notes. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2539,8 +2539,8 @@ DROP TABLE IF EXISTS `people_to_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `people_to_activity` (
-  `people_id` int NOT NULL,
-  `activity_id` int NOT NULL,
+  `people_id` int NOT NULL COMMENT 'The record from the peoples table that is linked to',
+  `activity_id` int NOT NULL COMMENT 'The record from the activitys table that is linked to',
   PRIMARY KEY (`people_id`,`activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All peoples and activities that have a relationship. This is a many-to-many linking table, meaning that a single person can link to multiple activities and a single activity can link to multiple people.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2677,10 +2677,10 @@ DROP TABLE IF EXISTS `people_to_aka`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `people_to_aka` (
-  `id` int NOT NULL,
-  `people_id` int DEFAULT NULL,
-  `people_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `people_id` int DEFAULT NULL COMMENT 'The record from the peoples table that is linked to',
+  `people_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Additional name this person is known as',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Meaning of the additional name',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All the names a person is known as. If a person is known under different names, they will be available here. The first or most used appearance of a name is not available here, but used in the peoples table.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2706,11 +2706,11 @@ DROP TABLE IF EXISTS `people_to_aka_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `people_to_aka_lang` (
-  `id` int NOT NULL,
-  `people_id` int NOT NULL,
-  `people_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `people_id` int NOT NULL COMMENT 'The record from the peoples table that is linked to',
+  `people_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of this person',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated meaning of the name of this person',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of people_to_aka. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2734,8 +2734,8 @@ DROP TABLE IF EXISTS `people_to_location`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `people_to_location` (
-  `people_id` int NOT NULL,
-  `location_id` int NOT NULL,
+  `people_id` int NOT NULL COMMENT 'The record from the peoples table that is linked to',
+  `location_id` int NOT NULL COMMENT 'The record from the locations table that is linked to',
   `type` int NOT NULL COMMENT 'The type corresponds to the values in the type_people table.',
   PRIMARY KEY (`people_id`,`location_id`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All people and locations that have a relationship. This is a many-to-many linking table, meaning that a single person can link to multiple locations and a single location can link to multiple people.';
@@ -2760,8 +2760,8 @@ DROP TABLE IF EXISTS `people_to_parent`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `people_to_parent` (
-  `people_id` int NOT NULL,
-  `parent_id` int NOT NULL,
+  `people_id` int NOT NULL COMMENT 'The child record from the peoples table that is linked to',
+  `parent_id` int NOT NULL COMMENT 'The parent record from the peoples table that is linked to',
   PRIMARY KEY (`people_id`,`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All people related to each other. This is a many-to-many linking table, meaning that a single person can link to multiple other people, and multiple other people can link to a single person.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4655,17 +4655,17 @@ DROP TABLE IF EXISTS `peoples`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `peoples` (
   `order_id` int NOT NULL COMMENT 'The order we want the peoples to be viewed in. This is used in the textfiles for the DatabaseHelper and on the website',
-  `id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Name of this person',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Description of this person',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Meaning of the name of this person',
   `father_age` int DEFAULT NULL COMMENT 'This is the age of the father when the child was born.',
   `mother_age` int DEFAULT NULL COMMENT 'This is the age of the mother when the child was born.',
   `age` int DEFAULT NULL COMMENT 'This is the reached age of the person before they died.',
   `gender` int DEFAULT NULL COMMENT 'The gender corresponds to the values in the type_gender table.',
   `tribe` int DEFAULT NULL COMMENT 'The tribe corresponds to the values in the type_tribe table.',
-  `profession` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `nationality` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `profession` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Profession of this person',
+  `nationality` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Nationality of this person',
   `book_start_id` int DEFAULT NULL COMMENT 'Bible book of the first appearance',
   `book_start_chap` int DEFAULT NULL COMMENT 'Bible chapter of the first appearance',
   `book_start_vers` int DEFAULT NULL COMMENT 'Bible vers of the first appearance',
@@ -8395,14 +8395,14 @@ DROP TABLE IF EXISTS `peoples_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `peoples_lang` (
-  `id` int NOT NULL,
-  `people_id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `profession` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `nationality` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `people_id` int NOT NULL COMMENT 'The record from the peoples table that is linked to',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of this person',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated description of this person',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated meaning of the name of this person',
+  `profession` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated profession of this person',
+  `nationality` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated nationality of this person',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of peoples. Only text columns are translated, and the language is given in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -8430,8 +8430,8 @@ DROP TABLE IF EXISTS `sources`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sources` (
-  `id` int NOT NULL,
-  `source` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `source` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The actual source contents for this record',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All the sources used for information. This includes mainly websites, but also videos, audio files, books and other sources of information.';
@@ -8465,8 +8465,8 @@ DROP TABLE IF EXISTS `special_to_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `special_to_activity` (
-  `special_id` int NOT NULL,
-  `activity_id` int NOT NULL,
+  `special_id` int NOT NULL COMMENT 'The record from the specials table that is linked to',
+  `activity_id` int NOT NULL COMMENT 'The record from the activitys table that is linked to',
   PRIMARY KEY (`special_id`,`activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All specials and activities that have a relationship. This is a many-to-many linking table, meaning that a single special can link to multiple activities and a single activity can link to multiple specials.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -8501,10 +8501,10 @@ DROP TABLE IF EXISTS `specials`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `specials` (
   `order_id` int NOT NULL COMMENT 'The order we want the specials to be viewed in. This is used in the textfiles for the DatabaseHelper and on the website',
-  `id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Name of this special',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Description of this special',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Meaning of the name of this special',
   `type` int DEFAULT NULL COMMENT 'The type corresponds to the values in the type_special table.',
   `book_start_id` int DEFAULT NULL COMMENT 'Bible book of the first appearance',
   `book_start_chap` int DEFAULT NULL COMMENT 'Bible chapter of the first appearance',
@@ -8602,12 +8602,12 @@ DROP TABLE IF EXISTS `specials_lang`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `specials_lang` (
-  `id` int NOT NULL,
-  `special_id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int NOT NULL COMMENT 'Unique number to identity this specific record',
+  `special_id` int NOT NULL COMMENT 'The record from the specials table that is linked to',
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated name of this special',
+  `descr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated description of this special',
+  `meaning_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Translated meaning of the name of this special',
+  `lang` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'The language this record is translated in',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Translated version of specials. Only text columns are translated to the language specified in the language column.';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -8852,7 +8852,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'Unique number to identity this specific record',
   `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Username',
   `hash` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'This is a hash of the password, using php''s password_hash with the default encryption (PASSWORD_BCRYPT).\n\nThe password itself is never stored, only the hash created from the password.',
   PRIMARY KEY (`id`),
