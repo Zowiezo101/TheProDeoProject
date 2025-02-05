@@ -322,4 +322,6 @@ class CommandHandler:
         return
         
     def __import_database(self):
+        db = Books(DEFAULT_LANG).db
+        db.import_database()
         return

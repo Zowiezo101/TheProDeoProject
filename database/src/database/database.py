@@ -107,20 +107,10 @@ USE `bible`;
     
     def import_database(self):
         print("Importing database from sql/bible.sql")
-
-        conn = self.connect_database()
-
-        # Open the sql file
-        file = open(r"sql/bible.sql", "r", encoding='utf-8')
-
-        # Read the contents from the sql file
-        sql = file.read()
-
-        # Execute the query to import the file
-        cursor = conn.cursor()
-        cursor.execute(sql, multi=True)
-        conn.commit()
-        conn.close()
+        
+        subprocess.check_output(f'mysqldump --host={os.environ["MYSQL_HOST"]} --port=3306 --default-character-set=utf8mb4 '
+                                f'--user={os.environ["MYSQL_USER"]} -p{os.environ["MYSQL_PASSWORD"]} --protocol=tcp --no-tablespaces --skip-triggers "bible" '
+                                '< sql/bible.sql', shell=True).decode("utf-8")
 
         print("Import finished")
         return
