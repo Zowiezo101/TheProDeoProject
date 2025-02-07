@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html>   
 <?php 
     // This needs to be started at the very beginning
     session_start();
@@ -7,7 +5,8 @@
     // Initialize variables, functions and libraries that are used for the website
     require "src/template/init.php";
 ?>
-    
+<!DOCTYPE html>
+<html>    
     <head>
         <!-- Name shown on the tab -->
         <title><?= $dict["globals.prodeo_database"] ?></title>

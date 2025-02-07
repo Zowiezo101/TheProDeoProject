@@ -13,13 +13,26 @@
             ]);
         }
         
-        protected function getWhereQuery(&$query_params) {
-            $where_sql = parent::getWhereQuery($query_params);
-            $where_sql = $where_sql . ($where_sql ? " AND " : " WHERE ") . "
-                coordinates IS NOT NULL AND
-                coordinates <> ''";
+        // readAll for worldmap is the only exception to all readAlls
+        // It's the only version where links need to be inserted, this is
+        // not the case for any other readAll
+        public function readAll() {
+            $this->action = self::ACTION_READ_ALL;
             
-            return $where_sql;
+            // Succefully reading an item should return code '200'
+            $this->action_success = Message::SUCCESS_READ;
+            
+            // Execute the action
+            $this->executeAction();
+            
+            // Retrieve the data
+            $data = $this->message->getData();
+            
+            // Insert the links
+            $this->link->insertLinks($data);
+            
+            // Update the data
+            $this->message->updateData($data);
         }
         
         protected function getReadAllQuery() {
@@ -28,7 +41,7 @@
             
             // Get all the locations with their details
             $query_params = [];
-            $query_string = "SELECT
+            $query_string = "SELECT l.order_id,
                     l.id, l.name, l.descr,
                     l.meaning_name, IFNULL(aka.location_name, '') AS aka,
                     l.type, l.coordinates

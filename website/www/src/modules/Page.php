@@ -6,7 +6,6 @@
     use HomePage;
     use TabPage;
     use ItemPage;
-    use SearchPage;
     use MapPage;
     use AboutUsPage;
     use ContactPage;
@@ -48,13 +47,6 @@
                     // - The ItemList sidebar (Which consists of the clickable items)
                     // - The ItemContent module (Showing the content of the clicked item)
                     $module = $this->getItemPage($page_id);
-                    break;
-                
-                case "search":
-                    // The search page comes with 2 modules:
-                    // - The SearchMenu sidebar (With search options)
-                    // - The SearchContent module (Showing result on the right side)
-                    $module = $this->getSearchPage();
                     break;
                 
                 case "timeline":
@@ -126,12 +118,6 @@
         public function getItemPage($params = []) {
             $this->setContainerClass("container-fluid");
             return new ItemPage\ItemPage($params);
-        }
-
-        // Functions to return modules
-        public function getSearchPage() {
-            $this->setContainerClass("py-5 container-fluid");
-            return new SearchPage\SearchPage();
         }
 
         // Functions to return modules

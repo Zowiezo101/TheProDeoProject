@@ -13,9 +13,8 @@
             ]);
         }
         
-        protected function getWhereQuery(&$query_params) {
-            $where_sql = parent::getWhereQuery($query_params);
-            $where_sql = $where_sql . ($where_sql ? " AND " : " WHERE ") . "
+        protected function getWhereQuery() {
+            $where_sql = " WHERE
                 i.id NOT IN (
                     SELECT people_id FROM people_to_parent WHERE parent_id IS NOT NULL)
                 AND i.id IN (
@@ -31,7 +30,7 @@
             // query to read a familytree, starting from a single id
             // It uses a recursive function to keep finding children, until there
             // are no more children to be found
-            $query_params = [":id" => [$this->id, \PDO::PARAM_INT]];
+            $query_params = [":id" => [$this->parameters["id"], \PDO::PARAM_INT]];
             $query_string = "WITH RECURSIVE ancestors AS 
                     (
                     SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
@@ -95,46 +94,4 @@
             ];
             return $query;
         }
-    
-//        // search products
-//        function search($filters){
-//
-//            // select all query
-//            $query = "WITH RECURSIVE cte (p1, p2) AS 
-//                        (
-//                            SELECT people_id, parent_id FROM people_to_parent WHERE people_id = ?
-//                            UNION ALL
-//                            SELECT people_id, parent_id FROM people_to_parent JOIN cte ON people_id = p2
-//                        )
-//
-//                    SELECT DISTINCT id, name FROM (
-//                        SELECT id, name FROM ".$this->table." 
-//                            LEFT JOIN people_to_parent 
-//                            ON peoples.id = people_to_parent.people_id 
-//                            WHERE peoples.id IN (SELECT p2 FROM cte)
-//                            AND parent_id IS NULL
-//                        UNION ALL
-//                        SELECT id, name FROM ".$this->table." 
-//                            LEFT JOIN people_to_parent p1
-//                            ON peoples.id = p1.parent_id 
-//                            LEFT JOIN people_to_parent p2
-//                            ON peoples.id = p2.people_id
-//                            WHERE p1.parent_id = ? 
-//                            AND p1.people_id IS NOT NULL
-//                            AND p2.parent_id IS NULL
-//                            )
-//                    AS ancestor";
-//
-//            // prepare query statement
-//            $stmt = $this->conn->prepare($query);
-//
-//            // bind
-//            $stmt->bindParam(1, $filters);
-//            $stmt->bindParam(2, $filters);
-//
-//            // execute query
-//            $stmt->execute();
-//
-//            return $stmt;
-//        }
     }

@@ -9,8 +9,10 @@
         public function getContent() {
             global $dict;
             
-            $search = isset($_SESSION["search"]) ? htmlspecialchars($_SESSION["search"]) : "";
+            $search = isset($_SESSION["name"]) ? htmlspecialchars($_SESSION["name"]) : "";
             $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
+            
+            // TODO: Make sure that searching for AKA names also gets the correct names
             
             // The search bar
             $content = '
@@ -18,10 +20,10 @@
                         <div class="row mb-2">
                             <div class="col-8 col-md-6">
                                 <div class="input-group w-100">
-                                    <input type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearch()" value="'.$search.'">
+                                    <input type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearchUpdate()" value="'.$search.'">
                                     <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button" onclick="onSearch()">
-                                            <i class="fa fa-search"></i>
+                                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" type="button">
+                                            <i class="fa fa-filter"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -39,6 +41,7 @@
                                 </div>
                             </div>
                         </div>';
+            
                     
             return $content;
         }

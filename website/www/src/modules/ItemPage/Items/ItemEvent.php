@@ -3,6 +3,7 @@
     namespace Items;
     
     use Shapes\Title;
+    use List\ItemModal;
     use Content\ItemTable;
     use Content\MapTable;
 
@@ -13,11 +14,47 @@
             /** These are the two main modules that are used for item pages */
             $this->createItemList([
                 "type" => TYPE_EVENT,
-                "base_url" => "events/event"
+                "base_url" => "events/event",
+                "columns" => [
+                    "order_id"
+                ]
             ]);
             
             $item_content = $this->createItemContent([
                 "type" => TYPE_EVENT
+            ]);
+            
+            $this->createItemModal([
+                "filters" => [
+                    [
+                        "name" => "name",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "meaning_name",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "descr",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "start",
+                        "type" => ItemModal::INPUT_BOOK
+                    ],
+                    [
+                        "name" => "end",
+                        "type" => ItemModal::INPUT_BOOK
+                    ],
+                    [
+                        "name" => "length",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                    [
+                        "name" => "date",
+                        "type" => ItemModal::INPUT_TEXT
+                    ],
+                ]
             ]);
             
             /** These are Modules that are being added to the ItemContent Module */

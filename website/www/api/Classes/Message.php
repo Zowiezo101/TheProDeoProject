@@ -21,8 +21,9 @@
         private $code = self::SUCCESS_READ;
         private $error = "";
         private $data = [];
-        private $paging = "";
         private $query = "";
+        private $columns = [];
+        private $options = [];
         
         public function setError($error, $value = "") {
             
@@ -53,12 +54,16 @@
             $this->data = $data;
         }
         
-        public function setPaging($paging) {
-            $this->paging = $paging;
-        }
-        
         public function setQuery($query) {
             $this->query = $query;
+        }
+        
+        public function setColumns($columns) {
+            $this->columns = $columns;
+        }
+        
+        public function setOptions($options) {
+            $this->options = $options;
         }
         
         public function sendMessage() {
@@ -76,11 +81,15 @@
             // Data is supposed to be an array. 
             // When it is false, something happened while checking the parameters
             
-            if ($this->paging !== "") {
-                // Include the amount of pages
-                $message["paging"] = $this->paging;
+            if (count($this->columns) > 0) {
+                // Include the column names (only for search results)
+                $message["columns"] = $this->columns;
             }
             
+            if (count($this->options) > 0) {
+                // Include the options (only for search options)
+                $message["options"] = $this->options;
+            }
             
             http_response_code($this->code);
             echo json_encode($message);

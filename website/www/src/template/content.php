@@ -8,6 +8,10 @@
     require "src/modules/Shapes/Table.php";
     require "src/modules/Shapes/TableRow.php";
     require "src/modules/Shapes/Text.php";
+    require "src/modules/Shapes/InputText.php";
+    require "src/modules/Shapes/InputBook.php";
+    require "src/modules/Shapes/InputSelect.php";
+    require "src/modules/Shapes/InputSlider.php";
     
     // The HomePage
     require "src/modules/HomePage/HomePage.php";
@@ -44,6 +48,7 @@
     require "src/modules/ItemPage/Parts/List/ItemListItem.php";
     require "src/modules/ItemPage/Parts/List/ItemListToggle.php";
     require "src/modules/ItemPage/Parts/List/ItemSearch.php";
+    require "src/modules/ItemPage/Parts/List/ItemModal.php";
     require "src/modules/ItemPage/Parts/List/ItemPages.php";  
     
     // The different items
@@ -53,15 +58,6 @@
     require "src/modules/ItemPage/Items/ItemPeople.php";
     require "src/modules/ItemPage/Items/ItemLocation.php";
     require "src/modules/ItemPage/Items/ItemSpecial.php";
-    
-    // The SearchPage
-    require "src/modules/SearchPage/SearchPage.php";
-    
-    // The Parts used by this Page
-    require "src/modules/SearchPage/Parts/SearchMenu.php";
-    require "src/modules/SearchPage/Parts/SearchContent.php";
-    require "src/modules/SearchPage/Parts/SearchDefault.php";
-    require "src/modules/SearchPage/Parts/SearchDetails.php";
     
     // The MapPage
     require "src/modules/MapPage/MapPage.php";
