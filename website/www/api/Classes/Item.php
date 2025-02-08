@@ -548,11 +548,11 @@
          */
         public function checkParameters($filter) {
             // Get the parameters from the URI and body
-            $uri_params = filter_input_array(INPUT_GET);
+            $uri_params = (array) filter_input_array(INPUT_GET);
             $body_params = (array) json_decode(file_get_contents("php://input"));
             
             // Put them together
-            $given_params = array_merge($uri_params ? $uri_params : [], $body_params);
+            $given_params = array_merge($uri_params, $body_params);
             
             // Get the required parameters and optional parameters
             $required_params = $filter[self::REQUIRED_PARAMS];

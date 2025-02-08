@@ -33,4 +33,14 @@
             $map_content = $map->getMapContent();
             $this->setContent($map_content);
         }
+        
+        // Return all the content of this module
+        public function getContent() {
+            $content = '<div class="row">
+                    '.$this->item_list->getContent().'
+                    '.$this->item_content->getContent().'
+                </div>';
+            
+            return $content;
+        }
     }

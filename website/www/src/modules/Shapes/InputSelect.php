@@ -31,7 +31,7 @@
                     <select id='item_{$this->name}'
                             class='custom-select search-field' 
                             data-type='select'
-                            data-val='{$this->session_chap_val}'>
+                            data-val='{$this->session_val}'>
                         <option selected disabled value='-1'>{$dict["search.select"]}</option>
                     </select>
                 </div>

@@ -13,7 +13,7 @@
     
 
     class ItemPage extends Module {
-        private $item_list;
+        protected $item_list;
         protected $item_content;
         protected $item_modal;
         

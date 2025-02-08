@@ -52,5 +52,13 @@ services:
       
     extra_hosts:
       - "host.docker.internal:host-gateway"
+        
+    networks:
+      - database-server_default
+      
+# We need this network to communicate with the database
+networks:
+  database-server_default:
+    external: true
     
 
