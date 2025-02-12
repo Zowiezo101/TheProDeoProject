@@ -39,6 +39,7 @@ class Events (ItemBase):
                         "{%BOOK_END_ID%} {%BOOK_END_CHAP%}:{%BOOK_END_VERS%}]\n\t" \
                         "{{%DESCR%}; {%LENGTH%}; {%DATE%}}\n"
 
+        # Links to different tables
         self.links = {
             "lang": {
                 "table_name": "events_lang",
@@ -142,10 +143,11 @@ class Events (ItemBase):
         return
 
     def read_activities(self):
+        # Get the activities object without refering to a specific event ID
         activity = Activities(self.lang, -1)
 
         # Save the max_id and order_id after each event to prevent them
-        # from resetting each time
+        # from resetting for the next event
         max_id, order_id = activity.empty_db()
 
         # Get all the events

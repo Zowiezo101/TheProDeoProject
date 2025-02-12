@@ -71,7 +71,9 @@ book_names = [
 ]
 
 
+# Get the name of a book and convert it into an index
 def get_book_idx(book_name):
+    # If the book name isn't given, just use an index of -1
     if book_name == "-1":
         # New record, no name
         book_idx = -1
@@ -80,7 +82,9 @@ def get_book_idx(book_name):
     return book_idx
 
 
+# Get the index of a book and convert it into a name
 def get_book_name(book_idx):
+    # If the book index isn't give, just use "-1" as name
     if book_idx == -1:
         book_name = "-1"
     else:
@@ -147,26 +151,31 @@ class ItemBase:
 
         return file_object
 
+    # Reading properties from a file returns an array with all the properties for a record
+    # This function returns only a single property from the array, using the known order of the properties
     def get_property(self, item_object, column):
         index = self.get_property_index(column)
         return item_object[index]
 
+    # Reading properties from a file returns an array with all the properties for a record
+    # This function uses the known order of properties in the list to return the correct index of a single propery
     def get_property_index(self, column):
         all_columns = self.columns + self.extra_columns
         return all_columns.index(column)
 
     def insert_properties(self, item_object):
-        # Get all the properties from the template
+        # Get all the property names from the template
         properties = re.findall(r"(?<={%)(\w+)(?=%})", self.template)
 
         # Start with the template
         write_line = self.template
 
-        # Replace every property from the template
+        # Insert the property values for this record using the template
         for prop in properties:
+            # Get the current property name from the template
             value = self.get_property(item_object, prop.lower())
 
-            # Some things need to be converted
+            # Get the property value for this record, some things need to be converted
             if prop == "BOOK_START_ID" or prop == "BOOK_END_ID":
                 value = get_book_name(value)
             if prop == "GENDER":
@@ -190,13 +199,17 @@ class ItemBase:
             if value is None:
                 value = ""
 
-            # Insert the value
+            # Insert the value by replacing the property name with the actual value
             write_line = write_line.replace("{%" + prop + "%}", value)
 
+        # Return the line, ready to be written to the file
         return write_line
 
     def extract_properties(self, lines):
+        # Some files use multiple lines per record, join them together
         item_line = "".join(lines)
+
+        # This is for the last line only, make sure to always end with a new line
         if item_line != "" and item_line[-1] != "\n":
             item_line = item_line + "\n"
 
@@ -205,21 +218,29 @@ class ItemBase:
             .replace("(", r"\(").replace(")", r"\)") \
             .replace("[", r"\[").replace("]", r"\]") \
             .replace("{%", "(?P<").replace("%}", ">.*)")
+        
+        # Use the template to exract properties for the current record
         props = re.match(regex_template, item_line)
 
         # The property list to fill up with found properties
         property_list = [""] * len(self.columns)
 
-        # Get all the properties from the template
+        # Get all the property names from the template
         t_props = re.findall(r"(?<={%)(\w+)(?=%})", self.template)
+
         for prop in t_props:
+            # The index of the current property in the property list
             list_index = self.get_property_index(prop.lower())
+
+            # Default value to start with with the current property
             list_value = "-1"
+
+            # In case of a new record, no properties will be filled in and can't be found
             if props is not None:
-                # In case of a new record, props is None and can't be used
                 list_value = props.group(prop).strip()
 
-            # Some things need to be converted
+            # Get the property value for this record, some things need to be converted
+            # In a few causes, we need to store the info in a different column (changing list_index)
             if prop == "BOOK_START_ID" or prop == "BOOK_END_ID":
                 list_value = get_book_idx(list_value)
             if prop == "GENDER":
@@ -250,6 +271,8 @@ class ItemBase:
                 list_index = self.get_property_index("special_id")
             if prop == "N_ID":
                 list_index = self.get_property_index("note_id")
+
+            # Some properties refer to a group (list) of information instead of a single bit of information
             if self.is_group(prop):
                 # The actual property we want
                 prop = prop.replace("_GROUP", "")
@@ -265,6 +288,8 @@ class ItemBase:
             if list_index in range(len(property_list)):
                 property_list[list_index] = list_value
 
+        # The language for translation files are not stored in the file itself
+        # Make sure to store the language as well for these records if applicable
         if "lang" in self.columns:
             list_index = self.get_property_index("lang")
             list_value = self.lang
@@ -272,9 +297,12 @@ class ItemBase:
 
         return property_list
 
+    # Some files use multiple lines for a single record
     def is_multiline(self):
         return self.get_multiline() > 1
 
+    # If a file uses multiple lines for a single record,
+    # return the amount of lines a single record needs to be stored
     def get_multiline(self):
         lines = self.template.split("\n")
         while "" in lines:
@@ -282,7 +310,9 @@ class ItemBase:
 
         return len(lines)
 
+    # Check if this property is a single bit of info, or a list with information
     def is_group(self, prop):
+        # Only the case if this item type can actually have groups
         if self.sql_group is not None:
             name = prop.replace("_GROUP", "")
             return name.lower() in self.sql_group

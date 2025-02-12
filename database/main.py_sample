@@ -55,7 +55,8 @@ from src.commands import CommandHandler
 # write_specials
 # write_types
 
-# Create a command handler from the CommandHandler class with the desired language as the only parameter. # You'll need a seperate command handler for every language you want to work with. 
+# Create a command handler from the CommandHandler class with the desired language as the only parameter. 
+# You'll need a seperate command handler for every language you want to work with. 
 CH_en = CommandHandler("EN")
 CH_nl = CommandHandler("NL")
 

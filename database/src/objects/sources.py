@@ -29,6 +29,7 @@ class Sources (ItemBase):
         self.template = "Source: ({%ID%})\n\t" \
                         "{{%SOURCE%}}\n"
 
+        # Links to different tables
         self.links = {
             "note": {
                 "table_name": "note_to_source",
@@ -49,9 +50,6 @@ class Sources (ItemBase):
 
         return
 
-    # While is seems unusual to do it from here instead of from notes, we have to
-    # The group is done using the note ID, so we need to do it from sources in order
-    # to properly be able to copy, merge and delete source and note links
     def write_notes(self):
         if self.lang == DEFAULT_LANG:
             self.write_link("note")

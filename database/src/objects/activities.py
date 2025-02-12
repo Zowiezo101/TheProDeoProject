@@ -7,6 +7,7 @@ from src.objects.items import ItemBase
 # Get all the activity files in a certain directory
 def get_files(path):
     try:
+        # Filter out any files with the name "desktop.ini"
         files = filter(lambda f: f != "desktop.ini", os.listdir(path))
     except FileNotFoundError:
         files = []
@@ -58,6 +59,7 @@ class Activities (ItemBase):
                         "{%BOOK_END_ID%} {%BOOK_END_CHAP%}:{%BOOK_END_VERS%}]\n\t" \
                         "{{%DESCR%}; {%LENGTH%}; {%DATE%}; {%LEVEL%}}\n"
 
+        # Links to different tables
         self.links = {
             "lang": {
                 "table_name": "activitys_lang",
@@ -176,6 +178,7 @@ class Activities (ItemBase):
         }
         return
 
+    # Every activity file belongs to a specific event, and they all have unique named to prevent overwriting
     def get_file_name(self):
         file_name = ""
 
@@ -195,12 +198,13 @@ class Activities (ItemBase):
 
         if file_name == "":
             # This file does not exist yet
-            file_name = f"activities/event_{self.event_id}"
+            file_name = f"activities/page_{self.event_id}"
 
         return file_name
 
     def empty_db(self):
         if self.lang != DEFAULT_LANG:
+            # Get the link table for a different language instead
             item_base = self.get_link("lang")
         else:
             item_base = self
@@ -224,6 +228,7 @@ class Activities (ItemBase):
 
     def write(self):
         if self.lang != DEFAULT_LANG:
+            # For different languages, we need to use the lang table
             item_base = self.get_link("lang")
             item_base.file_name = self.file_name
             item_base.event_id = self.event_id
@@ -236,11 +241,14 @@ class Activities (ItemBase):
             # Get all the information from the database
             items = item_base.db.get_items(item_base.event_id)
 
+        # Every event has its own activities text file, get the one for the current event
         file = item_base.get_file()
+
+        # Insert the template first
         file.write(item_base.template.replace("{%", "").replace("%}", ""))
 
         for item in items:
-            # Insert the properties into the pattern for this item
+            # Insert the properties into the template for this record
             write_line = item_base.insert_properties(item)
 
             print(write_line)
@@ -249,6 +257,7 @@ class Activities (ItemBase):
 
     def read(self):
         if self.lang != DEFAULT_LANG:
+            # For different languages, we need to use the lang table
             item_base = self.get_link("lang")
             item_base.file_name = self.file_name
             item_base.event_id = self.event_id
@@ -256,6 +265,8 @@ class Activities (ItemBase):
             item_base = self
 
         event = []
+
+        # Every event has its own activities text file, get the one for the current event
         file = self.get_file("r")
 
         # Read out the template
@@ -271,6 +282,8 @@ class Activities (ItemBase):
 
             # Depending on the template, we might need more than 1 line per item
             lines = [line]
+
+            # Only inserting "()" is a shortcut to easily insert a new item
             if line.strip() == "()":
                 lines = ""
             elif item_base.is_multiline():
@@ -279,7 +292,7 @@ class Activities (ItemBase):
                 for _ in range(num_lines - 1):
                     lines.append(file.readline())
 
-            # Extract the properties using the template
+            # Extract the properties using the template for this record
             properties = item_base.extract_properties(lines)
 
             # There are unfilled items in the text file to make it easier for us to translate everything
@@ -290,7 +303,7 @@ class Activities (ItemBase):
                     line = file.readline()
                     continue
 
-            # Get the item id and order id
+            # Get the order id and item id
             item_id = item_base.get_property(properties, item_base.id1_name)
 
             # Remove the order id and the item id
@@ -308,15 +321,19 @@ class Activities (ItemBase):
             # Get the action that is indicated by the ID
             action, item_id = item_base.parse_action(item_id)
 
+            # Save the activities that belong to the current event
             event.append([action, item_id, properties])
 
             # Next line for the while loop
             line = file.readline()
 
+        # Return the activities that belong to the current event
         return event
 
     def parse_events(self):
+        # This is for the activity_to_event table
         for item in self.read():
+            # Get all the activities for this event
             action, item_id, properties = item
 
             if action == self.db.ACTION_MERGE:
@@ -330,10 +347,13 @@ class Activities (ItemBase):
             self.db.insert_link("event", [item_id, self.event_id])
 
     def parse_activities(self, max_id, order_id):
+        # Between events, the max ID and the order ID shouldn't reset to 0
+        # So continu with the max ID and order ID from the previous event
         self.db.MAX_ID = max_id
         self.db.ORDER_ID = order_id
 
         for item in self.read():
+            # Get all the activities for this event
             action, item_id, properties = item
 
             if self.lang == DEFAULT_LANG:
@@ -359,7 +379,7 @@ class Activities (ItemBase):
                 self.db.insert_link("event", [item_id, self.event_id])
 
         # Save the max_id and order_id after each event to prevent them
-        # from resetting each time
+        # from resetting for the next event
         max_id = self.db.MAX_ID
         order_id = self.db.ORDER_ID
         return max_id, order_id

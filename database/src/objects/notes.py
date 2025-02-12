@@ -31,6 +31,7 @@ class Notes (ItemBase):
         self.template = "{%TYPE%} ({%ID%})\n\t" \
                         "{{%NOTE%}}\n"
 
+        # Links to different tables
         self.links = {
             "lang": {
                 "table_name": "notes_lang",

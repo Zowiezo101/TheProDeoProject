@@ -27,6 +27,7 @@ class Books (ItemBase):
         # The template used for the file
         self.template = "{%NAME%} ({%ID%})\n\t{{%NUM_CHAPTERS%}; {%SUMMARY%}}\n"
 
+        # Links to different tables
         self.links = {
             "lang": {
                 "table_name": "books_lang",

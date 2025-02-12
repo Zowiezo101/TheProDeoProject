@@ -38,6 +38,7 @@ class Specials (ItemBase):
                         "{%BOOK_END_ID%} {%BOOK_END_CHAP%}:{%BOOK_END_VERS%}]\n\t" \
                         "{{%DESCR%}; {%MEANING_NAME%}; {%TYPE%}}\n"
 
+        # Links to different tables
         self.links = {
             "lang": {
                 "table_name": "specials_lang",

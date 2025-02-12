@@ -14,12 +14,13 @@ from src.database.database import DEFAULT_LANG
 
 class CommandHandler:
     def __init__(self, lang):
+        # Get the language in lower case letters
         self.lang = lang.lower()
 
         # First all the other languages and last the default language
         self.langs = ["en", "nl"]
 
-        # Parse all event related things
+        # Parse all event related links
         self.write_event_to_parent = ["write_event_to_parent", Events(self.lang).write_parents]
         self.read_event_to_parent = ["read_event_to_parent", Events(self.lang).read_parents]
         self.write_event_to_aka = ["write_event_to_aka", Events(self.lang).write_aka]
@@ -51,7 +52,7 @@ class CommandHandler:
         self.write_special_to_activity = ["write_special_to_activity", Specials(self.lang).write_activities]
         self.read_special_to_activity = ["read_special_to_activity", Specials(self.lang).read_activities]
 
-        # Parse all links
+        # Parse all other links
         self.write_people_to_parent = ["write_people_to_parent", Peoples(self.lang).write_parents]
         self.read_people_to_parent = ["read_people_to_parent", Peoples(self.lang).read_parents]
         self.write_people_to_location = ["write_people_to_location", Peoples(self.lang).write_locations]
@@ -97,15 +98,21 @@ class CommandHandler:
 
     # Command Handler, to execute what I want it to execute
     def execute_commands(self, command_list):
+        # Take the entire lists of commands and parse them one by one
         for command in command_list:
+            # Check that the command actually exists in this class
             if hasattr(self, command[0]):
+                # Let the user know which command is being executed
                 print("Executing: " + command[0])
+
+                # Execute the command
                 command[1]()
             else:
                 print(f"Command {command[0]} does not exist")
         return
 
     def __prepare_lang(self):
+        # The path to the location files
         lang_path = f'files/translate_{self.lang}'
 
         # Check the dir and create it if it doesn't exist yet
@@ -148,8 +155,9 @@ class CommandHandler:
             # Other tables
             self.write_notes[1]()
         else:
+            # For each language
             for lang in self.langs:
-                # Make a copy in the correct language
+                # Make a copy in the current language
                 ch = CommandHandler(lang)
 
                 # Links between the databases
@@ -168,7 +176,7 @@ class CommandHandler:
                 ch.write_note_to_source[1]()
 
             for lang in self.langs:
-                # Make a copy in the correct language
+                # Make a copy in the current language
                 ch = CommandHandler(lang)
 
                 # Main databases
@@ -219,7 +227,9 @@ class CommandHandler:
             # Other tables
             self.read_notes[1]()
         else:
+            # For each language
             for lang in self.langs:
+                # Make a copy in the current language
                 ch = CommandHandler(lang)
 
                 # Links between the databases
@@ -238,7 +248,7 @@ class CommandHandler:
                 ch.read_note_to_source[1]()
 
             for lang in self.langs:
-                # Make a copy in the correct language
+                # Make a copy in the current language
                 ch = CommandHandler(lang)
 
                 # Main databases
@@ -273,6 +283,7 @@ class CommandHandler:
 
         # The item_base to work with
         for item_base in item_bases:
+            # Connect to the database
             db = item_base.db
 
             # Run it twice, once for negative numbers and once for positive numbers
@@ -280,12 +291,13 @@ class CommandHandler:
                 # Start fresh with the order ID numbers
                 db.reset_order_id()
 
-                # Copy all elements and give them negative IDs
+                # Copy all elements and give them negative IDs in the first run and positive IDs in the second run
                 items = db.get_items()
                 for item in items:
+                    # Change the item type to a list (was tuple)
                     item = list(item)
 
-                    # Get the order id
+                    # Get the order id and item id
                     order_id = item_base.get_property(item, item_base.order_name)
                     item_id = item_base.get_property(item, item_base.id1_name)
                     if i == 0:
@@ -317,11 +329,13 @@ class CommandHandler:
         return
         
     def __export_database(self):
+        # Connect to the database and export it
         db = Books(DEFAULT_LANG).db
         db.export_database()
         return
         
     def __import_database(self):
+        # Connect to the database and import it
         db = Books(DEFAULT_LANG).db
         db.import_database()
         return

@@ -45,6 +45,7 @@ class Peoples (ItemBase):
                         "{{%DESCR%}; {%MEANING_NAME%}; {%FATHER_AGE%}; {%MOTHER_AGE%}; " \
                         "{%AGE%}; {%GENDER%}; {%TRIBE%}; {%PROFESSION%}; {%NATIONALITY%}}\n"
 
+        # Links to different tables
         self.links = {
             "lang": {
                 "table_name": "peoples_lang",
