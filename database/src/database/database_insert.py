@@ -10,10 +10,11 @@ class DatabaseInsert:
         return
 
     #######################################################
-    # Fill
+    # Fill databases
     #######################################################
 
     def insert_item(self, item_id, item_data):
+        # Get the table name and order column name
         table_name = self.parent.get_table_name()
         order_name = self.parent.get_order_name()
 
@@ -51,6 +52,7 @@ class DatabaseInsert:
             # We already are a copy of the base class for the link
             x_to_y = self.parent.item_base
 
+        # Get the table name
         table_name = x_to_y.db.get_table_name()
 
         # Prepare the properties for SQL
@@ -76,6 +78,7 @@ class DatabaseInsert:
     # Other functions
     #######################################################
     def retrieve_id(self, item_id):
+        # Return the item and order IDs
         if item_id is None:
             item_id = self.MAX_ID
             self.MAX_ID += 1
@@ -90,13 +93,15 @@ class DatabaseInsert:
         return
 
     def get_max_id(self):
+        # Get the table name and ID column name
         table_name = self.parent.get_table_name()
         id1_name = self.parent.get_id1_name()
 
-        # Retrieve the highest ID we have and make the new ID one higher
+        # Retrieve the highest ID we have
         sql = f"SELECT {id1_name} FROM {table_name} ORDER BY {id1_name} DESC LIMIT 1"
         results = self.parent.execute_get(sql)
 
+        # Make the new ID one higher
         if len(results) > 0:
             item_id = results[0][0] + 1
             self.MAX_ID = item_id
@@ -105,13 +110,15 @@ class DatabaseInsert:
         return self.MAX_ID
 
     def get_max_order_id(self):
+        # Get the table name and order column name
         table_name = self.parent.get_table_name()
         order_name = self.parent.get_order_name()
 
-        # Retrieve the highest ID we have and make the new ID one higher
+        # Retrieve the highest ID we have
         sql = f"SELECT {order_name} FROM {table_name} ORDER BY {order_name} DESC LIMIT 1"
         results = self.parent.execute_get(sql)
 
+        # Make the new ID one higher
         if len(results) > 0:
             item_id = results[0][0] + 1
             self.ORDER_ID = item_id

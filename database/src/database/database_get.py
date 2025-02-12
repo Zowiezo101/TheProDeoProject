@@ -11,6 +11,8 @@ class DatabaseGet:
     #######################################################
 
     def get_items(self, item_id=None):
+        
+        # Get the table name and some column names
         table_name = self.parent.get_table_name()
         order_name = self.parent.get_order_name()
         id1_name = self.parent.get_id1_name()
@@ -33,6 +35,7 @@ class DatabaseGet:
 
         order_sql = ""
         if order_name != "":
+            # Add an order clause
             order_sql = f" ORDER BY {order_name}"
 
         # Add it all together
@@ -49,9 +52,12 @@ class DatabaseGet:
             # We already are a copy of the base class for the link
             x_to_y = self.parent.item_base
 
+        # Get some table and column names
         table_name = x_to_y.db.get_table_name()
         id1_name = x_to_y.db.get_id1_name()
         id2_name = x_to_y.db.get_id2_name()
+
+        # Get the item type and language
         item_type = x_to_y.db.get_type()
         lang = x_to_y.lang
 
@@ -90,6 +96,7 @@ class DatabaseGet:
                 where_sql = where_sql + f" AND item_type = {item_type}"
             order_sql = " ORDER BY note_id ASC, item_type ASC, item_id ASC"
 
+        # Add it all together
         sql = select_sql + join_sql + where_sql + group_sql + order_sql
 
         return x_to_y.db.execute_get(sql)

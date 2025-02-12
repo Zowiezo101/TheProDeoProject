@@ -11,9 +11,12 @@ class DatabaseEmpty:
     #######################################################
 
     def empty_items(self, item_id=None):
+
+        # Get the table name and ID column name
         table_name = self.parent.get_table_name()
         id1_name = self.parent.get_id1_name()
 
+        # Delete one or more items from this table
         sql = f"DELETE FROM {table_name}"
         if item_id is not None:
             sql += f" WHERE {id1_name} = {item_id}"
@@ -21,6 +24,7 @@ class DatabaseEmpty:
             # Delete the connected links
             self.delete_links(item_id)
 
+        # Add a very large limit to bypass some warnings
         sql = sql + " LIMIT 99999999"
 
         self.parent.execute_set(sql)
@@ -34,9 +38,12 @@ class DatabaseEmpty:
             # We already are a copy of the base class for the link
             x_to_y = self.parent.item_base
 
+        # Get some table and column names
         table_name = x_to_y.db.get_table_name()
         id1_name = x_to_y.db.get_id1_name()
         id2_name = x_to_y.db.get_id2_name()
+
+        # Get the item type and language
         item_type = x_to_y.db.get_type()
         lang = x_to_y.lang
 

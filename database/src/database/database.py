@@ -50,6 +50,7 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
                 # Couldn't log in..
                 print("Incorrect password or username")
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
+                # No database, create it from scratch
                 conn = self.init_database()
             else:
                 print(err)
@@ -68,6 +69,7 @@ class Database(DatabaseInsert, DatabaseEmpty, DatabaseGet, DatabaseCopy, Databas
         sql = file.read()
         print("Initializing database")
         
+        # Read the SQL file and import it
         for result in cursor.execute(sql, multi=True):
             print("Numbers of Row affected by statement '{}': {}".format(result.statement, result.rowcount))
         
@@ -108,6 +110,7 @@ USE `bible`;
     def import_database(self):
         print("Importing database from sql/bible.sql")
         
+        # Dump the contents of sql/bible.sql into the database
         subprocess.check_output(f'mysql --host={os.environ["MYSQL_HOST"]} --port=3306 --default-character-set=utf8mb4 '
                                 f'--user={os.environ["MYSQL_USER"]} -p{os.environ["MYSQL_PASSWORD"]} "bible" '
                                 '< sql/bible.sql', shell=True).decode("utf-8")
@@ -174,12 +177,15 @@ USE `bible`;
         return item_id
 
     def get_type(self):
+        # Return the item type
         return self.item_base.item_type
 
     def get_type_id(self):
+        # Return the type ID
         return self.item_base.get_type_id("type_item", self.get_type())
 
     def get_type_names(self, table):
+        # Return the type name
         sql = f"SELECT type_id, type_name FROM {table} ORDER BY type_id ASC"
         return self.execute_get(sql)
 
@@ -253,12 +259,14 @@ USE `bible`;
         table_name = self.get_table_name()
         order_name = self.get_order_name()
 
+        # SQL query to get the current order IDs
         get_sql = f"SELECT {order_name} FROM {table_name} " \
                   f"WHERE {order_name} > {order_id} ORDER BY {order_name} DESC;"
 
         # Get the results
         order_ids = self.execute_get(get_sql)
 
+        # SQL queries to increment the order IDs with 1
         for order_id in order_ids:
             order_id = order_id[0]
             sql = f"UPDATE {table_name} set {order_name} = {order_id} + 1 " \

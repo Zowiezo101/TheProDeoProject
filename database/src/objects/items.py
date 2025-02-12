@@ -346,6 +346,8 @@ class ItemBase:
 
         return action, item_id
 
+    # Types are used to prevent typos, by using a simple word or string. 
+    # It's also language friendly as every language uses the same string
     def get_type_name(self, table, type_id):
         if type_id == -1:
             return ""
@@ -362,6 +364,8 @@ class ItemBase:
         type_name = type_dict[type_id]
         return type_name
 
+    # Types are used to prevent typos, by using a simple word or string. 
+    # It's also language friendly as every language uses the same string
     def get_type_id(self, table, type_name):
         if type_name == "" or type_name == "-1":
             return -1
@@ -378,6 +382,8 @@ class ItemBase:
         type_id = type_dict[type_name]
         return type_id
 
+    # Links are a short-hand for link tables. 
+    # Tables that store extra information for one or more records or link two tables together
     def get_link(self, link):
         # The link to write
         link_details = self.links[link]
@@ -398,7 +404,7 @@ class ItemBase:
         if "id2_name" in link_details:
             x_to_y.id2_name = link_details["id2_name"]
 
-        # File name
+        # File name, as the _lang suffix isn't used in the file name
         x_to_y.file_name = x_to_y.table_name.replace("_lang", "")
 
         # Extra columns for information in the read/write file
@@ -424,8 +430,10 @@ class ItemBase:
 
     def write(self):
         if self.lang != DEFAULT_LANG:
+            # Use a link table to the other languages
             self.write_link("lang")
         else:
+            # Get the file name and store the template first
             file = self.get_file()
             file.write(self.template.replace("{%", "").replace("%}", ""))
 
@@ -433,9 +441,10 @@ class ItemBase:
             items = self.db.get_items(self.event_id)
 
             for item in items:
-                # Insert the properties into the pattern for this item
+                # Insert the properties into the template per record
                 write_line = self.insert_properties(item)
 
+                # Store this information in the file
                 print(write_line)
                 file.write(write_line)
         return
@@ -444,7 +453,7 @@ class ItemBase:
         # Get a copy of the base class for the link
         x_to_y = self.get_link(link)
 
-        # Write the link file
+        # Get the file name and store the template first
         file = x_to_y.get_file()
         file.write(x_to_y.template.replace("{%", "").replace("%}", ""))
 
@@ -452,20 +461,23 @@ class ItemBase:
         items = x_to_y.db.get_link("", self.event_id)
 
         for item in items:
-            # Insert the properties into the pattern for this item
+            # Insert the properties into the template per record
             write_line = x_to_y.insert_properties(item)
 
+            # Store this information in the file
             print(write_line)
             file.write(write_line)
         return
 
     def read(self):
         if self.lang != DEFAULT_LANG:
+            # Use a link table to the other languages
             self.read_link("lang")
         else:
+            # Get the file
             file = self.get_file("r")
 
-            # Read out the template
+            # Read out the template first
             file.readline()
             if self.is_multiline():
                 # Multiple lines used for the template? Read them all
@@ -478,6 +490,7 @@ class ItemBase:
             self.db.get_max_id()
             self.db.empty_items()
 
+            # Read the first line after the template
             line = file.readline()
             while line.strip() != "":
 
@@ -497,7 +510,7 @@ class ItemBase:
                 # Get the item id and order id
                 item_id = self.get_property(properties, self.id1_name)
 
-                # Remove the order id and the item id
+                # Remove the order id and the item id from the properties list, we use these seperately
                 if self.order_name == "":
                     # No order ID, only remove the item ID
                     del properties[self.get_property_index(self.id1_name)]
@@ -525,6 +538,7 @@ class ItemBase:
         # Get a copy of the base class for the link
         x_to_y = self.get_link(link)
 
+        # Get the file
         file = x_to_y.get_file("r")
 
         # Read out the template
@@ -544,6 +558,7 @@ class ItemBase:
         if not x_to_y.db.is_default_lang():
             x_to_y.db.get_max_order_id()
 
+        # Read the first line after the template
         line = file.readline()
         while line != "":
 
@@ -613,6 +628,8 @@ class ItemBase:
         return
 
 
+# Types are used to prevent typos, by using a simple word or string. 
+# It's also language friendly as every language uses the same string
 class Types(ItemBase):
     def __init__(self):
         self.item_type = "type"

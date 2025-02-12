@@ -19,6 +19,7 @@ class DatabaseMerge:
             # We already are a copy of the base class for the link
             x_to_y = self.parent.item_base
 
+        # Get some table and column names
         table_name = x_to_y.db.get_table_name()
         order_name = x_to_y.db.get_order_name()
         id1_name = x_to_y.db.get_id1_name()
