@@ -39,9 +39,6 @@ RewriteCond %{REQUEST_URI} ^/api/
 RewriteRule ^(.*)/([0-9]*)/maps$ $1/read_maps?id=$2 [QSA,DPI]
 
 RewriteCond %{REQUEST_URI} ^/api/
-RewriteRule ^(.*)/pages/([0-9]*)$ $1/read_page?page=$2 [QSA,DPI]
-
-RewriteCond %{REQUEST_URI} ^/api/
 RewriteCond %{REQUEST_METHOD} GET
 RewriteRule ^(.*)/([-0-9]*)$ $1/read_one?id=$2 [QSA,DPI]
 

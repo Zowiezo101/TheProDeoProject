@@ -28,4 +28,4 @@ error_reporting(E_ALL);
 // Needed for testing purposes
 $base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ? 
                 "http://localhost" : 
-                "https://prodeodatabase.com";
+                $domain_name;
