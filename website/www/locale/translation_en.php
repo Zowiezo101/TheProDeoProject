@@ -263,5 +263,3 @@ $dict = array(
 	"books.book_65"=>"Jude",
 	"books.book_66"=>"Revelation",
 );
-
-?>
