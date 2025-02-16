@@ -1,7 +1,7 @@
 <?php
 $dict = array(
 	"globals.prodeo_database"=>"ProDeo Database",
-	"globals.prodeo_copyright"=>"ProDeo Projects. Alle rechten voorbehouden",
+	"globals.prodeo_copyright"=>"The ProDeo Project. Alle rechten voorbehouden",
 	"globals.prodeo_slogan"=>"Voor God, aan Jou",
 	"navigation.home"=>"Home",
 	"navigation.database"=>"Database",

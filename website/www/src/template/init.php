@@ -14,7 +14,7 @@
     /* Getting the basic variables needed */
     $base_url = (filter_input(INPUT_SERVER, "SERVER_NAME") === "localhost") ? 
                     "http://localhost" : 
-                    "https://prodeodatabase.com";
+                    $domain_name;
     
     $data_base_url = setParameters("");
 
