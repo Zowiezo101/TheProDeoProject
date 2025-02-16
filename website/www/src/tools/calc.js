@@ -395,7 +395,7 @@ function getMapItem(id) {
             g_MapItems.concat(g_SubMapItems);
     
     var items = searchItems.filter(function(item) {
-        return item !== null ? item.id === id : false;
+        return item !== null ? parseInt(item.id, 10) === parseInt(id, 10) : false;
     });
     return items.length > 0 ? items[0] : null;
 }
