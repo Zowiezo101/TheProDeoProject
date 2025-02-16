@@ -31,10 +31,6 @@
                         "type" => ItemModal::INPUT_TEXT
                     ],
                     [
-                        "name" => "meaning_name",
-                        "type" => ItemModal::INPUT_TEXT
-                    ],
-                    [
                         "name" => "descr",
                         "type" => ItemModal::INPUT_TEXT
                     ],
