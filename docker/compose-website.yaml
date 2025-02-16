@@ -32,9 +32,16 @@ services:
       - ./config/php/php.ini:/usr/local/etc/php/php.ini
       - ./config/vhosts:/etc/apache2/sites-enabled
       
+      # The startup script to set up some data
+      - ./bin/php/startup.sh:/usr/local/bin/startup.sh
+      
       # These are log directories mapped to the VMs log directories
       - ./logs/apache2:/var/log/apache2
       - ./logs/xdebug:/var/log/xdebug
+      
+    # This script inserts the blog user into the database
+    entrypoint:
+      - /usr/local/bin/startup.sh
       
     environment:
       # Settings for the Apache webserver

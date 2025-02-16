@@ -7,13 +7,9 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Install the following libraries
 RUN apt-get update && apt-get install -y \
 	libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
-	libgmp-dev \
-	libc-client-dev libkrb5-dev \
-	libicu-dev \
-	libxml2-dev \
-	libtidy-dev \
-	libxslt-dev \
-	libzip-dev \
+	libgmp-dev libc-client-dev libkrb5-dev \
+	libicu-dev libxml2-dev libtidy-dev \
+	libxslt-dev libzip-dev default-mysql-client \
 	&& rm -r /var/lib/apt/lists/*
 	
 # Configure the following extensions
@@ -26,6 +22,7 @@ RUN docker-php-ext-install imap
 RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install gmp
 RUN docker-php-ext-install intl
+RUN docker-php-ext-install mysqli
 RUN docker-php-ext-install opcache
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install soap
