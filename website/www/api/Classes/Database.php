@@ -20,7 +20,6 @@
 
             try {
                 $this->conn = new PDO("mysql:host={$servername};dbname={$db_database}", $db_username, $db_password);
-                $this->conn->exec("set names utf8");
             } catch(PDOException $exception) {
                 $this->error = "Connection error: " . $exception->getMessage();
             }
