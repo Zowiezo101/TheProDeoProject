@@ -95,9 +95,9 @@
                                                 <!-- The name that is being displayed -->
                                                 <th>name</th>
                                                 <!-- Invisible order_id column for sorting -->
-                                                <th>order_id</th>
+                                                <th class="d-none">order_id</th>
                                             </thead>
-                                            <tbody>'.$content.'</tbody>
+                                            <tbody class="item-group">'.$content.'</tbody>
                                     </table>
                                 </div>
                             </div>
