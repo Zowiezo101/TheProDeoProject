@@ -58,6 +58,8 @@
         }
         
         public function getContent() {
+            global $dict;
+
             $title = '';
             if (isset($this->title) && $this->title !== '') {
                 $title = $this->title;
@@ -66,8 +68,12 @@
                     // If there is a record given, use the parameters as keys
                     // for the record instead of straight-up values.
                     $title = $this->record->{$this->title};
+
+                    // If the title for some reason is a localization string, use this instead
+                    if (isset($dict[$title])) {
+                        $title = $dict[$title];
+                    }
                 }
-                // TODO: Global Timeline still shows up as global.timeline (also in the timeline itself)
                 
                 $title = '<h1 class="mb-3">'.$title.'</h1>';
             }

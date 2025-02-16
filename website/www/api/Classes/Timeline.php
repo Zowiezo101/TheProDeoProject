@@ -55,7 +55,7 @@
                                 ON a.id = e2e.parent_id
                     )
 
-                    SELECT -999 AS order_id, -999 AS id, 'global.timeline' AS name, 
+                    SELECT -999 AS order_id, -999 AS id, 'timeline.global' AS name, 
                         '' AS descr, '' AS date, '' AS length, 
                         '' AS book_start_id, '' AS book_start_chap, '' AS book_start_vers,
                         '' AS book_end_id, '' AS book_end_chap, '' AS book_end_vers, 

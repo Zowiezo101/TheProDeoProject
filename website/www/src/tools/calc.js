@@ -41,6 +41,7 @@ function setMapItems (map) {
     g_MapItems.forEach(function(item) {
         item.gen = parseInt(item.gen, 10);
         item.level = parseInt(item.level, 10);
+        item.name = dict.hasOwnProperty(item.name) ? dict[item.name] : item.name;
                 
 //        // The notes should be ordered per item
 //        item.notes = item.notes ? item.notes : 
