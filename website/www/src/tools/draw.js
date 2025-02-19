@@ -89,31 +89,16 @@ function drawItem(group, item) {
         var href = page_base_url + item.id;
         var link = group.link(href);
             link.target('_blank');
-
-        var popover_details = $("\
-                <table class='table table-striped'>" + 
-                    "<tbody>" +
-                    // TODO:
-//                    insertDetail(item, "meaning_name", true) + 
-//                    insertDetail(item, "aka", true) + 
-//                    insertDetail(item, "descr", true) + 
-//                    insertDetail(item, "gender", true) + 
-//                    insertDetail(item, "notes", true) + 
-                    "</tbody>" + 
-                "</table>");
-            
-        if (popover_details.find("th").length === 0) {
-            // No available information on this event
-            popover_body.append("<p>" + dict["map.info.people.unknown"] + "</p>");
-        } else {
-            popover_body.append(popover_details);
-        }
         
         // Explain how to reach the detail page
         popover_body.append("<p class='font-weight-bold'>" + 
                     dict["map.info.people.details"].replace("LINK", "<a href='" + href + "' target='_blank'>" + 
                     dict["map.info.here"] + "</a>") + 
                 "</p>");
+
+        // Add the details of this item
+        var popover_details = insertIntoTemplate(item);
+        popover_body.append(popover_details);
     
         // Draw the rectangle
         link.rect(item.width, 
@@ -155,25 +140,6 @@ function drawItem(group, item) {
             // Global timeline
             popover_body.append("<p>" + dict["map.info.global"] + "</p>");
         }
-        
-        var popover_details = $("\
-                <table class='table table-striped'>" + 
-                    "<tbody>" +
-                    // TODO:
-//                    insertDetail(item, "descr", true) + 
-//                    insertDetail(item, "length", true) + 
-//                    insertDetail(item, "date", true) + 
-//                    insertDetail(item, "notes", true) + 
-//                    insertDetail(item, "books", true) + 
-                    "</tbody>" + 
-                "</table>");
-            
-        if (popover_details.find("th").length === 0) {
-            // No available information on this event
-            popover_body.append("<p>" + dict["map.info.event.unknown"] + "</p>");
-        } else {
-            popover_body.append(popover_details);
-        }
             
         if ((map_id === -999 && item.id !== -999) ||
             (map_id !== -999 && item.id === -999)) {
@@ -191,6 +157,10 @@ function drawItem(group, item) {
                                     dict["map.info.here"] + "</a>") + 
                                 "</p>");
         }
+
+        // Add the details of this item
+        var popover_details = insertIntoTemplate(item);
+        popover_body.append(popover_details);
         
         if (itemHasSubChildren(item)) {
             $(link.node).attr("data-toggle", "modal");
@@ -283,7 +253,45 @@ function drawLink(group, child) {
     }
 }
 
+function insertIntoTemplate(item) {   
+    // Create a copy of the template
+    var popup_template = $("#popup_template").clone();
 
+    // Go through all the rows to see which information is actually filled in
+    popup_template.find("tr").get().forEach(row => {
+        // Get the header element and the data element
+        var header = $(row).find("th")[0];
+        var data = $(row).find("td")[0];
+
+        // Get the current property name and value
+        var name = $(header).text();
+        var value = dict.hasOwnProperty(item[name]) ? dict[item[name]] : item[name];
+
+        // Update the title
+        $(header).text(dict["items." + name]);
+
+        // Update the data
+        $(data).html(value);
+
+        if (value === "" || value === -1 || value === "-1" || value === null) {
+            // Delete this row, as it has no information to show
+            $(row).remove();
+        }
+    });
+
+    // If there are no rows, no information is known
+    if (popup_template.find("tr").length > 0) {
+        // Make the table visible
+        popup_template.find("table").removeClass("d-none");
+    } else if (g_Options.type !== TYPE_WORLDMAP) {
+        var type = g_Options.type === TYPE_FAMILYTREE ? "people" : "event";
+
+        // No available information on this event
+        popup_template.append("<p>" + dict["map.info." + type + ".unknown"] + "</p>");
+    } 
+    
+    return popup_template;
+}
 
 function getGenderColor(int) {
     var color = "";

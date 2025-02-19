@@ -16,6 +16,10 @@
             $map_content = $this->createMapContent([
                 "type" => TYPE_WORLDMAP
             ]);
+
+            $map_popup = $this->createMapPopup([
+                "type" => TYPE_WORLDMAP
+            ]);
             
             /** These are Modules that are being added to the ItemContent Module */
             // No default content and no detail content, 

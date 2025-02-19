@@ -1063,7 +1063,7 @@
             unset($note);
             
             // select all query
-            $query_params = [":id" => [$id, \PDO::PARAM_INT]];
+            $query_params = ($id !== null ? [":id" => [$id, \PDO::PARAM_INT]] : []);
             $query_string = "
                 SELECT i.id, i.name, n.note, n.id AS note_id, s.source
                     FROM {$table_parent} i
@@ -1076,9 +1076,9 @@
                     LEFT JOIN " . self::TABLE_N2S . " n2s
                         ON n2s.note_id = n.id
                     LEFT JOIN " . self::TABLE_SOURCES . " s
-                        ON s.id = n2s.source_id
-                    WHERE
-                        i.id = :id
+                        ON s.id = n2s.source_id " .
+                    ($id !== null ? "WHERE
+                        i.id = :id " : "") . "
                     ORDER BY
                         id ASC";
 

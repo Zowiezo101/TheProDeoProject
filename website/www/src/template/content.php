@@ -64,6 +64,7 @@
     
     // The Parts used by this Page
     require "src/modules/MapPage/Parts/Content/MapContent.php";
+    require "src/modules/MapPage/Parts/Content/MapPopup.php";
     require "src/modules/MapPage/Parts/Content/LoadingScreen.php";
     require "src/modules/MapPage/Parts/Content/SmallScreen.php";
     require "src/modules/MapPage/Parts/Content/Modal.php";

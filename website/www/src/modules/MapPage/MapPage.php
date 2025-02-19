@@ -10,6 +10,7 @@
     use Maps\MapWorldmap;
 
     class MapPage extends ItemPage {
+        protected $map_popup;
         
         public function __construct($type) {
             // Setting the parent Module
@@ -32,6 +33,13 @@
 
             $map_content = $map->getMapContent();
             $this->setContent($map_content);
+
+            $map_popup = $map->getMapPopup();
+            $this->setPopup($map_popup);
+        }
+        
+        public function setPopup($map_popup) {
+            $this->map_popup = $map_popup;
         }
         
         // Return all the content of this module
@@ -39,6 +47,7 @@
             $content = '<div class="row">
                     '.$this->item_list->getContent().'
                     '.$this->item_content->getContent().'
+                    '.$this->map_popup->getContent().'
                 </div>';
             
             return $content;

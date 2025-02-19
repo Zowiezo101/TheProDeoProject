@@ -34,7 +34,8 @@
             $query_string = "WITH RECURSIVE ancestors AS 
                     (
                     SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
-                        t.type_name AS gender, -1 as parent_id, aka.people_name AS aka,
+                        g.type_name AS gender, -1 as parent_id, aka.people_name AS aka,
+                        p.father_age, p.mother_age, p.age, t.type_name AS tribe, p.nationality, p.profession,
                         1 AS level, 0 AS gen, 0 AS x, 0 AS y
                     FROM 
                         {$table} p
@@ -49,15 +50,19 @@
                             GROUP BY people_id) AS aka
                                 ON aka.people_id = p.id
                     LEFT JOIN
-                        type_gender AS t
-                            ON p.gender = t.type_id
+                        type_gender AS g
+                            ON p.gender = g.type_id
+                    LEFT JOIN
+                        type_tribe AS t
+                            ON p.tribe = t.type_id
                     WHERE
                         p.id = :id
 
                     UNION DISTINCT
 
                     SELECT p.order_id, p.id, p.name, p.meaning_name, p.descr,
-                        t.type_name AS gender, p2p.parent_id, aka.people_name AS aka,
+                        g.type_name AS gender, p2p.parent_id, aka.people_name AS aka,
+                        p.father_age, p.mother_age, p.age, t.type_name, p.nationality, p.profession,
                         1 AS level, gen+1, 0 AS x, 0 AS y
                     FROM 
                         {$table} p
@@ -78,12 +83,16 @@
                             GROUP BY people_id) AS aka
                                 ON aka.people_id = p.id
                     LEFT JOIN
-                        type_gender AS t
-                            ON p.gender = t.type_id
+                        type_gender AS g
+                            ON p.gender = g.type_id
+                    LEFT JOIN
+                        type_tribe AS t
+                            ON p.tribe = t.type_id
                 )
 
                 SELECT distinct(order_id), id, name, meaning_name, descr,
-                    gender, parent_id, aka,
+                    gender, parent_id, aka, father_age, mother_age, age, 
+                    tribe, nationality, profession,
                     level, gen, x, y FROM ancestors
                 ORDER BY
                     gen ASC, parent_id ASC, order_id ASC";

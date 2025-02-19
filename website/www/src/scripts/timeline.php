@@ -72,10 +72,10 @@
         // Hide the loading screen
 
         if(setSVG(map)) {
-            setMapItems(data);
+            setMapItems(TYPE_TIMELINE, data);
 
             // Calculate all the locations of the familytree
-            calcMapItems({type: TYPE_TIMELINE});
+            calcMapItems();
 
             // We've got the people and the locations, now time to draw it!
             drawControlButtons(data, TYPE_TIMELINE);
@@ -104,7 +104,7 @@
             setSubMapItems(id);
 
             // Calculate all the locations of the familytree
-            calcMapItems({type: TYPE_TIMELINE});
+            calcMapItems();
 
             // We've got the people and the locations, now time to draw it!
             drawControlButtons(getMapItem(id), TYPE_TIMELINE);

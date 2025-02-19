@@ -31,7 +31,10 @@ var g_Offsets = {
     height_max: 0
 };
 
-function setMapItems (map) {
+function setMapItems (type, map) {
+    // Save the type, this is needed to set the map items
+    g_Options["type"] = type;
+
     g_Map = map;
     
     // Set the parent back as the first item
@@ -41,22 +44,15 @@ function setMapItems (map) {
     g_MapItems.forEach(function(item) {
         item.gen = parseInt(item.gen, 10);
         item.level = parseInt(item.level, 10);
-        item.name = dict.hasOwnProperty(item.name) ? dict[item.name] : item.name;
-                
-//        // The notes should be ordered per item
-//        item.notes = item.notes ? item.notes : 
-//                    map.notes["activity" + item.id] ? 
-//                    map.notes["activity" + item.id] : 
-//                    map.notes["event" + item.id] ? 
-//                    map.notes["event" + item.id] :
-//                    map.notes["people" + item.id] ? 
-//                    map.notes["people" + item.id] : [];
     });
     
     g_MapItems.forEach(function(item) {    
         // Set the parents and the children/sublevels
         setParents(item.id, item.parent_id);
     });
+
+    // Insert additional data like the notes, AKA and appearances in the Bible
+    g_MapItems = insertData(g_MapItems);
     
     // Archive the subs for later use
     g_ArchiveItems = filterMapItems('level', 2);
@@ -84,12 +80,13 @@ function setSubMapItems(id) {
         gender: ancestor.hasOwnProperty('gender') ? ancestor.gender : null,
         date: ancestor.hasOwnProperty('date') ? ancestor.date : null,
         length: ancestor.hasOwnProperty('length') ? ancestor.length : null,
-        book_start_id: ancestor.hasOwnProperty('book_start_id') ? ancestor.book_start_id : null, 
-        book_start_chap: ancestor.hasOwnProperty('book_start_chap') ? ancestor.book_start_chap : null,
-        book_start_vers: ancestor.hasOwnProperty('book_start_vers') ? ancestor.book_start_vers : null,
-        book_end_id: ancestor.hasOwnProperty('book_end_id') ? ancestor.book_end_id : null,
-        book_end_chap: ancestor.hasOwnProperty('book_end_chap') ? ancestor.book_end_chap : null,
-        book_end_vers: ancestor.hasOwnProperty('book_end_vers') ? ancestor.book_end_vers : null,
+        father_age: ancestor.hasOwnProperty('father_age') ? ancestor.father_age : null,
+        mother_age: ancestor.hasOwnProperty('mother_age') ? ancestor.mother_age : null,
+        age: ancestor.hasOwnProperty('age') ? ancestor.age : null,
+        tribe: ancestor.hasOwnProperty('tribe') ? ancestor.tribe : null,
+        profession: ancestor.hasOwnProperty('profession') ? ancestor.profession : null,
+        nationality: ancestor.hasOwnProperty('nationality') ? ancestor.nationality : null,
+        books: ancestor.hasOwnProperty("books") ? ancestor.books : null,
         parent_id: -1,
         gen: 0,
         gen_index: 0,
@@ -260,7 +257,7 @@ function calcMapItems(options = new Object()) {
     
     // The size of the items
     if(!options || !options.hasOwnProperty('item_width')) 
-        options.item_width = options.type === TYPE_FAMILYTREE ? 100 : 300;
+        options.item_width = g_Options.type === TYPE_FAMILYTREE ? 100 : 300;
     if(!options || !options.hasOwnProperty('item_height')) 
         options.item_height = 50;
     
@@ -274,7 +271,7 @@ function calcMapItems(options = new Object()) {
     g_Options = {
         "length": {X: options.item_width, Y: options.item_height},
         "dist": {X: options.hori_dist, Y: options.vert_dist},
-        "type": options.type,
+        "type": g_Options.type,
         "sub": g_Options.sub
     };
     
@@ -789,4 +786,132 @@ function calcPolyLineCoords(items) {
         }
         
         return coords;
+}
+
+function insertData(items) {
+    items = insertAKA(items);
+    items = insertNotes(items);
+    items = insertBooks(items);
+
+    return items;
+}
+
+function insertAKA(items) {
+    // Only applicable to familytree maps and worldmaps
+    if ((g_Options.type === TYPE_FAMILYTREE) || g_Options.type === TYPE_WORLDMAP) {
+        items.forEach(item => {
+            // Make sure the item has at least the aka property
+            item.aka = (item.hasOwnProperty("aka") && item.aka !== null) ? JSON.parse(item.aka) : [];
+
+            var akas = [];
+
+            // For every AKA name
+            item.aka.forEach(aka => {
+                // Get all the AKAs for this item
+                var name = aka.name;
+
+                var meaning_name = "";
+                // If the meaning of this name is set, show this as well
+                if (aka.hasOwnProperty("meaning_name") && aka.meaning_name !== "") {
+                    meaning_name = " (" + aka.meaning_name + ")";
+                }
+
+                // Add it all to the array
+                akas.push(name + meaning_name);
+            })
+        
+            // Add it all together
+            item.aka = akas.join("<br>");
+        });
+    }
+
+    return items;
+}
+
+function insertNotes(items) {
+    items.forEach(item => {
+        // Make sure the item has at least the notes property
+        item.notes = item.hasOwnProperty("notes") ? item.notes : [];
+
+        var notes = [];
+
+        // All the sources are inserted as little numbers, make sure no number
+        // repeats itself to prevent confusion
+        var total_num_sources = 1;
+        item.notes.forEach(note => {
+            // Every note has either zero, one or multiple sources
+            var sources = [];
+    
+            note.sources.forEach(source => {
+                // Turn every source into a link
+                sources.push(`
+                    <sup class="font-weight-bold">
+                        <a target="_blank" href="` + source + `">
+                            ` + (total_num_sources++) + `
+                        </a>
+                    </sup>`);
+            }) 
+    
+            // Add the actual note and the sources together
+            notes.push("<p>" + note.note + " " + sources.join(" ") + "</p>");
+        })
+        
+        // Add it all together
+        item.notes = notes.join("");
+    });
+
+    return items;
+}
+
+function insertBooks(items) {
+    items.forEach(item => {
+        var books = [];
+
+        if (g_Options.type === TYPE_TIMELINE) {
+            // In case of the timeline, get the AKA appearances 
+            // (This includes the regular appearance too)
+            if (item.hasOwnProperty("aka") && item.aka.length > 0) {
+                item.aka.forEach(aka => {
+                    books.push(insertBook(aka));
+                });
+            } else {
+                // Get the regular book appearance
+                books.push(insertBook(item));
+            }
+        } else {
+            // Get the regular book appearance
+            books.push(insertBook(item));
+        }
+
+        item.books = books.join("<br>");
+    })
+
+    return items;
+}
+
+function insertBook(item) {
+
+    var book_str = "";
+    var book_start = "";
+    var book_end = "";
+
+    if (item.hasOwnProperty("book_start_id") && item.book_start_id !== "") {
+        var book_id = dict["books.book_" + item.book_start_id];
+        var book_chap = item.book_start_chap;
+        var book_vers = item.book_start_vers;
+
+        book_start = book_id + " " + book_chap + ":" + book_vers;
+        book_str = book_start;
+    } 
+    
+    if (item.hasOwnProperty("book_end_id") && item.book_end_id !== "") {
+        book_id = dict["books.book_" + item.book_end_id];
+        book_chap = item.book_end_chap;
+        book_vers = item.book_end_vers;
+
+        book_end = book_id + " " + book_chap + ":" + book_vers;
+        book_str = book_start + " - " + book_end;
+    }
+
+    return book_str;
 }

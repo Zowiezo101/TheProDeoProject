@@ -27,12 +27,19 @@ function showMap() {
     
     drawInfoWorldMapButton();
 
+    // Let the calc and draw scripts know it's for a worldmap
+    g_Options.type = TYPE_WORLDMAP;
+
     // Insert all the locations as markers to click
     getItems(TYPE_WORLDMAP).then(function(worldmap) {
         if (worldmap.records) {            
+            // Set some extra data for these locations
+            insertData(worldmap.records);
+
             worldmap.records.forEach(function (location) {
                 // Get the coordinates from the location object
                 var coords = location.coordinates.split(',');
+
 
                 // The marker, positioned at the location
                 const marker = new google.maps.Marker({
@@ -131,16 +138,7 @@ function setContent(location) {
     var href = page_base_url + location.id;
     
     var info = "<h2>" + location.name + "</h2>" + 
-        "<table class='table table-striped'>" + 
-            "<tbody>" +
-//            TODO:
-//                insertDetail(location, "meaning_name") + 
-//                insertDetail(location, "aka") + 
-//                insertDetail(location, "descr") + 
-//                insertDetail(location, "type") + 
-//                insertDetail(location, "notes") + 
-            "</tbody>" + 
-        "</table>" + 
+        insertIntoTemplate(location).html() + 
         "<p class='font-weight-bold'>" + dict["map.info.location.details"] + ":<br>" + 
             "<a href='" + href + "' target='_blank'" + 
                 "data-toggle='tooltip' title='" + dict["items.details.worldmap"] + "'" + 

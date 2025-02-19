@@ -62,10 +62,10 @@
         // Hide the loading screen
 
         if(setSVG(map)) {
-            setMapItems(data);
+            setMapItems(TYPE_FAMILYTREE, data);
 
             // Calculate all the locations of the familytree
-            calcMapItems({type: TYPE_FAMILYTREE});
+            calcMapItems();
 
             // We've got the people and the locations, now time to draw it!
             drawControlButtons(data, TYPE_FAMILYTREE);

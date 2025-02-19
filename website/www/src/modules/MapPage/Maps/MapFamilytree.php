@@ -19,6 +19,10 @@
             $map_content = $this->createMapContent([
                 "type" => TYPE_FAMILYTREE
             ]);
+
+            $map_popup = $this->createMapPopup([
+                "type" => TYPE_FAMILYTREE
+            ]);
             
             /** These are Modules that are being added to the ItemContent Module */
             // Add a title to the content

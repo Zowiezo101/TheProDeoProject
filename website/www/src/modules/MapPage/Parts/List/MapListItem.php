@@ -53,12 +53,6 @@
                 $value = $dict[$value];
             }
                 
-            if (isset($record->aka) && $record->aka != "") {
-                // The AKA value is only given when searching for a name and there is a hit
-                // with an AKA value.
-                $value = $value." ({$record->aka})";
-            }
-                
             $onclick = '';
             if ($this->onclick === ONCLICK_LOADING) {
                 // When onclick is set, an action is executed when clicking the button

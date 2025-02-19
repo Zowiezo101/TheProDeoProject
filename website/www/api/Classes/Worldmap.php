@@ -43,8 +43,8 @@
             $query_params = [];
             $query_string = "SELECT l.order_id,
                     l.id, l.name, l.descr,
-                    l.meaning_name, IFNULL(aka.location_name, '') AS aka,
-                    l.type, l.coordinates
+                    l.meaning_name, aka.location_name AS aka,
+                    t.type_name as type, l.coordinates
                 FROM
                     {$table} l
                 LEFT JOIN
@@ -57,6 +57,9 @@
                             ), ']') AS location_name FROM location_to_aka
                         GROUP BY location_id) AS aka
                             ON aka.location_id = l.id
+                LEFT JOIN
+                    type_location t
+                        ON t.type_id = l.type
                 WHERE
                     coordinates IS NOT NULL AND
                     coordinates <> ''";

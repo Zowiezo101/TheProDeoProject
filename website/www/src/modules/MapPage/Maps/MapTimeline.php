@@ -25,6 +25,10 @@
             $map_content = $this->createMapContent([
                 "type" => TYPE_TIMELINE
             ]);
+
+            $map_popup = $this->createMapPopup([
+                "type" => TYPE_TIMELINE
+            ]);
             
             /** These are Modules that are being added to the ItemContent Module */
             // Add a title to the content
