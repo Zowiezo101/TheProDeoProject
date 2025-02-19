@@ -117,7 +117,7 @@ function drawItem(group, item) {
                         
     } else {
         // The Map ID
-        var map_id = $("#item_list").attr("data-id");
+        var map_id = parseInt($("#item_list").attr("data-id"), 10);
         
         if ((map_id === -999 && item.id === -999) ||
             (map_id !== -999 && item.id !== -999)) {

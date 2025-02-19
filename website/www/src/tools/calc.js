@@ -44,6 +44,9 @@ function setMapItems (type, map) {
     g_MapItems.forEach(function(item) {
         item.gen = parseInt(item.gen, 10);
         item.level = parseInt(item.level, 10);
+
+        // Also update the name to use the translated string
+        item.name = dict.hasOwnProperty(item.name) ? dict[item.name] : item.name;
     });
     
     g_MapItems.forEach(function(item) {    
