@@ -20,6 +20,17 @@
             }
         }
         
+        protected function getData($type) {
+            // Options for the itemlist    
+            $data = getItems($type);
+            
+            if ($this->checkData($data) === false) {
+                $data = null;
+            }   
+            
+            return $data;
+        }
+        
         // Check data from the database for errors
         public function checkData($data) {
             $error = false;

@@ -24,7 +24,7 @@
             <div class='row pb-2'>
                 <div class='col-md-12'>
                     <label class='font-weight-bold'>
-                        {$dict["items.{$this->name}"]}:
+                        {$dict["items.{$this->name}"]}
                     </label>
                 </div>
                 

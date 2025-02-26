@@ -110,9 +110,11 @@
 
         // The actual check for page change
         if ($_SESSION["page_id_old"] !== $page_id) {
-            unset($_SESSION["sort"]);
-            unset($_SESSION["search"]);
-            unset($_SESSION["page"]);
+            // Save a few settings and empty out the rest
+            $_SESSION = [
+                "page_id" => $_SESSION["page_id"],
+                "page_id_old" => $_SESSION["page_id_old"],
+            ];
         }
     }
 

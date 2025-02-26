@@ -10,11 +10,14 @@ $(function(){
         
         // TODO:
         // - Make sure the icon changes color when filter is used
-        // - Make sure the search-term and name parts are both samen value on init
         // - Make sure the AKA is also searched with search-term and name parts
         // - Reset filter
-        // - Bij zoeken het aantal resultaten laten zien op de knop
-        // Duidelijk maken op de website dat alle ideeen en opvattingen van mij persoonlijk zijn en niet altijd correct zullen zijn.
+
+        // Make the table visible
+        $("#item_list").removeClass("d-none");
+
+        // And the spinner invisible
+        $("#item_list_spinner").addClass("d-none");
     }
 });
 
@@ -48,12 +51,20 @@ function initTable() {
 
         // Let the DataTable know which columns we've added
         columns: columns,
-        order: [1, "asc"]
+        order: [1, "asc"],
+
+        // Callback to remove the spinner and show the table
+        drawCallback: function(settings) {
+            // Make the table visible
+            $("#item_list").removeClass("d-none");
+
+            // And the spinner invisible
+            $("#item_list_spinner").addClass("d-none");
+        },
     });
 }
 
 function initFilter() {
-    // TODO: The page number is incorrect after the filter has been initialized
     // Loop through all the search fields and fill in saved settings
     var search_fields = $(".search-field");
     search_fields.each((idx, el) => {
@@ -63,56 +74,52 @@ function initFilter() {
         initField(field);
     });
 
-    // Setting the sorting type
+    // Setting the sorting type without drawing the page right away
     if ($("#item_list").data("table-sort")) {
-        setSort($("#item_list").data("table-sort"));
+        setSort($("#item_list").data("table-sort"), true);
     }
 
-    // Adding the saved search term
-    if ($("#item_list").data("table-search")) {
-        setSearch($("#item_list").data("table-search"));
-    }
-
-    // Setting the saved page
+    // Setting the saved page or go to the first page to trigger the initial search
     if ($("#item_list").data("table-page")) {
         setPage($("#item_list").data("table-page"));
+    } else {
+        // Apply the filters to the datatable
+        $("#item_list").DataTable().draw();
+        setPage(0);
     }
 }
 
-function onFilterChange() {
-    
-    // Loop through all the search fields and save the settings
-    var search_fields = $(".search-field");
-    search_fields.each((idx, el) => {
-        var field = $(el);
+function onFilterChange() {    
+    // Make the table invisible
+    $("#item_list").addClass("d-none");
+
+    // And the spinner visible
+    $("#item_list_spinner").removeClass("d-none");
+
+    // This timeout function fixes a race condition, where jQuery initiates a change in the DOM
+    // But this change has a slight delay and executes AFTER the redraw of the table
+    // Using this timeout function will give the DOM enough time to update
+    setTimeout(function() {
+        // Loop through all the search fields and save the settings
+        var search_fields = $(".search-field");
+        search_fields.each((idx, el) => {
+            var field = $(el);
+            
+            // Save this field
+            saveField(field);
+        });
+
+        // Apply the filters to the datatable
+        $("#item_list").DataTable().draw();
         
-        // Save this field
-        saveField(field);
-    });
-    
-    // TODO: Implement suggestion while typing
-    // Basically filtering a specific property while typing
-    // Sliders and selects still need to be filled in (select can be done in PHP)
-    
-    // Apply the filters to the datatable
-    $("#item_list").DataTable().draw();
-    
-    // Go back to the first page
-    setPage(0);
+        // Go back to the first page
+        setPage(0);
+    }, 1);
 }
 
-function onTextChange(name) {
-    // The table
-    var table = $("#item_list").DataTable();
-    
+function onTextChange(name) {    
     // The value to filter with
     value = getFieldValue($("#" + name));
-    
-    // Add the search function
-    table.search.fixed(name, value);
-    
-    // Draw the changes in the filter
-    onFilterChange();
     
     if (name === "name") {
         // Also update the search bar
@@ -120,8 +127,60 @@ function onTextChange(name) {
     }
 }
 
-function onFilterReset() {
+function onBookChange(name, init=false) {
+    // The selected book
+    var book = getField(name);
 
+    // The amount of chapters this book has
+    var num_chaps = parseInt(book.find(":selected").data("num-chapters"), 10);
+
+    // Get the chapter field that corresponds with this book
+    var field = getField(name.replace("id", "chap"));
+
+    // Clear the chapter select
+    field.children().remove();
+
+    // Insert the disabled option for this book
+    field.append("<option selected disabled value='-1'>" + dict["books.chapter"] + "</option>");
+
+    // Insert all the chapters for this book
+    for (var chap = 0; chap < num_chaps; chap++) {
+        var option = `
+            <option value='${chap + 1}'>
+                ${chap + 1}
+            </option>`;
+
+        field.append(option);
+    }
+
+    if (init !== false) {
+        // Initialize the chapters by selecting the stored chapter (if any)
+        var value = field.data("val");
+        if (value !== -1) {
+            field.val(value);
+        }
+    }
+}
+
+function onFilterReset() {
+    // // Loop through all the search fields and clear the settings
+    // var search_fields = $(".search-field");
+    // search_fields.each((idx, el) => {
+    //     var field = $(el);
+        
+    //     // Clear this field
+    //     saveField(field);
+    // });
+
+    // // TODO: Implement suggestion while typing
+    // // Basically filtering a specific property while typing
+    // // Sliders and selects still need to be filled in (select can be done in PHP)
+
+    // // Apply the filters to the datatable
+    // $("#item_list").DataTable().draw();
+
+    // // Go back to the first page
+    // setPage(0);
 }
 
 function initField(field) {    
@@ -159,7 +218,14 @@ function initText(field) {
     // The textfield
     var name = getFieldName(field);
     
+    // The search function
     table.search.fixed(name, function(string, data, idx) {
+        if (idx === 0) {
+            // Debug stuff
+            console.log(name);
+            console.log($("#item_list").DataTable().data().length);
+        }
+
         // Get the column we're trying to compare with
         var column_idx = $("#item_list").DataTable().column(name + ":name")[0][0];
         var column_value = data[column_idx].toLowerCase();
@@ -173,18 +239,16 @@ function initText(field) {
 }
 
 function initSlider(field) {
-    
-    // Get the minimum and maximum values from the table
-    var range = getSliderRange(field);
+    // Get the saved slider values, if any
+    var values = field.data("slider-value");
+    var min = field.data("slider-min");
+    var max = field.data("slider-max");
     
     // Set the max, min and values
     slider = field.slider({
-        max: range[1],
-        min: range[0]
+        value: [values[0] !== -1 ? values[0] : min,
+                values[1] !== -1 ? values[1] : max]
     });
-    
-    // Set the checkbox as well
-    // TODO:
     
     // The table
     var table = $("#item_list").DataTable();
@@ -192,19 +256,58 @@ function initSlider(field) {
     // The slider
     var name = getFieldName(field);
     
-    table.search.fixed(name, function(string, data, idx) {        
-        // Get the column we're trying to compare with
-        var column_idx = $("#item_list").DataTable().column(name + ":name")[0][0];
-        var column_value = parseInt(data[column_idx], 10);
+    // The search function
+    table.search.fixed(name, function(string, data, idx) {  
+        if (idx === 0) {
+            // Debug stuff
+            console.log(name);
+            console.log($("#item_list").DataTable().data().length);
+        }
     
         // Get the search value
         var search_value = getFieldValue(field);
-        
         var search_result = false;
-        // Check whether the column value is within the selected range
-        if(column_value >= search_value[0] &&
-           column_value <= search_value[1]) {
-            search_result = true;
+
+        // Are unknown values allowed?
+        var search_nan = getFieldValue(getField(name + "_nan"));
+
+        if (name === "parent_age") {
+            // The columns are mother_age and father_age
+            var column_idx_m = $("#item_list").DataTable().column("mother_age:name")[0][0];
+            var column_idx_f = $("#item_list").DataTable().column("father_age:name")[0][0];
+            var column_value_m = parseInt(data[column_idx_m], 10);
+            var column_value_f = parseInt(data[column_idx_f], 10);
+
+            // Check whether the column value is within the selected range
+            // or is an unknown value. If any of the parent ages is known, 
+            // don't treat it as an unknown value
+            if (column_value_m == -1 && column_value_f == -1 && search_nan == true) {
+                search_result = true;
+            } else if(column_value_m !== -1 &&
+                    column_value_m >= search_value[0] &&
+                    column_value_m <= search_value[1]) {
+                // The mother age is in this range
+                search_result = true;
+            } else if(column_value_f !== -1 &&
+                column_value_f >= search_value[0] &&
+                column_value_f <= search_value[1]) {
+                // The father age is in this range
+                search_result = true;
+            } 
+        } else {
+            // Get the column we're trying to compare with
+            var column_idx = $("#item_list").DataTable().column(name + ":name")[0][0];
+            var column_value = parseInt(data[column_idx], 10);
+
+            // Check whether the column value is within the selected range
+            // or is an unknown value
+            if (column_value == -1 && search_nan == true) {
+                search_result = true;
+            } else if(column_value !== -1 &&
+                    column_value >= search_value[0] &&
+                    column_value <= search_value[1]) {
+                search_result = true;
+            } 
         }
         
         return search_result;
@@ -212,15 +315,116 @@ function initSlider(field) {
 }
 
 function initCheckbox(field) {
-    
+    // Get the saved value
+    var value = field.val();
+
+    if (value !== "") {
+        // Set the saved value
+        field.prop("checked", (value === "true") || (value === true));
+    }
 }
 
 function initSelect(field) {
+    // Select the saved option if one is saved
+    var value = parseInt(field.data("val"), 10);
+    if (value !== -1) {
+        field.val(value);
+    }
+
+    // The table
+    var table = $("#item_list").DataTable();
     
+    // The slider
+    var name = getFieldName(field);
+
+    // The search function
+    table.search.fixed(name, function(string, data, idx) {
+        if (idx === 0) {
+            // Debug stuff
+            console.log(name);
+            console.log($("#item_list").DataTable().data().length);
+        }
+
+        // By default the search function returns true
+        var search_result = true;
+        var search_value = getFieldValue(field);
+
+        // Get the column we're trying to compare with
+        var column_idx = $("#item_list").DataTable().column(name + ":name")[0][0];
+        var column_value = parseInt(data[column_idx], 10);
+
+        if (search_value !== -1) {
+            search_result = search_value === column_value;
+        }
+            
+        return search_result;
+    });
 }
 
 function initBook(field) {
-    
+    // Name of the field we're working with
+    var name = getFieldName(field);
+
+    // Do not initialize the chapters here
+    if (!name.includes("chap")) {
+        // Select the saved book if one is saved
+        var value = parseInt(field.data("val"), 10);
+        if (value !== -1) {
+            field.val(value);
+
+            // Insert the chapters for the selected book and initialize this field
+            onBookChange(name, true);
+        }
+
+        // The table
+        var table = $("#item_list").DataTable();
+
+        // The search function
+        table.search.fixed(name, function(string, data, idx) {
+            if (idx === 0) {
+                // Debug stuff
+                console.log(name);
+                console.log($("#item_list").DataTable().data().length);
+            }
+
+            // By default the search function returns true
+            var search_result = true;
+            
+            // Get the search values
+            var book_search_value = getFieldValue(field);
+            var chap_search_value = getFieldValue(getField(name.replace("id", "chap")));
+
+            // Only if both the chapter and book are set, search with these values
+            if (book_search_value !== -1 && chap_search_value !== -1) {
+                // Get book and chapter columns for this book-select element
+                var book_col_idx = $("#item_list").DataTable().column(name + ":name")[0][0];
+                var chap_col_idx = $("#item_list").DataTable().column(name.replace("id", "chap") + ":name")[0][0];
+
+                var book_col_value = parseInt(data[book_col_idx], 10);
+                var chap_col_value = parseInt(data[chap_col_idx], 10);
+
+                // First check on the book, then check on the chapter
+                if (book_col_value === book_search_value) {
+                    // If the book is equal to the search value, check the chapter
+                    if (name.includes("start")) {
+                        // Chapter needs to be higher than the search value
+                        search_result = (chap_col_value >= chap_search_value);
+                    } else if (name.includes("end")) {
+                        // Chapter needs to be lower than the search value
+                        search_result = (chap_col_value <= chap_search_value);
+                    }
+                } else if (name.includes("start") && (book_col_value < book_search_value)) {
+                    // If the book is higher than the search value, it's a hit
+                    search_result = false;
+                } else if (name.includes("end") && (book_col_value > book_search_value)) {
+                    // If the book is lower than the search value, it's a hit
+                    search_result = false;
+                }
+            }
+            
+            return search_result;
+        });
+    }
 }
 
 function saveField(field) {
@@ -234,6 +438,23 @@ function saveField(field) {
     
     // Saving the parameter
     updateSession(params);
+}
+
+// function clearField(field) {
+//     // Get the field value and name
+//     var field_name = getFieldName(field);
+//     var field_value = getFieldValue(field);
+
+//     // The session parameter to save
+//     var params = {};
+//     params[field_name] = field_value;
+    
+//     // Saving the parameter
+//     updateSession(params);
+// }
+
+function getField(name) {
+    return $("#" + name);
 }
 
 function getFieldName(field) {
@@ -254,17 +475,16 @@ function getFieldValue(field) {
             value = field.slider('getValue');
             break;
 
-        case "check":
-            value = field.is(":checked");
+        case "checkbox":
+            value = field.prop("checked");
             break;
 
         case "select":
-            value = field.find(":selected").val();
+            value = parseInt(field.find(":selected").val(), 10);
             break;
 
         case "book":
-            // TODO:
-            value = null;
+            value = parseInt(field.find(":selected").val(), 10);
             break;
 
         default:
@@ -274,185 +494,5 @@ function getFieldValue(field) {
     
     return value;
 }
-
-function getSliderRange(field) {
-    // Get the field name
-    var name = getFieldName(field);
-    
-    // Get the column that corresponds to this field
-    var column = $("#item_list").DataTable().column(name + ":name");
-    
-    // Get the data of this column in an array
-    var data = [];
-    column.data().map((el) => {
-        data.push(parseInt(el, 10));
-    });
-    
-    return [Math.min(...data), Math.max(...data, 0)];
-}
-
-//function insertBooks(records) {
-//    var book_start = $("#book_start_id");
-//    var book_end = $("#book_end_id");
-//
-//    // Insert all the books as options into the selects
-//    records.forEach((record) => {
-//        var option = `<option
-//            data-num-chapters=${record.num_chapters}
-//            value='${record.id}'>
-//                ${record.name}
-//            </option>`;
-//
-//        book_start.append(option);
-//        book_end.append(option);
-//    });
-//
-//    // Select the session values
-//    if (book_start.data("item-val") !== "") {
-//        book_start.val(book_start.data("item-val"));
-//        book_start.change();
-//    }
-//
-//    if (book_end.data("item-val") !== "") {
-//        book_end.val(book_end.data("item-val"));
-//        book_end.change();
-//    }
-//}
-//
-//function insertChapters(name, num_chapters, init) {
-//    // The chapter select
-//    var chap_select = $(`#book_${name}_chap`);
-//
-//    // Replace the current contents
-//    chap_select.children(":not([disabled])").remove();
-//
-//    for (var i = 0; i < num_chapters; i++) {
-//        chap_select.append(
-//            `<option chapter value="${i+1}"> 
-//                ${i+1}
-//            </option>`
-//        );
-//    }
-//
-//    // If we were called from an element (init = false), reset the chapters
-//    // If we were called from insertBooks (init = true), leave the chapters be
-//    if (init === false) {
-//        // Set the first chapter by default for the first appearance and
-//        // the last chapter by default for the last appearance
-//        var chap_val = (name === "start") ? 1 : num_chapters;
-//        chap_select.val(chap_val);
-//
-//        // Also call the onChange() for this element
-//        chap_select.change();
-//    } else {
-//        chap_select.val(chap_select.data("item-val"));
-//    }
-//}
-//
-//function insertSlider(name, options) {
-////        // Set the max and min values
-////        var slider_num_chapters = $("#item_num_chapters").slider({
-////            max: 100,
-////            min: 0
-////        });
-////
-////        // Initialize the sliders and set their values
-////        slider_num_chapters.slider("setValue", [0, 100]);
-////        
-////        // Set the max and min values
-////        var slider_num_chapters = $("#item_age").slider({
-////            max: 100,
-////            min: 0
-////        });
-////
-////        // Initialize the sliders and set their values
-////        slider_num_chapters.slider("setValue", [0, 100]);
-////        
-////        // Set the max and min values
-////        var slider_num_chapters = $("#item_parent_age").slider({
-////            max: 100,
-////            min: 0
-////        });
-////
-////        // Initialize the sliders and set their values
-////        slider_num_chapters.slider("setValue", [0, 100]);
-//}
-//
-//function onBookChange(name) {
-//    // Get the selected book option
-//    var book_select = $(`#book_${name}_id option:selected`);
-//    var book_val = book_select.val();
-//
-//    // Update the query to the session
-//    parameters = [];
-//    parameters[`book_${name}_id`] = book_val;
-//    updateSession(parameters);
-//
-//    // TODO: Set remove filter
-//
-//    // Get the number of chapters and insert those chapters
-//    var num_chapters = book_select.data("num-chapters");
-//    insertChapters(name, num_chapters, this.event === undefined);
-//}
-//
-//function onSliderChangeNumChapters(value) {
-//    onSliderChange('num_chapters', value.value);
-//}
-//
-//function onSliderChangeAge(value) {
-//    onSliderChange('age', value.value);
-//}
-//
-//function onSliderChangeParentAge(value) {
-//    onSliderChange('parent_age', value.value);
-//}
-//
-//function onSliderChange(type, value) {
-//    if (value === "") {
-//        return;
-//    }
-//    
-//    // Update the query to the session
-//    var params = {};
-//    params["search_" + type] = value.join('-');
-//    updateSession(params);
-//
-//    // Set the slider as active
-//    $("#slider_" + type)
-//            .find(".slider-selection")
-//            .css("background-color", "#46c1fe");
-//    
-//    // Add the [x] to disable the slider
-//    removeFilter(type, "#item_" + type + "_label");
-//
-//    // Set the slider as enabled
-//    elementEnabled[type] = true;
-//    elementInit[type] = true;
-//    
-//    // Recalculate the search results
-//    insertResults();
-//    
-//    return;
-//}
-//
-//function onSelectChange(type) {    
-//    // Update the query to the session
-//    var value = $("#item_" + type).val();
-//    if (!value || value === "-1") {
-//        return;
-//    }
-//    
-//    var params = {};
-//    params["search_" + type] = value;
-//    updateSession(params);
-//    
-//    // Add the [x] to disable the slider
-//    removeFilter(type, "#item_" + type + "_label");
-//    
-//    // Recalculate the search results
-//    insertResults();
-//    
-//    return;
-//}
 
 

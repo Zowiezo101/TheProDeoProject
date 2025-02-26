@@ -156,20 +156,12 @@
             
             // Add all these columns to the results
             $this->message->setColumns($columns);
-            
-            // When doing a read all, search options can be added as well
-            // These options are returned and can be used for a search page
-            // The desired search options are set in the item classes 
-            // (Book, Event, etc)
-            if (isset($this->parameters["options"]) && 
-                     ($this->parameters["options"] !== false)) {
                 
-                // Get the options
-                $options = $this->options->getOptions();
-            
-                // Insert the options
-                $this->message->setOptions($options);
-            }
+            // Get the options
+            $options = $this->options->getOptions();
+        
+            // Insert the options
+            $this->message->setOptions($options);
             
             
             // TODO: This part needs to use AKA table, order by bible location and 

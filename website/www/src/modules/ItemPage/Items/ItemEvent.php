@@ -12,12 +12,9 @@
             parent::__construct();
             
             /** These are the two main modules that are used for item pages */
-            $this->createItemList([
+            $item_list = $this->createItemList([
                 "type" => TYPE_EVENT,
-                "base_url" => "events/event",
-                "columns" => [
-                    "order_id"
-                ]
+                "base_url" => "events/event"
             ]);
             
             $item_content = $this->createItemContent([
@@ -25,6 +22,7 @@
             ]);
             
             $this->createItemModal([
+                "options" => $item_list->getOptions(),
                 "filters" => [
                     [
                         "name" => "name",

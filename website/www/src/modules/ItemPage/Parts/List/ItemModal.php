@@ -10,6 +10,7 @@
 
     class ItemModal extends Module {
         // Properties for this Module
+        private $options = null;
         private $filters;
         
         private const HORIZONTAL_RULE = "<hr class='my-1'/>";
@@ -29,11 +30,18 @@
         private function getParams($params) {
             foreach($params as $param => $value) {
                 switch($param) {
+                    case "options":
+                        $this->setOptions($value);
+                        break;
                     case "filters":
                         $this->setFilters($value);
                         break;
                 }
             }
+        }
+
+        private function setOptions($options) {
+            $this->options = $options;
         }
         
         private function setFilters($filters) {
@@ -77,11 +85,11 @@
                         break;
                     
                     case self::INPUT_SELECT:
-                        $module = new InputSelect($name);
+                        $module = new InputSelect($name, $this->options);
                         break;
                     
                     case self::INPUT_SLIDER:
-                        $module = new InputSlider($name);
+                        $module = new InputSlider($name, $this->options);
                         break;
                 }
                 
@@ -101,7 +109,7 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content" style="height: 100%;">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="filterModalLabel">Modal title</h5>
+                            <h5 class="modal-title" id="filterModalLabel">TODO: (Translate) Modal title</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -112,11 +120,11 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="onFilterChange()" data-dismiss="modal" aria-label="Apply">
+                            <button type="button" class="btn btn-primary" onclick="onFilterChange()" aria-label="Apply">
                                 <span aria-hidden="true">'.$dict["database.search"].'</span>
                             </button>
                             <button type="button" class="btn btn-light" onclick="onFilterReset()" aria-label="Reset">
-                                <span aria-hidden="true">TODO: Reset filter</span>
+                                <span aria-hidden="true">TODO: (Translate) Reset filter</span>
                             </button>
                         </div>
                     </div>

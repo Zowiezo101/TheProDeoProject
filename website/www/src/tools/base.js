@@ -48,7 +48,7 @@ function onSortUpdate() {
     setSort(sort);
 }
 
-function setSort(sort) {
+function setSort(sort, init=false) {
     // Highlight the selected sorting method in the list
     $("#item_sort .active").removeClass("active");
     $("#" + sort).addClass("active");
@@ -59,21 +59,24 @@ function setSort(sort) {
     // Set the sorting method
     switch(sort) {
         case "0_to_9":
-            table.column(1).order('asc').draw();
+            table.column(1).order('asc');
             break;
         case "9_to_0":
-            table.column(1).order('desc').draw();
+            table.column(1).order('desc');
             break;
         case "a_to_z":
-            table.column(0).order('asc').draw();
+            table.column(0).order('asc');
             break;
         case "z_to_a":
-            table.column(0).order('desc').draw();
+            table.column(0).order('desc');
             break;
     }
     
-    // Go back to the first page
-    setPage(0);
+    if (init === false) {
+        // Go back to the first page
+        table.draw();
+        setPage(0);
+    }
 }
 
 function onFirstPage() {    
@@ -171,23 +174,8 @@ function onSearchUpdate() {
     // Insert it in the filter modal as well
     $("#name").val(search);
     
-    // Update the session settings
-    updateSession({
-        "name": search
-    });
-    
-    setSearch(search);
-}
-
-function setSearch(search) {    
-    // The pagination table
-    table = $("#item_list").DataTable();
-    
-    // Search for the following term
-    table.column(0).search(search);
-    
-    // Go back to the first page
-    setPage(0);
+    // Trigger the text change function
+    onFilterChange();
 }
     
 function showLoadingScreen() {

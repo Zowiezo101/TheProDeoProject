@@ -11,7 +11,7 @@
             parent::__construct();
             
             /** These are the two main modules that are used for item pages */
-            $this->createItemList([
+            $item_list = $this->createItemList([
                 "type" => TYPE_BOOK,
                 "base_url" => "books/book"
             ]);
@@ -21,6 +21,7 @@
             ]);
             
             $this->createItemModal([
+                "options" => $item_list->getOptions(),
                 "filters" => [
                     [
                         "name" => "name",

@@ -34,7 +34,7 @@
             
             // Get the database information
             $this->id = $this->getId();
-            $this->data = $this->getData();
+            $this->data = $this->getData($this->type);
             
             // Add the necessary modules in here
             $this->item_search = new ItemSearch();
@@ -69,16 +69,14 @@
             }
             return $id;
         }
-        
-        private function getData() {
-            // Options for the itemlist    
-            $data = getItems($this->type);
-            
-            if ($this->checkData($data) === false) {
-                $data = null;
-            }   
-            
-            return $data;
+
+        public function getOptions() {
+            // If the data contains options for searching, return these options
+            $options = null;
+            if (isset($this->data->options)) {
+                $options = (array) $this->data->options;
+            }
+            return $options;
         }
         
         public function addClasses($classes) {
@@ -130,7 +128,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="list-group text-center" style="height:510px; overflow:hidden"> 
-                                    <table class="table-borderless w-100" id="item_list"
+                                    <div id="item_list_spinner" class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <table class="table-borderless w-100 d-none" id="item_list"
                                         data-page-type="'.$this->type.'"
                                         data-page-url="'.$this->base_url.'"
                                         data-table-sort="'.$sort.'"
