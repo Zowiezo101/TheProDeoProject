@@ -131,9 +131,6 @@ function onBookChange(name, init=false) {
     // The selected book
     var book = getField(name);
 
-    // The amount of chapters this book has
-    var num_chaps = parseInt(book.find(":selected").data("num-chapters"), 10);
-
     // Get the chapter field that corresponds with this book
     var field = getField(name.replace("id", "chap"));
 
@@ -143,14 +140,19 @@ function onBookChange(name, init=false) {
     // Insert the disabled option for this book
     field.append("<option selected disabled value='-1'>" + dict["books.chapter"] + "</option>");
 
-    // Insert all the chapters for this book
-    for (var chap = 0; chap < num_chaps; chap++) {
-        var option = `
-            <option value='${chap + 1}'>
-                ${chap + 1}
-            </option>`;
+    if (getFieldValue(book) !== -1) {
+        // The amount of chapters this book has
+        var num_chaps = parseInt(book.find(":selected").data("num-chapters"), 10);
 
-        field.append(option);
+        // Insert all the chapters for this book
+        for (var chap = 0; chap < num_chaps; chap++) {
+            var option = `
+                <option value='${chap + 1}'>
+                    ${chap + 1}
+                </option>`;
+    
+            field.append(option);
+        }
     }
 
     if (init !== false) {
@@ -160,27 +162,27 @@ function onBookChange(name, init=false) {
             field.val(value);
         }
     }
+
+    // Show the 'clear field' button
+    showClear(name);
 }
 
 function onFilterReset() {
-    // // Loop through all the search fields and clear the settings
-    // var search_fields = $(".search-field");
-    // search_fields.each((idx, el) => {
-    //     var field = $(el);
+    // Loop through all the search fields and clear the settings
+    var search_fields = $(".search-field");
+    search_fields.each((idx, el) => {
+        var field = $(el);
         
-    //     // Clear this field
-    //     saveField(field);
-    // });
+        // Clear this field
+        clearField(field);
+    });
 
-    // // TODO: Implement suggestion while typing
-    // // Basically filtering a specific property while typing
-    // // Sliders and selects still need to be filled in (select can be done in PHP)
+    onFilterChange();
+}
 
-    // // Apply the filters to the datatable
-    // $("#item_list").DataTable().draw();
-
-    // // Go back to the first page
-    // setPage(0);
+function onBookReset(name) {
+    field = getField(name);
+    clearField(field);
 }
 
 function initField(field) {    
@@ -440,18 +442,38 @@ function saveField(field) {
     updateSession(params);
 }
 
-// function clearField(field) {
-//     // Get the field value and name
-//     var field_name = getFieldName(field);
-//     var field_value = getFieldValue(field);
+function clearField(field) {
+    // Get the type of field
+    var type = field.data("type");
 
-//     // The session parameter to save
-//     var params = {};
-//     params[field_name] = field_value;
-    
-//     // Saving the parameter
-//     updateSession(params);
-// }
+    // Each type gets a different treatment
+    switch(type) {
+        case "text":
+            field.val("");
+            break;
+
+        case "slider":
+            var min = field.data("slider-min");
+            var max = field.data("slider-max");
+            field.slider('setValue', [min, max]);
+            break;
+            
+        case "checkbox":
+            field.prop("checked", true);
+            break;
+
+        case "select":
+            field.val(-1);
+            break;
+
+        case "book":
+            field.val(-1);
+
+            // Remove the "clear field" button
+            hideClear(field);
+            break;
+    }
+}
 
 function getField(name) {
     return $("#" + name);
@@ -495,4 +517,19 @@ function getFieldValue(field) {
     return value;
 }
 
+function showClear(name) {
+    // Remove the d-none class
+    var clear = getField(name.replace("id", "clear"));
+    clear.removeClass("d-none");
+}
 
+function hideClear(field) {
+    // Get the field name
+    var name = getFieldName(field);
+
+    // Add the d-none class
+    if (name.includes("id")) {
+        var clear = getField(name.replace("id", "clear"));
+        clear.addClass("d-none");
+    }
+}

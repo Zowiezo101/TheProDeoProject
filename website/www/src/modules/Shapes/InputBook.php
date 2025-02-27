@@ -41,9 +41,12 @@
                 <!-- ".ucfirst($this->name)." appearance -->    
                 <div class='row pb-2'>
                     <div class='col-md-12'>
-                        <label class='font-weight-bold'>
+                        <label class='font-weight-bold float-left'>
                             {$dict["items.book_{$this->name}"]}
                         </label>
+                        <button id='book_{$this->name}_clear' type='button' class='close float-left text-secondary d-none' onclick='onBookReset(\"book_{$this->name}_id\")'>
+                            <span aria-hidden='true'> &times; </span>
+                        </button>
                     </div>
         
                     <div class='col-md-6'>

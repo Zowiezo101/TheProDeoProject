@@ -47,7 +47,7 @@
                             class='custom-select search-field' 
                             data-type='select'
                             data-val='{$this->session_val}'>
-                        <option selected disabled value='-1'>{$dict["search.select"]}</option>
+                        <option selected value='-1'>{$dict["search.all"]}</option>
                         ".implode("", $type_list)."
                     </select>
                 </div>
