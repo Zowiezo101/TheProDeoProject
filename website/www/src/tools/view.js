@@ -376,22 +376,24 @@ function onDownload (title) {
     
     // Create a SVG element for downloading
     var map_svg = $(getSVG().node).clone()
-            .attr("width", g_Offsets.width_max - g_Offsets.width_min + g_Options.length.X)
-            .attr("height", g_Offsets.height_max - g_Offsets.height_min + g_Options.length.Y)
-            .css("overflow", "scroll");
+            .attr("width", g_Offsets.width_max - g_Offsets.width_min + g_Options.length.X + 10)
+            .attr("height", g_Offsets.height_max - g_Offsets.height_min + g_Options.length.Y + 10)
+            .css("overflow", "scroll")
+            .css("padding", "1.5rem")
 
     // Add it to the invisble div
-    var map_div = $("#map_download").empty().append(map_svg);
+    $("#map_download").empty().append(map_svg);
     
     // Set the matrix to the default values
+    // Pan the div slightly for the borders to fit in (5px down and 5px right)
     $("#map_download #map")
-            .attr("transform", "matrix(1, 0, 0, 1, 0, 0)")
-            .css("transform", "matrix(1, 0, 0, 1, 0, 0)");
+            .attr("transform", "matrix(1, 0, 0, 1, 5, 5)")
+            .css("transform", "matrix(1, 0, 0, 1, 5, 5)");
 
     // Wait for it to be added
     $(function() {
         // save as SVG
-        svgsaver.asSvg(map_svg.get(0), title + ".svg");
+        svgsaver.asSvg(map_svg.get(0), title.replaceAll(" ", "_") + ".svg");
     });
 }
 
