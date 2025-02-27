@@ -11,6 +11,9 @@
         private $added_data = [];
         
         public function __construct($params = []) {
+            // The MapList has no extra filter button
+            $params["filter"] = false;
+
             parent::__construct($params);
             $this->addClasses("d-none d-md-block");
         }
@@ -84,19 +87,25 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="list-group text-center" style="height:510px; overflow:hidden">
-                                    <table class="table-borderless w-100" id="item_list"
+                                    <div id="item_list_spinner" class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <table class="table-borderless w-100 d-none" id="item_list"
                                         data-page-type="'.$this->type.'"
                                         data-page-url="'.$this->base_url.'"
                                         data-table-sort="'.$sort.'"
                                         data-table-search="'.$search.'"
                                         data-table-page="'.$page.'"
                                         data-id="'.$this->id.'">
-                                            <thead class="d-none">
+                                            <thead class="d-none"><tr>
                                                 <!-- The name that is being displayed -->
                                                 <th>name</th>
                                                 <!-- Invisible order_id column for sorting -->
                                                 <th class="d-none">order_id</th>
-                                            </thead>
+                                            </tr></thead>
                                             <tbody class="item-group">'.$content.'</tbody>
                                     </table>
                                 </div>

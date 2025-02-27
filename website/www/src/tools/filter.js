@@ -7,11 +7,6 @@ $(function(){
         
         // Get all the search options to choose from
         initFilter();
-        
-        // TODO:
-        // - Make sure the icon changes color when filter is used
-        // - Make sure the AKA is also searched with search-term and name parts
-        // - Reset filter
 
         // Make the table visible
         $("#item_list").removeClass("d-none");

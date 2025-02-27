@@ -11,7 +11,7 @@
     class ItemModal extends Module {
         // Properties for this Module
         private $options = null;
-        private $filters;
+        private $filters = [];
         
         private const HORIZONTAL_RULE = "<hr class='my-1'/>";
         

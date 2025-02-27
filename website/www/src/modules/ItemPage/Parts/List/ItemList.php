@@ -37,7 +37,7 @@
             $this->data = $this->getData($this->type);
             
             // Add the necessary modules in here
-            $this->item_search = new ItemSearch();
+            $this->item_search = new ItemSearch($params);
             $this->item_pages = new ItemPages();
         }
         

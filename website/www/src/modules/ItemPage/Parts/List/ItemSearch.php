@@ -5,14 +5,44 @@
     use Shapes\Module;
 
     class ItemSearch extends Module {
+
+        private $filter = true;
+
+        public function __construct($params = []) {
+            parent::__construct();
+
+            // Parse the parameters given
+            $this->getParams($params);
+        }
+        
+        public function getParams($params) {
+            foreach($params as $param => $value) {
+                switch($param) {
+                    case "filter":
+                        $this->setFilter($value);
+                        break;
+                }
+            }
+        }
+
+        public function setFilter($filter) {
+            $this->filter = $filter;
+        }
         
         public function getContent() {
             global $dict;
+
+            $filter = "";
+            if ($this->filter === true) {
+                $filter = '<div class="input-group-append">
+                                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" type="button">
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+                                    </div>';
+            }
             
             $search = isset($_SESSION["name"]) ? htmlspecialchars($_SESSION["name"]) : "";
             $sort = isset($_SESSION["sort"]) ? $_SESSION["sort"] : SORT_0_TO_9;
-            
-            // TODO: Make sure that searching for AKA names also gets the correct names
             
             // The search bar
             $content = '
@@ -21,11 +51,7 @@
                             <div class="col-8 col-md-6">
                                 <div class="input-group w-100">
                                     <input type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearchUpdate()" value="'.$search.'">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" type="button">
-                                            <i class="fa fa-filter"></i>
-                                        </button>
-                                    </div>
+                                    '.$filter.'
                                 </div>
                             </div>
 
