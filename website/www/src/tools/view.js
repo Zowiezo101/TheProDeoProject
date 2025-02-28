@@ -136,12 +136,12 @@ function getPZInstance() {
 function panToItem() {
     // Default ID to pan to is the first item of the timeline
     var id = g_MapItems[0].id;
-    // TODO:
-//    if (get_settings.hasOwnProperty("panTo")) {
-//    
-//        // Get the item to pan to
-//        id = get_settings["panTo"];
-//    }
+
+    // Check if there is an ID given to pan to
+    if (typeof $("#item_content").data("pan-id") !== "undefined") {
+        // Get the item to pan to
+        id = $("#item_content").data("pan-id");
+    }
     
     panToId(id);
 }

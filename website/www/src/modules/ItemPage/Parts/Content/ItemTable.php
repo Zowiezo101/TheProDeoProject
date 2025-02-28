@@ -380,7 +380,7 @@
                 );
 
                 // The general worldmap, but panned to this location
-                $href = setParameters("worldmap")."?panTo=".$data->id;
+                $href = setParameters("worldmap")."?panId=".$data->id;
 
                 $worldmap_string = '
                         <a href="'.$href.'" target="_blank" 

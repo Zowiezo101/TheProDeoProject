@@ -35,6 +35,10 @@
                 $content = $this->default->getContent();
                 $classes_col = "col py-5";
             }
+
+            // Do we need to pan to an item?
+            $pan_id = filter_input(INPUT_GET, "panId");
+            $data_pan_id = (isset($pan_id)) ? ' data-pan-id="'.$pan_id.'"' : '';
             
             // Wrap it all into some divs
             // TODO: Loading screen and small screen aren't loading because
@@ -42,7 +46,7 @@
             return '<!-- The column with the selected content -->
                     <div id="content_col" class="'.$classes_col.'">
                         <div id="content_row" class="row h-100 d-none d-md-flex">
-                            <div id="item_content" class="col-12 h-100">
+                            <div id="item_content" class="col-12 h-100"'.$data_pan_id.'>
                                 '.$content.'
                             </div>
                             '.$this->loading_screen->getContent().'

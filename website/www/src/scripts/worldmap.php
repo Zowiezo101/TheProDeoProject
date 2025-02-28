@@ -102,14 +102,14 @@ function showMap() {
             google.maps.event.addListenerOnce(markerClustererObj, "clusteringend", () => {
                 getMarkersPerZoom();
                 
-//                TODO:
-//                if (get_settings.hasOwnProperty("panTo")) {
-//                    // Get the item to pan to
-//                    var id = get_settings["panTo"];
-//
-//                    // Pan to the item
-//                    getLinkToMap(id);
-//                }
+                // Check if there is an ID given to pan to
+                if (typeof $("#item_content").data("pan-id") !== "undefined") {
+                    // Get the item to pan to
+                    var id = $("#item_content").data("pan-id");
+
+                    // Pan to the item
+                    getLinkToMap(id);
+               }
             });
             
             map.addListener("zoom_changed", () => {

@@ -86,7 +86,7 @@
                 $href = setParameters("{$this->type}/map/{$row_data["map_id"]}");
                 if (isset($row_data["item_id"])) {
                     // Pan to this item if applicable
-                    $href = $href."?panTo=".$row_data["item_id"];
+                    $href = $href."?panId=".$row_data["item_id"];
                 }
                 
                 // The name of this map
