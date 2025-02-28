@@ -5,7 +5,7 @@
     class Blog extends Item {
         
         // Param filters
-        private const FILTER_TITLE = ["title" => FILTER_SANITIZE_SPECIAL_CHARS];
+        private const FILTER_TITLE = ["title" => FILTER_DEFAULT];
         private const FILTER_TEXT  = ["text" => FILTER_DEFAULT];
         private const FILTER_USER  = ["user" => FILTER_VALIDATE_INT];
         private const FILTER_DATE  = ["date" => FILTER_SANITIZE_SPECIAL_CHARS];

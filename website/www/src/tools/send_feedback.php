@@ -30,6 +30,9 @@
         //Set the hostname of the mail server
         $mail->Host = $email_host;
 
+        // Making sure we are using UTF-8
+        $mail->CharSet = PHPMailer::CHARSET_UTF8;
+
         $mail->SMTPOptions = array(
             'ssl' => array(
                 'verify_peer' => false,
@@ -57,13 +60,13 @@
         $mail->Password = $email_pass;
 
         //Set who the message is to be sent from
-        $mail->setFrom($email_user, 'ProDeo Projects');
+        $mail->setFrom($email_user, 'The ProDeo Project');
 
         //Set an alternative reply-to address
         //$mail->addReplyTo('replyto@example.com', 'First Last');
 
         //Set who the message is to be sent to
-        $mail->addAddress('ProDeoProductions2U@gmail.com', 'ProDeo Projects');
+        $mail->addAddress($email_to, 'The ProDeo Project');
 
         //Set the subject line
         $name = (filter_input(INPUT_POST, 'name') !== null && trim(filter_input(INPUT_POST, 'name')) !== "") ? filter_input(INPUT_POST, 'name') : "Unknown";

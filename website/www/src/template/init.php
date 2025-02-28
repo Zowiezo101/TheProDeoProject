@@ -110,11 +110,26 @@
 
         // The actual check for page change
         if ($_SESSION["page_id_old"] !== $page_id) {
+
+            // If we are logged in, save the login details
+            if (isset($_SESSION["loggedin"])) {
+                $loggedin = $_SESSION["loggedin"];
+                $user_id = $_SESSION["user_id"];
+                $user_name = $_SESSION["user_name"];
+            }
+
             // Save a few settings and empty out the rest
             $_SESSION = [
                 "page_id" => $_SESSION["page_id"],
                 "page_id_old" => $_SESSION["page_id_old"],
             ];
+
+            if (isset($loggedin)) {
+                // Restore the login details
+                $_SESSION["loggedin"] = $loggedin;
+                $_SESSION["user_id"] = $user_id;
+                $_SESSION["user_name"] = $user_name;
+            }
         }
     }
 
