@@ -1,10 +1,5 @@
 <script>
     
-    // TODO: Show loading screen when loading map, remove loading screen when map is loaded
-    // Best way to do this is to load the template first, show loading screen and calculate
-    // timeline/familytree using the REST API. After everything is received and loaded in, 
-    // remove loading screen
-    // TODO: Replace as much of PHP echo with data-attributes as possible
     var page_base_url = "<?= setParameters("peoples/people/"); ?>";
     
     // This function is executed once the DOM is loaded

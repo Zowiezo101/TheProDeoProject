@@ -11,13 +11,7 @@
         
         // Add a module to the list of content
         public function addContent($module) {
-            if (true) {
-                // TODO: Check if this module is a valid module to be added
-                // TODO: Or even a string with content
-                $this->content[] = $module;
-            } else {
-                // TODO: Throw an error when the module isn't a valid module
-            }
+            $this->content[] = $module;
         }
         
         protected function getData($type) {

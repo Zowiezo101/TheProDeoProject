@@ -1,9 +1,5 @@
 <script>
     
-    // TODO: Show loading screen when loading map, remove loading screen when map is loaded
-    // Best way to do this is to load the template first, show loading screen and calculate
-    // timeline/familytree using the REST API. After everything is received and loaded in, 
-    // remove loading screen
     var page_base_url = "<?= setParameters("events/event/"); ?>";
 
     // This function is executed once the DOM is loaded

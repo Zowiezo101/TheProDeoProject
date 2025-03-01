@@ -126,5 +126,3 @@ function get_available_langs() {
 
     return $lang_set;
 }
-
-// TODO: htmlspecialchars this entire bitch

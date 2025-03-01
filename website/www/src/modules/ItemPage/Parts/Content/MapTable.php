@@ -35,30 +35,16 @@
         }
 
         public function setTitle($title) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->title = $title;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->title = $title;
         }
 
         public function setType($type) {
-            if (true) {
-                // Pass these parameters to the PageList and ItemContent
-                $this->type = $type;
-            } else {
-                // TODO: Throw an error
-            }
+            // Pass these parameters to the PageList and ItemContent
+            $this->type = $type;
         }
 
         public function setRecord($record) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->record = $record;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->record = $record;
         }
         
         public function getContent() {

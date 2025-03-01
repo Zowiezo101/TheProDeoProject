@@ -26,21 +26,11 @@
         }
 
         public function setTitle($title) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->title = $title;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->title = $title;
         }
 
         public function setData($data) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->data = $data;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->data = $data;
         }
         
         public function getContent() {  

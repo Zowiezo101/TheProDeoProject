@@ -22,7 +22,6 @@
      * This means linking to the current language and page if we aren't
      * on these pages yet
      */
-    // TODO: Link to current page
     // The page id, this is taken from the link we are currently on. If there is no page id given, go to the home page
     $page_id = filter_input(INPUT_GET,'page') !== null ? filter_input(INPUT_GET,'page') : "home";
     if ($page_id == "") {
@@ -35,7 +34,6 @@
         exit;
     }
     
-    // TODO: Link to current language
     // Set the language to a prefered language, if available
     if (filter_input(INPUT_GET, "lang") === null) {
         // Languages we support
@@ -103,8 +101,9 @@
 
     // Page is loaded server side, let's see if we changed to a different page id
     // If we have, remove some saved settings that do not need to remain on other
-    // pages TODO
+    // pages
     if (isset($_SESSION["page_id"])) {
+
         // Save the old page id
         $_SESSION["page_id_old"] = $_SESSION["page_id"];
 

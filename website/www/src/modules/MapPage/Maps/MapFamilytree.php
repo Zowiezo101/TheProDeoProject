@@ -20,7 +20,7 @@
                 "type" => TYPE_FAMILYTREE
             ]);
 
-            $map_popup = $this->createMapPopup([
+            $this->createMapPopup([
                 "type" => TYPE_FAMILYTREE
             ]);
             

@@ -2,9 +2,7 @@
 
     namespace Classes;
 
-    class Link {
-        // TODO: Do this with the base.php file as well
-        
+    class Link {        
         public const BOOKS_TO_NOTES = "getBookToNotes";
         public const EVENTS_TO_NEXT = "getEventToChildren";
         public const EVENTS_TO_PREV = "getEventToParents";
@@ -1125,7 +1123,6 @@
             
             // Get the notes for each seperate people
             $data = array_map(function($id) {
-                // TODO: Insert the array of IDs and use IN() instead of ID = 
                 return $this->getPeopleToNotes($id);
             }, $ids);
             

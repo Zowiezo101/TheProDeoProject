@@ -49,13 +49,10 @@
         var blog_title = $("#add_blog_title").val();
 
         /* The contents of a blog, done with SummerNote */
-        // TODO: Use double quotes everywhere for javascript and PHP
         var blog_text = $('#add_blog_text').summernote('code');
 
         // Date is the moment the blog was added
         var blog_date = new Date();
-        
-        // TODO: Make sure this is UTC
 
 <?php if (isset($_SESSION["loggedin"])) { ?>
         // The user depends on the logged-in user
@@ -202,7 +199,5 @@
     }
         
     function onTabClick() {
-        // TODO: Save the clicked tab in the session settings, so it remains
-        // selected after a refresh
     }
 </script>

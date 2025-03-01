@@ -7,7 +7,6 @@
         // Debugging param
         private $debug = false;
         
-        // TODO: Vars
         public const ERROR_UNKNOWN_KEY = ["message" => "Error: unknown key '{var}' in query", "code" => 400];
         public const ERROR_MISSING_KEY = ["message" => "Error: required key '{var}' is not found", "code" => 400];
         public const ERROR_UNAVAILABLE = ["message" => "Error: {var}", "code" => 503];
@@ -76,10 +75,6 @@
                 // Only when in debug mode
                 $message["query"] = $this->query;
             }
-            
-            // TODO: When data is false, have the database set the appropiate error
-            // Data is supposed to be an array. 
-            // When it is false, something happened while checking the parameters
             
             if (count($this->columns) > 0) {
                 // Include the column names (only for search results)

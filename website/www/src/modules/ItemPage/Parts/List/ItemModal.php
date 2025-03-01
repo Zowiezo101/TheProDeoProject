@@ -51,22 +51,6 @@
         private function getFilters() {
             $filter_modules = [];
             
-            /*
-             * TODO PHP:
-             * - For each filter
-             * - Use title as label explaining the filter
-             * - Use the type to define the used module
-             * - Have an "apply selcted filters" button
-             * - Have a cancel button
-             * - Have a "remove all filters" button
-             * 
-             * TODO JS:
-             * - For sliders and selects, get infomation from the table
-             * - For the apply button, show the amount of results
-             * - Apply filters directly when selecting them
-             * - 
-             */
-            
             // For each filter
             foreach($this->filters as $filter) {
                 // The title and label for the filter

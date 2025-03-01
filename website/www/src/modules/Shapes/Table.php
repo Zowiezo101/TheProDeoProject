@@ -23,12 +23,7 @@
         }
 
         public function setTitle($title) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->title = $title;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->title = $title;
         }
         
         public function getContent() {

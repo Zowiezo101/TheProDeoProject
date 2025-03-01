@@ -13,7 +13,6 @@
             continue;
         }
         if ($key !== null) {
-            // TODO: String version of null might cause some problems..
             if (($value !== null) && ($value !== "null") && ($value !== "")) {
                 // Set this key with this value in the session
                 $_SESSION[$key] = $value;

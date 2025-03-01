@@ -31,8 +31,6 @@
         }
 
         public function getContent() {
-            global $dict;
-
             // The content is different for every map type
             $content = '';
 
@@ -74,12 +72,6 @@
                     break;
 
                 case TYPE_WORLDMAP:
-                    //            TODO:
-                    //                insertDetail(location, "meaning_name") + 
-                    //                insertDetail(location, "aka") + 
-                    //                insertDetail(location, "descr") + 
-                    //                insertDetail(location, "type") + 
-                    //                insertDetail(location, "notes") + 
                     $content = '
                     <div id="popup_template">
                         <table class="pt-1 table table-striped d-none"> 

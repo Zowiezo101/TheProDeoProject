@@ -88,9 +88,7 @@
             $this->tab_content->addContent($tab_content_item);            
         }
         
-        private function checkMode($mode) {
-    // TODO: Make sure the tabs stay selected when refreshing the page
-            
+        private function checkMode($mode) {            
             // Are we logged in?
             $logged_in = (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true);
             

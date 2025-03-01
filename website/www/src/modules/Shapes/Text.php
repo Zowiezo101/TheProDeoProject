@@ -13,12 +13,7 @@
         }
 
         public function setText($text) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->text = $text;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->text = $text;
         }
         
         public function getContent() {

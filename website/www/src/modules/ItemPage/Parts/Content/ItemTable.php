@@ -48,30 +48,15 @@
         }
 
         public function setTitle($title) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->title = $title;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->title = $title;
         }
 
         public function setRows($rows) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->rows = $rows;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->rows = $rows;
         }
 
         public function setRecord($record) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->record = $record;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->record = $record;
         }
         
         public function getContent() {
@@ -190,9 +175,6 @@
         function getBooksString($data) {
             $books = [];
             
-            // TODO: Add the normal book location to this array as well
-            
-
             if (isset($data->aka) && (count($data->aka) > 0)) {
                 foreach($data->aka as $aka) {
                     // The beginning and end of the bible location
@@ -393,7 +375,6 @@
             return $worldmap_string;
         }
 
-        // TODO: Other instead of unknown. Unknown is already applied when no value is given
         function getTypeString($data) {
             global $dict;
 

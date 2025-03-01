@@ -17,7 +17,7 @@
                 "type" => TYPE_WORLDMAP
             ]);
 
-            $map_popup = $this->createMapPopup([
+            $this->createMapPopup([
                 "type" => TYPE_WORLDMAP
             ]);
             

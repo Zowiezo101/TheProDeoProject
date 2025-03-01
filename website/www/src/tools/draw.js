@@ -65,8 +65,6 @@ function drawMapItems() {
     // The root parent
     var group = getSVG().group({id: "map"});    
     getMapItems().forEach(function(item) {
-        // TODO: The link slightly overlaps with the item
-        // Maybe draw it like a tiny bit more to the side?
         drawLink(group, item);
         drawItem(group, item);
     });

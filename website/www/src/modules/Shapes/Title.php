@@ -31,30 +31,15 @@
         }
 
         public function setTitle($title) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->title = $title;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->title = $title;
         }
 
         public function setSub($sub) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->sub = $sub;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->sub = $sub;
         }
 
         public function setRecord($record) {
-            if (true) {
-                // TODO: Check this is a valid value
-                $this->record = $record;
-            } else {
-                // TODO: Throw an error
-            }
+            $this->record = $record;
         }
         
         public function getContent() {
@@ -68,11 +53,11 @@
                     // If there is a record given, use the parameters as keys
                     // for the record instead of straight-up values.
                     $title = $this->record->{$this->title};
+                }
 
-                    // If the title for some reason is a localization string, use this instead
-                    if (isset($dict[$title])) {
-                        $title = $dict[$title];
-                    }
+                // If the title for some reason is a localization string, use this instead
+                if (isset($dict[$title])) {
+                    $title = $dict[$title];
                 }
                 
                 $title = '<h1 class="mb-3">'.$title.'</h1>';

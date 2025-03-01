@@ -41,8 +41,6 @@
             $data_pan_id = (isset($pan_id)) ? ' data-pan-id="'.$pan_id.'"' : '';
             
             // Wrap it all into some divs
-            // TODO: Loading screen and small screen aren't loading because
-            // still using old parameters
             return '<!-- The column with the selected content -->
                     <div id="content_col" class="'.$classes_col.'">
                         <div id="content_row" class="row h-100 d-none d-md-flex">

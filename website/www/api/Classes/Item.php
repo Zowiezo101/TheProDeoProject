@@ -162,29 +162,6 @@
         
             // Insert the options
             $this->message->setOptions($options);
-            
-            
-            // TODO: This part needs to use AKA table, order by bible location and 
-            // get the highest value for end and the lowest value for start
-            
-    
-//            if (strpos($params["columns"], $utilities->location_aka) !== false) {
-//                $table = $utilities->getTable($this->base->table_l2l);
-//
-//                // We need this extra table when AKA is needed
-//                $query .= 
-//                    "LEFT JOIN " . $table . " as location_to_aka
-//                        ON location_to_aka.location_id = l.id 
-//                        AND location_to_aka.location_name LIKE ?
-//                    ";
-//            }
-//            if (strpos($params["columns"], "type") !== false) {
-//                // We need this extra table when gender is needed
-//                $query .= 
-//                    "LEFT JOIN " . $this->table_type . " as it
-//                        ON it.type_id = l.type
-//                    ";
-//            }
         }
         
         public function readMaps() {
