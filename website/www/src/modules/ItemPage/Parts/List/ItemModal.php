@@ -93,7 +93,7 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content" style="height: 100%;">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="filterModalLabel">TODO: (Translate) Modal title</h5>
+                            <h5 class="modal-title" id="filterModalLabel">'.$dict["search.title"].'</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -108,7 +108,7 @@
                                 <span aria-hidden="true">'.$dict["database.search"].'</span>
                             </button>
                             <button type="button" class="btn btn-light" onclick="onFilterReset()" aria-label="Reset">
-                                <span aria-hidden="true">TODO: (Translate) Reset filter</span>
+                                <span aria-hidden="true">'.$dict["search.reset"].'</span>
                             </button>
                         </div>
                     </div>

@@ -21,8 +21,7 @@
     </head>
     
     <!-- A few global variables are stored in the body, to make sure it's
-        available all throughout the code
-        TODO: Use this whenever needed -->
+        available all throughout the code -->
     <body class="d-flex flex-column min-vh-100"
           data-base-url="<?= $data_base_url; ?>"
         <!-- Navigation bar on top of the page -->

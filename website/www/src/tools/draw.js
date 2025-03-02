@@ -1,4 +1,3 @@
-
 /* global g_MapItems, g_Options, onBeforeZoom, onBeforePan, dict, g_Map, TYPE_FAMILYTREE, getMapItems, itemHasSubChildren, page_base_url */
 
 // The global variable for the SVG where everything will be drawn in

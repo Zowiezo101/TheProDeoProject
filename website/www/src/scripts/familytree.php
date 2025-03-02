@@ -39,22 +39,6 @@
     function insertFamilytree(data) {
         // Set up the SVG
         var map = SVG().addTo('#map_div').size('100%', '100%');
-        
-//        // The mapmaker object, this will generate the map
-//        var mapmaker = new MapMaker({});
-//        mapmaker.setMap(map);
-//        mapmaker.setItems(data);
-//
-//        // Calculate the locations of the familytree items
-//        var familytree = data.records;
-
-        // Draw the control buttons
-
-        // Draw the map items
-
-        // Pan to the item
-
-        // Hide the loading screen
 
         if(setSVG(map)) {
             setMapItems(TYPE_FAMILYTREE, data);

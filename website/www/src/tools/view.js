@@ -1,4 +1,4 @@
-/* global get_settings, pzInstance, g_Options, g_MapItems, g_Offsets, TYPE_FAMILYTREE, getSVG */
+/* global g_Options, g_MapItems, g_Offsets, TYPE_FAMILYTREE, getSVG */
 
 var pzInstance = null;
 var pzSubInstance = null;

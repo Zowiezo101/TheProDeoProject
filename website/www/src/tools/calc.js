@@ -1,5 +1,3 @@
-/* global onZoomIn, onZoomOut, onZoomFit, onZoomReset, onDownload */
-
 var TYPE_FAMILYTREE = "familytree";
 var TYPE_TIMELINE = "timeline";
 

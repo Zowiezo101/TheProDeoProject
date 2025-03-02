@@ -10,8 +10,6 @@
     use AboutUsPage;
     use ContactPage;
 
-    const PAGE_SIZE = 10;
-
     class Page extends Module {
         // The style to be used for the content div
         private $content_style = "background-color: hsl(0, 100%, 99%);";

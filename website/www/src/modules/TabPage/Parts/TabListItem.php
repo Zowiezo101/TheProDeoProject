@@ -61,7 +61,7 @@
         public function getContent() {
             // Create the TabListItem
             $content = '
-                            <li class="nav-item" id="'.$this->id.'_li" onclick="onTabClick()">
+                            <li class="nav-item" id="'.$this->id.'_li">
                                 <a href="" class="'. $this->classes.'" data-toggle="pill" data-target="#'.$this->id.'"> 
                                     '.$this->icon.'
                                     '.$this->title.'

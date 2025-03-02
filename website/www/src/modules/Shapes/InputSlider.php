@@ -69,7 +69,7 @@
                                 checked />
 
                         <label class='form-check-label'>
-                            TODO: (Translate) Allow unknown values
+                            ".$dict["search.unknown"]."
                         </label>
                     </div>
                 </div>

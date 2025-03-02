@@ -197,7 +197,4 @@
             }
         });
     }
-        
-    function onTabClick() {
-    }
 </script>

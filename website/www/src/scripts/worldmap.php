@@ -1,5 +1,5 @@
 <script>    
-/* global google, getWorldmap, markerClusterer, dict, get_settings */
+/* global google, markerClusterer, dict */
     
 var page_base_url = "<?= setParameters("locations/location/"); ?>";
 
@@ -39,7 +39,6 @@ function showMap() {
             worldmap.records.forEach(function (location) {
                 // Get the coordinates from the location object
                 var coords = location.coordinates.split(',');
-
 
                 // The marker, positioned at the location
                 const marker = new google.maps.Marker({
@@ -162,17 +161,6 @@ function getLinkToMap(id) {
         new google.maps.event.trigger(marker, "click");
     }
     return true;
-}
-
-function markerInCluster(id) {
-    var clusters = markerClustererObj.clusters;
-    var markerCluster = clusters.find(function(cluster) {
-        // Check if the marker is present in the current cluster
-        var marker = cluster.markers.find(marker => marker.id === id);
-        return marker ? true : false;
-    });
-    
-    return markerCluster && markerCluster.markers.length > 1 ? markerCluster : null;
 }
 
 function minZoomForMarker(id) {
