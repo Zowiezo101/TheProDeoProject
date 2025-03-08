@@ -48,7 +48,6 @@
         <script src="https://cdn.jsdelivr.net/npm/canvas-toBlob@1.0.0/canvas-toBlob.min.js"></script>
 
         <!-- The map maker -->
-        <script src="/src/tools/map.js"></script>
         <script src="/src/tools/calc.js"></script>
         <script src="/src/tools/draw.js"></script>
         <script src="/src/tools/view.js"></script>

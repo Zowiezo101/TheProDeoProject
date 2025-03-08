@@ -63,7 +63,7 @@
             
             // Get the data from the database, using the query
             $data = $this->database->getData($query);
-            return ["chapter_min_max", $data];
+            return ["num_chapters_min_max", $data];
         }
         
         protected function getAgeMinMax() {

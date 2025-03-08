@@ -102,7 +102,7 @@ function drawItem(group, item) {
                   item.height)
                 .attr("id", "rect_" + item.id)
                 .fill(getGenderColor(item.gender))
-                .stroke('black')
+                .stroke({width: 1, color: 'black'})
                 .radius(10, 10)
                 .move(item.X, item.Y);
 

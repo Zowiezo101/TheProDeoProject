@@ -1,5 +1,5 @@
 var dict = {
-	"globals.prodeo_database": "ProDeo Database",
+	"globals.prodeo_database": "The ProDeo Project",
 	"globals.prodeo_copyright": "The ProDeo Project. All rights reserved",
 	"globals.prodeo_slogan": "For God, to You",
 	"navigation.home": "Home",

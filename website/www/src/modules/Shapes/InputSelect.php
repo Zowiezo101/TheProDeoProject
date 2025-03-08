@@ -9,16 +9,20 @@
         
         public function __construct($name, $options) {
             parent::__construct();
-            
-            // The name of this textbox
-            $this->name = $name;
 
             if (isset($options[$name."_types"])) {
                 $this->types = $options[$name."_types"];
+            } 
+            
+            // The name of this textbox
+            $this->name = $name;
+            if ($name === "location" || $name === "special") {
+                // The special types select box and locations type select box are just named "type"
+                $this->name = "type";
             }
             
             // If there is a value stored in the session, get that value
-            $this->session_val = isset($_SESSION[$name]) ? htmlspecialchars($_SESSION[$name]) : "-1";
+            $this->session_val = isset($_SESSION[$this->name]) ? htmlspecialchars($_SESSION[$this->name]) : "-1";
         }
         
         public function getContent() {

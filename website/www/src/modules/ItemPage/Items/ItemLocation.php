@@ -44,7 +44,7 @@
                         "type" => ItemModal::INPUT_BOOK
                     ],
                     [
-                        "name" => "type",
+                        "name" => "location",
                         "type" => ItemModal::INPUT_SELECT
                     ]
                 ]

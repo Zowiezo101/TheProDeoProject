@@ -60,8 +60,13 @@ function initTable() {
 }
 
 function initFilter() {
-    // Loop through all the search fields and fill in saved settings
+    // Get all the search fields
     var search_fields = $(".search-field");
+
+    // If there aren't any, only initialize the search bar
+    search_fields.push($("#item_search"));
+
+    // Loop through all the search fields and fill in saved settings
     search_fields.each((idx, el) => {
         var field = $(el);
         
@@ -95,8 +100,13 @@ function onFilterChange() {
     // But this change has a slight delay and executes AFTER the redraw of the table
     // Using this timeout function will give the DOM enough time to update
     setTimeout(function() {
-        // Loop through all the search fields and save the settings
+        // Get all the search fields
         var search_fields = $(".search-field");
+
+        // If there aren't any, only initialize the search bar
+        search_fields.push($("#item_search"));
+
+        // Loop through all the search fields and save the settings
         search_fields.each((idx, el) => {
             var field = $(el);
             
@@ -176,8 +186,13 @@ function onFilterReset() {
 }
 
 function onBookReset(name) {
+	// Clear the book field
     field = getField(name);
     clearField(field);
+	
+	// And the chapter field
+	field = getField(name.replace("id", "chap"));
+	clearField(field);
 }
 
 function initField(field) {    
@@ -475,7 +490,15 @@ function getField(name) {
 }
 
 function getFieldName(field) {
-    return field.attr("id");
+    var name = field.attr("id");
+
+    // If the modal isn't there, we're using the search bar
+    if (name === "item_search") {
+        // The search bar corresponds with the name field
+        name = "name";
+    }
+
+    return name;
 }
 
 function getFieldValue(field) {

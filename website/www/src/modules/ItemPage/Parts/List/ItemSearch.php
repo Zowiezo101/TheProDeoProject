@@ -50,7 +50,7 @@
                         <div class="row mb-2">
                             <div class="col-8 col-md-6">
                                 <div class="input-group w-100">
-                                    <input type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearchUpdate()" value="'.$search.'">
+                                    <input type="text" data-type="text" class="form-control" id="item_search" placeholder="'.$dict["database.search"].'" onkeyup="onSearchUpdate()" value="'.$search.'">
                                     '.$filter.'
                                 </div>
                             </div>
